@@ -209,3 +209,5 @@ form repsoper, agregar columna saldo al SEGUIMIENTO DE GR, modif. PA ...........
 form egresosdep, adecuacion de altiplano, numero de vale automático ................................ ok 13/04/2021
 form ingresosv, adecuacion de altiplano, numero de vale automático ................................. no, se queda asi, se hace recibo de ingreso
 form defs, agregar opción de seleccionar num vales automatico o manual - LOCALES ................... ok 13/04/2021
+CARRION
+form notcredclts, falta fecha de la GR y campos de ubigeo y otros................................... ok 27/04/2021

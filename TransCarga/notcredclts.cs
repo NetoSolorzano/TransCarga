@@ -579,12 +579,14 @@ namespace TransCarga
                                     tx_igv.Text = dr.GetString("igvtota");
                                     tx_subt.Text = dr.GetString("subtota");
                                     tx_salxcob.Text = "";   // esta por verse como calculo el saldo de la factura
+                                    tx_dat_ubigclt.Text = dr.GetString("ubigclt");
                                     retorna = true;
                                 }
                             }
                         }
-                        consulta = "SELECT a.codgror,a.cantbul,a.unimedp,a.descpro,a.totalgr,a.codMN,a.totalgrMN,a.codmovta "+
-                            "FROM detfactu a WHERE a.tipdocvta=@tdv AND a.serdvta=@ser AND a.numdvta=@num AND estadoser<>@coda";
+                        consulta = "SELECT a.codgror,a.cantbul,a.unimedp,a.descpro,a.totalgr,a.codMN,a.totalgrMN,a.codmovta,date(b.fechopegr) " +
+                            "FROM detfactu a left join cabguiai b on a.codgror=concat(b.sergui,'-',b.numgui) " +
+                            "WHERE a.tipdocvta=@tdv AND a.serdvta=@ser AND a.numdvta=@num AND a.estadoser<>@coda";
                         using (MySqlCommand midet = new MySqlCommand(consulta, conn))
                         {
                             midet.Parameters.AddWithValue("@tdv", tx_dat_tdv.Text);
@@ -597,7 +599,7 @@ namespace TransCarga
                                 da.Fill(dtu);
                                 foreach (DataRow row in dtu.Rows)
                                 {
-                                    dataGridView1.Rows.Add(row[0], row[3], row[1], row[7], row[4], row[6], row[5], "", "", row[7]);
+                                    dataGridView1.Rows.Add(row[0], row[3], row[1], row[7], row[4], row[6], row[5], row[8].ToString().Substring(0,10), "", row[7]);
                                 }
                             }
                         }
@@ -754,7 +756,7 @@ namespace TransCarga
             string Ctipdoc = tipoDocEmi;                                                // tipo de doc. del cliente - 1 car
             string Cnomcli = tx_nomRem.Text.Trim();                                     // nombre del cliente - 100 car
             string dir1Adq = tx_dirRem.Text.Trim();                                     // direccion del adquiriente 1
-            //string dir2Adq = "";                                                        // direccion del adquiriente 2
+            string ubigclt = tx_dat_ubigclt.Text;                                       // ubigeo del adquiriente 2
             string provAdq = tx_provRtt.Text.Trim();                                    // provincia del adquiriente
             string depaAdq = tx_dptoRtt.Text.Trim();                                    // departamento del adquiriente
             string distAdq = tx_distRtt.Text.Trim();                                    // distrito del adquiriente
@@ -897,6 +899,7 @@ namespace TransCarga
                 Cnumdoc + sep +                 // Nro. Documento del cliente
                 Cnomcli + sep +                 // Razón social del cliente
                 dir1Adq + sep +                 // Dirección
+                ubigclt + sep +                 // ubigeo del cliente
                 depaAdq + sep +                 // Departamento
                 provAdq + sep +                 // Provincia
                 "" + sep +                      // Urbanización   dir2Adq
@@ -904,8 +907,9 @@ namespace TransCarga
                 paisAdq + sep +                 // Código país
                 "" + sep +                      // codigo establecimiento adquiriente
                 maiAdq + sep +                  // Correo-Receptor
+                "" + sep +                      // Telefono del adquiriente
                 "" + sep +                      // sitio web del arquiriente/receptor
-                "" + sep + "" + sep +           // datos del comprador
+                "" + sep + "" + sep +           // Tipo doc identidad del adquiriente + NUmero doc identidad adquiriente
                 totImp + sep +                  // Total IGV
                 "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +   // exportaciones, inafectas, exoneradas, gratuitas, etc
                 _totven + sep +                 // Total operaciones gravadas
@@ -967,7 +971,7 @@ namespace TransCarga
                 string Icodgs1 = "";                                                        // codigo del producto GS1
                 string Icogtin = "";                                                        // tipo de producto GTIN
                 string Inplaca = "";                                                        // numero placa de vehiculo
-                string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                string Idescri = glosser + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
                 string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
                 string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
                 string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni),2).ToString("#0.00");     // monto IGV del item
@@ -1021,10 +1025,13 @@ namespace TransCarga
             }
             for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
             {
+                string ff = dataGridView1.Rows[s].Cells["fechaGR"].Value.ToString().Substring(6, 4) + "-" +
+                    dataGridView1.Rows[s].Cells["fechaGR"].Value.ToString().Substring(3, 2) + "-" +
+                    dataGridView1.Rows[s].Cells["fechaGR"].Value.ToString().Substring(0, 2);
                 writer.WriteLine("T" + sep +
                     "31" + sep +
                     dataGridView1.Rows[s].Cells["guias"].Value.ToString() + sep +
-                    dataGridView1.Rows[s].Cells["fechaGR"].Value.ToString() + sep
+                    ff +sep  //dataGridView1.Rows[s].Cells["fechaGR"].Value.ToString()
                 );
             }
             writer.WriteLine("L" + sep +

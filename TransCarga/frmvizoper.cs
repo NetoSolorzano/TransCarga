@@ -22,8 +22,9 @@ namespace TransCarga
         {
             if (_datosReporte.cuadreCaja_cab.Rows.Count > 0)
             {
+                string nf = _datosReporte.cuadreCaja_cab.Rows[0].ItemArray[0].ToString();
                 ReportDocument rpt = new ReportDocument();
-                rpt.Load("formatos/cuadreCaja1.rpt");
+                rpt.Load(nf);   // rpt.Load("formatos/cuadreCaja1.rpt");
                 rpt.SetDataSource(_datosReporte);
                 crystalReportViewer1.ReportSource = rpt;
             }

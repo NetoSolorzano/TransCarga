@@ -19,6 +19,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "cabcobran";            // 
+
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -43,8 +44,10 @@ namespace TransCarga
         string codAnul = "";            // codigo de documento anulado
         string nomAnul = "";            // texto nombre del estado anulado
         string codGene = "";            // codigo documento nuevo generado
+        string v_nrcaja = "";           // ruta y nombre del formato CR reporte cuadre de caja
         //int pageCount = 1, cuenta = 0;
         #endregion
+
         libreria lib = new libreria();
         DataTable dtcuad = new DataTable();
         DataTable dt = new DataTable();
@@ -113,10 +116,11 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped,@caj)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@ped", nomform);
+                micon.Parameters.AddWithValue("@caj", "ayccaja");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -147,6 +151,10 @@ namespace TransCarga
                     if (row["formulario"].ToString() == nomform)
                     {
                         if (row["campo"].ToString() == "exporta" && row["param"].ToString() == "ruta") v_ruta = row["valor"].ToString().Trim();
+                    }
+                    if (row["formulario"].ToString() == "ayccaja")
+                    {
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomfor_cr") v_nrcaja = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -1057,6 +1065,7 @@ namespace TransCarga
             conClie cuadre = new conClie();                                    // dataset
             conClie.cuadreCaja_cabRow rowcabeza = cuadre.cuadreCaja_cab.NewcuadreCaja_cabRow(); // rescont.rescont_cab.Newrescont_cabRow();
             //
+            rowcabeza.formatoRPT = v_nrcaja;
             rowcabeza.rucEmisor = Program.ruc;
             rowcabeza.nomEmisor = Program.cliente;
             rowcabeza.dirEmisor = Program.dirfisc;
@@ -1074,11 +1083,11 @@ namespace TransCarga
             rowcabeza.nomCajA = dtcuad.Rows[0].ItemArray[29].ToString();
             rowcabeza.nomCajC = dtcuad.Rows[0].ItemArray[31].ToString();
             rowcabeza.nomloc = dtcuad.Rows[0].ItemArray[2].ToString();
-            rowcabeza.cobranzas = double.Parse(dtcuad.Rows[0].ItemArray[21].ToString());
-            rowcabeza.ingvarios = double.Parse(dtcuad.Rows[0].ItemArray[22].ToString());
-            rowcabeza.egresos = double.Parse(dtcuad.Rows[0].ItemArray[23].ToString());
-            rowcabeza.saldoAnt = double.Parse(dtcuad.Rows[0].ItemArray[26].ToString());
-            rowcabeza.saldofinal = double.Parse(dtcuad.Rows[0].ItemArray[27].ToString());
+            rowcabeza.cobranzas = Double.Parse(dtcuad.Rows[0].ItemArray[21].ToString());
+            rowcabeza.ingvarios = Double.Parse(dtcuad.Rows[0].ItemArray[22].ToString());
+            rowcabeza.egresos = Double.Parse(dtcuad.Rows[0].ItemArray[23].ToString());
+            rowcabeza.saldoAnt = Double.Parse(dtcuad.Rows[0].ItemArray[26].ToString());
+            rowcabeza.saldofinal = Double.Parse(dtcuad.Rows[0].ItemArray[27].ToString());
             rowcabeza.serie = dtcuad.Rows[0].ItemArray[8].ToString();
             rowcabeza.tituloF = Program.tituloF;
             cuadre.cuadreCaja_cab.AddcuadreCaja_cabRow(rowcabeza);    //rescont.rescont_cab.Addrescont_cabRow(rowcabeza);
@@ -1108,11 +1117,12 @@ namespace TransCarga
                     rowdetalle.refpago = row.ItemArray[20].ToString();       // referencia de pago/deposito/ingreso
                     rowdetalle.totdoco = double.Parse(row.ItemArray[21].ToString());       // total del documento
                     rowdetalle.totpags = double.Parse(row.ItemArray[22].ToString());       // total pagado
-                    rowdetalle.saldvta = double.Parse(row.ItemArray[23].ToString());       // saldo del doc
+                    //MessageBox.Show(rowdetalle.totpags.ToString(), row.ItemArray[22].ToString());
+                    rowdetalle.saldvta = Double.Parse(row.ItemArray[23].ToString());       // saldo del doc
                     rowdetalle.codmopa = row.ItemArray[24].ToString();       // codigo moneda de pago
                     rowdetalle.nomMonp = row.ItemArray[25].ToString();       // nombre de la moneda de pago
-                    rowdetalle.totpago = double.Parse(row.ItemArray[26].ToString());       // total pagado/cobrado
-                    rowdetalle.totpaMN = double.Parse(row.ItemArray[27].ToString());       // total pagado/cobrado en MN
+                    rowdetalle.totpago = Double.Parse(row.ItemArray[26].ToString());       // total pagado/cobrado
+                    rowdetalle.totpaMN = Double.Parse(row.ItemArray[27].ToString());       // total pagado/cobrado en MN
                     cuadre.cuadreCaja_det.AddcuadreCaja_detRow(rowdetalle);
                 }
             }

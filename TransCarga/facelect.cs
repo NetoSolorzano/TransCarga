@@ -95,6 +95,8 @@ namespace TransCarga
         string nipfe = "";              // nombre identificador del proveedor de fact electronica
         string glosaAnul = "";          // texto motivo de baja/anulacion en los TXT para el pse/ose
         string tipdocAnu = "";          // Tipos de documentos que se pueden dar de baja
+        string tdocsBol = "";           // tipos de documentos de clientes que permiten boletas
+        string tdocsFac = "";           // tipos de documentos de clientes que permiten facturas
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -351,6 +353,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "diasanul") v_cdpa = int.Parse(row["valor"].ToString());            // cant dias en que usuario normal puede anular 
                             if (row["param"].ToString() == "useranul") codusanu = row["valor"].ToString();                      // usuarios autorizados a anular fuera de plazo 
                             if (row["param"].ToString() == "userdscto") cusdscto = row["valor"].ToString();                 // usuarios que pueden hacer descuentos
+                            if (row["param"].ToString() == "cltesBol") tdocsBol = row["valor"].ToString();                  // tipos de documento de clientes para boletas
+                            if (row["param"].ToString() == "cltesFac") tdocsFac = row["valor"].ToString();                  // tipos de documento de clientes para facturas
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -2285,6 +2289,12 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             #region validaciones
+            if (tx_dat_tdv.Text.Trim() == "")
+            {
+                MessageBox.Show("Seleccione el tipo de comprobante", " Atención ");
+                cmb_tdv.Focus();
+                return;
+            }
             if (tx_serie.Text.Trim() == "")
             {
                 tx_serie.Focus();
@@ -2346,10 +2356,27 @@ namespace TransCarga
             }
             if (tx_dat_tdec.Text != tx_dat_tdRem.Text)
             {
-                MessageBox.Show("Asegurese que el tipo de documento de venta" + Environment.NewLine +
-                    "sean coincidente con el tipo de cliente", "Error de tipos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cmb_docRem.Focus();
-                return;
+                // aca validamos que el tipo de doc de venta se corresponda con el documento del cliente
+                if (tx_dat_tdv.Text != codfact)
+                {
+                    if (!tdocsBol.Contains(tx_dat_tdRem.Text))
+                    {
+                        MessageBox.Show("Asegurese que el tipo de documento de venta" + Environment.NewLine +
+                            "sean coincidente con el tipo de cliente", "Error de tipos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_docRem.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    if (!tdocsFac.Contains(tx_dat_tdRem.Text))
+                    {
+                        MessageBox.Show("Asegurese que el tipo de documento de venta" + Environment.NewLine +
+                            "sean coincidente con el tipo de cliente", "Error de tipos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_docRem.Focus();
+                        return;
+                    }
+                }
             }
             #endregion
             // grabamos, actualizamos, etc

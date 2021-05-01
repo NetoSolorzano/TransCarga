@@ -211,3 +211,4 @@ form ingresosv, adecuacion de altiplano, numero de vale automático ............
 form defs, agregar opción de seleccionar num vales automatico o manual - LOCALES ................... ok 13/04/2021
 form repadmcaja, decimales en rep cuadre de caja ................................................... ok 28/04/2021, en el CR se puso 2 dec y redondeo a centena
 form guiati, cliente extranjero no esta grabando en cabguiai.m1cliente y/o cabguiai.m2cliente ...... ok 28/04/2021
+form facelect, codigo para aceptar boletas y facturas por tipo de doc del cliente .................. ok 30/04/2021

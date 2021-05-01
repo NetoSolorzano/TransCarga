@@ -777,7 +777,7 @@ namespace TransCarga
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Gestión", img_alm1, alm_gestion_Click);                    // gestion de almacen
             menuStrip1.Items.Add("Mov.Físicos", img_alm2, alm_movfisicos_Click);             // movimientos fisicos
-            menuStrip1.Items.Add("Reportes", img_alm3, alm_historicos_Click);                // 
+            menuStrip1.Items.Add("Reportes", img_alm3, alm_historicos_Click);                // reportes
             menuStrip1.Visible = true;
         }
         private void alm_gestion_Click(object sender, EventArgs e)
@@ -788,9 +788,20 @@ namespace TransCarga
         {
             MessageBox.Show("Form Gestión de Entradas/Salidas", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        private void alm_historicos_Click(object sender, EventArgs e)
+        private void alm_historicos_Click(object sender, EventArgs e)               // REPORTES ALMACEN
         {
-            MessageBox.Show("Form Reportes de Almacén", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            repsalmac fral = new repsalmac();
+            fral.TopLevel = false;
+            fral.Parent = this;
+            pn_centro.Controls.Add(fral);
+            //fral.Location = new Point((pn_centro.Width - fral.Width) / 2, (pn_centro.Height - fral.Height) / 2);
+            //fral.Anchor = AnchorStyles.None;
+            fral.Show();
+            if (fral.Parent.Width < fral.Width)
+            {
+                this.Width = this.Width + (this.Width - fral.Width) + 20;
+            }
+            fral.BringToFront();
         }
         //
         private void pictureBox1_Click(object sender, EventArgs e)

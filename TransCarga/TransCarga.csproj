@@ -258,6 +258,12 @@
     <Compile Include="repadmcaja.designer.cs">
       <DependentUpon>repadmcaja.cs</DependentUpon>
     </Compile>
+    <Compile Include="repsalmac.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="repsalmac.designer.cs">
+      <DependentUpon>repsalmac.cs</DependentUpon>
+    </Compile>
     <Compile Include="repsoper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -422,6 +428,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="repadmcaja.resx">
       <DependentUpon>repadmcaja.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="repsalmac.resx">
+      <DependentUpon>repsalmac.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="repsoper.resx">
       <DependentUpon>repsoper.cs</DependentUpon>

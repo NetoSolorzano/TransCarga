@@ -273,6 +273,34 @@ namespace TransCarga
                     }
                     suma_grilla("dgv_notcre");
                     break;
+                case "dgv_claves":
+                    dgv_claves.Font = tiplg;
+                    dgv_claves.DefaultCellStyle.Font = tiplg;
+                    dgv_claves.RowTemplate.Height = 15;
+                    dgv_claves.AllowUserToAddRows = false;
+                    dgv_claves.Width = Parent.Width - 70; // 1015;
+                    if (dgv_claves.DataSource == null) dgv_claves.ColumnCount = 11;
+                    if (dgv_claves.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_claves.Columns.Count; i++)
+                        {
+                            dgv_claves.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_claves.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_claves.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_claves.Columns.Count; i++)
+                        {
+                            int a = dgv_claves.Columns[i].Width;
+                            b += a;
+                            dgv_claves.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_claves.Columns[i].Width = a;
+                        }
+                        if (b < dgv_claves.Width) dgv_claves.Width = b - 20;    // b + 60 ;
+                        dgv_claves.ReadOnly = true;
+                    }
+                    suma_grilla("dgv_claves");
+                    break;
             }
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte STOCK
@@ -326,6 +354,36 @@ namespace TransCarga
                         da.Fill(dt);
                         dgv_dspachs.DataSource = dt;
                         grilla("dgv_dspachs");
+                    }
+                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                    {
+                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+        private void bt_claves_Click(object sender, EventArgs e)        // genera historico de use de claves de seguridad
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string consulta = "rep_alm_claves1";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@fecini", dtp_ini_claves.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_fin_claves.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@loca", (tx_dat_sede_claves.Text != "") ? tx_dat_sede_claves.Text : "");
+                    micon.Parameters.AddWithValue("@esta", (tx_dat_estad_claves.Text != "") ? tx_dat_estad_claves.Text : "");
+                    micon.Parameters.AddWithValue("@excl", (chk_exclu_claves.Checked == true) ? "1" : "0");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_claves.DataSource = null;
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        dgv_claves.DataSource = dt;
+                        grilla("dgv_claves");
                     }
                     string resulta = lib.ult_mov(nomform, nomtab, asd);
                     if (resulta != "OK")                                        // actualizamos la tabla usuarios

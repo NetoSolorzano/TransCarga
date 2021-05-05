@@ -191,6 +191,12 @@
     <Compile Include="guiati.designer.cs">
       <DependentUpon>guiati.cs</DependentUpon>
     </Compile>
+    <Compile Include="ingcargalm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ingcargalm.designer.cs">
+      <DependentUpon>ingcargalm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ingresosv.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -386,6 +392,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="guiati.resx">
       <DependentUpon>guiati.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ingcargalm.resx">
+      <DependentUpon>ingcargalm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ingresosv.resx">
       <DependentUpon>ingresosv.cs</DependentUpon>

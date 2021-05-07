@@ -927,6 +927,7 @@
             this.bt_agr.Size = new System.Drawing.Size(35, 36);
             this.bt_agr.TabIndex = 428;
             this.bt_agr.UseVisualStyleBackColor = true;
+            this.bt_agr.Click += new System.EventHandler(this.bt_Agr_Click);
             // 
             // tx_tfil
             // 

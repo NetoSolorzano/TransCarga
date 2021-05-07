@@ -52,7 +52,7 @@ namespace TransCarga
         string v_fra2 = "";             // frase 
         string v_sanu = "";             // serie anulacion interna ANU
         string v_CR_gr_ind = "";        // nombre del formato en CR
-        string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
+        //string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         string v_trompa = "";           // codigo interno placa de tracto
         string v_carret = "";           // código interno placa de carreta/furgon
         string v_camion = "";           // código interno placa de camion
@@ -154,66 +154,36 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 19;
+            dataGridView1.ColumnCount = 10;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
             dataGridView1.Columns[0].Width = 30;
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.Columns[1].Name = "numpreg";
-            dataGridView1.Columns[1].HeaderText = "Pre-GR";
-            dataGridView1.Columns[1].ReadOnly = true;
-            dataGridView1.Columns[1].Width = 80;
-            dataGridView1.Columns[2].Name = "serguia";
-            dataGridView1.Columns[2].HeaderText = "Ser.GR";
+            dataGridView1.Columns[1].Name = "serguia";
+            dataGridView1.Columns[1].HeaderText = "Ser.GR";
+            dataGridView1.Columns[1].ReadOnly = false;
+            dataGridView1.Columns[1].Width = 60;
+            dataGridView1.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[2].Name = "numguia";
+            dataGridView1.Columns[2].HeaderText = "Num.GR";
             dataGridView1.Columns[2].ReadOnly = false;
-            dataGridView1.Columns[2].Width = 60;
-            dataGridView1.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.Columns[3].Name = "numguia";
-            dataGridView1.Columns[3].HeaderText = "Num.GR";
-            dataGridView1.Columns[3].ReadOnly = false;
-            dataGridView1.Columns[3].Width = 80;
-            dataGridView1.Columns[4].Name = "totcant";
-            dataGridView1.Columns[4].HeaderText = "Bultos";
+            dataGridView1.Columns[2].Width = 80;
+            dataGridView1.Columns[3].Name = "totcant";
+            dataGridView1.Columns[3].HeaderText = "Bultos";
+            dataGridView1.Columns[3].ReadOnly = true;
+            dataGridView1.Columns[3].Width = 40;
+            dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridView1.Columns[4].Name = "nombul";
+            dataGridView1.Columns[4].HeaderText = "Nombul";
             dataGridView1.Columns[4].ReadOnly = true;
-            dataGridView1.Columns[4].Width = 40;
+            dataGridView1.Columns[4].Width = 70;
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dataGridView1.Columns[5].Name = "totpeso";
             dataGridView1.Columns[5].HeaderText = "Peso";
             dataGridView1.Columns[5].ReadOnly = true;
             dataGridView1.Columns[5].Width = 70;
             dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dataGridView1.Columns[6].Name = "MON";
-            dataGridView1.Columns[6].HeaderText = "Mon";
-            dataGridView1.Columns[6].ReadOnly = true;
-            dataGridView1.Columns[6].Width = 50;
-            dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.Columns[7].Name = "totflet";
-            dataGridView1.Columns[7].HeaderText = "Flete";
-            dataGridView1.Columns[7].ReadOnly = true;
-            dataGridView1.Columns[7].Width = 80;
-            dataGridView1.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dataGridView1.Columns[8].Visible = false;   // valor pagado de la guia
-            dataGridView1.Columns[9].Visible = false;   // valor por cobrar de la guia
-            dataGridView1.Columns[10].Visible = false;  // codigo moneda
-            dataGridView1.Columns[11].Visible = false;  // marca para edicion
-            dataGridView1.Columns[12].Visible = false;  // id de la fila
-            dataGridView1.Columns[13].Visible = true;  // nombre destinatario
-            dataGridView1.Columns[13].ReadOnly = true;
-            dataGridView1.Columns[14].Visible = true;  // direccion destinat
-            dataGridView1.Columns[14].ReadOnly = true;
-            dataGridView1.Columns[15].Visible = false;  // telef destinatario
-            dataGridView1.Columns[15].ReadOnly = true;
-            dataGridView1.Columns[16].Name = "nombul";
-            dataGridView1.Columns[16].HeaderText = "Nombul";
-            dataGridView1.Columns[16].ReadOnly = true;
-            dataGridView1.Columns[16].Visible = false;
-            dataGridView1.Columns[17].Name = "docvta";
-            dataGridView1.Columns[17].HeaderText = "Docvta";
-            dataGridView1.Columns[17].Visible = false;
-            dataGridView1.Columns[18].Visible = false;
-            if (Tx_modo.Text == "EDITAR")
-            {
                 DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
                 marca.Name = "Borra";
                 marca.HeaderText = "Borra";
@@ -221,7 +191,6 @@ namespace TransCarga
                 marca.ReadOnly = false;
                 marca.FillWeight = 20;
                 dataGridView1.Columns.Add(marca);
-            }
         }
         private void initIngreso()
         {
@@ -651,15 +620,7 @@ namespace TransCarga
             tx_totcant.Text = totcant.ToString();
             tx_totpes.Text = totpes.ToString("0.00");
             tx_tfil.Text = totfil.ToString();
-            if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet) && int.Parse(v_mfildet)>0)
-            {
-                MessageBox.Show("Número máximo de filas en planilla", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                dataGridView1.AllowUserToAddRows = false;
-            }
-            else
-            {
-                dataGridView1.AllowUserToAddRows = true;
-            }
+            dataGridView1.AllowUserToAddRows = true;
         }
 
         #region limpiadores_modos
@@ -690,6 +651,72 @@ namespace TransCarga
         #endregion limpiadores_modos;
 
         #region boton_form GRABA EDITA ANULA
+        private void bt_Agr_Click(object sender, EventArgs e)
+        {
+            if (rb_plani.Checked == true && (tx_serP.Text.Trim() == "" || tx_numP.Text.Trim() == ""))
+            {
+                MessageBox.Show("Ingrese correctamente la planilla de carga", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_serP.Focus();
+                return;
+            }
+            if (rb_manual.Checked == true && (tx_serGR.Text.Trim() == "" || tx_numGR.Text.Trim() == ""))
+            {
+                MessageBox.Show("Ingrese correctamente la guía de remisión", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_serGR.Focus();
+                return;
+            }
+            if (tx_serP.Text.Trim() != "")
+            {
+                // jalamos igual que edicion de planillas de carga
+                string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso," +
+                "a.estadoser,'X' as marca,a.id,g.nombdegri,g.diredegri,a.nombult,g.nombregri " +
+                "from detplacar a " +
+                "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
+                "where a.serplacar=@serp and a.numplacar=@nump";
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                {
+                    conn.Open();
+                    using (MySqlCommand micon = new MySqlCommand(jalad, conn))
+                    {
+                        micon.Parameters.AddWithValue("@serp", tx_serP.Text);
+                        micon.Parameters.AddWithValue("@nump", tx_numP.Text);
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+                            dataGridView1.Rows.Clear();
+                            foreach (DataRow row in dt.Rows)
+                            {
+                                dataGridView1.Rows.Add(
+                                    row[3].ToString(),
+                                    row[4].ToString(),
+                                    row[5].ToString(),
+                                    row[6].ToString(),
+                                    row[14].ToString(),
+                                    row[7].ToString(),
+                                    false
+                                    );
+                                    /*row[10].ToString(),
+                                    row[15].ToString(),
+                                    row[16].ToString(),
+                                    row[12].ToString(),
+                                    row[13].ToString(),
+                                    
+                                    row[17].ToString(),
+                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
+                                    row[19].ToString(),
+                                    row[20].ToString(),
+                                    row[23].ToString(),
+                                    row[24].ToString(),
+                                    */
+                            }
+                            dt.Dispose();
+                        }
+                    }
+                }
+                operaciones();
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             #region validaciones
@@ -1321,10 +1348,10 @@ namespace TransCarga
             dataGridView1.Columns.Clear();
             dataGridView1.Rows.Clear();
             initIngreso();
-            escribe();
-            tx_serP.ReadOnly = false;      // cambia a true una ves jalado los datos
-            tx_numP.ReadOnly = false;     // cambia a true una ves jalado los datos
-            tx_serP.Focus();
+            sololee();
+            //tx_serP.ReadOnly = false;      // cambia a true una ves jalado los datos
+            //tx_numP.ReadOnly = false;     // cambia a true una ves jalado los datos
+            rb_plani.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -1334,28 +1361,10 @@ namespace TransCarga
         {
             // Impresion ó Re-impresion ??
             //if (tx_impreso.Text == "S")
-            {
-                var aa = MessageBox.Show("Desea imprimir el documento?", "Confirme por favor", 
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (aa == DialogResult.Yes)
-                {
-                    if (vi_formato == "A4")            // Seleccion de formato ... A4
-                    {
-                        if (imprimeA4() == true) updateprint("S");
-                    }
-                    if (vi_formato == "A5")            // Seleccion de formato ... A5
-                    {
-                        if (imprimeA5() == true) updateprint("S");
-                    }
-                    if (vi_formato == "TK")            // Seleccion de formato ... Ticket
-                    {
-                        if (imprimeTK() == true) updateprint("S");
-                    }
-                }
-            }
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
+            /*
             sololee();
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
@@ -1370,6 +1379,7 @@ namespace TransCarga
             tx_serP.ReadOnly = false;
             tx_numP.ReadOnly = false;
             tx_serP.Focus();
+            */
         }
         private void Bt_ver_Click(object sender, EventArgs e)
         {
@@ -1383,9 +1393,18 @@ namespace TransCarga
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
             //
-            tx_serP.ReadOnly = false;
-            tx_numP.ReadOnly = false;
-            tx_serP.Focus();
+            tx_serP.Text = "";
+            tx_numP.Text = "";
+            tx_serGR.Text = "";
+            tx_numGR.Text = "";
+            tx_serP.ReadOnly = true;
+            tx_numP.ReadOnly = true;
+            tx_serGR.ReadOnly = true;
+            tx_numGR.ReadOnly = true;
+            tx_tfil.Text = "0";
+            tx_totcant.Text = "0";
+            tx_totpes.Text = "0";
+            rb_plani.Focus();
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {

@@ -385,7 +385,7 @@
             // 
             // printDocument1
             // 
-            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDoc_PrintPage);
+            //this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDoc_PrintPage);
             // 
             // tx_idr
             // 

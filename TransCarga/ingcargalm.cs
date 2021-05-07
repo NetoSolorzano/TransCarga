@@ -284,7 +284,7 @@ namespace TransCarga
                 return;
             }
         }
-        private void jalaoc(string campo)        // jala ingreso  .. aca me quede
+        private void jalaoc(string campo)        // jala ingreso 
         {
             {
                 string parte = "";
@@ -294,23 +294,23 @@ namespace TransCarga
                 }
                 if (campo == "sernum")
                 {
-                    parte = "where a.serplacar=@ser and a.numplacar=@num";
+                    parte = "where a.serdocuin=@ser and a.numdocuin=@num";
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "select a.id,a.fechope,a.serplacar,a.numplacar,a.locorigen,a.locdestin,a.obsplacar,a.cantfilas,a.cantotpla,a.pestotpla,a.tipmonpla," +
-                        "a.tipcampla,a.subtotpla,a.igvplacar,a.totplacar,a.totpagado,a.salxpagar,a.estadoser,a.impreso,a.fleteimp,a.platracto,a.placarret,a.autorizac," +
-                        "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial," +
-                        "a.marcaTrac,a.modeloTrac " +
-                        "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " + parte;
+                    string consulta = "select a.id,a.fechope,a.tipoingre,a.serdocuin,a.numdocuin,a.locorigen,a.locdestin,a.platracto,a.placarret,a.brevchofe,a.cantfilas," +
+                        "a.cantotpla,a.pestotpla,a.obsplacar,a.estadoser,b.nomchofe," +
+                        "a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha " +
+                        "FROM cabingalm a left join (select brevchofe,nomchofe from cabplacar group by upper(brevchofe)) b on b.brevchofe=a.brevchofe " +
+                        parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
                     {
-                        micon.Parameters.AddWithValue("@ser", tx_serP.Text);
-                        micon.Parameters.AddWithValue("@num", tx_numP.Text);
+                        micon.Parameters.AddWithValue("@ser", (rb_plani.Checked == true)? tx_serP.Text : tx_serGR.Text);
+                        micon.Parameters.AddWithValue("@num", (rb_plani.Checked == true)? tx_numP.Text : tx_numGR.Text);
                     }
                     MySqlDataReader dr = micon.ExecuteReader();
                     if (dr != null)
@@ -322,18 +322,20 @@ namespace TransCarga
                             tx_digit.Text = dr.GetString("userc") + " " + dr.GetString("userm") + " " + dr.GetString("usera");
                             //
                             tx_dat_estad.Text = dr.GetString("estadoser");
-                            tx_serP.Text = dr.GetString("serplacar");
-                            tx_numP.Text = dr.GetString("numplacar");
+                            if (dr.GetString("tipoingre") == "P")
+                            {
+                                tx_serP.Text = dr.GetString("serdocuin");
+                                tx_numP.Text = dr.GetString("numdocuin");
+                            }
+                            if (dr.GetString("tipoingre") == "G")
+                            {
+                                tx_serGR.Text = dr.GetString("serdocuin");
+                                tx_numGR.Text = dr.GetString("numdocuin");
+                            }
                             tx_obser1.Text = dr.GetString("obsplacar");
                             tx_tfil.Text = dr.GetString("cantfilas");
                             tx_totcant.Text = dr.GetString("cantotpla");
                             tx_totpes.Text = dr.GetString("pestotpla");
-                            tx_dat_detflete.Text = dr.GetString("fleteimp");    // determina si en el detalle se muestra e imprime el valor del flete de la guia
-                            //
-                            tx_pla_placa.Text = dr.GetString("platracto");
-                            tx_pla_carret.Text = dr.GetString("placarret");
-                            tx_pla_brevet.Text = dr.GetString("brevchofe");
-                            tx_pla_nomcho.Text = dr.GetString("nomchofe");
                         }
                         tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
                         // si el documento esta ANULADO o un estado que no permite EDICION, se pone todo en sololee (ANULADO O RECIBIDO)
@@ -363,17 +365,19 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle del ingreso
         {
-            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
-                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin," +
-                "concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
-                "g.nombregri " +
-                "from detplacar a " +
-                "left join desc_mon b on b.idcodice = a.codmone " +
-                "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
-                "left join desc_tdv d on d.idcodice=g.tipdocvta " + 
-                "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= g.ubigdegri " +
-                "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(g.ubigdegri, 2) AND u2.provin = concat(substr(g.ubigdegri, 3, 2)) " +
-                "where a.idc=@idr";
+            string jalad = "";
+            if (rb_plani.Checked == true)
+            {
+                jalad = "select a.idrecep,a.serplacar,a.numplacar,a.fila,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso," +
+                    "a.estadoser,'X' as marca,a.id,a.nombult,g.descprodi,a.marcaR,a.obsrecep " +
+                    "from detplacar a " +
+                    "left join detguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
+                    "where a.idrecep=@idr";
+            }
+            if (rb_manual.Checked == true)
+            {
+                // me quede aca!
+            }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -387,55 +391,17 @@ namespace TransCarga
                         dataGridView1.Rows.Clear();
                         foreach (DataRow row in dt.Rows)
                         {
-                            if (Tx_modo.Text != "EDITAR")
-                            {
-                                dataGridView1.Rows.Add(
-                                    row[3].ToString(),
-                                    row[4].ToString(),
-                                    row[5].ToString(),
-                                    row[6].ToString(),
-                                    row[7].ToString(),
-                                    row[8].ToString(),
-                                    row[9].ToString(),
-                                    row[10].ToString(),
-                                    row[15].ToString(),
-                                    row[16].ToString(),
-                                    row[12].ToString(),
-                                    row[13].ToString(),
-                                    row[14].ToString(),
-                                    row[17].ToString(),
-                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
-                                    row[19].ToString(),
-                                    row[20].ToString(),
-                                    row[23].ToString(),
-                                    row[24].ToString()
-                                    );
-                            }
-                            else
-                            {
-                                dataGridView1.Rows.Add(
-                                    row[3].ToString(),
-                                    row[4].ToString(),
-                                    row[5].ToString(),
-                                    row[6].ToString(),
-                                    row[7].ToString(),
-                                    row[8].ToString(),
-                                    row[9].ToString(),
-                                    row[10].ToString(),
-                                    row[15].ToString(),
-                                    row[16].ToString(),
-                                    row[12].ToString(),
-                                    row[13].ToString(),
-                                    row[14].ToString(),
-                                    row[17].ToString(),
-                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
-                                    row[19].ToString(),
-                                    row[20].ToString(),
-                                    row[23].ToString(),
-                                    row[24].ToString(),
-                                    false
-                                    );
-                            }
+                            dataGridView1.Rows.Add(
+                                row[3].ToString(),
+                                row[4].ToString(),
+                                row[5].ToString(),
+                                row[6].ToString(),
+                                row[11].ToString(),
+                                row[7].ToString(),
+                                row[12].ToString(),
+                                (row[13].ToString() == "S")? true : false,
+                                row[14].ToString()
+                                );
                         }
                         dt.Dispose();
                     }
@@ -617,19 +583,6 @@ namespace TransCarga
                                     row[12].ToString(),
                                     true
                                     );
-                                    /*row[10].ToString(),
-                                    row[15].ToString(),
-                                    row[16].ToString(),
-                                    row[12].ToString(),
-                                    row[13].ToString(),
-                                    
-                                    row[17].ToString(),
-                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
-                                    row[19].ToString(),
-                                    row[20].ToString(),
-                                    row[23].ToString(),
-                                    row[24].ToString(),
-                                    */
                             }
                             dt.Dispose();
                         }

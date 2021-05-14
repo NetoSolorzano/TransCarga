@@ -154,7 +154,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 7;
+            dataGridView1.ColumnCount = 9;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
@@ -189,6 +189,14 @@ namespace TransCarga
             dataGridView1.Columns[6].ReadOnly = true;
             dataGridView1.Columns[6].Width = 200;
             dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridView1.Columns[7].Name = "estado";
+            dataGridView1.Columns[7].HeaderText = "Estado";
+            dataGridView1.Columns[7].ReadOnly = true;
+            dataGridView1.Columns[7].Width = 60;
+            dataGridView1.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridView1.Columns[8].Name = "codest";
+            dataGridView1.Columns[8].HeaderText = "codest";
+            dataGridView1.Columns[8].Visible = false;
             DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
             marca.Name = "Rok";
             marca.HeaderText = "Recibido";
@@ -369,9 +377,10 @@ namespace TransCarga
             if (rb_plani.Checked == true)
             {
                 jalad = "select a.idrecep,a.serplacar,a.numplacar,a.fila,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso," +
-                    "a.estadoser,'X' as marca,a.id,a.nombult,g.descprodi,a.marcaR,a.obsrecep " +
+                    "e.descrizionerid,g.estadoser,'X' as marca,a.id,a.nombult,g.descprodi,a.marcaR,a.obsrecep " +
                     "from detplacar a " +
                     "left join detguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
+                    "left join desc_est e on e.idcodice=a.estadoser " +
                     "where a.idrecep=@idr";
             }
             if (rb_manual.Checked == true)  // jala guia individual
@@ -399,8 +408,10 @@ namespace TransCarga
                                 row[11].ToString(),
                                 row[7].ToString(),
                                 row[12].ToString(),
-                                (row[13].ToString() == "S")? true : false,
-                                row[14].ToString()
+                                row[9].ToString(),
+                                row[8].ToString(),
+                                (row[14].ToString() == "S")? true : false,
+                                row[15].ToString()
                                 );
                         }
                         dt.Dispose();
@@ -808,7 +819,7 @@ namespace TransCarga
                                     "preguia,gremtra,estadgrt,cantbul,fleteMN,pesokgr,nombult,descrip," +
                                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                                     "values (@idr,@codalm,@fecho,@orire,@idori,@locor,@locde," +
-                                    "" +
+                                    "@numpr,@senug,@estgr," +
                                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                                 using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                                 {
@@ -819,14 +830,9 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@idori", (rb_plani.Checked == true) ? tx_dat_idplan.Text : "0");
                                     micon.Parameters.AddWithValue("@locor", tx_dat_orig.Text);
                                     micon.Parameters.AddWithValue("@locde", tx_dat_dest.Text);
-
-                                    micon.Parameters.AddWithValue("@serpl", tx_serP.Text);
-                                    micon.Parameters.AddWithValue("@numpl", tx_numP.Text);
-
-                                    micon.Parameters.AddWithValue("@fila", fila);
                                     micon.Parameters.AddWithValue("@numpr", dataGridView1.Rows[i].Cells[1].Value.ToString());
-                                    micon.Parameters.AddWithValue("@sergu", dataGridView1.Rows[i].Cells[2].Value.ToString());
-                                    micon.Parameters.AddWithValue("@numgu", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                    micon.Parameters.AddWithValue("@senug", dataGridView1.Rows[i].Cells[2].Value.ToString() + dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                    micon.Parameters.AddWithValue("@estgr", dataGridView1.Rows[i].Cells[8].Value.ToString());
                                     micon.Parameters.AddWithValue("@totca", dataGridView1.Rows[i].Cells[4].Value.ToString());
                                     micon.Parameters.AddWithValue("@totpe", dataGridView1.Rows[i].Cells[5].Value.ToString());
                                     micon.Parameters.AddWithValue("@totfl", dataGridView1.Rows[i].Cells[7].Value.ToString());

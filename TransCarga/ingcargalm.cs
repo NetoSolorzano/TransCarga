@@ -405,11 +405,11 @@ namespace TransCarga
                                 row[4].ToString(),
                                 row[5].ToString(),
                                 row[6].ToString(),
-                                row[11].ToString(),
-                                row[7].ToString(),
                                 row[12].ToString(),
-                                row[9].ToString(),
+                                row[7].ToString(),
+                                row[13].ToString(),
                                 row[8].ToString(),
+                                row[9].ToString(),
                                 (row[14].ToString() == "S")? true : false,
                                 row[15].ToString()
                                 );
@@ -507,7 +507,7 @@ namespace TransCarga
             decimal totpes = 0;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                if (dataGridView1.Rows[i].Cells[7].Value != null && dataGridView1.Rows[i].Cells[7].Value.ToString() == "True")
+                if (dataGridView1.Rows[i].Cells[9].Value != null && dataGridView1.Rows[i].Cells[9].Value.ToString() == "True")
                 {
                     if (dataGridView1.Rows[i].Cells[3].Value != null)
                     {
@@ -572,9 +572,10 @@ namespace TransCarga
             {
                 // jalamos igual que edicion de planillas de carga
                 string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso," +
-                "a.estadoser,'X' as marca,a.id,a.nombult,g.descprodi " +
+                "a.estadoser,'X' as marca,a.id,a.nombult,g.descprodi,e.descrizionerid,g.estadoser " +
                 "from detplacar a " +
                 "left join detguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
+                "left join desc_est e on e.idcodice=g.estadoser " +
                 "where a.serplacar=@serp and a.numplacar=@nump";
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
@@ -598,6 +599,8 @@ namespace TransCarga
                                     row[11].ToString(),
                                     row[7].ToString(),
                                     row[12].ToString(),
+                                    row[13].ToString(),
+                                    row[14].ToString(),
                                     true
                                     );
                             }

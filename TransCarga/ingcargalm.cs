@@ -631,17 +631,19 @@ namespace TransCarga
             {
                 if (tx_idr.Text.Trim() == "")
                 {
-                    var aa = MessageBox.Show("Confirma que desea crear la planilla?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var aa = MessageBox.Show("Confirma que desea crear el ingreso?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
                         if (graba() == true)
                         {
+                            /*
                             var bb = MessageBox.Show("Desea imprimir la planilla?" + Environment.NewLine +
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
                                 Bt_print.PerformClick();
                             }
+                            */
                         }
                         else
                         {
@@ -662,27 +664,11 @@ namespace TransCarga
             }
             if (modo == "EDITAR")
             {
-                if (tx_numP.Text.Trim() == "")
-                {
-                    MessageBox.Show("Ingrese el número de la planilla", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tx_numP.Focus();
-                    return;
-                }
-                if (tx_dat_estad.Text == codAnul)
-                {
-                    MessageBox.Show("La planilla esta anulada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                if (tx_dat_estad.Text != codGene)
-                {
-                    MessageBox.Show("La planilla tiene estado que impide su edición", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
                 if (true)   // de momento no validamos mas
                 {
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea modificar la planilla?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea modificar el ingreso?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
                             if (edita() == true)
@@ -709,14 +695,11 @@ namespace TransCarga
             }
             if (modo == "ANULAR")
             {
-                // EN ESTE FORM, LA ANULACION ES FISICA PORQUE SU NUMERACION ES AUTOMATICA
-                // si se anula, se tiene que desenlazar en todas sus guías y en control
-
-                if (tx_dat_estad.Text != codAnul)   // (tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "N"
+                if (tx_dat_estad.Text != codAnul)
                 {
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea ANULAR la planilla?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea ANULAR el ingreso?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
                             if (anula() == true)
@@ -822,7 +805,7 @@ namespace TransCarga
                                     "preguia,gremtra,estadgrt,cantbul,fleteMN,pesokgr,nombult,descrip," +
                                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                                     "values (@idr,@codalm,@fecho,@orire,@idori,@locor,@locde," +
-                                    "@numpr,@senug,@estgr," +
+                                    "@numpr,@senug,@estgr,@totca,@totfl,@totpe,@nombu,@descr," +
                                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                                 using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                                 {
@@ -836,9 +819,11 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@numpr", dataGridView1.Rows[i].Cells[1].Value.ToString());
                                     micon.Parameters.AddWithValue("@senug", dataGridView1.Rows[i].Cells[2].Value.ToString() + dataGridView1.Rows[i].Cells[3].Value.ToString());
                                     micon.Parameters.AddWithValue("@estgr", dataGridView1.Rows[i].Cells[8].Value.ToString());
-                                    micon.Parameters.AddWithValue("@totca", dataGridView1.Rows[i].Cells[4].Value.ToString());
+                                    micon.Parameters.AddWithValue("@totca", dataGridView1.Rows[i].Cells[3].Value.ToString());
                                     micon.Parameters.AddWithValue("@totpe", dataGridView1.Rows[i].Cells[5].Value.ToString());
                                     micon.Parameters.AddWithValue("@totfl", dataGridView1.Rows[i].Cells[7].Value.ToString());
+                                    micon.Parameters.AddWithValue("@nombu", dataGridView1.Rows[i].Cells[4].Value.ToString());
+                                    micon.Parameters.AddWithValue("@descr", dataGridView1.Rows[i].Cells[6].Value.ToString());
                                     micon.Parameters.AddWithValue("@codmo", dataGridView1.Rows[i].Cells[10].Value.ToString());
                                     micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
                                     micon.Parameters.AddWithValue("@verApp", verapp);

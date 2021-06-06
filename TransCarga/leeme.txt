@@ -214,4 +214,5 @@ form guiati, cliente extranjero no esta grabando en cabguiai.m1cliente y/o cabgu
 form facelect, codigo para aceptar boletas y facturas por tipo de doc del cliente .................. ok 30/04/2021
 form transmain, codigo del formulario de reportes de almacen ....................................... ok 01/05/2021
 form repsalmac, diseño del formulario codigos generales y claves de seguridad ...................... OK 03/05/2021
-form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ............................ me quede en seccion grabando detalle de ingreso
+form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ............................               me quede en seccion grabando detalle de ingreso
+form guiati, validar que tipos doc. coincidan con dni,ruc,carne, etc ............................... ok 05/06/2021

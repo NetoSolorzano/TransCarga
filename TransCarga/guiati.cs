@@ -1128,6 +1128,18 @@ namespace TransCarga
                 tx_dptoDrio.Focus();
                 return;
             }
+            if (tx_numDocRem.Text.Trim().Length != Int16.Parse(tx_mld.Text))
+            {
+                MessageBox.Show("Seleccione tipo de documento correcto","Error en remitente",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                cmb_docRem.Focus();
+                return;
+            }
+            if (tx_numDocDes.Text.Trim().Length != Int16.Parse(tx_mldD.Text))
+            {
+                MessageBox.Show("Seleccione tipo de documento correcto", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cmb_docDes.Focus();
+                return;
+            }
             #endregion
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;

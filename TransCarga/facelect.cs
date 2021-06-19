@@ -2412,6 +2412,21 @@ namespace TransCarga
                         return;
                     }
                 }
+                if (rb_si.Checked == true)
+                {
+                    tx_pagado.Text = tx_flete.Text;
+                    tx_salxcob.Text = "0.00";
+                    tx_salxcob.BackColor = Color.Green;
+                }
+                if (rb_no.Checked == true)
+                {
+                    tx_pagado.Text = "0.00";
+                    tx_salxcob.Text = tx_flete.Text;
+                    tx_salxcob.BackColor = Color.Red;
+                    //cmb_plazoc.Enabled = true;
+                    //cmb_plazoc.SelectedValue = codppc;
+                    //tx_dat_plazo.Text = codppc;
+                }
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);

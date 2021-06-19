@@ -99,6 +99,17 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.tx_ubigRtt = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmonloc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fechaGR = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OriDest = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
             this.tx_dat_dpla = new System.Windows.Forms.TextBox();
             this.tx_dat_plazo = new System.Windows.Forms.TextBox();
@@ -217,17 +228,6 @@
             this.tx_flete = new TransCarga.NumericTextBox();
             this.tx_numero = new TransCarga.NumericTextBox();
             this.tx_serie = new TransCarga.NumericTextBox();
-            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmonloc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fechaGR = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OriDest = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -966,6 +966,78 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(597, 162);
             this.dataGridView1.TabIndex = 21;
+            // 
+            // guias
+            // 
+            this.guias.FillWeight = 90F;
+            this.guias.HeaderText = "GUIA";
+            this.guias.Name = "guias";
+            this.guias.Width = 90;
+            // 
+            // Descrip
+            // 
+            this.Descrip.FillWeight = 300F;
+            this.Descrip.HeaderText = "DESCRIPCION";
+            this.Descrip.Name = "Descrip";
+            this.Descrip.Width = 300;
+            // 
+            // Cant
+            // 
+            this.Cant.FillWeight = 40F;
+            this.Cant.HeaderText = "C.BUL";
+            this.Cant.Name = "Cant";
+            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Cant.Width = 40;
+            // 
+            // moneda
+            // 
+            this.moneda.FillWeight = 40F;
+            this.moneda.HeaderText = "MON";
+            this.moneda.Name = "moneda";
+            this.moneda.Width = 40;
+            // 
+            // valor
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.valor.DefaultCellStyle = dataGridViewCellStyle1;
+            this.valor.FillWeight = 80F;
+            this.valor.HeaderText = "  VALOR";
+            this.valor.Name = "valor";
+            this.valor.Width = 80;
+            // 
+            // valorMN
+            // 
+            this.valorMN.HeaderText = "VALMONLOC";
+            this.valorMN.Name = "valorMN";
+            this.valorMN.Visible = false;
+            // 
+            // codmonloc
+            // 
+            this.codmonloc.HeaderText = "CODMN";
+            this.codmonloc.Name = "codmonloc";
+            this.codmonloc.Visible = false;
+            // 
+            // fechaGR
+            // 
+            this.fechaGR.HeaderText = "FechaGR";
+            this.fechaGR.Name = "fechaGR";
+            // 
+            // guiasclte
+            // 
+            this.guiasclte.HeaderText = "guiasclte";
+            this.guiasclte.Name = "guiasclte";
+            this.guiasclte.Visible = false;
+            // 
+            // codmondoc
+            // 
+            this.codmondoc.HeaderText = "codmondoc";
+            this.codmondoc.Name = "codmondoc";
+            this.codmondoc.Visible = false;
+            // 
+            // OriDest
+            // 
+            this.OriDest.HeaderText = "Orig-Dest";
+            this.OriDest.Name = "OriDest";
             // 
             // gbox_flete
             // 
@@ -2156,10 +2228,10 @@
             // 
             this.tx_pagado.AllowSpace = false;
             this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagado.Location = new System.Drawing.Point(42, 130);
+            this.tx_pagado.Location = new System.Drawing.Point(2, 126);
             this.tx_pagado.Name = "tx_pagado";
             this.tx_pagado.ReadOnly = true;
-            this.tx_pagado.Size = new System.Drawing.Size(69, 20);
+            this.tx_pagado.Size = new System.Drawing.Size(62, 20);
             this.tx_pagado.TabIndex = 16;
             this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_pagado.Visible = false;
@@ -2196,78 +2268,6 @@
             this.tx_serie.TabIndex = 1;
             this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
-            // 
-            // guias
-            // 
-            this.guias.FillWeight = 90F;
-            this.guias.HeaderText = "GUIA";
-            this.guias.Name = "guias";
-            this.guias.Width = 90;
-            // 
-            // Descrip
-            // 
-            this.Descrip.FillWeight = 300F;
-            this.Descrip.HeaderText = "DESCRIPCION";
-            this.Descrip.Name = "Descrip";
-            this.Descrip.Width = 300;
-            // 
-            // Cant
-            // 
-            this.Cant.FillWeight = 40F;
-            this.Cant.HeaderText = "C.BUL";
-            this.Cant.Name = "Cant";
-            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Cant.Width = 40;
-            // 
-            // moneda
-            // 
-            this.moneda.FillWeight = 40F;
-            this.moneda.HeaderText = "MON";
-            this.moneda.Name = "moneda";
-            this.moneda.Width = 40;
-            // 
-            // valor
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.valor.DefaultCellStyle = dataGridViewCellStyle1;
-            this.valor.FillWeight = 80F;
-            this.valor.HeaderText = "  VALOR";
-            this.valor.Name = "valor";
-            this.valor.Width = 80;
-            // 
-            // valorMN
-            // 
-            this.valorMN.HeaderText = "VALMONLOC";
-            this.valorMN.Name = "valorMN";
-            this.valorMN.Visible = false;
-            // 
-            // codmonloc
-            // 
-            this.codmonloc.HeaderText = "CODMN";
-            this.codmonloc.Name = "codmonloc";
-            this.codmonloc.Visible = false;
-            // 
-            // fechaGR
-            // 
-            this.fechaGR.HeaderText = "FechaGR";
-            this.fechaGR.Name = "fechaGR";
-            // 
-            // guiasclte
-            // 
-            this.guiasclte.HeaderText = "guiasclte";
-            this.guiasclte.Name = "guiasclte";
-            this.guiasclte.Visible = false;
-            // 
-            // codmondoc
-            // 
-            this.codmondoc.HeaderText = "codmondoc";
-            this.codmondoc.Name = "codmondoc";
-            this.codmondoc.Visible = false;
-            // 
-            // OriDest
-            // 
-            this.OriDest.HeaderText = "Orig-Dest";
-            this.OriDest.Name = "OriDest";
             // 
             // facelect
             // 

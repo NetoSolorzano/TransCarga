@@ -216,3 +216,5 @@ form transmain, codigo del formulario de reportes de almacen ...................
 form repsalmac, diseño del formulario codigos generales y claves de seguridad ...................... OK 03/05/2021
 form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ............................               me quede en seccion grabando detalle de ingreso
 form guiati, validar que tipos doc. coincidan con dni,ruc,carne, etc ............................... ok 05/06/2021
+form facelect, fact con mas de 1 GR, el saldo no es la suma de las guias ........................... ok 19/06/2021
+form facelect, saldo x cobrar debe actualizar al momento de grabar el documento .................... ok 19/06/2021

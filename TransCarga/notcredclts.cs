@@ -331,9 +331,16 @@ namespace TransCarga
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
-                {
-                    string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest " +
-                        "from cabdebcred a left join desc_est b on b.idcodice=a.estdvta " +
+                {   //      a.martdve,
+                    string consulta = "select a.id,a.fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota,a.tipncred," +
+                        "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
+                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totnota,a.totdvta,a.saldvta," +
+                        "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt,c.descrizionerid as docC,f.fechope as femiFT," +
+                        "a.verApp,a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha " +
+                        "from cabdebcred a " +
+                        "left join cabfactu f on f.tipdvta=a.tipdvta and f.serdvta=a.serdvta and f.numdvta=a.numdvta " +
+                        "left join desc_est b on b.idcodice=a.estnota " +
+                        "left join desc_doc c on c.idcodice=a.tidoclt " +
                         parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr")
@@ -342,7 +349,7 @@ namespace TransCarga
                     }
                     if (campo == "sernum")
                     {
-                        micon.Parameters.AddWithValue("@tnot", tx_dat_tdv.Text);
+                        micon.Parameters.AddWithValue("@tnot", tx_dat_tnota.Text);
                         micon.Parameters.AddWithValue("@snot", tx_serie.Text);
                         micon.Parameters.AddWithValue("@nnot", tx_numero.Text);
                     }
@@ -353,11 +360,13 @@ namespace TransCarga
                         {
                             tx_idr.Text = dr.GetString("id");
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
-                            /*
-                            tx_dat_tdv.Text = dr.GetString("tipdvta");
-                            tx_serie.Text = dr.GetString("serdvta");
-                            tx_numero.Text = dr.GetString("numdvta");
+                            if (dr.GetString("tipncred") == "ANU") rb_anula.Checked = true;
+                            else rb_anula.Checked = false;
+                            tx_dat_tnota.Text = dr.GetString("tipnota");
+                            tx_serie.Text = dr.GetString("sernota");
+                            tx_numero.Text = dr.GetString("numnota");
                             tx_dat_tdRem.Text = dr.GetString("tidoclt");
+                            tx_nomtdc.Text = dr.GetString("docC");
                             tx_numDocRem.Text = dr.GetString("nudoclt");
                             tx_nomRem.Text = dr.GetString("nombclt");
                             tx_dirRem.Text = dr.GetString("direclt");
@@ -365,31 +374,33 @@ namespace TransCarga
                             tx_provRtt.Text = dr.GetString("provclt");
                             tx_distRtt.Text = dr.GetString("distclt");
                             tx_email.Text = dr.GetString("corrclt");
-                            tx_telc1.Text = dr.GetString("teleclt");
+                            //tx_telc1.Text = dr.GetString("teleclt");
                             //locorig,dirorig,ubiorig
                             tx_obser1.Text = dr.GetString("obsdvta");
                             tx_tfil.Text = dr.GetString("canfidt");
-                            tx_totcant.Text = dr.GetString("canbudt");  // total bultos
+                            //tx_totcant.Text = dr.GetString("canbudt");  // total bultos
                             tx_dat_mone.Text = dr.GetString("mondvta");
                             tx_tipcam.Text = dr.GetString("tcadvta");
-                            tx_subt.Text = Math.Round(dr.GetDecimal("subtota"),2).ToString();
+                            tx_subt.Text = Math.Round(dr.GetDecimal("subtota"), 2).ToString();
                             tx_igv.Text = Math.Round(dr.GetDecimal("igvtota"), 2).ToString();
                             //,,,porcigv
-                            tx_flete.Text = Math.Round(dr.GetDecimal("totdvta"),2).ToString();           // total inc. igv
-                            tx_pagado.Text = dr.GetString("totpags");
-                            tx_salxcob.Text = dr.GetString("saldvta");
-                            tx_dat_estad.Text = dr.GetString("estdvta");        // estado
+                            tx_flete.Text = Math.Round(dr.GetDecimal("totdvta"), 2).ToString();           // total inc. igv
+                            tx_pagado.Text = dr.GetString("totnota");
+                            //tx_salxcob.Text = dr.GetString("saldvta");
+                            tx_dat_estad.Text = dr.GetString("estnota");        // estado
                             tx_impreso.Text = dr.GetString("impreso");
-                            tx_idcob.Text = dr.GetString("cobra");              // id de cobranza
-                            //
+                            //tx_idcob.Text = dr.GetString("cobra");              // id de cobranza
+                            tx_dat_tdv.Text = dr.GetString("tipdvta");
                             cmb_tdv.SelectedValue = tx_dat_tdv.Text;
                             cmb_tdv_SelectedIndexChanged(null, null);
-                            tx_numero.Text = dr.GetString("numdvta");       // al cambiar el indice en el combox se borra numero, por eso lo volvemos a jalar
+                            tx_serGR.Text = dr.GetString("serdvta");
+                            tx_numGR.Text = dr.GetString("numdvta");       // al cambiar el indice en el combox se borra numero, por eso lo volvemos a jalar
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
                             tx_estado.Text = dr.GetString("nomest");   // lib.nomstat(tx_dat_estad.Text);
                             if (dr.GetString("userm") == "") tx_digit.Text = lib.nomuser(dr.GetString("userc"));
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
-                            */
+                            tx_fecemi.Text = dr.GetString("femiFT").Substring(0, 10);
+                            tx_fletLetras.Text = numLetra.Convertir(tx_flete.Text, true) + " " + tx_dat_nomon.Text;
                         }
                         else
                         {
@@ -414,8 +425,8 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select filadet,codgror,cantbul,unimedp,descpro,pesogro,codmogr,totalgr " +
-                "from detdebcred where idc=@idr";
+            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr,b.fechopegr,b.docsremit " +
+                "from detdebcred a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -433,7 +444,12 @@ namespace TransCarga
                                 row[4].ToString(),
                                 row[2].ToString(),
                                 row[6].ToString(),
-                                row[7].ToString());
+                                row[7].ToString(),
+                                null,
+                                null,
+                                row[8].ToString().Substring(6, 4) + "-" + row[8].ToString().Substring(3, 2) + "-" + row[8].ToString().Substring(0, 2),
+                                row[9].ToString(),
+                                row[6].ToString());
                         }
                         dt.Dispose();
                     }
@@ -1149,12 +1165,6 @@ namespace TransCarga
                 cmb_mon.Focus();
                 return;
             }
-            if (tx_pagado.Text.Trim() == "" || tx_pagado.Text.Trim() == "0")
-            {
-                MessageBox.Show("No existe valor del documento", " Atención ");
-                tx_pagado.Focus();
-                return;
-            }
             if (tx_tfil.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el detalle del documento de venta", "Faltan ingresar guías");
@@ -1204,6 +1214,12 @@ namespace TransCarga
             if (modo == "NUEVO")
             {
                 // valida y calcula
+                if (tx_pagado.Text.Trim() == "" || tx_pagado.Text.Trim() == "0")
+                {
+                    MessageBox.Show("No existe valor del documento", " Atención ");
+                    tx_pagado.Focus();
+                    return;
+                }
                 if (rb_anula.Checked == false && rb_dscto.Checked == false)
                 {
                     MessageBox.Show("Seleccione el tipo de nota","Atención - seleccione",MessageBoxButtons.OK,MessageBoxIcon.Warning);
@@ -1278,7 +1294,7 @@ namespace TransCarga
                     tx_numero.Focus();
                     return;
                 }
-                if (true)
+                if (Program.vg_tius == "TPU001" && Program.vg_nius == "NIV000")
                 {
                     if (tx_idr.Text.Trim() != "")
                     {
@@ -1291,6 +1307,22 @@ namespace TransCarga
                             if (resulta != "OK")
                             {
                                 MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            if (Program.vg_tius == "TPU001" && Program.vg_nius == "NIV000")
+                            {
+                                aa = MessageBox.Show("Re-genera la nota electrónica?", "Confirme", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (aa == DialogResult.Yes)
+                                {
+                                    if (factElec("Horizont", "txt", "alta", 0) == true)       // facturacion electrónica
+                                    {
+                                        // tutto finito !
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se puede generar la Nota de crédito", "Error en proveedor de Fact.Electrónica");
+                                        iserror = "si";
+                                    }
+                                }
                             }
                         }
                         else

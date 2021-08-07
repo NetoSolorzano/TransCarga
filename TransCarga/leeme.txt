@@ -218,3 +218,11 @@ form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ........
 form guiati, validar que tipos doc. coincidan con dni,ruc,carne, etc ............................... ok 05/06/2021
 form facelect, fact con mas de 1 GR, el saldo no es la suma de las guias ........................... ok 19/06/2021
 form facelect, saldo x cobrar debe actualizar al momento de grabar el documento .................... ok 19/06/2021
+*********
+Nota de credito a fact 2-265 .... NO -> no esta en sunat, no se debe hacer la nota porque la fact no "existe" en sunat.
+Avisar al cliente que se volvera a fact
+Hacer 2 fact, 5 guias cada una Y QUE LA FT2-265 NO ES VALIDA, NO EXISTE
+...
+analizar porque paso el problema y si se puede ampliar la cant de guias a facturar
+**********
+form notcredclts, agregar codigo para regenerar nota de credito si eres usuario maximo privilegio .. ok 07/08/2021

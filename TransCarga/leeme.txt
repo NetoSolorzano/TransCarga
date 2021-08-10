@@ -225,4 +225,5 @@ Hacer 2 fact, 5 guias cada una Y QUE LA FT2-265 NO ES VALIDA, NO EXISTE
 ...
 analizar porque paso el problema y si se puede ampliar la cant de guias a facturar
 **********
-form notcredclts, agregar codigo para regenerar nota de credito si eres usuario maximo privilegio .. ok 07/08/2021
+form notcredclts, agregar codigo para regenerar nota de credito si eres usuario maximo privilegio .. ok 10/08/2021
+formato CR para guias 1 y 2, consignatario se amplio a tamño 12  ................................... ok 10/08/2021

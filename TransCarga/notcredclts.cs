@@ -336,7 +336,7 @@ namespace TransCarga
                         "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totnota,a.totdvta,a.saldvta," +
                         "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt,c.descrizionerid as docC,f.fechope as femiFT," +
-                        "a.verApp,a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha " +
+                        "a.verApp,a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha,c.codsunat " +
                         "from cabdebcred a " +
                         "left join cabfactu f on f.tipdvta=a.tipdvta and f.serdvta=a.serdvta and f.numdvta=a.numdvta " +
                         "left join desc_est b on b.idcodice=a.estnota " +
@@ -401,6 +401,8 @@ namespace TransCarga
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
                             tx_fecemi.Text = dr.GetString("femiFT").Substring(0, 10);
                             tx_fletLetras.Text = numLetra.Convertir(tx_flete.Text, true) + " " + tx_dat_nomon.Text;
+                            tx_dat_tdsunat.Text = dr.GetString("codsunat");
+                            tx_dat_inot.Text = "C";
                         }
                         else
                         {
@@ -770,7 +772,7 @@ namespace TransCarga
             string Ctipdoc = tipoDocEmi;                                                // tipo de doc. del cliente - 1 car
             string Cnomcli = tx_nomRem.Text.Trim();                                     // nombre del cliente - 100 car
             string dir1Adq = tx_dirRem.Text.Trim();                                     // direccion del adquiriente 1
-            //string dir2Adq = "";                                                        // direccion del adquiriente 2
+            string ubigAdq = "";                                                        // direccion del adquiriente 2
             string provAdq = tx_provRtt.Text.Trim();                                    // provincia del adquiriente
             string depaAdq = tx_dptoRtt.Text.Trim();                                    // departamento del adquiriente
             string distAdq = tx_distRtt.Text.Trim();                                    // distrito del adquiriente
@@ -913,6 +915,7 @@ namespace TransCarga
                 Cnumdoc + sep +                 // Nro. Documento del cliente
                 Cnomcli + sep +                 // Razón social del cliente
                 dir1Adq + sep +                 // Dirección
+                ubigAdq + sep +                 // ubigeo cliente
                 depaAdq + sep +                 // Departamento
                 provAdq + sep +                 // Provincia
                 "" + sep +                      // Urbanización   dir2Adq
@@ -920,6 +923,7 @@ namespace TransCarga
                 paisAdq + sep +                 // Código país
                 "" + sep +                      // codigo establecimiento adquiriente
                 maiAdq + sep +                  // Correo-Receptor
+                "" + sep +                      // telefono cliente
                 "" + sep +                      // sitio web del arquiriente/receptor
                 "" + sep + "" + sep +           // datos del comprador
                 totImp + sep +                  // Total IGV

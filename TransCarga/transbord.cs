@@ -636,7 +636,7 @@ namespace TransCarga
                     if (dataGridView1.Rows.Count > 0)
                     {
                         int fila = 1;
-                        for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                        for (int i = 0; i < dataGridView1.Rows.Count; i++)
                         {
                             if (dataGridView1.Rows[i].Cells[0].Value != null)
                             {

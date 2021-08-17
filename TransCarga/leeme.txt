@@ -227,3 +227,4 @@ analizar porque paso el problema y si se puede ampliar la cant de guias a factur
 **********
 form notcredclts, agregar codigo para regenerar nota de credito si eres usuario maximo privilegio .. ok 10/08/2021
 formato CR para guias 1 y 2, consignatario se amplio a tamño 12  ................................... ok 10/08/2021
+form transbord, correccion en detalle, no estaba transbordando la ultima fila detalle .............. ok 17/08/2021

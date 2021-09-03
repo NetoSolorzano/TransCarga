@@ -1679,6 +1679,7 @@
             this.tx_dat_tdsunat.Name = "tx_dat_tdsunat";
             this.tx_dat_tdsunat.Size = new System.Drawing.Size(37, 18);
             this.tx_dat_tdsunat.TabIndex = 430;
+            this.tx_dat_tdsunat.Visible = false;
             // 
             // tx_subtNot
             // 

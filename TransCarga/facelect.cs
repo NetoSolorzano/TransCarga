@@ -125,7 +125,7 @@ namespace TransCarga
         DataTable tdfe = new DataTable();       // facturacion electronica -detalle
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -268,6 +268,10 @@ namespace TransCarga
                 {
                     tx_idcaja.Text = v_idcaj;
                 }
+            }
+            if (Tx_modo.Text == "EDITAR")
+            {
+                fshoy = tx_fechope.Text;
             }
             if (Tx_modo.Text == "NUEVO")
             {
@@ -542,14 +546,22 @@ namespace TransCarga
                         lb_dscto.Visible = false;
                         tx_valdscto.Visible = false;
                     }
+                    DataRow[] row = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");
+                    NumLetra nel = new NumLetra();
+                    tx_fletLetras.Text = nel.Convertir(tx_flete.Text,true) + row[0][3].ToString().Trim();
                 }
                 conn.Close();
             }
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select filadet,codgror,cantbul,unimedp,descpro,pesogro,codmogr,totalgr " +
-                "from detfactu where idc=@idr";
+            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
+                "max(b.unimedpro),c.docsremit,c.fechopegr,concat(lo.descrizionerid,'-',ld.descrizionerid) as orides " +
+                "from detfactu a left join detguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
+                "left join cabguiai c on c.sergui=b.sergui and c.numgui=b.numgui " +
+                "left join desc_loc lo on lo.idcodice=c.locorigen " +
+                "left join desc_loc ld on ld.idcodice=c.locdestin " +
+                "where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -570,9 +582,11 @@ namespace TransCarga
                                 row[7].ToString(),
                                 "",
                                 "",
+                                row[10].ToString().Substring(6,4) + "-" + row[10].ToString().Substring(3, 2) + "-" + row[10].ToString().Substring(0, 2),
+                                row[9].ToString(),
                                 "",
-                                "",
-                                "");
+                                row[11].ToString(),
+                                row[8].ToString());
                         }
                         dt.Dispose();
                     }
@@ -792,6 +806,7 @@ namespace TransCarga
                 datguias[13] = "";
                 datguias[14] = "";
                 datguias[15] = "";  // local origen-destino
+                datguias[16] = "";  // unid medida
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -832,7 +847,7 @@ namespace TransCarga
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides " +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,max(d.unimedpro) as umed " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -889,6 +904,7 @@ namespace TransCarga
                                         datguias[13] = dr.GetString("autplagri");
                                         datguias[14] = dr.GetString("confvegri");
                                         datguias[15] = dr.GetString("orides");
+                                        datguias[16] = dr.GetString("umed");
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -1456,7 +1472,7 @@ namespace TransCarga
                     _msigv = Math.Round(_msigv / double.Parse(tx_tipcam.Text),2);
                     Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString())/ double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
                 }
-                if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
+                if (tx_dat_mone.Text == MonDeft && (dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString().Trim() != "" && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft))
                 {
                     _msigv = Math.Round(_msigv * double.Parse(tx_tipcam.Text), 2);
                     Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
@@ -1470,6 +1486,7 @@ namespace TransCarga
                 string Icogtin = "";                                                        // tipo de producto GTIN
                 string Inplaca = "";                                                        // numero placa de vehiculo
                 string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                string Idescr2 = dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[s].Cells["umed"].Value.ToString();
                 string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
                 string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
                 string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni),2).ToString("#0.00");     // monto IGV del item
@@ -1497,7 +1514,7 @@ namespace TransCarga
                     Icodgs1 + sep +     // codigo de producto GS1
                     Icogtin + sep +     // tipo de producto GTIN
                     Inplaca + sep +     // numero placa de vehiculo
-                    Idescri + sep +     // descripcion del servicio
+                    Idescri + " " + Idescr2 + sep +     // descripcion del servicio
                     Ivaluni + sep +     // Valor unitario por ítem - SIN IGV
                     Ipreuni + sep +     // Precio de venta unitario por ítem - CON IGV
                     Ivalref + sep +     // valor referencial del item cuando la venta es gratuita
@@ -2217,7 +2234,7 @@ namespace TransCarga
                     rb_desGR.PerformClick();
                 }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15], datguias[16]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR
@@ -2513,6 +2530,17 @@ namespace TransCarga
                             if (resulta != "OK")
                             {
                                 MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            if (Program.vg_tius == "TPU001" && Program.vg_nius == "NIV000") // solo para todo poderoso
+                            {
+                                var xxx = MessageBox.Show("Desea regenerar el TXT del comprobante?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (xxx == DialogResult.Yes)
+                                {
+                                    if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
+                                    {
+                                        // tutto finito
+                                    }
+                                }
                             }
                         }
                         else
@@ -3516,7 +3544,9 @@ namespace TransCarga
             initIngreso();
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
+            gbox_serie.Enabled = true;
             tx_numero.Text = "";
+            tx_serie.ReadOnly = false;
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
             //
@@ -3532,43 +3562,45 @@ namespace TransCarga
         }
         private void Bt_print_Click(object sender, EventArgs e)
         {
-            // Impresion ó Re-impresion ??
-            if (tx_impreso.Text == "S")
+            if (Tx_modo.Text.Trim() != "" && tx_numero.Text.Trim() != "")
             {
-                var aa = MessageBox.Show("Desea re imprimir el documento?", "Confirme por favor", 
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (aa == DialogResult.Yes)
+                if (tx_impreso.Text == "S")
+                {
+                    var aa = MessageBox.Show("Desea re imprimir el documento?", "Confirme por favor",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (aa == DialogResult.Yes)
+                    {
+                        if (vi_formato == "A4")            // Seleccion de formato ... A4
+                        {
+                            if (imprimeA4() == true) updateprint("S");
+                        }
+                        if (vi_formato == "A5")            // Seleccion de formato ... A5
+                        {
+                            if (imprimeA5() == true) updateprint("S");
+                        }
+                        if (vi_formato == "TK")            // Seleccion de formato ... Ticket
+                        {
+                            if (imprimeTK() == true) updateprint("S");
+                        }
+                    }
+                }
+                else
                 {
                     if (vi_formato == "A4")            // Seleccion de formato ... A4
                     {
                         if (imprimeA4() == true) updateprint("S");
                     }
-                    if (vi_formato == "A5")            // Seleccion de formato ... A5
+                    if (vi_formato == "A5")
                     {
                         if (imprimeA5() == true) updateprint("S");
                     }
-                    if (vi_formato == "TK")            // Seleccion de formato ... Ticket
+                    if (vi_formato == "TK")
                     {
                         if (imprimeTK() == true) updateprint("S");
                     }
                 }
+                // Cantidad de copias
             }
-            else
-            {
-                if (vi_formato == "A4")            // Seleccion de formato ... A4
-                {
-                    if (imprimeA4() == true) updateprint("S");
-                }
-                if (vi_formato == "A5")
-                {
-                    if (imprimeA5() == true) updateprint("S");
-                }
-                if (vi_formato == "TK")
-                {
-                    if (imprimeTK() == true) updateprint("S");
-                }
-            }
-            // Cantidad de copias
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -3996,14 +4028,22 @@ namespace TransCarga
                             e.Graphics.DrawString(glosser, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
-                            e.Graphics.DrawString(glosser2, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                            posi = posi + alfi;
-                            puntoF = new PointF(coli, posi);
+                            if (glosser2.Trim() != "")
+                            {
+                                e.Graphics.DrawString(glosser2, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                                posi = posi + alfi;
+                                puntoF = new PointF(coli, posi);
+                            }
                             //recto = new RectangleF(puntoF, siz);
-                            e.Graphics.DrawString(dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            e.Graphics.DrawString("GRT " + dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
-                            e.Graphics.DrawString("Según doc.cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            e.Graphics.DrawString(dataGridView1.Rows[l].Cells[2].Value.ToString() + " " + 
+                                dataGridView1.Rows[l].Cells[11].Value.ToString() +
+                                " Guía cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            //posi = posi + alfi;
+                            //puntoF = new PointF(coli, posi);
+                            //e.Graphics.DrawString("Según doc.cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                         }
                     }

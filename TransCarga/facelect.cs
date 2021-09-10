@@ -73,6 +73,7 @@ namespace TransCarga
         string logoclt = "";            // ruta y nombre archivo logo
         string fshoy = "";              // fecha hoy del servidor en formato ansi
         string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
+        string codcont = "";            // codigo plazo contraentrega o efectivo no credito
         string codsuser_cu = "";        // usuarios autorizados a crear Ft de cargas unicas
         int v_cdpa = 0;                 // cantidad de días despues de emitida la fact. en que un usuario normal puede anular
         //
@@ -353,6 +354,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "mpagdef") v_mpag = row["valor"].ToString().Trim();               // medio de pago x defecto para cobranzas
                             if (row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();               // codigo doc.venta factura
                             if (row["param"].ToString() == "plazocred") codppc = row["valor"].ToString().Trim();               // codigo plazo de pago x defecto para fact. a CREDITO
+                            if (row["param"].ToString() == "plzoCont") codcont = row["valor"].ToString().Trim();               // codigo de plazo contado o efectivo o contraentrega
                             if (row["param"].ToString() == "usercar_unic") codsuser_cu = row["valor"].ToString().Trim();       // usuarios autorizados a crear Ft de cargas unicas
                             if (row["param"].ToString() == "diasanul") v_cdpa = int.Parse(row["valor"].ToString());            // cant dias en que usuario normal puede anular 
                             if (row["param"].ToString() == "useranul") codusanu = row["valor"].ToString();                      // usuarios autorizados a anular fuera de plazo 
@@ -425,11 +427,11 @@ namespace TransCarga
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                if (conn.State == ConnectionState.Open)
+                if (conn.State == ConnectionState.Open) // tippago,plazocred
                 {
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja," +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred," +
                         "a.cargaunica,a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,a.porcendscto,a.valordscto " +
                         "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda "
@@ -516,6 +518,7 @@ namespace TransCarga
                             if (dr.GetInt16("cargaunica") == 1) chk_cunica.Checked = true;
                             tx_valdscto.Text = dr.GetString("valordscto");
                             tx_dat_porcDscto.Text = dr.GetString("porcendscto");
+                            tx_dat_plazo.Text = dr.GetString("plazocred");
                         }
                         else
                         {
@@ -549,12 +552,18 @@ namespace TransCarga
                     DataRow[] row = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");
                     NumLetra nel = new NumLetra();
                     tx_fletLetras.Text = nel.Convertir(tx_flete.Text,true) + row[0][3].ToString().Trim();
+                    //
+                    if (tx_dat_plazo.Text.Trim() != "" && tx_dat_plazo.Text != codcont)    // osea que no seas contado -> osea es credito 
+                    {
+                        cmb_plazoc.SelectedValue = tx_dat_plazo.Text;
+                    }
                 }
                 conn.Close();
             }
         }
         private void jaladet(string idr)         // jala el detalle
         {
+            /*
             string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
                 "max(b.unimedpro),c.docsremit,c.fechopegr,concat(lo.descrizionerid,'-',ld.descrizionerid) as orides " +
                 "from detfactu a left join detguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
@@ -562,6 +571,15 @@ namespace TransCarga
                 "left join desc_loc lo on lo.idcodice=c.locorigen " +
                 "left join desc_loc ld on ld.idcodice=c.locdestin " +
                 "where a.idc=@idr";
+            */
+            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
+                "y.unimedpro,y.docsremit,y.fechopegr,concat(lo.descrizionerid, '-', ld.descrizionerid) as orides " +
+                "from detfactu a " +
+                "LEFT JOIN (SELECT z.id, z.docsremit, max(x.unimedpro) AS unimedpro, z.locorigen, z.locdestin, z.fechopegr FROM cabguiai z LEFT JOIN detguiai x ON z.id = x.idc WHERE z.id = @idr)y " +
+                "ON a.idc = y.id " +
+                "left join desc_loc lo on lo.idcodice = y.locorigen " +
+                "left join desc_loc ld on ld.idcodice = y.locdestin " +
+                "where a.idc = @idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -4048,7 +4066,7 @@ namespace TransCarga
                         }
                     }
                     // pie del documento ;
-                    if (tx_dat_tdv.Text != codfact)
+                    if (tx_dat_tdv.Text != codfact)         // BOLETA
                     {
                         //SizeF siz = new SizeF(70, 15);
                         posi = posi + alfi;
@@ -4082,7 +4100,7 @@ namespace TransCarga
                         recto = new RectangleF(puntoF, siz);
                         e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recto, alder);
                     }
-                    if (tx_dat_tdv.Text == codfact)
+                    if (tx_dat_tdv.Text == codfact)     // FACTURA
                     {
                         //SizeF siz = new SizeF(70, 15);
                         //StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
@@ -4127,13 +4145,32 @@ namespace TransCarga
                     e.Graphics.DrawString(monlet, lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                     if (monlet.Length <= 30) posi = posi + alfi;
                     else posi = posi + alfi + alfi;
-                    if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))                // leyenda de detracción
+                    if (tx_dat_tdv.Text == codfact)
                     {
-                        siz = new SizeF(CentimeterToPixel(anchTik), 15 * 3);
+                        // forma de pago
+                        posi = posi + (alfi/1.5F);
+                        string ahiva = "";
+                        if (rb_si.Checked == true)
+                        {
+                            ahiva = "PAGO AL CONTADO " + tx_flete.Text;
+                        }
+                        else
+                        {
+                            string _fechc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("dd-MM-yyyy");    // "yyyy-MM-dd"
+                            ahiva = "- AL CREDITO -" + " 1 CUOTA - VCMTO: " + _fechc;
+                        }
                         puntoF = new PointF(coli, posi);
-                        recto = new RectangleF(puntoF, siz);
-                        e.Graphics.DrawString(glosdet.Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
-                        posi = posi + alfi * 3;
+                        e.Graphics.DrawString(ahiva, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        posi = posi + alfi * 1.5F;
+                        // leyenda de detracción
+                        if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))
+                        {
+                            siz = new SizeF(CentimeterToPixel(anchTik), 15 * 3);
+                            puntoF = new PointF(coli, posi);
+                            recto = new RectangleF(puntoF, siz);
+                            e.Graphics.DrawString(glosdet.Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
+                            posi = posi + alfi * 3;
+                        }
                     }
                     puntoF = new PointF(coli, posi);
                     string repre = "Representación impresa de la";

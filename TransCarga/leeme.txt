@@ -231,3 +231,6 @@ form transbord, correccion en detalle, no estaba transbordando la ultima fila de
 form notcredclts, error en anular factura .......................................................... ok 18/08/2021 - no encontre error!
 form facelect, agregar datos a la descripcion en los pdf y txt de comprobantes ..................... ok 20/08/2021
 form facelect, agregar codigo para regenerar TXT en modo EDICION ................................... ok 03/09/2021
+form facelect, agregar codigo a la impresion para poner detalle de contado o credito ............... ok 10/09/2021
+formato CR cuadre de caja, no sumar anulados SIT002 en el detalle .................................. ok 10/09/2021
+form facelect, visualizacion, el detalle solo jala la 1ra fila ..................................... ok 10/09/2021

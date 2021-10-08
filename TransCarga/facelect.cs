@@ -1365,6 +1365,7 @@ namespace TransCarga
                 //d_vrepr = "0";               // valor referencial preliminar
                 codleyt = "1000";            // codigoLeyenda 1 - valor en letras
                 totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                _valcr = Math.Round((double.Parse(tx_flete.Text) - totdet), 2).ToString("#0.00");               // cuota credito = valor - detraccion
                 codleyd = "2006";
                 tipOper = "1001";
                 glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
@@ -1395,6 +1396,7 @@ namespace TransCarga
                     codleyd = "2006";
                     tipOper = "1001";
                     totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                    _valcr = Math.Round((double.Parse(tx_fletMN.Text) - totdet), 2).ToString("#0.00");               // cuota credito = valor - detraccion
                 }
             }
             /* ********************************************** GENERAMOS EL TXT    ************************************* */

@@ -235,3 +235,4 @@ formato CR cuadre de caja, no sumar anulados SIT002 en el detalle ..............
 form facelect, visualizacion, el detalle solo jala la 1ra fila ..................................... ok 10/09/2021
 P.A. rep_cuadre_sede, error query cobranzas, "if(df.codgror=null," CAMBIO A "if(df.codgror IS NULL," ok 24/09/2021
 form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ............................               me quede en seccion grabando detalle de ingreso
+form facelect, si a credito el monto cuota = valor - detraccion .................................... ok 08/10/2021

@@ -801,17 +801,17 @@ namespace TransCarga
                         {
                             if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                             {
-                                string inserd2 = "insert into cabalmac (idc,almacen,fecingalm,tipingalm,idplan,locorigen,locdestin," +
+                                string inserd2 = "insert into cabalmac (almacen,fecingalm,tipingalm,idplan,locorigen,locdestin," +
                                     "preguia,gremtra,estadgrt,cantbul,fleteMN,pesokgr,nombult,descrip," +
                                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
-                                    "values (@idr,@codalm,@fecho,@orire,@idori,@locor,@locde," +
+                                    "values (@codalm,@fecho,@orire,@idori,@locor,@locde," +
                                     "@numpr,@senug,@estgr,@totca,@totfl,@totpe,@nombu,@descr," +
                                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                                 using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                                 {
-                                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                                     micon.Parameters.AddWithValue("@codalm", v_clu);
                                     micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+
                                     micon.Parameters.AddWithValue("@orire", (rb_plani.Checked == true) ? "P" : "G");
                                     micon.Parameters.AddWithValue("@idori", (rb_plani.Checked == true) ? tx_dat_idplan.Text : "0");
                                     micon.Parameters.AddWithValue("@locor", tx_dat_orig.Text);

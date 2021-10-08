@@ -214,7 +214,6 @@ form guiati, cliente extranjero no esta grabando en cabguiai.m1cliente y/o cabgu
 form facelect, codigo para aceptar boletas y facturas por tipo de doc del cliente .................. ok 30/04/2021
 form transmain, codigo del formulario de reportes de almacen ....................................... ok 01/05/2021
 form repsalmac, diseño del formulario codigos generales y claves de seguridad ...................... OK 03/05/2021
-form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ............................               me quede en seccion grabando detalle de ingreso
 form guiati, validar que tipos doc. coincidan con dni,ruc,carne, etc ............................... ok 05/06/2021
 form facelect, fact con mas de 1 GR, el saldo no es la suma de las guias ........................... ok 19/06/2021
 form facelect, saldo x cobrar debe actualizar al momento de grabar el documento .................... ok 19/06/2021
@@ -234,3 +233,5 @@ form facelect, agregar codigo para regenerar TXT en modo EDICION ...............
 form facelect, agregar codigo a la impresion para poner detalle de contado o credito ............... ok 10/09/2021
 formato CR cuadre de caja, no sumar anulados SIT002 en el detalle .................................. ok 10/09/2021
 form facelect, visualizacion, el detalle solo jala la 1ra fila ..................................... ok 10/09/2021
+P.A. rep_cuadre_sede, error query cobranzas, "if(df.codgror=null," CAMBIO A "if(df.codgror IS NULL," ok 24/09/2021
+form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ............................               me quede en seccion grabando detalle de ingreso

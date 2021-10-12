@@ -37,7 +37,7 @@ namespace TransCarga
         string img_ver = "";
         string codAnul = "";            // codigo de documento anulado
         string codGene = "";            // codigo documento generado
-        string codIngA = "";            // codigo documento recepcionado
+        string codIngA = "";            // codigo documento recepcionado en almacen
         string codCier = "";            // codigo planilla cerrada
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
@@ -1009,9 +1009,7 @@ namespace TransCarga
         private bool anula()
         {
             bool retorna = false;
-            // cambia estado a ANULADO en cabecera
-            // el trigger after_update debe cambiar estado ANULADO en detalle
-            // el trigger after_update debe borrar los campos de enlace en cabguiai y controlg
+            // .... NO VA ...
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();

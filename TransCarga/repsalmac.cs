@@ -50,9 +50,9 @@ namespace TransCarga
 
         libreria lib = new libreria();
 
-        //DataTable dt = new DataTable();
-        DataTable dtestad = new DataTable();
-        DataTable dttaller = new DataTable();
+        DataTable dtesalm = new DataTable();        // estados de almacen
+        DataTable dtestad = new DataTable();        // estados del servicio
+        DataTable dttaller = new DataTable();       // locales
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -185,29 +185,36 @@ namespace TransCarga
                 MySqlCommand cmd = new MySqlCommand(contaller, conn);
                 MySqlDataAdapter dataller = new MySqlDataAdapter(cmd);
                 dataller.Fill(dttaller);
-                // PANEL facturacion
+                // PANEL STOCK
                 cmb_sede_stk.DataSource = dttaller;
                 cmb_sede_stk.DisplayMember = "descrizionerid";
                 cmb_sede_stk.ValueMember = "idcodice";
-                // PANEL notas de credito
+                // PANEL DESPACHOS
                 cmb_sede_desp.DataSource = dttaller;
                 cmb_sede_desp.DisplayMember = "descrizionerid"; ;
                 cmb_sede_desp.ValueMember = "idcodice";
+
                 // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
                 cmd = new MySqlCommand(conestad, conn);
                 MySqlDataAdapter daestad = new MySqlDataAdapter(cmd);
                 daestad.Fill(dtestad);
-                // PANEL facturacion
-                cmb_estad_stk.DataSource = dtestad;
-                cmb_estad_stk.DisplayMember = "descrizionerid";
-                cmb_estad_stk.ValueMember = "idcodice";
-                // PANEL notas de credito
+                // PANEL DESPACHOS
                 cmb_estad_desp.DataSource = dtestad;
                 cmb_estad_desp.DisplayMember = "descrizionerid";
                 cmb_estad_desp.ValueMember = "idcodice";
-                //
+
+                // **************** seleccion estados de almacen
+                string conesalm = "select descrizionerid,idcodice,codigo from desc_eal " +
+                                       "where numero=1 order by idcodice";
+                cmd = new MySqlCommand(conesalm, conn);
+                MySqlDataAdapter daesalm = new MySqlDataAdapter(cmd);
+                daesalm.Fill(dtesalm);
+                // PANEL STOCK
+                cmb_estad_stk.DataSource = dtesalm;
+                cmb_estad_stk.DisplayMember = "descrizionerid";
+                cmb_estad_stk.ValueMember = "idcodice";
             }
             conn.Close();
         }
@@ -243,7 +250,7 @@ namespace TransCarga
                         if (b < dgv_stock.Width) dgv_stock.Width = b - 20;  // b + 60;
                         dgv_stock.ReadOnly = true;
                     }
-                    suma_grilla("dgv_facts");
+                    suma_grilla("dgv_stock");
                     break;
                 case "dgv_dspachs":
                     dgv_dspachs.Font = tiplg;
@@ -271,7 +278,7 @@ namespace TransCarga
                         if (b < dgv_dspachs.Width) dgv_dspachs.Width = b - 20;    // b + 60 ;
                         dgv_dspachs.ReadOnly = true;
                     }
-                    suma_grilla("dgv_notcre");
+                    suma_grilla("dgv_dspachs");
                     break;
                 case "dgv_claves":
                     dgv_claves.Font = tiplg;
@@ -305,15 +312,21 @@ namespace TransCarga
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte STOCK
         {
+            if (tx_sede_stk.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe seleccionar un almacén","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                cmb_sede_stk.Focus();
+                return;
+            }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_??";
+                string consulta = "rep_alm_stock";
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
                     micon.Parameters.AddWithValue("@loca", (tx_sede_stk.Text != "") ? tx_sede_stk.Text : "");
-                    micon.Parameters.AddWithValue("@fecini", dtp_ini_stk.Value.ToString("yyyy-MM-dd"));
+                    //micon.Parameters.AddWithValue("@fecini", dtp_ini_stk.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@fecfin", dtp_fin_stk.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@esta", (tx_estad_stk.Text != "") ? tx_estad_stk.Text : "");
                     micon.Parameters.AddWithValue("@excl", (chk_excl_stk.Checked == true) ? "1" : "0");
@@ -404,20 +417,13 @@ namespace TransCarga
                 case "dgv_stock":
                     for (int i=0; i < dgv_stock.Rows.Count; i++)
                     {
-                        if (dgv_stock.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
-                        {
-                            tvv = tvv + Convert.ToDouble(dgv_stock.Rows[i].Cells["TOTAL_MN"].Value);
-                            cr = cr + 1;
-                        }
-                        else
-                        {
-                            dgv_stock.Rows[i].DefaultCellStyle.BackColor = Color.Red;
-                            ca = ca + 1;
-                            tva = tva + Convert.ToDouble(dgv_stock.Rows[i].Cells["TOTAL_MN"].Value);
-                        }
+                        cr = cr + 1;
+                        tvv = tvv + Convert.ToDouble(dgv_stock.Rows[i].Cells["CANT_B"].Value);
+                        tva = tva + Convert.ToDouble(dgv_stock.Rows[i].Cells["PESO"].Value);
                     }
                     tx_tfi_f.Text = cr.ToString();
-                    tx_totval.Text = tvv.ToString("#0.00");
+                    tx_totval.Text = tvv.ToString("#0");
+                    tx_totkgs.Text = tva.ToString("#0.00");
                     break;
                 case "dgv_dspachs":
                     for (int i = 0; i < dgv_dspachs.Rows.Count; i++)

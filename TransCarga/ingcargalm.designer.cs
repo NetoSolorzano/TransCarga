@@ -115,6 +115,7 @@
             this.tx_dat_orig = new System.Windows.Forms.TextBox();
             this.tx_dat_dest = new System.Windows.Forms.TextBox();
             this.tx_dat_idplan = new System.Windows.Forms.TextBox();
+            this.tx_filas = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -615,7 +616,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label19.Location = new System.Drawing.Point(0, 543);
+            this.label19.Location = new System.Drawing.Point(0, 541);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(78, 13);
             this.label19.TabIndex = 385;
@@ -671,7 +672,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.Color.Black;
-            this.label7.Location = new System.Drawing.Point(206, 62);
+            this.label7.Location = new System.Drawing.Point(206, 63);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(72, 13);
             this.label7.TabIndex = 390;
@@ -681,7 +682,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(206, 36);
+            this.label4.Location = new System.Drawing.Point(206, 37);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(67, 13);
             this.label4.TabIndex = 389;
@@ -755,7 +756,7 @@
             // 
             this.label21.AutoSize = true;
             this.label21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label21.Location = new System.Drawing.Point(492, 38);
+            this.label21.Location = new System.Drawing.Point(492, 37);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(41, 13);
             this.label21.TabIndex = 418;
@@ -774,7 +775,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label20.Location = new System.Drawing.Point(379, 38);
+            this.label20.Location = new System.Drawing.Point(379, 37);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(34, 13);
             this.label20.TabIndex = 415;
@@ -994,12 +995,25 @@
             this.tx_dat_idplan.Tag = "";
             this.tx_dat_idplan.Visible = false;
             // 
+            // tx_filas
+            // 
+            this.tx_filas.AllowSpace = false;
+            this.tx_filas.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_filas.Location = new System.Drawing.Point(77, 510);
+            this.tx_filas.Name = "tx_filas";
+            this.tx_filas.ReadOnly = true;
+            this.tx_filas.Size = new System.Drawing.Size(41, 20);
+            this.tx_filas.TabIndex = 432;
+            this.tx_filas.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_filas.Visible = false;
+            // 
             // ingcargalm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 629);
+            this.Controls.Add(this.tx_filas);
             this.Controls.Add(this.tx_dat_idplan);
             this.Controls.Add(this.tx_dat_dest);
             this.Controls.Add(this.tx_dat_orig);
@@ -1159,5 +1173,6 @@
         private System.Windows.Forms.TextBox tx_dat_orig;
         private System.Windows.Forms.TextBox tx_dat_dest;
         private System.Windows.Forms.TextBox tx_dat_idplan;
+        private NumericTextBox tx_filas;
     }
 }

@@ -796,7 +796,13 @@ namespace TransCarga
         }
         private void alm_gestion_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Gestión de almacénes", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form Gestión de almacénes", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            almgestion fga = new almgestion();
+            fga.TopLevel = false;
+            fga.Parent = this;
+            pn_centro.Controls.Add(fga);
+            fga.Show();
+            fga.BringToFront();
         }
         private void alm_movfisicos_Click(object sender, EventArgs e)
         {

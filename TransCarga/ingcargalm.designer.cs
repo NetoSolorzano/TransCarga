@@ -108,7 +108,6 @@
             this.tx_serP = new TransCarga.NumericTextBox();
             this.rb_manual = new System.Windows.Forms.RadioButton();
             this.rb_plani = new System.Windows.Forms.RadioButton();
-            this.bt_agr = new System.Windows.Forms.Button();
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
@@ -116,6 +115,7 @@
             this.tx_dat_dest = new System.Windows.Forms.TextBox();
             this.tx_dat_idplan = new System.Windows.Forms.TextBox();
             this.tx_filas = new TransCarga.NumericTextBox();
+            this.bt_agr = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -919,16 +919,6 @@
             this.rb_plani.UseVisualStyleBackColor = true;
             this.rb_plani.CheckedChanged += new System.EventHandler(this.rb_plani_CheckedChanged);
             // 
-            // bt_agr
-            // 
-            this.bt_agr.Image = global::TransCarga.Properties.Resources.process24;
-            this.bt_agr.Location = new System.Drawing.Point(729, 36);
-            this.bt_agr.Name = "bt_agr";
-            this.bt_agr.Size = new System.Drawing.Size(35, 36);
-            this.bt_agr.TabIndex = 428;
-            this.bt_agr.UseVisualStyleBackColor = true;
-            this.bt_agr.Click += new System.EventHandler(this.bt_Agr_Click);
-            // 
             // tx_tfil
             // 
             this.tx_tfil.AllowSpace = false;
@@ -1006,6 +996,16 @@
             this.tx_filas.TabIndex = 432;
             this.tx_filas.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_filas.Visible = false;
+            // 
+            // bt_agr
+            // 
+            this.bt_agr.Image = global::TransCarga.Properties.Resources.process24;
+            this.bt_agr.Location = new System.Drawing.Point(729, 36);
+            this.bt_agr.Name = "bt_agr";
+            this.bt_agr.Size = new System.Drawing.Size(35, 36);
+            this.bt_agr.TabIndex = 428;
+            this.bt_agr.UseVisualStyleBackColor = true;
+            this.bt_agr.Click += new System.EventHandler(this.bt_Agr_Click);
             // 
             // ingcargalm
             // 

@@ -17,6 +17,7 @@ namespace TransCarga
         string valnue = "";                 // valor celda despues de cambio
         string codant = "";                 // codigo antes de cambio de valor de celda
         string codnue = "";                 // codigo despues de cambio de valor de celda
+        libreria lib = new libreria();
         DataTable dt = new DataTable();
         DataView dv = new DataView();
         List<bool> marcas = new List<bool>();
@@ -560,32 +561,26 @@ namespace TransCarga
             }
             if (fi > 1)
             {
-                MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-                cn.Open();
+                //MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
+                //cn.Open();
                 try
                 {
-                    string trunca = "truncate tempo";
-                    MySqlCommand micon = new MySqlCommand(trunca, cn);
-                    micon.ExecuteNonQuery();
-                    //
-                    for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)   // le quitamos el -1
+                    conClie dtt = new conClie();
+                    for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
                     {
                         if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
                         {
+                            conClie.tempoRow rtt = dtt.tempo.NewtempoRow();
                             string id = advancedDataGridView1.Rows[i].Cells["id"].FormattedValue.ToString();
                             string co = advancedDataGridView1.Rows[i].Cells["GUIA"].Value.ToString();
                             string no = advancedDataGridView1.Rows[i].Cells["CANT_B"].FormattedValue.ToString();
-                            string ca = "1";
+                            //string ca = "1";
                             string al = advancedDataGridView1.Rows[i].Cells["ALMACEN"].FormattedValue.ToString();
-                            //
-                            string inserta = "insert into tempo (ida,codigo,nombre,cant,almacen) values (@id,@co,@no,@ca,@al)";
-                            micon = new MySqlCommand(inserta, cn);
-                            micon.Parameters.AddWithValue("@id", id);
-                            micon.Parameters.AddWithValue("@co", co);
-                            micon.Parameters.AddWithValue("@no", no);
-                            micon.Parameters.AddWithValue("@ca", ca);
-                            micon.Parameters.AddWithValue("@al", al);
-                            micon.ExecuteNonQuery();
+                            rtt.almacen = al;
+                            rtt.cant = no;
+                            rtt.codigo = co;
+                            rtt.ida = id;
+                            dtt.tempo.AddtempoRow(rtt);
                         }
                     }
                 }
@@ -595,56 +590,51 @@ namespace TransCarga
                     Application.Exit();
                     return;
                 }
-                cn.Close();
+                //cn.Close();
                 // vamos a llamar a movimas
-                movimas resem = new movimas("reserva", "", "");    // modo,array,libre
+                movimas resem = new movimas("reserva", "", "");
                 var result = resem.ShowDialog();
                 if (result == DialogResult.Cancel)
                 {
                     if (resem.retorno == true)
                     {
                         MySqlConnection cnx = new MySqlConnection(DB_CONN_STR);
-                        cnx.Open();
-                        try
+                        if (lib.procConn(cnx) == true)
                         {
-                            string consulta = "select codigo,nombre,cant,almacen,idres,contrat,ida from tempo";
-                            MySqlCommand micon = new MySqlCommand(consulta, cnx);
-                            MySqlDataAdapter da = new MySqlDataAdapter(micon);      //
-                            DataTable dtt = new DataTable();                        //
-                            da.Fill(dtt);                                           // datatable del tempo
-                            for(int y = 0; y < dtt.Rows.Count; y++)                 // for del tempo
+                            try
                             {
-                                DataRow row = dtt.Rows[y];                          // row del tempo
+                                conClie dtt = new conClie();
+                                for (int y = 0; y < dtt.tempo.Rows.Count; y++)                 // int y = 0; y < dtt.Rows.Count; y++
                                 {
-                                    // actualizamos el datagridview / datatable y almloc
-                                    for (int i = 0; i < dt.Rows.Count; i++)         // for de la grilla
+                                    DataRow row = dtt.tempo.Rows[y];                          // dtt.Rows[y];
                                     {
-                                        DataRow fila = dt.Rows[i];                  // row de la grilla
-                                        if (fila[1].ToString() == row[6].ToString())// comparacion de id's
+                                        for (int i = 0; i < dt.Rows.Count; i++)         // for de la grilla
                                         {
-                                            dt.Rows[i]["reserva"] = row[4].ToString();
-                                            dt.Rows[i]["contrat"] = row[5].ToString();
-                                            // actualizamos almloc
-                                            string actua = "update cabalmac set codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
-                                            MySqlCommand miact = new MySqlCommand(actua, cnx);
-                                            miact.Parameters.AddWithValue("@res", row[4].ToString());
-                                            miact.Parameters.AddWithValue("@con", row[5].ToString());
-                                            miact.Parameters.AddWithValue("@idr", row[6].ToString());
-                                            miact.ExecuteNonQuery();
-                                            dt.Rows[i]["marca"] = 0;
+                                            DataRow fila = dt.Rows[i];                  // row de la grilla
+                                            if (fila[1].ToString() == row[6].ToString())// comparacion de id's
+                                            {
+                                                dt.Rows[i]["REPARTIDOR"] = row[5].ToString();
+                                                dt.Rows[i]["F_REPARTO"] = row[6].ToString();
+                                                // actualizamos 
+                                                string actua = "update cabalmac set codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
+                                                MySqlCommand miact = new MySqlCommand(actua, cnx);
+                                                miact.Parameters.AddWithValue("@res", row[5].ToString());
+                                                miact.Parameters.AddWithValue("@con", row[6].ToString());
+                                                miact.Parameters.AddWithValue("@idr", row[0].ToString());
+                                                miact.ExecuteNonQuery();
+                                                dt.Rows[i]["marca"] = 0;
+                                            }
                                         }
                                     }
                                 }
+                                dtt.tempo.Clear();
                             }
-                            consulta = "truncate tempo";
-                            micon = new MySqlCommand(consulta, cnx);
-                            micon.ExecuteNonQuery();
-                        }
-                        catch (MySqlException ex)
-                        {
-                            MessageBox.Show(ex.Message, "Error de conexión");
-                            Application.Exit();
-                            return;
+                            catch (MySqlException ex)
+                            {
+                                MessageBox.Show(ex.Message, "Error de conexión");
+                                Application.Exit();
+                                return;
+                            }
                         }
                         cnx.Close();
                     }

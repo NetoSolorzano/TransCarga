@@ -317,6 +317,19 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="tempo" msprop:Generator_TableClassName="tempoDataTable" msprop:Generator_TableVarName="tabletempo" msprop:Generator_RowChangedName="tempoRowChanged" msprop:Generator_TablePropName="tempo" msprop:Generator_RowDeletingName="tempoRowDeleting" msprop:Generator_RowChangingName="tempoRowChanging" msprop:Generator_RowEvHandlerName="tempoRowChangeEventHandler" msprop:Generator_RowDeletedName="tempoRowDeleted" msprop:Generator_RowClassName="tempoRow" msprop:Generator_UserTableName="tempo" msprop:Generator_RowEvArgName="tempoRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ida" msprop:Generator_ColumnVarNameInTable="columnida" msprop:Generator_ColumnPropNameInRow="ida" msprop:Generator_ColumnPropNameInTable="idaColumn" msprop:Generator_UserColumnName="ida" type="xs:string" minOccurs="0" />
+              <xs:element name="codigo" msprop:Generator_ColumnVarNameInTable="columncodigo" msprop:Generator_ColumnPropNameInRow="codigo" msprop:Generator_ColumnPropNameInTable="codigoColumn" msprop:Generator_UserColumnName="codigo" type="xs:string" minOccurs="0" />
+              <xs:element name="nombre" msprop:Generator_ColumnVarNameInTable="columnnombre" msprop:Generator_ColumnPropNameInRow="nombre" msprop:Generator_ColumnPropNameInTable="nombreColumn" msprop:Generator_UserColumnName="nombre" type="xs:string" minOccurs="0" />
+              <xs:element name="cant" msprop:Generator_ColumnVarNameInTable="columncant" msprop:Generator_ColumnPropNameInRow="cant" msprop:Generator_ColumnPropNameInTable="cantColumn" msprop:Generator_UserColumnName="cant" type="xs:string" minOccurs="0" />
+              <xs:element name="almacen" msprop:Generator_ColumnVarNameInTable="columnalmacen" msprop:Generator_ColumnPropNameInRow="almacen" msprop:Generator_ColumnPropNameInTable="almacenColumn" msprop:Generator_UserColumnName="almacen" type="xs:string" minOccurs="0" />
+              <xs:element name="codrepart" msprop:Generator_ColumnVarNameInTable="columncodrepart" msprop:Generator_ColumnPropNameInRow="codrepart" msprop:Generator_ColumnPropNameInTable="codrepartColumn" msprop:Generator_UserColumnName="codrepart" type="xs:string" minOccurs="0" />
+              <xs:element name="fechrepar" msprop:Generator_ColumnVarNameInTable="columnfechrepar" msprop:Generator_ColumnPropNameInRow="fechrepar" msprop:Generator_ColumnPropNameInTable="fechreparColumn" msprop:Generator_UserColumnName="fechrepar" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
   </xs:element>

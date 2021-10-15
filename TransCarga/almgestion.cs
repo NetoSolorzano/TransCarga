@@ -141,24 +141,17 @@ namespace TransCarga
             MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
             cn.Open();
             try
-            {
-                /*
-                string sqlCmd = "select distinct a.marca,a.id,a.codalm,a.fechop,a.codig,a.capit,a.model,a.mader,a.tipol,a.deta1,a.acaba,a.talle,a.deta2,a.deta3,a.juego," +
-                    "ifnull(a.nombr,'') as nombr,ifnull(a.medid,'') as medid,a.reserva,a.contrat,a.salida,a.evento,a.almdes," +
-                    "ifnull(b.umed,'') as umed,ifnull(a.soles2018,0) as soles2018,a.idajuste,a.pedalm " +
-                    "from almloc a " +
-                    "left join (select * from items group by capit,model,tipol,deta1,acaba) b " +
-                    "on b.capit=a.capit and b.model=a.model and b.tipol=a.tipol and b.deta1=a.deta1 and b.acaba=a.acaba ";
-                */
-                string sqlCmd = "SELECT a.marca,a.id AS IDALM,a.iding AS IDING,a.fecingalm AS F_INGRE,l0.descrizionerid AS ALMACEN,lo.descrizionerid AS ORIGEN," +
+            {   // a.descrip AS CONTENIDO
+                string sqlCmd = "SELECT a.marca,a.id,a.iding AS IDING,a.fecingalm AS F_INGRE,l0.descrizionerid AS ALMACEN,lo.descrizionerid AS ORIGEN," +
                     "ld.descrizionerid AS DESTINO,a.gremtra AS GUIA,eg.descrizionerid AS EST_GR,ea.descrizionerid AS EST_ALM,a.cantbul AS CANT_B,a.pesokgr AS PESO," +
-                    "a.nombult AS BULTO,a.descrip AS CONTENIDO,a.coming AS OBSERVACION,a.unidadrep AS UNI_REP,a.codigorep AS REPARTIDOR,a.fecsalrep AS F_REPARTO " +
+                    "a.nombult AS BULTO,gr.nombdegri as DESTINATARIO,a.coming AS OBSERVACION,a.unidadrep AS UNI_REP,a.codigorep AS REPARTIDOR,a.fecsalrep AS F_REPARTO " +
                     "FROM cabalmac a " +
                     "LEFT JOIN desc_loc l0 ON l0.IDCodice = a.almacen " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = a.locorigen " +
                     "LEFT JOIN desc_loc ld on ld.IDCodice = a.locdestin " +
                     "LEFT JOIN desc_est eg ON eg.IDCodice = a.estadgrt " +
                     "LEFT JOIN desc_eal ea ON ea.IDCodice = a.estalma " +
+                    "LEFT JOIN cabguiai gr on concat(gr.sergui,gr.numgui) = a.gremtra " +
                     "WHERE a.almacen = @loc";
                 MySqlCommand micon = new MySqlCommand(sqlCmd, cn);
                 micon.Parameters.AddWithValue("@loc", Program.vg_luse);
@@ -187,7 +180,7 @@ namespace TransCarga
             advancedDataGridView1.Columns[1].Width = 40;            // id
             advancedDataGridView1.Columns[1].ReadOnly = true;
             advancedDataGridView1.Columns[2].Width = 40;            // id ingreso
-            advancedDataGridView1.Columns[2].ReadOnly = false;
+            advancedDataGridView1.Columns[2].ReadOnly = true;
             advancedDataGridView1.Columns[3].Width = 70;            // fecha ingreso
             advancedDataGridView1.Columns[3].ReadOnly = true;
             advancedDataGridView1.Columns[4].Width = 70;            // nombre almacen
@@ -206,11 +199,11 @@ namespace TransCarga
             advancedDataGridView1.Columns[10].ReadOnly = true;
             advancedDataGridView1.Columns[11].Width = 70;            // peso en kg
             advancedDataGridView1.Columns[11].ReadOnly = true;
-            advancedDataGridView1.Columns[12].Width = 140;            // nombre del bulto
+            advancedDataGridView1.Columns[12].Width = 80;            // nombre del bulto
             advancedDataGridView1.Columns[12].ReadOnly = true;
-            advancedDataGridView1.Columns[13].Width = 200;           // contenido
+            advancedDataGridView1.Columns[13].Width = 200;           // destinatario de la GR
             advancedDataGridView1.Columns[13].ReadOnly = true;
-            advancedDataGridView1.Columns[14].Width = 200;            // observ. ingreso
+            advancedDataGridView1.Columns[14].Width = 150;            // observ. ingreso
             advancedDataGridView1.Columns[14].ReadOnly = false;
             // columnas vista reducida false
             checkColumn.Name = "chkreserva";
@@ -221,11 +214,11 @@ namespace TransCarga
             advancedDataGridView1.Columns.Insert(15, checkColumn);
             //
             advancedDataGridView1.Columns[16].Width = 70;            // unidad de reparto
-            advancedDataGridView1.Columns[16].ReadOnly = false;
+            advancedDataGridView1.Columns[16].ReadOnly = true;
             advancedDataGridView1.Columns[17].Width = 70;            // repartidor
-            advancedDataGridView1.Columns[17].ReadOnly = false;
+            advancedDataGridView1.Columns[17].ReadOnly = true;
             advancedDataGridView1.Columns[18].Width = 70;            // fecha salida a reparto
-            advancedDataGridView1.Columns[18].ReadOnly = false;
+            advancedDataGridView1.Columns[18].ReadOnly = true;
             //
             checkColum2.Name = "chksalida";
             checkColum2.HeaderText = "";
@@ -284,15 +277,18 @@ namespace TransCarga
         }
         private void cvc()                                                              // checks de visualizacion de columnas
         {
-            for (int i = 0; i <= advancedDataGridView1.Rows[0].Cells.Count - 1; i++)  // dataGridView1 -2
+            if (advancedDataGridView1.Rows.Count > 0)
             {
-                if (advancedDataGridView1.Columns[i].Visible == true)
+                for (int i = 0; i <= advancedDataGridView1.Rows[0].Cells.Count - 1; i++)  // dataGridView1 -2
                 {
-                    dataGridView1.Rows[0].Cells[i].Value = true;
-                }
-                else
-                {
-                    dataGridView1.Rows[0].Cells[i].Value = false;
+                    if (advancedDataGridView1.Columns[i].Visible == true)
+                    {
+                        dataGridView1.Rows[0].Cells[i].Value = true;
+                    }
+                    else
+                    {
+                        dataGridView1.Rows[0].Cells[i].Value = false;
+                    }
                 }
             }
         }
@@ -366,38 +362,30 @@ namespace TransCarga
         }
         private void grabacam(int idm, string campo, string valor, string almac)        // graba el cambio en la tabla cabalmac
         {
+            string campoT = "";
+            switch(campo)
+            {
+                case "OBSERVACION":
+                    campoT = "coming";
+                    break;
+                case "ALMACEN":
+                    // aca habria que dar salida a la guia del actual almacen
+                    // y dar ingreso al nuevo almacen
+                    break;
+                case "marca":
+                    campoT = "marca";
+                    break;
+            }
             string DB_CONN_STR1 = DB_CONN_STR;
             MySqlConnection cn0 = new MySqlConnection(DB_CONN_STR1);
             cn0.Open();
             try
             {
-                string sqlCmd = "update cabalmac set " + campo + "=@val where id=@idm";   // debería deshabilitarse esto porque cualquier cambio en el codigo
+                string sqlCmd = "update cabalmac set " + campoT + "=@val where id=@idm";   // debería deshabilitarse esto porque cualquier cambio en el codigo
                 MySqlCommand micon = new MySqlCommand(sqlCmd, cn0);                     // afecta al kardex porque pasa a ser otro producto!
                 micon.Parameters.AddWithValue("@val", valor);
                 micon.Parameters.AddWithValue("@idm", idm);
                 micon.ExecuteNonQuery();
-                /* if (campo == "codig")                                                   // generamos el kardex
-                {
-                    string consulta;
-                    // salida de codigo anterior y entrada nuevo codigo
-                    consulta = "insert into kardex (codalm,fecha,tipmov,item,cant_s,cant_i,coment,idalm,USER,dias) " +
-                            "values (@coda,@fech,@tope,@codi,@cant,0,@come,@ida,@asd,now())," +
-                            "(@coda,@fech,@topi,@codn,0,@cani,@come,@ida,@asd,now())";
-                    micon = new MySqlCommand(consulta, cn0);
-                    micon.Parameters.AddWithValue("@coda", almac);
-                    micon.Parameters.AddWithValue("@fech", DateTime.Now.Date.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@tope", "SALIDA");
-                    micon.Parameters.AddWithValue("@topi", "INGRES");
-                    micon.Parameters.AddWithValue("@codi", codant);   // valant (este el el dato anterior, es el valor que cambio)
-                    micon.Parameters.AddWithValue("@codn", codnue);   // valnue (este es el dato nuevo, no es el código!!)
-                    micon.Parameters.AddWithValue("@cant", "1");
-                    micon.Parameters.AddWithValue("@cani", "1");
-                    micon.Parameters.AddWithValue("@come", vcomentAu);
-                    micon.Parameters.AddWithValue("@ida", idm);
-                    micon.Parameters.AddWithValue("@asd", TransCarga.Program.vg_user);
-                    micon.ExecuteNonQuery();
-                }
-                */
             }
             catch (Exception ex)
             {
@@ -1045,93 +1033,19 @@ namespace TransCarga
         #region radiobuttons - checked changed
         private void rb_estan_CheckedChanged(object sender, EventArgs e)
         {
-            if (rb_estan.Checked == true)
+            if (rb_estan.Checked == true && advancedDataGridView1.Rows.Count > 0)
             {
                 for (int i = 0; i < advancedDataGridView1.Rows[0].Cells.Count; i++)
                 {
-                    advancedDataGridView1.Columns[i].Visible = false;
-                    dataGridView1.Columns[i].Visible = false;
-                    dataGridView2.Columns[i].Visible = false;
+                    advancedDataGridView1.Columns[i].Visible = true;   // false
+                    dataGridView1.Columns[i].Visible = true;           // false
+                    dataGridView2.Columns[i].Visible = true;           // false
                 }
-                /*
-                advancedDataGridView1.Columns["marca"].Visible = true;
-                dataGridView1.Columns["marca"].Visible = true;
-                dataGridView2.Columns["marca"].Visible = true;
-                advancedDataGridView1.Columns["id"].Visible = true;
-                dataGridView1.Columns["id"].Visible = true;
-                dataGridView2.Columns["id"].Visible = true;
-                advancedDataGridView1.Columns["codalm"].Visible = true;
-                dataGridView1.Columns["codalm"].Visible = true;
-                dataGridView2.Columns["codalm"].Visible = true;
-                advancedDataGridView1.Columns["codig"].Visible = true;
-                dataGridView1.Columns["codig"].Visible = true;
-                dataGridView2.Columns["codig"].Visible = true;
-                advancedDataGridView1.Columns["capit"].Visible = true;
-                dataGridView1.Columns["capit"].Visible = true;
-                dataGridView2.Columns["capit"].Visible = true;
-                advancedDataGridView1.Columns["model"].Visible = true;
-                dataGridView1.Columns["model"].Visible = true;
-                dataGridView2.Columns["model"].Visible = true;
-                advancedDataGridView1.Columns["mader"].Visible = true;
-                dataGridView1.Columns["mader"].Visible = true;
-                dataGridView2.Columns["mader"].Visible = true;
-                advancedDataGridView1.Columns["tipol"].Visible = true;
-                dataGridView1.Columns["tipol"].Visible = true;
-                dataGridView2.Columns["tipol"].Visible = true;
-                advancedDataGridView1.Columns["deta1"].Visible = true;
-                dataGridView1.Columns["deta1"].Visible = true;
-                dataGridView2.Columns["deta1"].Visible = true;
-                advancedDataGridView1.Columns["acaba"].Visible = true;
-                dataGridView1.Columns["acaba"].Visible = true;
-                dataGridView2.Columns["acaba"].Visible = true;
-                advancedDataGridView1.Columns["talle"].Visible = true;
-                dataGridView1.Columns["talle"].Visible = true;
-                dataGridView2.Columns["talle"].Visible = true;
-                advancedDataGridView1.Columns["deta2"].Visible = true;
-                dataGridView1.Columns["deta2"].Visible = true;
-                dataGridView2.Columns["deta2"].Visible = true;
-                advancedDataGridView1.Columns["deta3"].Visible = true;
-                dataGridView1.Columns["deta3"].Visible = true;
-                dataGridView2.Columns["deta3"].Visible = true;
-                advancedDataGridView1.Columns["juego"].Visible = true;
-                dataGridView1.Columns["juego"].Visible = true;
-                dataGridView2.Columns["juego"].Visible = true;
-                advancedDataGridView1.Columns["nombr"].Visible = true;
-                dataGridView1.Columns["nombr"].Visible = true;
-                dataGridView2.Columns["nombr"].Visible = true;
-                advancedDataGridView1.Columns["chkreserva"].Visible = true;
-                dataGridView1.Columns["chkreserva"].Visible = true;
-                dataGridView2.Columns["chkreserva"].Visible = true;
-                advancedDataGridView1.Columns["reserva"].Visible = true;
-                dataGridView1.Columns["reserva"].Visible = true;
-                dataGridView2.Columns["reserva"].Visible = true;
-                advancedDataGridView1.Columns["contrat"].Visible = true;
-                dataGridView1.Columns["contrat"].Visible = true;
-                dataGridView2.Columns["contrat"].Visible = true;
-                advancedDataGridView1.Columns["chksalida"].Visible = true;
-                dataGridView1.Columns["chksalida"].Visible = true;
-                dataGridView2.Columns["chksalida"].Visible = true;
-                advancedDataGridView1.Columns["salida"].Visible = true;
-                dataGridView1.Columns["salida"].Visible = true;
-                dataGridView2.Columns["salida"].Visible = true;
-                advancedDataGridView1.Columns["evento"].Visible = true;
-                dataGridView1.Columns["evento"].Visible = true;
-                dataGridView2.Columns["evento"].Visible = true;
-                advancedDataGridView1.Columns["almdes"].Visible = true;
-                dataGridView1.Columns["almdes"].Visible = true;
-                dataGridView2.Columns["almdes"].Visible = true;
-                advancedDataGridView1.Columns["idajuste"].Visible = true;
-                dataGridView1.Columns["idajuste"].Visible = true;
-                dataGridView2.Columns["idajuste"].Visible = true;
-                advancedDataGridView1.Columns["pedalm"].Visible = true;
-                dataGridView1.Columns["pedalm"].Visible = true;
-                dataGridView2.Columns["pedalm"].Visible = true;
-                */
             }
         }
         private void rb_redu_CheckedChanged(object sender, EventArgs e)
         {
-            if (rb_redu.Checked == true)
+            if (rb_redu.Checked == true && advancedDataGridView1.Rows.Count > 0)
             {
                 for (int i = 0; i < advancedDataGridView1.Rows[0].Cells.Count; i++)
                 {
@@ -1139,33 +1053,19 @@ namespace TransCarga
                     dataGridView1.Columns[i].Visible = false;
                     dataGridView2.Columns[i].Visible = false;
                 }
-                /*
-                advancedDataGridView1.Columns["marca"].Visible = true;
-                dataGridView1.Columns["marca"].Visible = true;
-                dataGridView2.Columns["marca"].Visible = true;
-                advancedDataGridView1.Columns["id"].Visible = true;
-                dataGridView1.Columns["id"].Visible = true;
-                dataGridView2.Columns["id"].Visible = true;
-                advancedDataGridView1.Columns["codalm"].Visible = true;
-                dataGridView1.Columns["codalm"].Visible = true;
-                dataGridView2.Columns["codalm"].Visible = true;
-                advancedDataGridView1.Columns["codig"].Visible = true;
-                dataGridView1.Columns["codig"].Visible = true;
-                dataGridView2.Columns["codig"].Visible = true;
-                advancedDataGridView1.Columns["nombr"].Visible = true;
-                dataGridView1.Columns["nombr"].Visible = true;
-                dataGridView2.Columns["nombr"].Visible = true;
-                */
             }
         }
         private void rb_todos_CheckedChanged(object sender, EventArgs e)
         {
-            for (int i = 0; i < dataGridView1.Rows[0].Cells.Count; i++)
+            if (advancedDataGridView1.Rows.Count > 0)
             {
-                dataGridView1.Rows[0].Cells[i].Value = true;
-                dataGridView1.Columns[i].Visible = true;
-                dataGridView2.Columns[i].Visible = true;
-                advancedDataGridView1.Columns[i].Visible = true;
+                for (int i = 0; i < dataGridView1.Rows[0].Cells.Count; i++)
+                {
+                    dataGridView1.Rows[0].Cells[i].Value = true;
+                    dataGridView1.Columns[i].Visible = true;
+                    dataGridView2.Columns[i].Visible = true;
+                    advancedDataGridView1.Columns[i].Visible = true;
+                }
             }
         }
         #endregion
@@ -1264,6 +1164,8 @@ namespace TransCarga
             bt_reserva.Enabled = true;
             bt_salida.Enabled = true;
             bt_borra.Enabled = true;
+            rb_redu.Enabled = false;
+            rb_todos.Enabled = false;
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1275,6 +1177,8 @@ namespace TransCarga
             bt_reserva.Enabled = true;
             bt_salida.Enabled = true;
             bt_borra.Enabled = true;
+            rb_redu.Enabled = false;
+            rb_todos.Enabled = false;
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -1339,8 +1243,23 @@ namespace TransCarga
         {
             if (dataGridView2.CurrentCell.Value != null)
             {
-                string frase = dataGridView2.Columns[e.ColumnIndex].Name.ToString() + " like '" + dataGridView2.CurrentCell.Value.ToString() + "*'";
-                filtros(frase);
+                // string frase = dataGridView2.Columns[e.ColumnIndex].Name.ToString() + " like '" + dataGridView2.CurrentCell.Value.ToString() + "*'";
+                // filtros(frase);
+                string nomcol = dataGridView2.Columns[e.ColumnIndex].Name.ToString();
+                string valcol = dataGridView2.CurrentCell.Value.ToString();
+                DataRow[] row = dt.Select("[" + nomcol + "] LIKE '%" + valcol + "%'");
+                int fila = int.Parse(row[0].ItemArray[1].ToString());
+                dataGridView2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "";
+                advancedDataGridView1.Focus();
+                for (int i=0; i<advancedDataGridView1.Rows.Count -1; i++)
+                {
+                    if (advancedDataGridView1.Rows[i].Cells[3].Value.ToString().Equals(fila.ToString()))
+                    {
+                        advancedDataGridView1.CurrentCell = advancedDataGridView1.Rows[i].Cells[2];
+                        break;
+                    }
+                }
+                //advancedDataGridView1.CurrentCell = advancedDataGridView1.Rows[fila].Cells[2];
             }
         }
         private void advancedDataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -1359,12 +1278,12 @@ namespace TransCarga
                 int index = advancedDataGridView1.Columns["id"].Index;
                 switch (advancedDataGridView1.Columns[e.ColumnIndex].Name)
                 {
-                    case "marca": //  0
+                    case "marca": 
                         int mark = (advancedDataGridView1.Rows[e.RowIndex].Cells[advancedDataGridView1.Columns["marca"].Index].Value.ToString() == "False") ? 0 : 1;
                         grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells[advancedDataGridView1.Columns["id"].Index].Value.ToString()),
                                         advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(), mark.ToString(), "");
                         break;
-                    case "codalm": // 2
+                    case "ALMACEN":
                         if ((advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "" ||
                             advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != null) &&
                             valant != "" && valant != valnue)
@@ -1396,94 +1315,14 @@ namespace TransCarga
                             //MessageBox.Show("es null o vacio o valant es igual al titulo", dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
                         }
                         break;
-                    case "fecha":     //  3
-                        break;
-                    case "capit":
-                    case "model":
-                    case "mader":
-                    case "tipol":
-                    case "deta1":
-                        // string letrascod = "capit,model,mader,tipol,deta1,acaba,talle,deta2,deta3";
-                        // debe validar si lo cambiado existe en la maestra
-                        string nomcol = advancedDataGridView1.Columns[e.ColumnIndex].Name.ToString();
-                        string valcol = advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                        string nomcap = advancedDataGridView1.Rows[e.RowIndex].Cells["capit"].Value.ToString();
-                        break;
-                    case "acaba":
-                        break;
-                    case "talle":
-                    case "deta2":
-                        break;
-                    case "deta3":
-                    case "juego":
-                        var a12 = MessageBox.Show("Confirma que desea cambiar el valor de la columna?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (a12 == DialogResult.Yes)
-                        {
-                            // cambia el codigo en la grilla
-                            advancedDataGridView1.Rows[e.RowIndex].Cells["codig"].Value =
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["capit"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["model"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["mader"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["tipol"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["deta1"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["acaba"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["talle"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["deta2"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["deta3"].Value.ToString() +
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["juego"].Value.ToString();
-                            codnue = advancedDataGridView1.Rows[e.RowIndex].Cells["codig"].Value.ToString();
-                            // graba el nuevo codigo y letra en almloc
-                            grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString()),
-                                    advancedDataGridView1.Columns[e.ColumnIndex].Name.ToString(), valnue, "");
-                            grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString()),
-                                    "codig", advancedDataGridView1.Rows[e.RowIndex].Cells["codig"].Value.ToString(),
-                                    advancedDataGridView1.Rows[e.RowIndex].Cells["codalm"].Value.ToString());
-                            // jala nuevos datos de la maestra y actualiza la grilla
-                            //jalareg(advancedDataGridView1.Rows[e.RowIndex].Cells["codig"].Value.ToString(), Int16.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString()));
-                            //jalareg(advancedDataGridView1.Rows[e.RowIndex].Cells["capit"].Value.ToString(), advancedDataGridView1.Rows[e.RowIndex].Cells["model"].Value.ToString(),
-                            //        advancedDataGridView1.Rows[e.RowIndex].Cells["tipol"].Value.ToString(), advancedDataGridView1.Rows[e.RowIndex].Cells["deta1"].Value.ToString(),
-                            //        advancedDataGridView1.Rows[e.RowIndex].Cells["acaba"].Value.ToString(), e.RowIndex);
-                            // ya no jala nada desde el 14-03-2018 a solicitud de Lorenzo
-                        }
-                        break;
-                    case "nombr":    // nombre
-                        var a13 = MessageBox.Show("Confirma que desea cambiar el nombre del mueble?" + Environment.NewLine +
-                            "Este cambio solo es para el stock - inventario", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (a13 == DialogResult.Yes)
+                    case "OBSERVACION":
+                        var ao = MessageBox.Show("Modifica la observación?", "Confirme por favor",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (ao == DialogResult.Yes)
                         {
                             advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valnue;
                             grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells[index].Value.ToString()),
                                 advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(), valnue, "");
-                            //grabaitems("nombr",advancedDataGridView1.Rows[e.RowIndex].Cells["codig"].Value.ToString(),valnue);
-                        }
-                        else
-                        {
-                            advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valant;
-                        }
-                        break;
-                    case "medid":    // medidas
-                        var a14 = MessageBox.Show("Confirma que desea cambiar las medidas?" + Environment.NewLine +
-                            "Este cambio solo es para el stock - inventario", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (a14 == DialogResult.Yes)
-                        {
-                            advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valnue;
-                            grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells[index].Value.ToString()),
-                                advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(), valnue, "");
-                        }
-                        else
-                        {
-                            advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valant;
-                        }
-                        break;
-                    //case "soles":
-                    case "soles2018":
-                        var a15 = MessageBox.Show("Confirma que desea cambiar el valor?" + Environment.NewLine +
-                            "Este cambio solo es para el stock - inventario", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (a15 == DialogResult.Yes)
-                        {
-                            advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valnue;
-                            grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells[index].Value.ToString()),
-                                advancedDataGridView1.Columns[e.ColumnIndex].Name.ToString(), valnue, "");
                         }
                         else
                         {
@@ -1541,13 +1380,13 @@ namespace TransCarga
                     advancedDataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
                 }
             }
-            if (advancedDataGridView1.Columns[e.ColumnIndex].Name == "chkreserva")
+            if (advancedDataGridView1.Columns[e.ColumnIndex].Name == "chkreserva")          // salida a despacho
             {
                 if (advancedDataGridView1.CurrentCell != null &&
                     advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
                 {
-                    if (string.IsNullOrWhiteSpace(advancedDataGridView1.Rows[e.RowIndex].Cells["reserva"].Value.ToString()))
-                    {
+                    if (advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
+                    {   // string.IsNullOrWhiteSpace(advancedDataGridView1.Rows[e.RowIndex].Cells["reserva"].Value.ToString())
                         var aa = MessageBox.Show("Realmente desea dar a despacho esta guía?", "Confirme por favor",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
@@ -1602,13 +1441,13 @@ namespace TransCarga
                     }
                 }
             }
-            if (advancedDataGridView1.Columns[e.ColumnIndex].Name == "chksalida")
+            if (advancedDataGridView1.Columns[e.ColumnIndex].Name == "chksalida")               // entrega directa al cliente
             {
                 if (advancedDataGridView1.CurrentCell != null &&
                     advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
                 {
-                    if (string.IsNullOrWhiteSpace(advancedDataGridView1.Rows[e.RowIndex].Cells["almdes"].Value.ToString()))
-                    {
+                    if (advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
+                    {   // string.IsNullOrWhiteSpace(advancedDataGridView1.Rows[e.RowIndex].Cells["almdes"].Value.ToString())
                         var aa = MessageBox.Show("Realmente desea entregar la mercadería?", "Confirme por favor",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
@@ -1641,8 +1480,9 @@ namespace TransCarga
                     }
                     else
                     {
+                        /* // UNA VEZ SALIDA LA MERCA ...REGRESA ??? .... NO, por esta opcion NO
                         var aa = MessageBox.Show("Realmente desea BORRAR la autorización de salida?", "Confirme por favor",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);         // UNA VEZ SALIDA LA MERCA ...REGRESA ???
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);         
                         if (aa == DialogResult.Yes)
                         {
                             if (quitasalida(advancedDataGridView1.Rows[e.RowIndex].Cells["salida"].Value.ToString(),
@@ -1660,6 +1500,7 @@ namespace TransCarga
                         {
                             advancedDataGridView1.CurrentCell.Value = false;
                         }
+                        */
                     }
                 }
             }

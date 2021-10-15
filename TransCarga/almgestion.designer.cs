@@ -431,7 +431,7 @@
             this.bt_salida.Name = "bt_salida";
             this.bt_salida.Size = new System.Drawing.Size(95, 25);
             this.bt_salida.TabIndex = 173;
-            this.bt_salida.Text = "Salida masiva";
+            this.bt_salida.Text = "Entrega en Of.";
             this.bt_salida.UseVisualStyleBackColor = true;
             this.bt_salida.Click += new System.EventHandler(this.bt_salida_Click);
             // 
@@ -442,7 +442,7 @@
             this.bt_reserva.Name = "bt_reserva";
             this.bt_reserva.Size = new System.Drawing.Size(95, 25);
             this.bt_reserva.TabIndex = 172;
-            this.bt_reserva.Text = "Reserva masiva";
+            this.bt_reserva.Text = "Salida a Reparto";
             this.bt_reserva.UseVisualStyleBackColor = true;
             this.bt_reserva.Click += new System.EventHandler(this.bt_reserva_Click);
             // 

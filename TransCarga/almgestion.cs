@@ -611,21 +611,24 @@ namespace TransCarga
                         {
                             try
                             {
-                                for (int i = 0; i < dt.Rows.Count; i++)         // for de la grilla
+                                for (int i = 0; i < dt.Rows.Count; i++)
                                 {
-                                    DataRow fila = dt.Rows[i];                  // row de la grilla
-                                    if (fila[1].ToString() == row[6].ToString())// comparacion de id's
+                                    DataRow fila = dt.Rows[i];
+                                    for (int r=0; r < 10; r++ )
                                     {
-                                        dt.Rows[i]["REPARTIDOR"] = row[5].ToString();
-                                        dt.Rows[i]["F_REPARTO"] = row[6].ToString();
-                                        // actualizamos 
-                                        string actua = "update cabalmac set codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
-                                        MySqlCommand miact = new MySqlCommand(actua, cnx);
-                                        miact.Parameters.AddWithValue("@res", row[5].ToString());
-                                        miact.Parameters.AddWithValue("@con", row[6].ToString());
-                                        miact.Parameters.AddWithValue("@idr", row[0].ToString());
-                                        miact.ExecuteNonQuery();
-                                        dt.Rows[i]["marca"] = 0;
+                                        if (fila[1].ToString() == resem.para3[r, 0].ToString())
+                                        {
+                                            dt.Rows[i]["REPARTIDOR"] = resem.para3[r, 4].ToString();
+                                            dt.Rows[i]["F_REPARTO"] = resem.para3[r, 5].ToString();
+                                            // actualizamos 
+                                            string actua = "update cabalmac set codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
+                                            MySqlCommand miact = new MySqlCommand(actua, cnx);
+                                            miact.Parameters.AddWithValue("@res", resem.para3[r, 4].ToString());
+                                            miact.Parameters.AddWithValue("@con", resem.para3[r, 5].ToString().Substring(6,4) + "-" + resem.para3[r, 5].ToString().Substring(3, 2) + "-" + resem.para3[r, 5].ToString().Substring(0, 2));
+                                            miact.Parameters.AddWithValue("@idr", resem.para3[r, 0].ToString());
+                                            miact.ExecuteNonQuery();
+                                            dt.Rows[i]["marca"] = 0;
+                                        }
                                     }
                                 }
                             }

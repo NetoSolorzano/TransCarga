@@ -15,7 +15,22 @@ namespace TransCarga
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
         public bool retorno;
-        string para1, para2, para3;
+        //public string[,] para3;
+        public string[,] para3 = new string[10, 7]
+        {
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" },
+                {"","","","","","","" }
+        };
+
+        string para1, para2;
         libreria lib = new libreria();
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -23,8 +38,6 @@ namespace TransCarga
         {                                                       // parm2 = 
             InitializeComponent();                              // parm3 = string[,] pasa = new string[10, 7]
             para1 = parm1;  // modo
-            //para2 = parm2;  // almacen de reserva
-            //para3 = parm3;
             if (parm1 == "reserva")
             {
                 lb_titulo.Text = "SALIDA A REPARTO";
@@ -50,6 +63,7 @@ namespace TransCarga
                     dataGridView1.Rows.Add(parm3[i, 0], parm3[i, 1], parm3[i, 2], parm3[i, 3]);
                 }
                 tx_fecon.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                tx_contra.MaxLength = 6;
             }
             if (parm1 == "salida")
             {
@@ -97,13 +111,19 @@ namespace TransCarga
             {
                 if (para1 == "reserva")
                 {
-
                     for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                     {
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
                             dataGridView1.Rows[i].Cells[4].Value = tx_contra.Text;
                             dataGridView1.Rows[i].Cells[5].Value = tx_fecon.Text;
+                            //
+                            para3[i, 0] = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                            para3[i, 1] = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                            para3[i, 2] = dataGridView1.Rows[i].Cells[2].Value.ToString();
+                            para3[i, 3] = dataGridView1.Rows[i].Cells[3].Value.ToString();
+                            para3[i, 4] = dataGridView1.Rows[i].Cells[4].Value.ToString();
+                            para3[i, 5] = dataGridView1.Rows[i].Cells[5].Value.ToString();
                         }
                     }
                     retorno = true; // true = se efectuo la operacion

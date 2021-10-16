@@ -17,27 +17,43 @@ namespace TransCarga
         public bool retorno;
         string para1, para2, para3;
         libreria lib = new libreria();
-        // conexion a la base de datos
-        //static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
-        //string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + 
-        //    ";ConnectionLifeTime=" + ctl + ";default command timeout = 120";
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
-        public movimas(string parm1,string parm2,string parm3)    // parm1 = modo = reserva o salida
+
+        public movimas(string parm1,string parm2,string[,] parm3)    // parm1 = modo = reserva o salida
         {                                                       // parm2 = 
-            InitializeComponent();                              // parm3 = 
-            lb_titulo.Text = parm1.ToUpper(); // modo del movimasiento
+            InitializeComponent();                              // parm3 = string[,] pasa = new string[10, 7]
             para1 = parm1;  // modo
             //para2 = parm2;  // almacen de reserva
             //para3 = parm3;
             if (parm1 == "reserva")
             {
+                lb_titulo.Text = "SALIDA A REPARTO";
                 panel3.Visible = true;
                 panel3.Left = 2;    // 7
                 panel3.Top = 25;     // 30
                 panel4.Visible = false;
+
+                dataGridView1.Columns.Add("id", "ID");
+                dataGridView1.Columns.Add("guia", "GUIA");
+                dataGridView1.Columns.Add("cant", "CANT");
+                dataGridView1.Columns.Add("almac", "ALMACEN");
+                dataGridView1.Columns.Add("repart", "REPARTIDOR");
+                dataGridView1.Columns.Add("frepar", "F_REPART");
+                dataGridView1.Columns[0].Width = 40;    // id
+                dataGridView1.Columns[1].Width = 90;    // guia
+                dataGridView1.Columns[2].Width = 50;    // cantid
+                dataGridView1.Columns[3].Width = 70;    // almacen
+                dataGridView1.Columns[4].Visible = false;
+                dataGridView1.Columns[5].Visible = false;
+                for (int i = 0; i < 10; i++)
+                {
+                    dataGridView1.Rows.Add(parm3[i, 0], parm3[i, 1], parm3[i, 2], parm3[i, 3]);
+                }
+                tx_fecon.Text = DateTime.Now.ToString("dd/MM/yyyy");
             }
             if (parm1 == "salida")
             {
+                lb_titulo.Text = "ENTREGA EN OFICINA";
                 panel4.Visible = true;
                 panel4.Left = 2;    // 7
                 panel4.Top = 25;     // 30
@@ -49,32 +65,6 @@ namespace TransCarga
         }
         private void movimas_Load(object sender, EventArgs e)
         {
-            MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-            cn.Open();
-            try
-            {
-                DataTable dt = new DataTable();
-                string consulta = "select codigo,nombre,cant,almacen,ida,space(22) as itcont from tempo";
-                MySqlCommand micon = new MySqlCommand(consulta, cn);
-                MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                da.Fill(dt);
-                dataGridView1.DataSource = dt;
-                dataGridView1.Columns[0].Width = 120;   // codigo mueble
-                dataGridView1.Columns[1].Width = 190;   // nombre
-                dataGridView1.Columns[2].Width = 20;    // cantid
-                dataGridView1.Columns[3].Width = 60;    // almacen
-                dataGridView1.Columns[4].Width = 40;    // id alm
-                dataGridView1.Columns[4].Visible = false;
-                dataGridView1.Columns[5].Visible = false;
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error de conexión");
-                Application.Exit();
-                return;
-            }
-            cn.Close();
-            //
             combos();
         }
         private void movimas_KeyDown(object sender, KeyEventArgs e)
@@ -96,91 +86,27 @@ namespace TransCarga
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            if (tx_contra.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el reponsable del despacho","Complete la información",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                tx_contra.Focus();
+                return;
+            }
             var aa = MessageBox.Show("Confirma que desea grabar la operación?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (aa == DialogResult.Yes)
             {
-                if (lb_titulo.Text == "RESERVA")
+                if (para1 == "reserva")
                 {
+
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                     {
-                        MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-                        cn.Open();
-                        try
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
-                            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
-                            {
-                                // graba la reserva en la maestra de reservas
-                                string texto = "insert into reservh (fecha,contrato,evento,coment,user,dia,almacen) " +
-                                    "values (@ptxfec,@ptxcon,@ptxt03,@ptxcom,@vg_us,now(),@ptxalm)";
-                                MySqlCommand micon = new MySqlCommand(texto, cn);
-                                micon.Parameters.AddWithValue("@ptxfec", DateTime.Now.ToString("yyyy-MM-dd"));
-                                micon.Parameters.AddWithValue("@ptxcon", tx_contra.Text);
-                                micon.Parameters.AddWithValue("@ptxt03", tx_evento.Text);
-                                micon.Parameters.AddWithValue("@ptxcom", tx_comres.Text);
-                                micon.Parameters.AddWithValue("@vg_us", TransCarga.Program.vg_user);
-                                micon.Parameters.AddWithValue("@ptxalm", dataGridView1.Rows[i].Cells[3].Value.ToString());
-                                micon.ExecuteNonQuery();
-                                //
-                                texto="select last_insert_id() as idreservh";
-                                micon = new MySqlCommand(texto, cn);
-                                MySqlDataReader dr = micon.ExecuteReader();
-                                if(dr.Read()){
-                                    tx_idr.Text = dr.GetString(0);
-                                }
-                                dr.Close();
-                                // y el detalle de la reserva
-                                texto = "insert into reservd (reservh,item,cant,user,dia,almacen,idalm,itemCont) " +
-                                    "values (@ptxidr,@ptxite,@ptxcan,@asd,now(),@ptxalm,@ida,@itcon)";
-                                micon = new MySqlCommand(texto, cn);
-                                micon.Parameters.AddWithValue("@ptxidr", tx_idr.Text);
-                                micon.Parameters.AddWithValue("@ptxite", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                micon.Parameters.AddWithValue("@ptxcan", "1");
-                                micon.Parameters.AddWithValue("@asd", TransCarga.Program.vg_user);
-                                micon.Parameters.AddWithValue("@ptxalm", dataGridView1.Rows[i].Cells[3].Value.ToString());
-                                micon.Parameters.AddWithValue("@ida", dataGridView1.Rows[i].Cells[4].Value.ToString());
-                                micon.Parameters.AddWithValue("@itcon", dataGridView1.Rows[i].Cells[5].Value.ToString().Substring(0, 10) + "XX" + dataGridView1.Rows[i].Cells[5].Value.ToString().Substring(10, 6));
-                                micon.ExecuteNonQuery();
-                                // actualiza saldo en detalle del contrato
-                                string cc;
-                                if (dataGridView1.Rows[i].Cells[5].Value.ToString().Trim() == "")
-                                {
-                                    cc = dataGridView1.Rows[i].Cells[0].Value.ToString().Substring(0, 10) + "XX" +
-                                        dataGridView1.Rows[i].Cells[0].Value.ToString().Substring(10, 6);
-                                }
-                                else
-                                {
-                                    cc = dataGridView1.Rows[i].Cells[5].Value.ToString().Substring(0, 10) + "XX" +
-                                        dataGridView1.Rows[i].Cells[5].Value.ToString().Substring(10, 6);
-                                }
-                                texto = "update detacon set saldo=saldo-1 " +
-                                    "where trim(contratoh)=@ptxcon and trim(item)=@ptxi";   //trim(insert(item,11,2,'')=@ptxi)
-                                micon = new MySqlCommand(texto, cn);
-                                micon.Parameters.AddWithValue("@ptxcon", tx_contra.Text.Trim());
-                                micon.Parameters.AddWithValue("@ptxi", cc);   // dataGridView1.Rows[i].Cells[0].Value.ToString()
-                                //micon.Parameters.AddWithValue("@can", "1");
-                                micon.ExecuteNonQuery();
-                                // actualizamos el temporal
-                                texto = "update tempo set idres=@idr,contrat=@cont where ida=@ida";
-                                micon = new MySqlCommand(texto, cn);
-                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                micon.Parameters.AddWithValue("@cont", tx_contra.Text);
-                                micon.Parameters.AddWithValue("@ida", dataGridView1.Rows[i].Cells[4].Value.ToString());
-                                micon.ExecuteNonQuery();
-                            }
-                            // algo hará en estado de contratos
-                            // string reto = lib.estcont(tx_contra.Text.Trim()); // COMENTADO 21/09/2020
-                            //acciones acc = new acciones();
-                            //acc.act_cont(tx_contra.Text, "RESERVA");
-                            //
-                            // en el form llamante deben estar las instrucciones para escribir en la grilla el id reserva y contrato
-                            retorno = true; // true = se efectuo la operacion
-                        }
-                        catch(MySqlException ex)
-                        {
-                            MessageBox.Show(ex.Message, "Error de conexión");
-                            Application.Exit();
-                            return;
+                            dataGridView1.Rows[i].Cells[4].Value = tx_contra.Text;
+                            dataGridView1.Rows[i].Cells[5].Value = tx_fecon.Text;
                         }
                     }
+                    retorno = true; // true = se efectuo la operacion
                 }
                 if (lb_titulo.Text.ToUpper() == "SALIDA")
                 {
@@ -282,8 +208,8 @@ namespace TransCarga
             return bien;
         }
         // RESERVAS **********************
-        private void tx_contra_Leave(object sender, EventArgs e)    // ACA SE VALIDA QUE LOS MUEBLES SELECCIONADOS ESTEN 
-        {                                                           // EN EL GRUPO DE MUEBLES DEL CONTRATO
+        private void tx_contra_Leave(object sender, EventArgs e)
+        {
             if (tx_contra.Text == "")
             {
                 button1.Focus();
@@ -293,100 +219,7 @@ namespace TransCarga
             cn.Open();
             try
             {
-                DataTable dt2 = new DataTable();
-                string consulta = "select a.fecha,a.tipoes,a.coment,a.status,b.RazonSocial,trim(insert(c.item,11,2,'')),trim(c.nombre),c.cant,c.saldo " +
-                    "from contrat a " +
-                    "left join anag_cli b on b.idanagrafica=a.cliente " +
-                    "left join detacon c on c.contratoh=a.contrato " +
-                    "where a.contrato=@cont and a.status in ('PENDIE','LLEPAR','ENTPAR','PEDPAR')";
-                try
-                {
-                    MySqlCommand micon = new MySqlCommand(consulta, cn);
-                    micon.Parameters.AddWithValue("@cont", tx_contra.Text);
-                    MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                    da.Fill(dt2);
-                    if (dt2.Rows.Count < 1)
-                    {
-                        cn.Close();
-                        MessageBox.Show("No existe el contrato ingresado", "Atención - Verifique", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                        tx_contra.Text = "";
-                        tx_contra.Focus();
-                        return;
-                    }
-                    else
-                    {
-                        tx_fecon.Text = dt2.Rows[0].ItemArray[0].ToString().Substring(0,10);
-                        tx_tienda.Text = dt2.Rows[0].ItemArray[1].ToString();
-                        tx_comres.Text = dt2.Rows[0].ItemArray[2].ToString();
-                        tx_cliente.Text = dt2.Rows[0].ItemArray[4].ToString();
-                        tx_status.Text = dt2.Rows[0].ItemArray[3].ToString();
-                        for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // muebles seleccionados
-                        {
-                            string sino = "no";
-                            for (int i = 0; i < dt2.Rows.Count; i++)
-                            {
-                                DataRow row = dt2.Rows[i];                      // muebles en el contrato
-                                if (dataGridView1.Rows[s].Cells[0].Value.ToString() == row[5].ToString())
-                                {                                  // valida si los muebles seleccionados estan en el contrato
-                                    sino = "si";
-                                    if (row[8].ToString() == "0")
-                                    {
-                                        MessageBox.Show("El mueble " + dataGridView1.Rows[s].Cells[0].Value.ToString() + Environment.NewLine +
-                                            "No tiene saldo en el contrato", "Atención - Verifique", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                        sino = "no";
-                                    }
-                                    else
-                                    {
-                                        
-                                        row[8] = (int.Parse(row[8].ToString()) - 1).ToString();
-                                        dataGridView1.Rows[s].Cells[5].Value = row[5].ToString();   // 30/10/2020 lo acabo de poner
-                                    }
-                                    break;
-                                }
-                                else
-                                {       // no son iguales, cod.contrato vs cod.almacen
-                                    if (row[5].ToString().Substring(1, 3) == "000")     // vemos si el item del contrato es A DISEÑO
-                                    {
-                                        if (row[5].ToString().Substring(0, 1) == dataGridView1.Rows[s].Cells[0].Value.ToString().Substring(0, 1) &&
-                                            row[5].ToString().Substring(4, 1) == dataGridView1.Rows[s].Cells[0].Value.ToString().Substring(4, 1))
-                                        {
-                                            // en este caso, el item del contrato es a diseño y el capitulo y madera son iguales
-                                            sino = "si";
-                                            //tx_comres.Text = row[8].ToString();
-                                            //tx_d_codi.Text = row[5].ToString();
-                                            if (row[8].ToString() == "0")
-                                            {
-                                                MessageBox.Show("El mueble " + dataGridView1.Rows[s].Cells[0].Value.ToString() + Environment.NewLine +
-                                                    "No tiene saldo en el contrato", "Atención - Verifique", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                                sino = "no";
-                                            }
-                                            else
-                                            {
 
-                                                row[8] = (int.Parse(row[8].ToString()) - 1).ToString();
-                                                dataGridView1.Rows[s].Cells[5].Value = row[5].ToString();
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if (sino == "no")
-                            {
-                                MessageBox.Show("El contrato NO CONTIENE el mueble seleccionado o no tiene saldo" + Environment.NewLine +
-                                dataGridView1.Rows[s].Cells[0].Value.ToString(), "Atención Revise", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                bt_close_Click(null, null);
-                            }
-                        }
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    cn.Close();
-                    MessageBox.Show(ex.Message, "No se puede ejecutar la consulta");
-                    Application.Exit();
-                    return;
-                }
             }
             catch (MySqlException ex)
             {

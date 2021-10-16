@@ -559,28 +559,37 @@ namespace TransCarga
                     fi = fi + 1;
                 }
             }
-            if (fi > 1)
+            if (fi > 1 && fi<11)
             {
-                //MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-                //cn.Open();
+                string[,] pasa = new string[10, 7]
+                {
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" }
+                };
                 try
                 {
-                    conClie dtt = new conClie();
+                    int conta = 0;
                     for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
                     {
                         if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
                         {
-                            conClie.tempoRow rtt = dtt.tempo.NewtempoRow();
                             string id = advancedDataGridView1.Rows[i].Cells["id"].FormattedValue.ToString();
                             string co = advancedDataGridView1.Rows[i].Cells["GUIA"].Value.ToString();
                             string no = advancedDataGridView1.Rows[i].Cells["CANT_B"].FormattedValue.ToString();
-                            //string ca = "1";
                             string al = advancedDataGridView1.Rows[i].Cells["ALMACEN"].FormattedValue.ToString();
-                            rtt.almacen = al;
-                            rtt.cant = no;
-                            rtt.codigo = co;
-                            rtt.ida = id;
-                            dtt.tempo.AddtempoRow(rtt);
+                            pasa[conta, 0] = id;
+                            pasa[conta, 1] = co;
+                            pasa[conta, 2] = no;
+                            pasa[conta, 3] = al;
+                            conta = conta + 1;
                         }
                     }
                 }
@@ -590,9 +599,8 @@ namespace TransCarga
                     Application.Exit();
                     return;
                 }
-                //cn.Close();
                 // vamos a llamar a movimas
-                movimas resem = new movimas("reserva", "", "");
+                movimas resem = new movimas("reserva", "", pasa);
                 var result = resem.ShowDialog();
                 if (result == DialogResult.Cancel)
                 {
@@ -603,31 +611,23 @@ namespace TransCarga
                         {
                             try
                             {
-                                conClie dtt = new conClie();
-                                for (int y = 0; y < dtt.tempo.Rows.Count; y++)                 // int y = 0; y < dtt.Rows.Count; y++
+                                for (int i = 0; i < dt.Rows.Count; i++)         // for de la grilla
                                 {
-                                    DataRow row = dtt.tempo.Rows[y];                          // dtt.Rows[y];
+                                    DataRow fila = dt.Rows[i];                  // row de la grilla
+                                    if (fila[1].ToString() == row[6].ToString())// comparacion de id's
                                     {
-                                        for (int i = 0; i < dt.Rows.Count; i++)         // for de la grilla
-                                        {
-                                            DataRow fila = dt.Rows[i];                  // row de la grilla
-                                            if (fila[1].ToString() == row[6].ToString())// comparacion de id's
-                                            {
-                                                dt.Rows[i]["REPARTIDOR"] = row[5].ToString();
-                                                dt.Rows[i]["F_REPARTO"] = row[6].ToString();
-                                                // actualizamos 
-                                                string actua = "update cabalmac set codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
-                                                MySqlCommand miact = new MySqlCommand(actua, cnx);
-                                                miact.Parameters.AddWithValue("@res", row[5].ToString());
-                                                miact.Parameters.AddWithValue("@con", row[6].ToString());
-                                                miact.Parameters.AddWithValue("@idr", row[0].ToString());
-                                                miact.ExecuteNonQuery();
-                                                dt.Rows[i]["marca"] = 0;
-                                            }
-                                        }
+                                        dt.Rows[i]["REPARTIDOR"] = row[5].ToString();
+                                        dt.Rows[i]["F_REPARTO"] = row[6].ToString();
+                                        // actualizamos 
+                                        string actua = "update cabalmac set codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
+                                        MySqlCommand miact = new MySqlCommand(actua, cnx);
+                                        miact.Parameters.AddWithValue("@res", row[5].ToString());
+                                        miact.Parameters.AddWithValue("@con", row[6].ToString());
+                                        miact.Parameters.AddWithValue("@idr", row[0].ToString());
+                                        miact.ExecuteNonQuery();
+                                        dt.Rows[i]["marca"] = 0;
                                     }
                                 }
-                                dtt.tempo.Clear();
                             }
                             catch (MySqlException ex)
                             {
@@ -642,12 +642,12 @@ namespace TransCarga
             }
             else
             {
-                MessageBox.Show("Debe seleccionar una acción individual");
+                MessageBox.Show("Debe seleccionar una acción individual","Deben ser entre 1 y 10 Guías");
             }
         }
         private void bt_salida_Click(object sender, EventArgs e)                        // salida de mercaderia hacia cliente
         {
-            // primero validamos
+            /* primero validamos
             int fi = 0;
             for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
             {
@@ -658,6 +658,7 @@ namespace TransCarga
             }
             if (fi > 1)
             {
+
                 MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
                 cn.Open();
                 try
@@ -771,6 +772,7 @@ namespace TransCarga
             {
                 MessageBox.Show("Debe seleccionar una acción individual");
             }
+            */
         }
         private void pan_inicio_Enter(object sender, EventArgs e)                       // llamamos al procedimiento que colorea las filas seleccionadas
         {

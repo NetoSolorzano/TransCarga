@@ -237,5 +237,6 @@ P.A. rep_cuadre_sede, error query cobranzas, "if(df.codgror=null," CAMBIO A "if(
 form ingcargalm, desarrollo del formulario, ingreso de carga al almacen ............................ OK 12/10/2021
 form facelect, si a credito el monto cuota = valor - detraccion .................................... ok 08/10/2021
 form repsalmac, agregar reporte de stock ........................................................... ok 12/10/2021
+form ayccaja, arreglo del calculo del saldo final de la caja ....................................... ok 15/10/2021
 form almgestion, adecuaciones generales ............................................................ 
 form movimas, adecuaciones generales ............................................................... 

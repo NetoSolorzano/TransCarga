@@ -31,20 +31,16 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.lb_titulo = new System.Windows.Forms.Label();
             this.bt_close = new System.Windows.Forms.Button();
+            this.lb_titulo = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tx_idr = new System.Windows.Forms.TextBox();
-            this.tx_comres = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.tx_status = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tx_tienda = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tx_fecon = new System.Windows.Forms.TextBox();
             this.lb_fecon = new System.Windows.Forms.Label();
-            this.tx_cliente = new System.Windows.Forms.TextBox();
-            this.lb_cliente = new System.Windows.Forms.Label();
             this.tx_contra = new System.Windows.Forms.TextBox();
             this.lb_contra = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -99,15 +95,6 @@
             this.panel2.TabIndex = 16;
             this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
             // 
-            // lb_titulo
-            // 
-            this.lb_titulo.AutoSize = true;
-            this.lb_titulo.Location = new System.Drawing.Point(193, 5);
-            this.lb_titulo.Name = "lb_titulo";
-            this.lb_titulo.Size = new System.Drawing.Size(73, 13);
-            this.lb_titulo.TabIndex = 15;
-            this.lb_titulo.Text = "Titulo del form";
-            // 
             // bt_close
             // 
             this.bt_close.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -125,24 +112,29 @@
             this.bt_close.UseVisualStyleBackColor = true;
             this.bt_close.Click += new System.EventHandler(this.bt_close_Click);
             // 
+            // lb_titulo
+            // 
+            this.lb_titulo.AutoSize = true;
+            this.lb_titulo.Location = new System.Drawing.Point(193, 5);
+            this.lb_titulo.Name = "lb_titulo";
+            this.lb_titulo.Size = new System.Drawing.Size(73, 13);
+            this.lb_titulo.TabIndex = 15;
+            this.lb_titulo.Text = "Titulo del form";
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.tx_idr);
-            this.panel3.Controls.Add(this.tx_comres);
-            this.panel3.Controls.Add(this.label3);
             this.panel3.Controls.Add(this.tx_status);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.tx_tienda);
             this.panel3.Controls.Add(this.label1);
             this.panel3.Controls.Add(this.tx_fecon);
             this.panel3.Controls.Add(this.lb_fecon);
-            this.panel3.Controls.Add(this.tx_cliente);
-            this.panel3.Controls.Add(this.lb_cliente);
             this.panel3.Controls.Add(this.tx_contra);
             this.panel3.Controls.Add(this.lb_contra);
             this.panel3.Location = new System.Drawing.Point(2, 27);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(413, 100);
+            this.panel3.Size = new System.Drawing.Size(413, 67);
             this.panel3.TabIndex = 18;
             // 
             // tx_idr
@@ -153,22 +145,6 @@
             this.tx_idr.TabIndex = 15;
             this.tx_idr.Visible = false;
             // 
-            // tx_comres
-            // 
-            this.tx_comres.Location = new System.Drawing.Point(78, 74);
-            this.tx_comres.Name = "tx_comres";
-            this.tx_comres.Size = new System.Drawing.Size(333, 20);
-            this.tx_comres.TabIndex = 1;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 78);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Comentario";
-            // 
             // tx_status
             // 
             this.tx_status.Location = new System.Drawing.Point(322, 28);
@@ -176,6 +152,7 @@
             this.tx_status.ReadOnly = true;
             this.tx_status.Size = new System.Drawing.Size(90, 20);
             this.tx_status.TabIndex = 9;
+            this.tx_status.Visible = false;
             // 
             // label2
             // 
@@ -185,6 +162,7 @@
             this.label2.Size = new System.Drawing.Size(40, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "Estado";
+            this.label2.Visible = false;
             // 
             // tx_tienda
             // 
@@ -193,15 +171,17 @@
             this.tx_tienda.ReadOnly = true;
             this.tx_tienda.Size = new System.Drawing.Size(100, 20);
             this.tx_tienda.TabIndex = 7;
+            this.tx_tienda.Visible = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(8, 32);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
+            this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Tienda";
+            this.label1.Text = "Alm./Local";
+            this.label1.Visible = false;
             // 
             // tx_fecon
             // 
@@ -216,26 +196,9 @@
             this.lb_fecon.AutoSize = true;
             this.lb_fecon.Location = new System.Drawing.Point(239, 9);
             this.lb_fecon.Name = "lb_fecon";
-            this.lb_fecon.Size = new System.Drawing.Size(80, 13);
+            this.lb_fecon.Size = new System.Drawing.Size(73, 13);
             this.lb_fecon.TabIndex = 4;
-            this.lb_fecon.Text = "Fecha Contrato";
-            // 
-            // tx_cliente
-            // 
-            this.tx_cliente.Location = new System.Drawing.Point(78, 51);
-            this.tx_cliente.Name = "tx_cliente";
-            this.tx_cliente.ReadOnly = true;
-            this.tx_cliente.Size = new System.Drawing.Size(333, 20);
-            this.tx_cliente.TabIndex = 3;
-            // 
-            // lb_cliente
-            // 
-            this.lb_cliente.AutoSize = true;
-            this.lb_cliente.Location = new System.Drawing.Point(8, 55);
-            this.lb_cliente.Name = "lb_cliente";
-            this.lb_cliente.Size = new System.Drawing.Size(39, 13);
-            this.lb_cliente.TabIndex = 2;
-            this.lb_cliente.Text = "Cliente";
+            this.lb_fecon.Text = "Fecha reparto";
             // 
             // tx_contra
             // 
@@ -250,17 +213,17 @@
             this.lb_contra.AutoSize = true;
             this.lb_contra.Location = new System.Drawing.Point(8, 9);
             this.lb_contra.Name = "lb_contra";
-            this.lb_contra.Size = new System.Drawing.Size(67, 13);
+            this.lb_contra.Size = new System.Drawing.Size(56, 13);
             this.lb_contra.TabIndex = 0;
-            this.lb_contra.Text = "CONTRATO";
+            this.lb_contra.Text = "Repartidor";
             // 
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(1, 128);
+            this.dataGridView1.Location = new System.Drawing.Point(1, 96);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(414, 241);
+            this.dataGridView1.Size = new System.Drawing.Size(414, 273);
             this.dataGridView1.TabIndex = 20;
             // 
             // panel4
@@ -397,7 +360,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(418, 401);
+            this.ClientSize = new System.Drawing.Size(417, 401);
             this.ControlBox = false;
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.dataGridView1);
@@ -436,16 +399,12 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TextBox tx_fecon;
         private System.Windows.Forms.Label lb_fecon;
-        private System.Windows.Forms.TextBox tx_cliente;
-        private System.Windows.Forms.Label lb_cliente;
         private System.Windows.Forms.TextBox tx_contra;
         private System.Windows.Forms.Label lb_contra;
         private System.Windows.Forms.TextBox tx_status;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tx_tienda;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox tx_comres;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.TextBox tx_comsal;

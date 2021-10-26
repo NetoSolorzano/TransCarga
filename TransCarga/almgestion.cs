@@ -618,6 +618,7 @@ namespace TransCarga
                                     {
                                         if (fila[1].ToString() == resem.para3[r, 0].ToString())
                                         {
+                                            dt.Rows[i]["UNI_REP"] = resem.para3[r, 6].ToString();
                                             dt.Rows[i]["REPARTIDOR"] = resem.para3[r, 4].ToString();
                                             dt.Rows[i]["F_REPARTO"] = resem.para3[r, 5].ToString();
                                             // actualizamos 
@@ -650,7 +651,7 @@ namespace TransCarga
         }
         private void bt_salida_Click(object sender, EventArgs e)                        // salida de mercaderia hacia cliente
         {
-            /* primero validamos
+            // primero validamos
             int fi = 0;
             for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
             {
@@ -663,119 +664,121 @@ namespace TransCarga
             {
 
                 MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
+                if (lib.procConn(cn) != true)
+                {
+                    MessageBox.Show("Error de conectividad","Se debe reiniciar");
+                    Application.Exit();
+                    return;
+                }
                 cn.Open();
+                //try
+                //{
+                string[,] pasa = new string[10, 7]
+                {
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" },
+                    {"","","","","","","" }
+                };
                 try
                 {
-                    string trunca = "truncate tempo";
-                    MySqlCommand micon = new MySqlCommand(trunca, cn);
-                    micon.ExecuteNonQuery();
-                    //
+                    int conta = 0;
                     for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
                     {
                         if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
                         {
                             string id = advancedDataGridView1.Rows[i].Cells["id"].FormattedValue.ToString();
-                            string co = advancedDataGridView1.Rows[i].Cells["GUIA"].FormattedValue.ToString();
+                            string co = advancedDataGridView1.Rows[i].Cells["GUIA"].Value.ToString();
                             string no = advancedDataGridView1.Rows[i].Cells["CANT_B"].FormattedValue.ToString();
-                            string ca = "1";
                             string al = advancedDataGridView1.Rows[i].Cells["ALMACEN"].FormattedValue.ToString();
-                            //
-                            try
-                            {
-                                string inserta = "insert into tempo (ida,codigo,nombre,cant,almacen) values (@id,@co,@no,@ca,@al)";
-                                micon = new MySqlCommand(inserta, cn);
-                                micon.Parameters.AddWithValue("@id", id);
-                                micon.Parameters.AddWithValue("@co", co);
-                                micon.Parameters.AddWithValue("@no", no);
-                                micon.Parameters.AddWithValue("@ca", ca);
-                                micon.Parameters.AddWithValue("@al", al);
-                                micon.ExecuteNonQuery();
-                            }
-                            catch (MySqlException ex)
-                            {
-                                MessageBox.Show(ex.Message, "Error - no se pudo insertar");
-                                Application.Exit();
-                                return;
-                            }
-                        }
-                    }
-                    // vamos a llamar a movimas
-                    movimas resem = new movimas("salida", "", "");    // modo,array,libre
-                    var result = resem.ShowDialog();
-                    if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
-                    {
-                        if (resem.retorno == true)
-                        {
-                            try
-                            {       //  salida,evento,almdes
-                                string consulta = "select codigo,nombre,cant,almacen,idres,evento,almdes,ida from tempo";
-                                micon = new MySqlCommand(consulta, cn);    // idres = id de salida
-                                MySqlDataReader dr = micon.ExecuteReader();
-                                if (dr.HasRows)
-                                {
-                                    while (dr.Read())
-                                    {
-                                        // actualizamos el datagridview
-                                        for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
-                                        {
-                                            if (advancedDataGridView1.Rows[i].Cells["id"].Value.ToString() == dr.GetString(7))
-                                            {
-                                                if (dr.GetString(4) == "0" && dr.GetString(6) == "")
-                                                {
-                                                    advancedDataGridView1.Rows.RemoveAt(i);
-                                                }
-                                                else
-                                                {
-                                                    advancedDataGridView1.Rows[i].Cells["REPARTIDOR"].Value = dr.GetString(4);
-                                                    advancedDataGridView1.Rows[i].Cells["F_REPARTO"].Value = dr.GetString(5);
-                                                    //advancedDataGridView1.Rows[i].Cells["almdes"].Value = dr.GetString(6);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                dr.Close();
-                                for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
-                                {
-                                    if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
-                                    {
-                                        // aca deberiamos insertar en salidas de almacen y borrar las filas de cabalmac
-                                        string actua = "update almloc set salida=@res,evento=@con,almdes=@ald,marca=0 where id=@idr";
-                                        MySqlCommand miact = new MySqlCommand(actua, cn);
-                                        miact.Parameters.AddWithValue("@res", advancedDataGridView1.Rows[i].Cells["salida"].Value.ToString());
-                                        miact.Parameters.AddWithValue("@con", advancedDataGridView1.Rows[i].Cells["evento"].Value.ToString());
-                                        miact.Parameters.AddWithValue("@ald", advancedDataGridView1.Rows[i].Cells["almdes"].Value.ToString());
-                                        miact.Parameters.AddWithValue("@idr", advancedDataGridView1.Rows[i].Cells["id"].Value.ToString());
-                                        miact.ExecuteNonQuery();
-                                        advancedDataGridView1.Rows[i].Cells["marca"].Value = 0;
-                                    }
-                                }
-                                consulta = "truncate tempo";
-                                micon = new MySqlCommand(consulta, cn);
-                                micon.ExecuteNonQuery();
-                            }
-                            catch (MySqlException ex)
-                            {
-                                MessageBox.Show(ex.Message, "Error de conexión");
-                                Application.Exit();
-                                return;
-                            }
+                            pasa[conta, 0] = id;
+                            pasa[conta, 1] = co;
+                            pasa[conta, 2] = no;
+                            pasa[conta, 3] = al;
+                            conta = conta + 1;
                         }
                     }
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Error de conexión");
+                    MessageBox.Show(ex.Message, "Error - no se pudo insertar");
                     Application.Exit();
                     return;
                 }
-                cn.Close();
+                // vamos a llamar a movimas
+                movimas resem = new movimas("salida", "", pasa);    // modo,array,libre
+                var result = resem.ShowDialog();
+                if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
+                {
+                    if (resem.retorno == true)
+                    {
+                        try
+                        {       //  salida,evento,almdes
+                            string consulta = "select codigo,nombre,cant,almacen,idres,evento,almdes,ida from tempo";
+                            micon = new MySqlCommand(consulta, cn);    // idres = id de salida
+                            MySqlDataReader dr = micon.ExecuteReader();
+                            if (dr.HasRows)
+                            {
+                                while (dr.Read())
+                                {
+                                    // actualizamos el datagridview
+                                    for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
+                                    {
+                                        if (advancedDataGridView1.Rows[i].Cells["id"].Value.ToString() == dr.GetString(7))
+                                        {
+                                            if (dr.GetString(4) == "0" && dr.GetString(6) == "")
+                                            {
+                                                advancedDataGridView1.Rows.RemoveAt(i);
+                                            }
+                                            else
+                                            {
+                                                advancedDataGridView1.Rows[i].Cells["REPARTIDOR"].Value = dr.GetString(4);
+                                                advancedDataGridView1.Rows[i].Cells["F_REPARTO"].Value = dr.GetString(5);
+                                                //advancedDataGridView1.Rows[i].Cells["almdes"].Value = dr.GetString(6);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            dr.Close();
+                            for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
+                            {
+                                if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
+                                {
+                                    // aca deberiamos insertar en salidas de almacen y borrar las filas de cabalmac
+                                    string actua = "update almloc set salida=@res,evento=@con,almdes=@ald,marca=0 where id=@idr";
+                                    MySqlCommand miact = new MySqlCommand(actua, cn);
+                                    miact.Parameters.AddWithValue("@res", advancedDataGridView1.Rows[i].Cells["salida"].Value.ToString());
+                                    miact.Parameters.AddWithValue("@con", advancedDataGridView1.Rows[i].Cells["evento"].Value.ToString());
+                                    miact.Parameters.AddWithValue("@ald", advancedDataGridView1.Rows[i].Cells["almdes"].Value.ToString());
+                                    miact.Parameters.AddWithValue("@idr", advancedDataGridView1.Rows[i].Cells["id"].Value.ToString());
+                                    miact.ExecuteNonQuery();
+                                    advancedDataGridView1.Rows[i].Cells["marca"].Value = 0;
+                                }
+                            }
+                            consulta = "truncate tempo";
+                            micon = new MySqlCommand(consulta, cn);
+                            micon.ExecuteNonQuery();
+                        }
+                        catch (MySqlException ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error de conexión");
+                            Application.Exit();
+                            return;
+                        }
+                    }
+                }
             }
             else
             {
                 MessageBox.Show("Debe seleccionar una acción individual");
             }
-            */
         }
         private void pan_inicio_Enter(object sender, EventArgs e)                       // llamamos al procedimiento que colorea las filas seleccionadas
         {
@@ -1450,7 +1453,7 @@ namespace TransCarga
                             movim rese = new movim("salida",
                                 advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString(),
                                 advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString(),
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["codalm"].Value.ToString());    // modo,id_mueble,cod_mueble
+                                advancedDataGridView1.Rows[e.RowIndex].Cells["ALMACEN"].Value.ToString());    // modo,id_mueble,cod_mueble
                             var result = rese.ShowDialog();
                             if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu .... no sea aaa
                             {

@@ -431,7 +431,7 @@
             this.bt_salida.Name = "bt_salida";
             this.bt_salida.Size = new System.Drawing.Size(95, 25);
             this.bt_salida.TabIndex = 173;
-            this.bt_salida.Text = "Entrega en Of.";
+            this.bt_salida.Text = "Entrega masiva";
             this.bt_salida.UseVisualStyleBackColor = true;
             this.bt_salida.Click += new System.EventHandler(this.bt_salida_Click);
             // 

@@ -34,6 +34,7 @@
             this.lb_titulo = new System.Windows.Forms.Label();
             this.bt_close = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
             this.tx_d_codi = new System.Windows.Forms.TextBox();
             this.tx_idr = new System.Windows.Forms.TextBox();
             this.tx_comres = new System.Windows.Forms.TextBox();
@@ -62,7 +63,6 @@
             this.tx_evento = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -148,6 +148,15 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(626, 100);
             this.panel3.TabIndex = 18;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(195, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(81, 13);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "Item contratado";
             // 
             // tx_d_codi
             // 
@@ -278,7 +287,6 @@
             // 
             // panel4
             // 
-            this.panel4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.panel4.Controls.Add(this.tx_dat_dest);
             this.panel4.Controls.Add(this.cmb_dest);
             this.panel4.Controls.Add(this.label5);
@@ -291,9 +299,9 @@
             this.panel4.Controls.Add(this.tx_evento);
             this.panel4.Controls.Add(this.label8);
             this.panel4.Controls.Add(this.label9);
-            this.panel4.Location = new System.Drawing.Point(2, 148);
+            this.panel4.Location = new System.Drawing.Point(2, 155);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(626, 100);
+            this.panel4.Size = new System.Drawing.Size(624, 100);
             this.panel4.TabIndex = 21;
             // 
             // tx_dat_dest
@@ -313,6 +321,7 @@
             this.cmb_dest.Name = "cmb_dest";
             this.cmb_dest.Size = new System.Drawing.Size(99, 21);
             this.cmb_dest.TabIndex = 13;
+            this.cmb_dest.Visible = false;
             this.cmb_dest.SelectedIndexChanged += new System.EventHandler(this.cmb_dest_SelectedIndexChanged);
             // 
             // label5
@@ -323,6 +332,7 @@
             this.label5.Size = new System.Drawing.Size(66, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "Alm. Destino";
+            this.label5.Visible = false;
             // 
             // dtp_fsal
             // 
@@ -337,10 +347,10 @@
             this.rb_ajuste.AutoSize = true;
             this.rb_ajuste.Location = new System.Drawing.Point(98, 23);
             this.rb_ajuste.Name = "rb_ajuste";
-            this.rb_ajuste.Size = new System.Drawing.Size(54, 17);
+            this.rb_ajuste.Size = new System.Drawing.Size(118, 17);
             this.rb_ajuste.TabIndex = 1;
             this.rb_ajuste.TabStop = true;
-            this.rb_ajuste.Text = "Ajuste";
+            this.rb_ajuste.Text = "Entrega en Reparto";
             this.rb_ajuste.UseVisualStyleBackColor = true;
             this.rb_ajuste.CheckedChanged += new System.EventHandler(this.rb_ajuste_CheckedChanged);
             // 
@@ -349,10 +359,10 @@
             this.rb_mov.AutoSize = true;
             this.rb_mov.Location = new System.Drawing.Point(98, 4);
             this.rb_mov.Name = "rb_mov";
-            this.rb_mov.Size = new System.Drawing.Size(79, 17);
+            this.rb_mov.Size = new System.Drawing.Size(113, 17);
             this.rb_mov.TabIndex = 0;
             this.rb_mov.TabStop = true;
-            this.rb_mov.Text = "Movimiento";
+            this.rb_mov.Text = "Entrega en Oficina";
             this.rb_mov.UseVisualStyleBackColor = true;
             this.rb_mov.CheckedChanged += new System.EventHandler(this.rb_mov_CheckedChanged);
             // 
@@ -393,9 +403,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(8, 56);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(41, 13);
+            this.label8.Size = new System.Drawing.Size(51, 13);
             this.label8.TabIndex = 2;
-            this.label8.Text = "Evento";
+            this.label8.Text = "Receptor";
             // 
             // label9
             // 
@@ -406,21 +416,12 @@
             this.label9.TabIndex = 0;
             this.label9.Text = "TIPO SALIDA";
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(195, 9);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(81, 13);
-            this.label6.TabIndex = 17;
-            this.label6.Text = "Item contratado";
-            // 
             // movim
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(627, 411);
+            this.ClientSize = new System.Drawing.Size(631, 416);
             this.ControlBox = false;
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.dataGridView1);

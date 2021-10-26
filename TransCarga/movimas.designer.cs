@@ -37,7 +37,7 @@
             this.tx_idr = new System.Windows.Forms.TextBox();
             this.tx_status = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.tx_tienda = new System.Windows.Forms.TextBox();
+            this.tx_unidad = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tx_fecon = new System.Windows.Forms.TextBox();
             this.lb_fecon = new System.Windows.Forms.Label();
@@ -126,7 +126,7 @@
             this.panel3.Controls.Add(this.tx_idr);
             this.panel3.Controls.Add(this.tx_status);
             this.panel3.Controls.Add(this.label2);
-            this.panel3.Controls.Add(this.tx_tienda);
+            this.panel3.Controls.Add(this.tx_unidad);
             this.panel3.Controls.Add(this.label1);
             this.panel3.Controls.Add(this.tx_fecon);
             this.panel3.Controls.Add(this.lb_fecon);
@@ -164,24 +164,21 @@
             this.label2.Text = "Estado";
             this.label2.Visible = false;
             // 
-            // tx_tienda
+            // tx_unidad
             // 
-            this.tx_tienda.Location = new System.Drawing.Point(78, 28);
-            this.tx_tienda.Name = "tx_tienda";
-            this.tx_tienda.ReadOnly = true;
-            this.tx_tienda.Size = new System.Drawing.Size(100, 20);
-            this.tx_tienda.TabIndex = 7;
-            this.tx_tienda.Visible = false;
+            this.tx_unidad.Location = new System.Drawing.Point(78, 28);
+            this.tx_unidad.Name = "tx_unidad";
+            this.tx_unidad.Size = new System.Drawing.Size(100, 20);
+            this.tx_unidad.TabIndex = 7;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(8, 32);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.Size = new System.Drawing.Size(67, 13);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Alm./Local";
-            this.label1.Visible = false;
+            this.label1.Text = "Unidad Rep.";
             // 
             // tx_fecon
             // 
@@ -360,7 +357,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(417, 401);
+            this.ClientSize = new System.Drawing.Size(413, 397);
             this.ControlBox = false;
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.dataGridView1);
@@ -403,7 +400,7 @@
         private System.Windows.Forms.Label lb_contra;
         private System.Windows.Forms.TextBox tx_status;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox tx_tienda;
+        private System.Windows.Forms.TextBox tx_unidad;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Panel panel4;

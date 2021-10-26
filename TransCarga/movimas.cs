@@ -52,12 +52,14 @@ namespace TransCarga
                 dataGridView1.Columns.Add("almac", "ALMACEN");
                 dataGridView1.Columns.Add("repart", "REPARTIDOR");
                 dataGridView1.Columns.Add("frepar", "F_REPART");
+                dataGridView1.Columns.Add("unidad", "UNIDAD");
                 dataGridView1.Columns[0].Width = 40;    // id
                 dataGridView1.Columns[1].Width = 90;    // guia
                 dataGridView1.Columns[2].Width = 50;    // cantid
                 dataGridView1.Columns[3].Width = 70;    // almacen
                 dataGridView1.Columns[4].Visible = false;
                 dataGridView1.Columns[5].Visible = false;
+                dataGridView1.Columns[6].Visible = false;
                 for (int i = 0; i < 10; i++)
                 {
                     dataGridView1.Rows.Add(parm3[i, 0], parm3[i, 1], parm3[i, 2], parm3[i, 3]);
@@ -106,6 +108,12 @@ namespace TransCarga
                 tx_contra.Focus();
                 return;
             }
+            if (tx_unidad.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese la unidad de reparto", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_unidad.Focus();
+                return;
+            }
             var aa = MessageBox.Show("Confirma que desea grabar la operación?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (aa == DialogResult.Yes)
             {
@@ -115,6 +123,7 @@ namespace TransCarga
                     {
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
+                            dataGridView1.Rows[i].Cells[6].Value = tx_unidad.Text;
                             dataGridView1.Rows[i].Cells[4].Value = tx_contra.Text;
                             dataGridView1.Rows[i].Cells[5].Value = tx_fecon.Text;
                             //
@@ -124,6 +133,7 @@ namespace TransCarga
                             para3[i, 3] = dataGridView1.Rows[i].Cells[3].Value.ToString();
                             para3[i, 4] = dataGridView1.Rows[i].Cells[4].Value.ToString();
                             para3[i, 5] = dataGridView1.Rows[i].Cells[5].Value.ToString();
+                            para3[i, 6] = dataGridView1.Rows[i].Cells[6].Value.ToString();
                         }
                     }
                     retorno = true; // true = se efectuo la operacion

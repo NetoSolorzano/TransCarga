@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -54,8 +55,6 @@
             this.tx_comsal = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.tx_evento = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -68,7 +67,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Crimson;
             this.panel1.Controls.Add(this.button1);
-            this.panel1.Location = new System.Drawing.Point(2, 370);
+            this.panel1.Location = new System.Drawing.Point(1, 370);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(415, 28);
             this.panel1.TabIndex = 14;
@@ -91,7 +90,7 @@
             this.panel2.Controls.Add(this.lb_titulo);
             this.panel2.Location = new System.Drawing.Point(1, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(414, 23);
+            this.panel2.Size = new System.Drawing.Size(415, 23);
             this.panel2.TabIndex = 16;
             this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
             // 
@@ -107,7 +106,7 @@
             this.bt_close.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.bt_close.Location = new System.Drawing.Point(389, 2);
             this.bt_close.Name = "bt_close";
-            this.bt_close.Size = new System.Drawing.Size(20, 18);
+            this.bt_close.Size = new System.Drawing.Size(21, 18);
             this.bt_close.TabIndex = 14;
             this.bt_close.UseVisualStyleBackColor = true;
             this.bt_close.Click += new System.EventHandler(this.bt_close_Click);
@@ -115,7 +114,7 @@
             // lb_titulo
             // 
             this.lb_titulo.AutoSize = true;
-            this.lb_titulo.Location = new System.Drawing.Point(193, 5);
+            this.lb_titulo.Location = new System.Drawing.Point(159, 5);
             this.lb_titulo.Name = "lb_titulo";
             this.lb_titulo.Size = new System.Drawing.Size(73, 13);
             this.lb_titulo.TabIndex = 15;
@@ -132,9 +131,9 @@
             this.panel3.Controls.Add(this.lb_fecon);
             this.panel3.Controls.Add(this.tx_contra);
             this.panel3.Controls.Add(this.lb_contra);
-            this.panel3.Location = new System.Drawing.Point(2, 27);
+            this.panel3.Location = new System.Drawing.Point(1, 27);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(413, 67);
+            this.panel3.Size = new System.Drawing.Size(415, 80);
             this.panel3.TabIndex = 18;
             // 
             // tx_idr
@@ -216,11 +215,25 @@
             // 
             // dataGridView1
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(1, 96);
+            this.dataGridView1.ColumnHeadersHeight = 20;
+            this.dataGridView1.Location = new System.Drawing.Point(1, 108);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(414, 273);
+            this.dataGridView1.RowHeadersVisible = false;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridView1.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.Silver;
+            this.dataGridView1.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dataGridView1.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+            this.dataGridView1.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dataGridView1.RowTemplate.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.Blue;
+            this.dataGridView1.RowTemplate.Height = 18;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(415, 260);
             this.dataGridView1.TabIndex = 20;
             // 
             // panel4
@@ -234,17 +247,15 @@
             this.panel4.Controls.Add(this.tx_comsal);
             this.panel4.Controls.Add(this.label4);
             this.panel4.Controls.Add(this.label7);
-            this.panel4.Controls.Add(this.tx_evento);
-            this.panel4.Controls.Add(this.label8);
             this.panel4.Controls.Add(this.label9);
-            this.panel4.Location = new System.Drawing.Point(3, 167);
+            this.panel4.Location = new System.Drawing.Point(1, 167);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(412, 100);
+            this.panel4.Size = new System.Drawing.Size(415, 80);
             this.panel4.TabIndex = 21;
             // 
             // tx_dat_dest
             // 
-            this.tx_dat_dest.Location = new System.Drawing.Point(176, 30);
+            this.tx_dat_dest.Location = new System.Drawing.Point(186, 32);
             this.tx_dat_dest.Name = "tx_dat_dest";
             this.tx_dat_dest.Size = new System.Drawing.Size(58, 20);
             this.tx_dat_dest.TabIndex = 14;
@@ -259,6 +270,7 @@
             this.cmb_dest.Name = "cmb_dest";
             this.cmb_dest.Size = new System.Drawing.Size(104, 21);
             this.cmb_dest.TabIndex = 13;
+            this.cmb_dest.Visible = false;
             this.cmb_dest.SelectedIndexChanged += new System.EventHandler(this.cmb_dest_SelectedIndexChanged);
             // 
             // label5
@@ -269,6 +281,7 @@
             this.label5.Size = new System.Drawing.Size(66, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "Alm. Destino";
+            this.label5.Visible = false;
             // 
             // dtp_fsal
             // 
@@ -283,10 +296,10 @@
             this.rb_ajuste.AutoSize = true;
             this.rb_ajuste.Location = new System.Drawing.Point(96, 23);
             this.rb_ajuste.Name = "rb_ajuste";
-            this.rb_ajuste.Size = new System.Drawing.Size(54, 17);
+            this.rb_ajuste.Size = new System.Drawing.Size(113, 17);
             this.rb_ajuste.TabIndex = 1;
             this.rb_ajuste.TabStop = true;
-            this.rb_ajuste.Text = "Ajuste";
+            this.rb_ajuste.Text = "Entrega en Oficina";
             this.rb_ajuste.UseVisualStyleBackColor = true;
             this.rb_ajuste.CheckedChanged += new System.EventHandler(this.rb_ajuste_CheckedChanged);
             // 
@@ -295,16 +308,16 @@
             this.rb_mov.AutoSize = true;
             this.rb_mov.Location = new System.Drawing.Point(96, 4);
             this.rb_mov.Name = "rb_mov";
-            this.rb_mov.Size = new System.Drawing.Size(78, 17);
+            this.rb_mov.Size = new System.Drawing.Size(118, 17);
             this.rb_mov.TabIndex = 0;
             this.rb_mov.TabStop = true;
-            this.rb_mov.Text = "movimiento";
+            this.rb_mov.Text = "Entrega en Reparto";
             this.rb_mov.UseVisualStyleBackColor = true;
             this.rb_mov.CheckedChanged += new System.EventHandler(this.rb_mov_CheckedChanged);
             // 
             // tx_comsal
             // 
-            this.tx_comsal.Location = new System.Drawing.Point(81, 76);
+            this.tx_comsal.Location = new System.Drawing.Point(81, 55);
             this.tx_comsal.Name = "tx_comsal";
             this.tx_comsal.Size = new System.Drawing.Size(329, 20);
             this.tx_comsal.TabIndex = 4;
@@ -312,7 +325,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 80);
+            this.label4.Location = new System.Drawing.Point(6, 59);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 13);
             this.label4.TabIndex = 10;
@@ -326,22 +339,6 @@
             this.label7.Size = new System.Drawing.Size(69, 13);
             this.label7.TabIndex = 4;
             this.label7.Text = "Fecha Salida";
-            // 
-            // tx_evento
-            // 
-            this.tx_evento.Location = new System.Drawing.Point(81, 54);
-            this.tx_evento.Name = "tx_evento";
-            this.tx_evento.Size = new System.Drawing.Size(329, 20);
-            this.tx_evento.TabIndex = 3;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 58);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(41, 13);
-            this.label8.TabIndex = 2;
-            this.label8.Text = "Evento";
             // 
             // label9
             // 
@@ -357,7 +354,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(413, 397);
+            this.ClientSize = new System.Drawing.Size(416, 398);
             this.ControlBox = false;
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.dataGridView1);
@@ -407,8 +404,6 @@
         private System.Windows.Forms.TextBox tx_comsal;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox tx_evento;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.RadioButton rb_ajuste;
         private System.Windows.Forms.RadioButton rb_mov;

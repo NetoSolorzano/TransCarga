@@ -561,18 +561,18 @@ namespace TransCarga
             }
             if (fi > 1 && fi<11)
             {
-                string[,] pasa = new string[10, 7]
+                string[,] pasa = new string[10, 8]
                 {
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" }
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" }
                 };
                 try
                 {
@@ -589,6 +589,7 @@ namespace TransCarga
                             pasa[conta, 1] = co;
                             pasa[conta, 2] = no;
                             pasa[conta, 3] = al;
+                            pasa[conta, 7] = advancedDataGridView1.Rows[i].Cells["DESTINATARIO"].FormattedValue.ToString();
                             conta = conta + 1;
                         }
                     }
@@ -622,8 +623,9 @@ namespace TransCarga
                                             dt.Rows[i]["REPARTIDOR"] = resem.para3[r, 4].ToString();
                                             dt.Rows[i]["F_REPARTO"] = resem.para3[r, 5].ToString();
                                             // actualizamos 
-                                            string actua = "update cabalmac set codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
+                                            string actua = "update cabalmac set unidadrep=@ure,codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
                                             MySqlCommand miact = new MySqlCommand(actua, cnx);
+                                            miact.Parameters.AddWithValue("@ure", resem.para3[r, 6].ToString());
                                             miact.Parameters.AddWithValue("@res", resem.para3[r, 4].ToString());
                                             miact.Parameters.AddWithValue("@con", resem.para3[r, 5].ToString().Substring(6,4) + "-" + resem.para3[r, 5].ToString().Substring(3, 2) + "-" + resem.para3[r, 5].ToString().Substring(0, 2));
                                             miact.Parameters.AddWithValue("@idr", resem.para3[r, 0].ToString());
@@ -670,21 +672,21 @@ namespace TransCarga
                     Application.Exit();
                     return;
                 }
-                cn.Open();
+                //cn.Open();
                 //try
                 //{
-                string[,] pasa = new string[10, 7]
+                string[,] pasa = new string[10, 8]
                 {
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" },
-                    {"","","","","","","" }
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" }
                 };
                 try
                 {
@@ -701,6 +703,9 @@ namespace TransCarga
                             pasa[conta, 1] = co;
                             pasa[conta, 2] = no;
                             pasa[conta, 3] = al;
+                            pasa[conta, 4] = advancedDataGridView1.Rows[i].Cells["REPARTIDOR"].FormattedValue.ToString();
+                            pasa[conta, 5] = advancedDataGridView1.Rows[i].Cells["F_REPARTO"].FormattedValue.ToString();
+                            pasa[conta, 6] = advancedDataGridView1.Rows[i].Cells["UNI_REP"].FormattedValue.ToString();
                             conta = conta + 1;
                         }
                     }
@@ -718,59 +723,19 @@ namespace TransCarga
                 {
                     if (resem.retorno == true)
                     {
-                        try
-                        {       //  salida,evento,almdes
-                            string consulta = "select codigo,nombre,cant,almacen,idres,evento,almdes,ida from tempo";
-                            micon = new MySqlCommand(consulta, cn);    // idres = id de salida
-                            MySqlDataReader dr = micon.ExecuteReader();
-                            if (dr.HasRows)
+                        // actualizamos el datagridview
+                        for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
+                        {
+                            for (int x=0; x<11; x++)
                             {
-                                while (dr.Read())
+                                if (advancedDataGridView1.Rows[i].Cells["id"].Value.ToString() == pasa[x, 0])
                                 {
-                                    // actualizamos el datagridview
-                                    for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
+                                    if (pasa[i, 1] != "")
                                     {
-                                        if (advancedDataGridView1.Rows[i].Cells["id"].Value.ToString() == dr.GetString(7))
-                                        {
-                                            if (dr.GetString(4) == "0" && dr.GetString(6) == "")
-                                            {
-                                                advancedDataGridView1.Rows.RemoveAt(i);
-                                            }
-                                            else
-                                            {
-                                                advancedDataGridView1.Rows[i].Cells["REPARTIDOR"].Value = dr.GetString(4);
-                                                advancedDataGridView1.Rows[i].Cells["F_REPARTO"].Value = dr.GetString(5);
-                                                //advancedDataGridView1.Rows[i].Cells["almdes"].Value = dr.GetString(6);
-                                            }
-                                        }
+                                        advancedDataGridView1.Rows.RemoveAt(i);
                                     }
                                 }
                             }
-                            dr.Close();
-                            for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
-                            {
-                                if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
-                                {
-                                    // aca deberiamos insertar en salidas de almacen y borrar las filas de cabalmac
-                                    string actua = "update almloc set salida=@res,evento=@con,almdes=@ald,marca=0 where id=@idr";
-                                    MySqlCommand miact = new MySqlCommand(actua, cn);
-                                    miact.Parameters.AddWithValue("@res", advancedDataGridView1.Rows[i].Cells["salida"].Value.ToString());
-                                    miact.Parameters.AddWithValue("@con", advancedDataGridView1.Rows[i].Cells["evento"].Value.ToString());
-                                    miact.Parameters.AddWithValue("@ald", advancedDataGridView1.Rows[i].Cells["almdes"].Value.ToString());
-                                    miact.Parameters.AddWithValue("@idr", advancedDataGridView1.Rows[i].Cells["id"].Value.ToString());
-                                    miact.ExecuteNonQuery();
-                                    advancedDataGridView1.Rows[i].Cells["marca"].Value = 0;
-                                }
-                            }
-                            consulta = "truncate tempo";
-                            micon = new MySqlCommand(consulta, cn);
-                            micon.ExecuteNonQuery();
-                        }
-                        catch (MySqlException ex)
-                        {
-                            MessageBox.Show(ex.Message, "Error de conexión");
-                            Application.Exit();
-                            return;
                         }
                     }
                 }

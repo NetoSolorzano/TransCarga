@@ -15,7 +15,7 @@ namespace TransCarga
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
         public bool retorno;
-        //public string[,] para3;
+        string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         public string[,] para3 = new string[10, 7]
         {
                 {"","","","","","","" },
@@ -38,6 +38,25 @@ namespace TransCarga
         {                                                       // parm2 = 
             InitializeComponent();                              // parm3 = string[,] pasa = new string[10, 7]
             para1 = parm1;  // modo
+            dataGridView1.Columns.Add("id", "ID");
+            dataGridView1.Columns.Add("guia", "GUIA");
+            dataGridView1.Columns.Add("cant", "CANT");
+            dataGridView1.Columns.Add("almac", "ALMACEN");
+            dataGridView1.Columns.Add("repart", "REPARTIDOR");
+            dataGridView1.Columns.Add("frepar", "F_REPART");
+            dataGridView1.Columns.Add("unidad", "UNIDAD");
+            dataGridView1.Columns.Add("unidad", "DESTINATARIO");
+            dataGridView1.Columns[0].Width = 40;    // id
+            dataGridView1.Columns[1].Width = 70;    // guia
+            dataGridView1.Columns[2].Width = 30;    // cantid
+            dataGridView1.Columns[3].Width = 60;    // almacen
+            dataGridView1.Columns[4].Width = 60;    // 
+            dataGridView1.Columns[5].Width = 80;    // fecha reparto
+            dataGridView1.Columns[6].Width = 60;    // 
+            dataGridView1.Columns[7].Width = 120;    // nombre del destinario
+            tx_fecon.Text = DateTime.Now.ToString("dd/MM/yyyy");
+            tx_contra.MaxLength = 6;
+
             if (parm1 == "reserva")
             {
                 lb_titulo.Text = "SALIDA A REPARTO";
@@ -45,37 +64,31 @@ namespace TransCarga
                 panel3.Left = 2;    // 7
                 panel3.Top = 25;     // 30
                 panel4.Visible = false;
-
-                dataGridView1.Columns.Add("id", "ID");
-                dataGridView1.Columns.Add("guia", "GUIA");
-                dataGridView1.Columns.Add("cant", "CANT");
-                dataGridView1.Columns.Add("almac", "ALMACEN");
-                dataGridView1.Columns.Add("repart", "REPARTIDOR");
-                dataGridView1.Columns.Add("frepar", "F_REPART");
-                dataGridView1.Columns.Add("unidad", "UNIDAD");
-                dataGridView1.Columns[0].Width = 40;    // id
-                dataGridView1.Columns[1].Width = 90;    // guia
-                dataGridView1.Columns[2].Width = 50;    // cantid
-                dataGridView1.Columns[3].Width = 70;    // almacen
                 dataGridView1.Columns[4].Visible = false;
                 dataGridView1.Columns[5].Visible = false;
                 dataGridView1.Columns[6].Visible = false;
+                dataGridView1.Columns[7].Visible = true;
                 for (int i = 0; i < 10; i++)
                 {
-                    dataGridView1.Rows.Add(parm3[i, 0], parm3[i, 1], parm3[i, 2], parm3[i, 3]);
+                    dataGridView1.Rows.Add(parm3[i, 0], parm3[i, 1], parm3[i, 2], parm3[i, 3],"","","",parm3[i, 7]);
                 }
-                tx_fecon.Text = DateTime.Now.ToString("dd/MM/yyyy");
-                tx_contra.MaxLength = 6;
             }
             if (parm1 == "salida")
             {
-                lb_titulo.Text = "ENTREGA EN OFICINA";
+                lb_titulo.Text = "ENTREGA MASIVA";
                 panel4.Visible = true;
                 panel4.Left = 2;    // 7
                 panel4.Top = 25;     // 30
                 panel3.Visible = false;
                 rb_mov.Checked = true;
                 combos();
+                dataGridView1.Columns[4].Visible = true;
+                dataGridView1.Columns[5].Visible = true;
+                dataGridView1.Columns[6].Visible = true;
+                for (int i = 0; i < 10; i++)
+                {
+                    dataGridView1.Rows.Add(parm3[i, 0], parm3[i, 1], parm3[i, 2], parm3[i, 3], parm3[i, 4], parm3[i, 5], parm3[i, 6]);
+                }
             }
             this.KeyPreview = true; // habilitando la posibilidad de pasar el tab con el enter
         }
@@ -102,13 +115,13 @@ namespace TransCarga
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            if (tx_contra.Text.Trim() == "")
+            if (tx_contra.Text.Trim() == "" && para1 == "reserva")
             {
                 MessageBox.Show("Ingrese el reponsable del despacho","Complete la información",MessageBoxButtons.OK,MessageBoxIcon.Information);
                 tx_contra.Focus();
                 return;
             }
-            if (tx_unidad.Text.Trim() == "")
+            if (tx_unidad.Text.Trim() == "" && para1 == "reserva")
             {
                 MessageBox.Show("Ingrese la unidad de reparto", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tx_unidad.Focus();
@@ -138,28 +151,10 @@ namespace TransCarga
                     }
                     retorno = true; // true = se efectuo la operacion
                 }
-                if (lb_titulo.Text.ToUpper() == "SALIDA")
+                if (para1 == "salida")
                 {
                     if (salida() == true)
                     {
-                        MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-                        cn.Open();
-                        try
-                        {
-                            // actualizamos el temporal
-                            string texto = "";
-                            if(rb_mov.Checked == true) texto = "update tempo set evento=@cont,almdes=@almd";
-                            if (rb_ajuste.Checked == true) texto = "update tempo set idres=0,evento=@cont,almdes=@almd";
-                            MySqlCommand micon = new MySqlCommand(texto, cn);
-                            micon.Parameters.AddWithValue("@cont", tx_evento.Text);
-                            micon.Parameters.AddWithValue("@almd", tx_dat_dest.Text);
-                            micon.ExecuteNonQuery();
-                        }
-                        catch (MySqlException ex)
-                        {
-                            MessageBox.Show(ex.Message, "Error en conexión");
-                            Application.Exit();
-                        }
                         retorno = true; // true = se efectuo la operacion
                     }
                 }
@@ -167,77 +162,57 @@ namespace TransCarga
             }
         }
         //
-        private bool salida()
+        private bool salida()               // ACA BORRAMOS DEL STOCK Y AGREGAMOS A LA TABLA DE SALIDAS (trigger)
         {
             bool bien = false;
-            MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-            cn.Open();
-            try
+            using (MySqlConnection cn = new MySqlConnection(DB_CONN_STR))
             {
-                // si es tipo de salida por movimiento
-                if (rb_mov.Checked == true)
-                {
-                    // debe retornar el evento y almacen de destino
-                    bien = true;
-                }
-                // salida por ajuste
-                if (rb_ajuste.Checked == true)
+                if (lib.procConn(cn) == true)
                 {
                     for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                     {
-                        string texto = "insert into salidash " +
-                            "(fecha,pedido,reserva,evento,coment,user,dia,llegada,partida,tipomov,contrato) " +
-                            "values " +
-                            "(@ptxfec,@ptxped,@ptxcon,@ptxt03,@ptxcom,@vg_us,now(),@ptxlle,@ptxpar,@ptxtmo,@ptxctr)";
-                        MySqlCommand micon = new MySqlCommand(texto, cn);
-                        micon.Parameters.AddWithValue("@ptxfec", dtp_fsal.Value.ToString("yyyy-MM-dd"));
-                        micon.Parameters.AddWithValue("@ptxped", "");
-                        micon.Parameters.AddWithValue("@ptxcon", "");
-                        micon.Parameters.AddWithValue("@ptxt03", tx_evento.Text);
-                        micon.Parameters.AddWithValue("@ptxcom", tx_comsal.Text);
-                        micon.Parameters.AddWithValue("@vg_us", TransCarga.Program.vg_user);
-                        micon.Parameters.AddWithValue("@ptxlle", "");
-                        micon.Parameters.AddWithValue("@ptxpar", dataGridView1.Rows[i].Cells[3].Value.ToString());
-                        micon.Parameters.AddWithValue("@ptxtmo", "1");
-                        micon.Parameters.AddWithValue("@ptxctr", "");
-                        micon.ExecuteNonQuery();
-                        //
-                        texto = "select MAX(idsalidash) as idreg from salidash";
-                        micon = new MySqlCommand(texto, cn);
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.Read())
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
-                            tx_idr.Text = dr.GetString(0);
+                            string llama = "borraseguro";
+                            using (MySqlCommand micon = new MySqlCommand(llama, cn))
+                            {
+                                micon.CommandType = CommandType.StoredProcedure;
+                                micon.Parameters.AddWithValue("@tabla", "cabalmac");
+                                micon.Parameters.AddWithValue("@vidr", dataGridView1.Rows[i].Cells[0].Value.ToString());
+                                micon.Parameters.AddWithValue("@vidc", 0);
+                                micon.ExecuteNonQuery();
+                            }
+                            // luego por aca actualizamos el registro insertado por el trigger del cabalmac en cabsalalm
+                            // con los datos del usuario, fecha, etc.
+                            string trep = "0";
+                            if (rb_mov.Checked == true) trep = "1";
+                            if (rb_ajuste.Checked == true) trep = "2";
+                            string actua = "UPDATE controlg a LEFT JOIN cabsalalm b ON CONCAT(a.serguitra,a.numguitra)=b.gremtra " +
+                                "SET a.fecentr=@fece,a.tipoent=@tipe," +
+                                "b.estsalgr=a.estadoser,b.fecentclt=@fece,b.comentclt=@comen,b.tipentclt=@tipe," +
+                                "b.verApp=@vera,userc=@asd,fechc=now(),diriplan4=@dipl,diripwan4=@dipw,netbname=@netn " +
+                                "WHERE CONCAT(a.serguitra,a.numguitra)=@grte";
+                            using (MySqlCommand micon = new MySqlCommand(actua,cn))
+                            {
+                                micon.Parameters.AddWithValue("@fece", dtp_fsal.Value.ToString("yyyy-MM-dd"));
+                                micon.Parameters.AddWithValue("@tipe", trep);
+                                micon.Parameters.AddWithValue("@comen", tx_comsal.Text);
+                                micon.Parameters.AddWithValue("@grte", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                                micon.Parameters.AddWithValue("@vera", verapp);
+                                micon.Parameters.AddWithValue("@asd", Program.vg_user);
+                                micon.Parameters.AddWithValue("@dipl", lib.iplan());
+                                micon.Parameters.AddWithValue("@dipw", TransCarga.Program.vg_ipwan);
+                                micon.Parameters.AddWithValue("@netn", Environment.MachineName);
+                                micon.ExecuteNonQuery();
+
+                            }
                         }
-                        dr.Close();
-                        //
-                        texto = "insert into salidasd " +
-                            "(salidash,item,cant,user,dia) " +
-                            "values " +
-                            "(@v_id,@nar,@can,@vg_us,now())";
-                        micon = new MySqlCommand(texto, cn);
-                        micon.Parameters.AddWithValue("@v_id", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@nar", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                        micon.Parameters.AddWithValue("@can", "1");
-                        micon.Parameters.AddWithValue("@vg_us", "Lorenzo");
-                        micon.ExecuteNonQuery();
-                        // borra en almloc
-                        string borra = "delete from almloc where id=@idr";
-                        micon = new MySqlCommand(borra, cn);
-                        micon.Parameters.AddWithValue("@idr", dataGridView1.Rows[i].Cells[4].Value.ToString());
-                        micon.ExecuteNonQuery();
                     }
                     bien = true;
                 }
             }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error en conexión");
-                Application.Exit();
-            }
             return bien;
         }
-        // RESERVAS **********************
         private void tx_contra_Leave(object sender, EventArgs e)
         {
             if (tx_contra.Text == "")
@@ -324,7 +299,7 @@ namespace TransCarga
             {
                 tx_dat_dest.Text = "";
                 cmb_dest.Enabled = true;
-                tx_evento.Enabled = true;
+                //tx_evento.Enabled = true;
             }
         }
         private void rb_ajuste_CheckedChanged(object sender, EventArgs e)
@@ -334,8 +309,6 @@ namespace TransCarga
                 tx_dat_dest.Text = "";
                 cmb_dest.SelectedIndex = -1;
                 cmb_dest.Enabled = false;
-                tx_evento.Text = "";
-                tx_evento.Enabled = false;
             }
         }
     }

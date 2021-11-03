@@ -276,6 +276,12 @@
       <DependentUpon>proveed.cs</DependentUpon>
     </Compile>
     <Compile Include="publico.cs" />
+    <Compile Include="recshum.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="recshum.designer.cs">
+      <DependentUpon>recshum.cs</DependentUpon>
+    </Compile>
     <Compile Include="repadmcaja.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -461,6 +467,9 @@
     </Compile>
     <EmbeddedResource Include="proveed.resx">
       <DependentUpon>proveed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="recshum.resx">
+      <DependentUpon>recshum.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="repadmcaja.resx">
       <DependentUpon>repadmcaja.cs</DependentUpon>

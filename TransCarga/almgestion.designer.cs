@@ -78,6 +78,8 @@
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.bt_etiq = new System.Windows.Forms.Button();
+            this.tx_bultos = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).BeginInit();
@@ -406,7 +408,7 @@
             // tx_totprec
             // 
             this.tx_totprec.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tx_totprec.Location = new System.Drawing.Point(538, 497);
+            this.tx_totprec.Location = new System.Drawing.Point(518, 496);
             this.tx_totprec.Name = "tx_totprec";
             this.tx_totprec.ReadOnly = true;
             this.tx_totprec.Size = new System.Drawing.Size(85, 20);
@@ -418,11 +420,11 @@
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(459, 501);
+            this.label4.Location = new System.Drawing.Point(421, 500);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(76, 13);
+            this.label4.Size = new System.Drawing.Size(97, 13);
             this.label4.TabIndex = 174;
-            this.label4.Text = "Total Precio";
+            this.label4.Text = "Total Peso Kgs.";
             // 
             // bt_salida
             // 
@@ -469,6 +471,7 @@
             this.advancedDataGridView1.DateWithTime = false;
             this.advancedDataGridView1.Location = new System.Drawing.Point(2, 83);
             this.advancedDataGridView1.Name = "advancedDataGridView1";
+            this.advancedDataGridView1.RowTemplate.Height = 17;
             this.advancedDataGridView1.Size = new System.Drawing.Size(969, 407);
             this.advancedDataGridView1.TabIndex = 170;
             this.advancedDataGridView1.TimeFilter = false;
@@ -543,6 +546,7 @@
             // bt_borra
             // 
             this.bt_borra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bt_borra.Font = new System.Drawing.Font("Tahoma", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_borra.Location = new System.Drawing.Point(542, 4);
             this.bt_borra.Name = "bt_borra";
             this.bt_borra.Size = new System.Drawing.Size(95, 25);
@@ -566,7 +570,7 @@
             // tx_tarti
             // 
             this.tx_tarti.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tx_tarti.Location = new System.Drawing.Point(375, 497);
+            this.tx_tarti.Location = new System.Drawing.Point(361, 496);
             this.tx_tarti.Name = "tx_tarti";
             this.tx_tarti.ReadOnly = true;
             this.tx_tarti.Size = new System.Drawing.Size(42, 20);
@@ -578,11 +582,11 @@
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(283, 501);
+            this.label2.Location = new System.Drawing.Point(283, 500);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 13);
+            this.label2.Size = new System.Drawing.Size(74, 13);
             this.label2.TabIndex = 165;
-            this.label2.Text = "Total artículos";
+            this.label2.Text = "Total Guías";
             // 
             // bt_etiq
             // 
@@ -594,7 +598,29 @@
             this.bt_etiq.TabIndex = 179;
             this.toolTip1.SetToolTip(this.bt_etiq, "Imprime etiqueta del artículo");
             this.bt_etiq.UseVisualStyleBackColor = true;
+            this.bt_etiq.Visible = false;
             this.bt_etiq.Click += new System.EventHandler(this.bt_etiq_Click);
+            // 
+            // tx_bultos
+            // 
+            this.tx_bultos.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tx_bultos.Location = new System.Drawing.Point(697, 496);
+            this.tx_bultos.Name = "tx_bultos";
+            this.tx_bultos.ReadOnly = true;
+            this.tx_bultos.Size = new System.Drawing.Size(49, 20);
+            this.tx_bultos.TabIndex = 182;
+            this.tx_bultos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(619, 500);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(75, 13);
+            this.label1.TabIndex = 181;
+            this.label1.Text = "Total Bultos";
             // 
             // almgestion
             // 
@@ -602,6 +628,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(973, 558);
+            this.Controls.Add(this.tx_bultos);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.pan_ico);
             this.Controls.Add(this.bt_etiq);
             this.Controls.Add(this.bt_bmf);
@@ -685,5 +713,7 @@
         private System.Windows.Forms.Label label2;
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.TextBox tx_bultos;
+        private System.Windows.Forms.Label label1;
     }
 }

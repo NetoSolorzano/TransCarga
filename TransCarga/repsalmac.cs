@@ -351,15 +351,13 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_???";
+                string consulta = "rep_alm_salidas";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@loca", (tx_dat_sede_desp.Text != "") ? tx_dat_sede_desp.Text : "");
                     micon.Parameters.AddWithValue("@fecini", dtp_fini_desp.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@fecfin", dtp_fter_desp.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@loca", (tx_dat_sede_desp.Text != "") ? tx_dat_sede_desp.Text : "");
-                    micon.Parameters.AddWithValue("@esta", (tx_dat_estad_desp.Text != "") ? tx_dat_estad_desp.Text : "");
-                    micon.Parameters.AddWithValue("@excl", (chk_exclu_desp.Checked == true)? "1" : "0");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_dspachs.DataSource = null;
@@ -428,17 +426,8 @@ namespace TransCarga
                 case "dgv_dspachs":
                     for (int i = 0; i < dgv_dspachs.Rows.Count; i++)
                     {
-                        if (dgv_dspachs.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
-                        {
-                            tvv = tvv + Convert.ToDouble(dgv_dspachs.Rows[i].Cells["TOTAL_MN"].Value);
-                            cr = cr + 1;
-                        }
-                        else
-                        {
-                            dgv_dspachs.Rows[i].DefaultCellStyle.BackColor = Color.Red;
-                            ca = ca + 1;
-                            tva = tva + Convert.ToDouble(dgv_dspachs.Rows[i].Cells["TOTAL_MN"].Value);
-                        }
+                        cr = cr + 1;
+                        ca = ca + 1;
                     }
                     tx_tfi_n.Text = cr.ToString();
                     tx_totval_n.Text = tvv.ToString("#0.00");
@@ -792,6 +781,12 @@ namespace TransCarga
                 jalaoc("tx_idr");
             }*/
         }
+
+        private void cmb_estad_desp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
         {
             /*if (e.RowIndex > -1 && e.ColumnIndex > 0 

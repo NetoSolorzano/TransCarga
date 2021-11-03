@@ -182,6 +182,12 @@ namespace TransCarga
         }
         private void grilla()                                                           // arma la grilla1
         {
+            Font font = new Font("Tahoma", 7);
+            advancedDataGridView1.RowHeadersWidth = 20;
+            advancedDataGridView1.ColumnHeadersHeight = 20;
+            advancedDataGridView1.DefaultCellStyle.Font = font;
+            //advancedDataGridView1.
+            //
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
             DataGridViewCheckBoxColumn checkColum2 = new DataGridViewCheckBoxColumn();
             //DataGridViewCheckBoxColumn checkmarca = new DataGridViewCheckBoxColumn();
@@ -307,16 +313,17 @@ namespace TransCarga
         }
         private void cellsum(int ind)                                                   // suma la columna especificada
         {
-            /*
             tx_tarti.Text = (advancedDataGridView1.Rows.Count).ToString();
-            decimal b = 0;
-            string qw = vcprecio;
+            decimal b = 0, c = 0;
+            string qw = "PESO";
+            string qe = "CANT_B";
             foreach (DataGridViewRow r in advancedDataGridView1.Rows)
             {
-                if (r.Cells[qw].Value != null && r.Cells[qw].Value != DBNull.Value) b += Convert.ToDecimal(r.Cells[qw].Value);  // total precio con igv
+                if (r.Cells[qw].Value != null && r.Cells[qw].Value != DBNull.Value) b += Convert.ToDecimal(r.Cells[qw].Value);  // total peso
+                if (r.Cells[qe].Value != null && r.Cells[qe].Value != DBNull.Value) c += Convert.ToDecimal(r.Cells[qe].Value);  // total bultos
             }
             tx_totprec.Text = b.ToString("###,###,##0.00");
-            */
+            tx_bultos.Text = c.ToString("###,##0");
         }
         private void filtros(string expres)                                             // filtros de nivel superior
         {
@@ -1085,10 +1092,18 @@ namespace TransCarga
             {
                 for (int i = 0; i < advancedDataGridView1.Rows[0].Cells.Count; i++)
                 {
-                    advancedDataGridView1.Columns[i].Visible = true;   // false
-                    dataGridView1.Columns[i].Visible = true;           // false
-                    dataGridView2.Columns[i].Visible = true;           // false
+                    advancedDataGridView1.Columns[i].Visible = true;
+                    dataGridView1.Columns[i].Visible = true;
+                    dataGridView2.Columns[i].Visible = true;
                 }
+                advancedDataGridView1.Columns[5].Visible = false;
+                dataGridView1.Columns[5].Visible = false;
+                dataGridView2.Columns[5].Visible = false;
+                //
+                advancedDataGridView1.Columns[6].Visible = false;
+                dataGridView1.Columns[6].Visible = false;
+                dataGridView2.Columns[6].Visible = false;
+                //
             }
         }
         private void rb_redu_CheckedChanged(object sender, EventArgs e)
@@ -1097,10 +1112,26 @@ namespace TransCarga
             {
                 for (int i = 0; i < advancedDataGridView1.Rows[0].Cells.Count; i++)
                 {
-                    advancedDataGridView1.Columns[i].Visible = false;
-                    dataGridView1.Columns[i].Visible = false;
-                    dataGridView2.Columns[i].Visible = false;
+                    advancedDataGridView1.Columns[i].Visible = true;
+                    dataGridView1.Columns[i].Visible = true;
+                    dataGridView2.Columns[i].Visible = true;
                 }
+                advancedDataGridView1.Columns[2].Visible = false;
+                dataGridView1.Columns[2].Visible = false;
+                dataGridView2.Columns[2].Visible = false;
+                //
+                advancedDataGridView1.Columns[4].Visible = false;
+                dataGridView1.Columns[4].Visible = false;
+                dataGridView2.Columns[4].Visible = false;
+                //
+                advancedDataGridView1.Columns[5].Visible = false;
+                dataGridView1.Columns[5].Visible = false;
+                dataGridView2.Columns[5].Visible = false;
+                //
+                advancedDataGridView1.Columns[6].Visible = false;
+                dataGridView1.Columns[6].Visible = false;
+                dataGridView2.Columns[6].Visible = false;
+                //
             }
         }
         private void rb_todos_CheckedChanged(object sender, EventArgs e)
@@ -1212,8 +1243,8 @@ namespace TransCarga
             bt_reserva.Enabled = true;
             bt_salida.Enabled = true;
             bt_borra.Enabled = true;
-            rb_redu.Enabled = false;
-            rb_todos.Enabled = false;
+            rb_redu.Enabled = true;
+            rb_todos.Enabled = true;
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1225,8 +1256,8 @@ namespace TransCarga
             bt_reserva.Enabled = true;
             bt_salida.Enabled = true;
             bt_borra.Enabled = true;
-            rb_redu.Enabled = false;
-            rb_todos.Enabled = false;
+            rb_redu.Enabled = true;
+            rb_todos.Enabled = true;
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {

@@ -781,7 +781,7 @@ namespace TransCarga
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Mov. Ingresos", img_alm0, alm_movingresos_Click);     // movimientos fisicos ingresos
             menuStrip1.Items.Add("Gestión", img_alm1, alm_gestion_Click);               // gestion de almacen
-            menuStrip1.Items.Add("Mov. Salidas", img_alm2, alm_movfisicos_Click);       // movimientos fisicos salidas
+            menuStrip1.Items.Add("Traslados ALM", img_alm2, alm_movfisicos_Click);       // movimientos fisicos salidas
             menuStrip1.Items.Add("Reportes", img_alm3, alm_historicos_Click);           // reportes
             menuStrip1.Visible = true;
         }
@@ -806,7 +806,7 @@ namespace TransCarga
         }
         private void alm_movfisicos_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Gestión de Entradas/Salidas", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Form Traslado entre almacenes", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void alm_historicos_Click(object sender, EventArgs e)           // REPORTES ALMACEN
         {

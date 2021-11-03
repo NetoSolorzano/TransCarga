@@ -18,6 +18,7 @@ namespace TransCarga
         string codant = "";                 // codigo antes de cambio de valor de celda
         string codnue = "";                 // codigo despues de cambio de valor de celda
         libreria lib = new libreria();
+        publico pub = new publico();
         DataTable dt = new DataTable();
         DataView dv = new DataView();
         List<bool> marcas = new List<bool>();
@@ -53,8 +54,9 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
-        string vcprecio = "";                                   // nombre del campo precio de la tabla "alm2018"
-        string vcomentAu = "";                                  // comentario cuando el kardex es por movimientos automaticos, cuando se cambia valores en la grilla
+        string vcear = "";                                   // cosdigo estado de almacen en reparto
+        string vcead = "";                                  // codigo de estado almacen recepcionado
+        string nfCRgr = "";                                 // nombre formato CR para visualizacion de guias
         #endregion
 
         public almgestion()
@@ -93,10 +95,11 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@noga)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@noga,@nofg)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
-                micon.Parameters.AddWithValue("@nofo", "main");   // nomform
-                micon.Parameters.AddWithValue("@noga", nomform);   // 
+                micon.Parameters.AddWithValue("@nofo", "main");
+                micon.Parameters.AddWithValue("@noga", nomform);
+                micon.Parameters.AddWithValue("@nofg", "guiati");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -120,11 +123,16 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                         if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
                     }
-                    //if (row["formulario"].ToString() == nomform)
-                    //{
-                    //    if (row["campo"].ToString() == "precio" && row["param"].ToString() == "campo") vcprecio = row["valor"].ToString().Trim();         // campo de precio actual
-                    //    if (row["campo"].ToString() == "kardex" && row["param"].ToString() == "comAut") vcomentAu = row["valor"].ToString().Trim();         // comentario generico mov kardex
-                    //}
+                    if (row["formulario"].ToString() == nomform)
+                    {
+                        if (row["campo"].ToString() == "estAlmacen" && row["param"].ToString() == "reparto") vcear = row["valor"].ToString().Trim();         // campo de codigo de estado almacen reparto
+                        if (row["campo"].ToString() == "estAlmacen" && row["param"].ToString() == "recepcion") vcead = row["valor"].ToString().Trim();       // estado almacen recepcionado
+                    }
+                    if (row["formulario"].ToString() == "guiati")
+                    {
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRir_cr") nfCRgr = row["valor"].ToString().Trim();         // campo de codigo de estado almacen reparto
+                        //if (row["campo"].ToString() == "estAlmacen" && row["param"].ToString() == "recepcion") vcead = row["valor"].ToString().Trim();       // estado almacen recepcionado
+                    }
                 }
                 da.Dispose();
                 dt.Dispose();
@@ -144,15 +152,17 @@ namespace TransCarga
             try
             {   // a.descrip AS CONTENIDO
                 string sqlCmd = "SELECT a.marca,a.id,a.iding AS IDING,a.fecingalm AS F_INGRE,l0.descrizionerid AS ALMACEN,lo.descrizionerid AS ORIGEN," +
-                    "ld.descrizionerid AS DESTINO,a.gremtra AS GUIA,eg.descrizionerid AS EST_GR,ea.descrizionerid AS EST_ALM,a.cantbul AS CANT_B,a.pesokgr AS PESO," +
-                    "a.nombult AS BULTO,gr.nombdegri as DESTINATARIO,a.coming AS OBSERVACION,a.unidadrep AS UNI_REP,a.codigorep AS REPARTIDOR,a.fecsalrep AS F_REPARTO " +
+                    "ld.descrizionerid AS DESTINO,a.gremtra AS GUIA,eg.descrizionerid AS EST_GR,if(gr.tipdocvta='','',concat(dv.descrizionerid,'-',gr.serdocvta,'-',gr.numdocvta)) as DOCVTA," +
+                    "ea.descrizionerid AS EST_ALM,a.cantbul AS CANT_B,a.pesokgr AS PESO,a.nombult AS BULTO,gr.nombdegri as DESTINATARIO," +
+                    "a.coming AS OBSERVACION,a.unidadrep AS UNI_REP,a.codigorep AS REPARTIDOR,a.fecsalrep AS F_REPARTO " +
                     "FROM cabalmac a " +
                     "LEFT JOIN desc_loc l0 ON l0.IDCodice = a.almacen " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = a.locorigen " +
                     "LEFT JOIN desc_loc ld on ld.IDCodice = a.locdestin " +
-                    "LEFT JOIN desc_est eg ON eg.IDCodice = a.estadgrt " +
                     "LEFT JOIN desc_eal ea ON ea.IDCodice = a.estalma " +
                     "LEFT JOIN cabguiai gr on concat(gr.sergui,gr.numgui) = a.gremtra " +
+                    "LEFT JOIN desc_est eg ON eg.IDCodice = gr.estadoser " +
+                    "lEFT JOIN desc_tdv dv on dv.idcodice = gr.tipdocvta " +
                     "WHERE a.almacen = @loc";
                 MySqlCommand micon = new MySqlCommand(sqlCmd, cn);
                 micon.Parameters.AddWithValue("@loc", Program.vg_luse);
@@ -194,39 +204,41 @@ namespace TransCarga
             advancedDataGridView1.Columns[7].ReadOnly = true;
             advancedDataGridView1.Columns[8].Width = 70;             // nombre estado de la guia
             advancedDataGridView1.Columns[8].ReadOnly = true;
-            advancedDataGridView1.Columns[9].Width = 70;             // nombre estado almacen
+            advancedDataGridView1.Columns[9].Width = 100;             // documento de venta
             advancedDataGridView1.Columns[9].ReadOnly = true;
-            advancedDataGridView1.Columns[10].Width = 50;            // cant. bultos
+            advancedDataGridView1.Columns[10].Width = 70;             // nombre estado almacen
             advancedDataGridView1.Columns[10].ReadOnly = true;
-            advancedDataGridView1.Columns[11].Width = 70;            // peso en kg
+            advancedDataGridView1.Columns[11].Width = 50;            // cant. bultos
             advancedDataGridView1.Columns[11].ReadOnly = true;
-            advancedDataGridView1.Columns[12].Width = 80;            // nombre del bulto
-            advancedDataGridView1.Columns[12].ReadOnly = true;
-            advancedDataGridView1.Columns[13].Width = 200;           // destinatario de la GR
+            advancedDataGridView1.Columns[12].Width = 70;            // peso en kg
             advancedDataGridView1.Columns[13].ReadOnly = true;
-            advancedDataGridView1.Columns[14].Width = 150;            // observ. ingreso
-            advancedDataGridView1.Columns[14].ReadOnly = false;
+            advancedDataGridView1.Columns[13].Width = 80;            // nombre del bulto
+            advancedDataGridView1.Columns[13].ReadOnly = true;
+            advancedDataGridView1.Columns[14].Width = 200;           // destinatario de la GR
+            advancedDataGridView1.Columns[14].ReadOnly = true;
+            advancedDataGridView1.Columns[15].Width = 150;            // observ. ingreso
+            advancedDataGridView1.Columns[15].ReadOnly = false;
             // columnas vista reducida false
             checkColumn.Name = "chkreserva";
             checkColumn.HeaderText = "";
             checkColumn.Width = 30;
             checkColumn.ReadOnly = false;
             checkColumn.FillWeight = 10;
-            advancedDataGridView1.Columns.Insert(15, checkColumn);
+            advancedDataGridView1.Columns.Insert(16, checkColumn);
             //
-            advancedDataGridView1.Columns[16].Width = 70;            // unidad de reparto
-            advancedDataGridView1.Columns[16].ReadOnly = true;
-            advancedDataGridView1.Columns[17].Width = 70;            // repartidor
+            advancedDataGridView1.Columns[17].Width = 70;            // unidad de reparto
             advancedDataGridView1.Columns[17].ReadOnly = true;
-            advancedDataGridView1.Columns[18].Width = 70;            // fecha salida a reparto
+            advancedDataGridView1.Columns[18].Width = 70;            // repartidor
             advancedDataGridView1.Columns[18].ReadOnly = true;
+            advancedDataGridView1.Columns[19].Width = 70;            // fecha salida a reparto
+            advancedDataGridView1.Columns[19].ReadOnly = true;
             //
             checkColum2.Name = "chksalida";
             checkColum2.HeaderText = "";
             checkColum2.Width = 30;
             checkColum2.ReadOnly = false;
             checkColum2.FillWeight = 10;
-            advancedDataGridView1.Columns.Insert(19, checkColum2);
+            advancedDataGridView1.Columns.Insert(20, checkColum2);
             //
         }
         private void init()                                                             // inicializa ancho de columnas grilla de filtros
@@ -433,75 +445,149 @@ namespace TransCarga
                 }
             }
         }
-        private bool quitareserv(string idr, string ida, string contra)                 // ME QUEDE ACA ... FALTA ANALIZAR ESTO
+        private bool quitareserv(string idr)                                            // borramos la asignacion de la GR al repartidor/unidad
         {
-            bool retorna = false;
-            MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-            cn.Open();
-            try
+            bool retorna = false;   // , string ida, string contra
+            using (MySqlConnection cn = new MySqlConnection(DB_CONN_STR))
             {
-                string nar = advancedDataGridView1.CurrentRow.Cells["capit"].Value.ToString() +
-                    advancedDataGridView1.CurrentRow.Cells["model"].Value.ToString() +
-                    advancedDataGridView1.CurrentRow.Cells["mader"].Value.ToString() +
-                    advancedDataGridView1.CurrentRow.Cells["tipol"].Value.ToString() +
-                    advancedDataGridView1.CurrentRow.Cells["deta1"].Value.ToString() +
-                    advancedDataGridView1.CurrentRow.Cells["acaba"].Value.ToString() +
-                    "XX" +
-                    advancedDataGridView1.CurrentRow.Cells["deta2"].Value.ToString() +
-                    advancedDataGridView1.CurrentRow.Cells["deta3"].Value.ToString();
-                string actua = "update reservh a,reservd b set a.status=@vstat,b.almacen='' " +
-                    "where a.idreservh=b.reservh and a.idreservh=@ptxres";
-                MySqlCommand micon = new MySqlCommand(actua, cn);
-                micon.Parameters.AddWithValue("@vstat", "ANULADO");
-                micon.Parameters.AddWithValue("@ptxres", idr);
-                micon.ExecuteNonQuery();
-                //
-                actua = "update almloc set reserva='',contrat='' " +
-                    "where id=@ida";   // item=@nar and codalm=@ptxalm
-                micon = new MySqlCommand(actua, cn);
-                micon.Parameters.AddWithValue("@ida", ida);
-                micon.ExecuteNonQuery();
-                //
-                actua = "UPDATE detacon SET saldo=saldo+@can " +
-                    "where contratoh=@ptxcon and item=(select itemCont from reservd where reservh=@ptxres)";    // where contratoh=@ptxcon and item=@nar
-                micon = new MySqlCommand(actua, cn);
-                micon.Parameters.AddWithValue("@can", 1);
-                micon.Parameters.AddWithValue("@ptxcon", contra);
-                //micon.Parameters.AddWithValue("@nar", nar);
-                micon.Parameters.AddWithValue("@ptxres", idr);
-                micon.ExecuteNonQuery();
-                retorna = true;
+                if (lib.procConn(cn) == true)
+                {
+                    string actua = "UPDATE cabalmac a LEFT JOIN controlg c ON CONCAT(c.serguitra,c.numguitra)=a.gremtra " +
+                        "SET a.unidadrep = '',a.codigorep = '',a.fecsalrep = NULL,c.estalma = @cea " +
+                        "WHERE a.id = @idr";
+                    using (MySqlCommand micon = new MySqlCommand(actua, cn))
+                    {
+                        micon.Parameters.AddWithValue("@idr", idr);
+                        micon.Parameters.AddWithValue("@cea", vcead);
+                        micon.ExecuteNonQuery();
+                        retorna = true;
+                    }
+                }
             }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error de conexión");
-                Application.Exit();
-            }
-            cn.Close();
-            //
             return retorna;
         }
-        private bool quitasalida(string idr, string ida)                                // ACA TAMBIEN HAY QUE REVISAR COMO USAMOS ESTO
+        private void despacho(string tipo, int rowind)
         {
-            bool retorna = false;
-            // actualiza almloc
-            MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-            cn.Open();
-            try
+            // primero validamos
+            int fi = 0;
+            string[,] pasa = new string[10, 8]
             {
-                string actua = "update almloc set evento='',almdes='',salida='' where id=@idr";
-                MySqlCommand micon = new MySqlCommand(actua, cn);
-                micon.Parameters.AddWithValue("@idr", ida);
-                micon.ExecuteNonQuery();
-                //
-                retorna = true;
-            }
-            catch (MySqlException ex)
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" },
+                    {"","","","","","","", "" }
+            };
+            if (tipo == "masivo")
             {
-                MessageBox.Show(ex.Message, "Error en la conexión");
-                Application.Exit();
+                for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
+                {
+                    if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
+                    {
+                        fi = fi + 1;
+                    }
+                }
+                if (fi > 0 && fi < 11)
+                {
+                    try
+                    {
+                        int conta = 0;
+                        for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
+                        {
+                            if (advancedDataGridView1.Rows[i].Cells["marca"].FormattedValue.ToString() == "True")
+                            {
+                                string id = advancedDataGridView1.Rows[i].Cells["id"].FormattedValue.ToString();
+                                string co = advancedDataGridView1.Rows[i].Cells["GUIA"].Value.ToString();
+                                string no = advancedDataGridView1.Rows[i].Cells["CANT_B"].FormattedValue.ToString();
+                                string al = advancedDataGridView1.Rows[i].Cells["ALMACEN"].FormattedValue.ToString();
+                                pasa[conta, 0] = id;
+                                pasa[conta, 1] = co;
+                                pasa[conta, 2] = no;
+                                pasa[conta, 3] = al;
+                                pasa[conta, 7] = advancedDataGridView1.Rows[i].Cells["DESTINATARIO"].FormattedValue.ToString();
+                                conta = conta + 1;
+                            }
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error - no se pudo insertar");
+                        Application.Exit();
+                        return;
+                    }
+                }
             }
-            return retorna;
+            if (tipo == "individual")
+            {
+                fi = 1;
+                string id = advancedDataGridView1.Rows[rowind].Cells["id"].FormattedValue.ToString();
+                string co = advancedDataGridView1.Rows[rowind].Cells["GUIA"].Value.ToString();
+                string no = advancedDataGridView1.Rows[rowind].Cells["CANT_B"].FormattedValue.ToString();
+                string al = advancedDataGridView1.Rows[rowind].Cells["ALMACEN"].FormattedValue.ToString();
+                pasa[0, 0] = id;
+                pasa[0, 1] = co;
+                pasa[0, 2] = no;
+                pasa[0, 3] = al;
+                pasa[0, 7] = advancedDataGridView1.Rows[rowind].Cells["DESTINATARIO"].FormattedValue.ToString();
+            }
+            if (fi > 0)
+            {
+                // vamos a llamar a movimas
+                movimas resem = new movimas("reserva", "", pasa);
+                var result = resem.ShowDialog();
+                if (result == DialogResult.Cancel)
+                {
+                    if (resem.retorno == true)
+                    {
+                        MySqlConnection cnx = new MySqlConnection(DB_CONN_STR);
+                        if (lib.procConn(cnx) == true)
+                        {
+                            try
+                            {
+                                for (int i = 0; i < dt.Rows.Count; i++)
+                                {
+                                    DataRow fila = dt.Rows[i];
+                                    for (int r = 0; r < 10; r++)
+                                    {
+                                        if (fila[1].ToString() == resem.para3[r, 0].ToString())
+                                        {
+                                            dt.Rows[i]["UNI_REP"] = resem.para3[r, 6].ToString();
+                                            dt.Rows[i]["REPARTIDOR"] = resem.para3[r, 4].ToString();
+                                            dt.Rows[i]["F_REPARTO"] = resem.para3[r, 5].ToString();
+                                            // actualizamos 
+                                            string actua = "update cabalmac set unidadrep=@ure,codigorep=@res,fecsalrep=@con,marca=0 where id=@idr";
+                                            MySqlCommand miact = new MySqlCommand(actua, cnx);
+                                            miact.Parameters.AddWithValue("@ure", resem.para3[r, 6].ToString());
+                                            miact.Parameters.AddWithValue("@res", resem.para3[r, 4].ToString());
+                                            miact.Parameters.AddWithValue("@con", resem.para3[r, 5].ToString().Substring(6, 4) + "-" + resem.para3[r, 5].ToString().Substring(3, 2) + "-" + resem.para3[r, 5].ToString().Substring(0, 2));
+                                            miact.Parameters.AddWithValue("@idr", resem.para3[r, 0].ToString());
+                                            miact.ExecuteNonQuery();
+                                            dt.Rows[i]["marca"] = 0;
+                                            miact.Dispose();
+                                        }
+                                    }
+                                }
+                            }
+                            catch (MySqlException ex)
+                            {
+                                MessageBox.Show(ex.Message, "Error de conexión");
+                                Application.Exit();
+                                return;
+                            }
+                        }
+                        cnx.Close();
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Debe seleccionar una acción individual", "Deben ser entre 1 y 10 Guías");
+            }
         }
         #endregion
 
@@ -550,7 +636,8 @@ namespace TransCarga
         }
         private void bt_reserva_Click(object sender, EventArgs e)                       // asignacion masiva a reparto
         {
-            // primero validamos
+            despacho("masivo",0);
+            /* primero validamos
             int fi = 0;
             for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
             {
@@ -650,6 +737,7 @@ namespace TransCarga
             {
                 MessageBox.Show("Debe seleccionar una acción individual","Deben ser entre 1 y 10 Guías");
             }
+            */
         }
         private void bt_salida_Click(object sender, EventArgs e)                        // salida de mercaderia hacia cliente
         {
@@ -672,9 +760,6 @@ namespace TransCarga
                     Application.Exit();
                     return;
                 }
-                //cn.Open();
-                //try
-                //{
                 string[,] pasa = new string[10, 8]
                 {
                     {"","","","","","","", "" },
@@ -726,7 +811,7 @@ namespace TransCarga
                         // actualizamos el datagridview
                         for (int i = 0; i < advancedDataGridView1.Rows.Count; i++)
                         {
-                            for (int x=0; x<11; x++)
+                            for (int x=0; x<10; x++)
                             {
                                 if (advancedDataGridView1.Rows[i].Cells["id"].Value.ToString() == pasa[x, 0])
                                 {
@@ -1348,53 +1433,22 @@ namespace TransCarga
                 if (advancedDataGridView1.CurrentCell != null &&
                     advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
                 {
-                    if (advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
-                    {   // string.IsNullOrWhiteSpace(advancedDataGridView1.Rows[e.RowIndex].Cells["reserva"].Value.ToString())
-                        var aa = MessageBox.Show("Realmente desea dar a despacho esta guía?", "Confirme por favor",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (aa == DialogResult.Yes)
-                        {
-                            string codpar = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString();
-                            movim rese = new movim("reserva", 
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString(),
-                                codpar,
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["codalm"].Value.ToString());    // modo,id_mueble,cod_mueble
-                            var result = rese.ShowDialog();
-                            if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu .... no sea aaa
-                            {
-                                if (rese.retorno == false) advancedDataGridView1.CurrentCell.Value = false;
-                                else 
-                                {
-                                    advancedDataGridView1.CurrentCell.Value = true;
-                                    advancedDataGridView1.CurrentRow.Cells["REPARTIDOR"].Value = rese.retval1;
-                                    advancedDataGridView1.CurrentRow.Cells["F_REPARTO"].Value = rese.retval2;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            advancedDataGridView1.CurrentCell.Value = false;
-                        }
+                    if (advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True" && 
+                        string.IsNullOrWhiteSpace(advancedDataGridView1.Rows[e.RowIndex].Cells["UNI_REP"].Value.ToString()))
+                    {
+                        despacho("individual", e.RowIndex);
                     }
                     else
                     {
-                        var aa = MessageBox.Show("Realmente desea retornar la guía?", "Confirme por favor",
+                        var aa = MessageBox.Show("Realmente retorna la guía y mercadería?", "Confirme por favor",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
                         if (aa == DialogResult.Yes)
                         {
-                            if (quitareserv(advancedDataGridView1.Rows[e.RowIndex].Cells["reserva"].Value.ToString(),
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString(),
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["contrat"].Value.ToString()
-                                ) == true)
+                            if (quitareserv(advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString()) == true)
                             {
-                                /* actualiza estado del contrato
-                                acciones acc = new acciones();
-                                acc.act_cont(advancedDataGridView1.Rows[e.RowIndex].Cells["contrat"].Value.ToString(), "");
-                                // borra las marcas en la grilla
-                                advancedDataGridView1.CurrentRow.Cells["reserva"].Value = "";
-                                advancedDataGridView1.CurrentRow.Cells["contrat"].Value = "";
-                                advancedDataGridView1.CurrentRow.Cells["chkreserva"].Value = 0;
-                                */
+                                advancedDataGridView1.Rows[e.RowIndex].Cells["UNI_REP"].Value = "";
+                                advancedDataGridView1.Rows[e.RowIndex].Cells["REPARTIDOR"].Value = "";
+                                advancedDataGridView1.Rows[e.RowIndex].Cells["F_REPARTO"].Value = "";
                             }
                         }
                         else
@@ -1404,21 +1458,28 @@ namespace TransCarga
                     }
                 }
             }
-            if (advancedDataGridView1.Columns[e.ColumnIndex].Name == "chksalida")               // entrega directa al cliente
+            if (advancedDataGridView1.Columns[e.ColumnIndex].Name == "chksalida")               // entrega al cliente
             {
                 if (advancedDataGridView1.CurrentCell != null &&
                     advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
                 {
                     if (advancedDataGridView1.CurrentCell.FormattedValue.ToString() == "True")
-                    {   // string.IsNullOrWhiteSpace(advancedDataGridView1.Rows[e.RowIndex].Cells["almdes"].Value.ToString())
+                    {
                         var aa = MessageBox.Show("Realmente desea entregar la mercadería?", "Confirme por favor",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
-                            movim rese = new movim("salida",
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString(),
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString(),
-                                advancedDataGridView1.Rows[e.RowIndex].Cells["ALMACEN"].Value.ToString());    // modo,id_mueble,cod_mueble
+                            string[] pasa = new string[8]
+                            {"","","","","","","", "" };
+                            pasa[0] = advancedDataGridView1.Rows[e.RowIndex].Cells["id"].FormattedValue.ToString();
+                            pasa[1] = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString();
+                            pasa[2] = advancedDataGridView1.Rows[e.RowIndex].Cells["CANT_B"].FormattedValue.ToString();
+                            pasa[3] = advancedDataGridView1.Rows[e.RowIndex].Cells["ALMACEN"].FormattedValue.ToString();
+                            pasa[4] = advancedDataGridView1.Rows[e.RowIndex].Cells["REPARTIDOR"].FormattedValue.ToString();
+                            pasa[5] = advancedDataGridView1.Rows[e.RowIndex].Cells["F_REPARTO"].FormattedValue.ToString();
+                            pasa[6] = advancedDataGridView1.Rows[e.RowIndex].Cells["UNI_REP"].FormattedValue.ToString();
+                            pasa[7] = advancedDataGridView1.Rows[e.RowIndex].Cells["DESTINATARIO"].FormattedValue.ToString();
+                            movim rese = new movim("salida",pasa);
                             var result = rese.ShowDialog();
                             if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu .... no sea aaa
                             {
@@ -1426,11 +1487,8 @@ namespace TransCarga
                                 else
                                 {
                                     advancedDataGridView1.CurrentCell.Value = true;
-                                    //advancedDataGridView1.CurrentRow.Cells["salida"].Value = rese.retval1;
-                                    //advancedDataGridView1.CurrentRow.Cells["evento"].Value = rese.retval2;
-                                    advancedDataGridView1.CurrentRow.Cells["almdes"].Value = rese.retval3;
-                                    if (advancedDataGridView1.CurrentRow.Cells["salida"].Value.ToString() == "0")
-                                    {   // debe borrarse la fila del datagrid porque la salida fue por ajuste
+                                    //if (advancedDataGridView1.CurrentRow.Cells["salida"].Value.ToString() == "0")
+                                    {
                                         advancedDataGridView1.Rows.RemoveAt(e.RowIndex);
                                     }
                                 }
@@ -1490,6 +1548,16 @@ namespace TransCarga
                 dataGridView1.HorizontalScrollingOffset = e.NewValue;
             }
         }
+        private void advancedDataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (Tx_modo.Text.Trim() != "" && advancedDataGridView1.Columns[e.ColumnIndex].Name == "GUIA")
+            {
+                string vser = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(0, 4);
+                string vnum = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(4, 8);
+                pub.muestra_gr(vser, vnum, nfCRgr);
+            }
+        }
         #endregion
+
     }
 }

@@ -244,4 +244,5 @@ form movim, adecuaciones generales .............................................
 form publico, agregar visualizacion de gr en CR para todo el sistema ............................... ok 02/11/2021
 form repsoper, cambiar a publico la visualizacion de gr en CR ...................................... ok 02/11/2021
 form repsalmac, agregar reporte de salidas de merca ................................................ ok 03/11/2021
-form recshum, creación del formulario para administrar recursos humanos ............................ 
+form recshum, creación del formulario para administrar recursos humanos ............................ ok 04/11/2021 - 1ra versión, en la segunda se mejorá
+form TransMain, agregar form de rr.hh. en el menú .................................................. ok 04/11/2021

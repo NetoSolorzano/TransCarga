@@ -182,11 +182,10 @@ namespace TransCarga
         }
         private void grilla()                                                           // arma la grilla1
         {
-            Font font = new Font("Tahoma", 7);
+            Font font = new Font("Tahoma", 8);
             advancedDataGridView1.RowHeadersWidth = 20;
             advancedDataGridView1.ColumnHeadersHeight = 20;
             advancedDataGridView1.DefaultCellStyle.Font = font;
-            //advancedDataGridView1.
             //
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
             DataGridViewCheckBoxColumn checkColum2 = new DataGridViewCheckBoxColumn();
@@ -545,7 +544,7 @@ namespace TransCarga
             if (fi > 0)
             {
                 // vamos a llamar a movimas
-                movimas resem = new movimas("reserva", "", pasa);
+                movimas resem = new movimas("reserva", Program.vg_luse, pasa);
                 var result = resem.ShowDialog();
                 if (result == DialogResult.Cancel)
                 {
@@ -809,7 +808,7 @@ namespace TransCarga
                     return;
                 }
                 // vamos a llamar a movimas
-                movimas resem = new movimas("salida", "", pasa);    // modo,array,libre
+                movimas resem = new movimas("salida", Program.vg_luse, pasa);    // modo,array,libre
                 var result = resem.ShowDialog();
                 if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
                 {

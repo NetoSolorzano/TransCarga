@@ -29,15 +29,16 @@ namespace TransCarga
                 {"","","","","","","" },
                 {"","","","","","","" }
         };
-
+        AutoCompleteStringCollection repart = new AutoCompleteStringCollection();       // autocompletado repartidores cobradores
         string para1, para2;
         libreria lib = new libreria();
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
-        public movimas(string parm1,string parm2,string[,] parm3)    // parm1 = modo = reserva o salida
-        {                                                       // parm2 = 
-            InitializeComponent();                              // parm3 = string[,] pasa = new string[10, 7]
-            para1 = parm1;  // modo
+        public movimas(string parm1,string parm2,string[,] parm3)    //
+        {
+            InitializeComponent();
+            para1 = parm1;
+            para2 = parm2;
             dataGridView1.Columns.Add("id", "ID");
             dataGridView1.Columns.Add("guia", "GUIA");
             dataGridView1.Columns.Add("cant", "CANT");
@@ -95,6 +96,11 @@ namespace TransCarga
         private void movimas_Load(object sender, EventArgs e)
         {
             combos();
+            autorepar();                                     // autocompleta repartidores
+            // autocompletados
+            tx_contra.AutoCompleteMode = AutoCompleteMode.Suggest;
+            tx_contra.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_contra.AutoCompleteCustomSource = repart;
         }
         private void movimas_KeyDown(object sender, KeyEventArgs e)
         {
@@ -213,26 +219,37 @@ namespace TransCarga
             }
             return bien;
         }
-        private void tx_contra_Leave(object sender, EventArgs e)
+        private void tx_contra_Leave(object sender, EventArgs e)    // repartidores cobradores
         {
             if (tx_contra.Text == "")
             {
-                button1.Focus();
+                //button1.Focus();
+                tx_contra.Focus();
                 return;
             }
-            MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-            cn.Open();
-            try
+            using (MySqlConnection cn = new MySqlConnection(DB_CONN_STR))
             {
-
+                if (lib.procConn(cn) == true)
+                {
+                    string lee = "select count(id) from cabrrhh where sede=@sed and codigo=@cod";
+                    using (MySqlCommand micon = new MySqlCommand(lee,cn))
+                    {
+                        micon.Parameters.AddWithValue("@sed", Program.vg_luse);
+                        micon.Parameters.AddWithValue("@cod", tx_contra.Text);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                if (dr.GetInt16(0) == 0)
+                                {
+                                    tx_contra.Focus();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message,"No se puede conectar con el servidor");
-                Application.Exit();
-                return;
-            }
-            cn.Close();
         }
         private void combos()
         {
@@ -267,6 +284,29 @@ namespace TransCarga
                 return;
             }
         }
+        private void autorepar()
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    string consulta = "select codigo from cabrrhh where sede=@sed";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@sed", para2);
+                        MySqlDataReader dr = micon.ExecuteReader();
+                        if (dr.HasRows == true)
+                        {
+                            while (dr.Read())
+                            {
+                                repart.Add(dr["codigo"].ToString());
+                            }
+                        }
+                        dr.Close();
+                    }
+                }
+            }
+        }
         private void cmb_dest_SelectedIndexChanged(object sender, EventArgs e)
         {
             MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
@@ -292,7 +332,6 @@ namespace TransCarga
                 return;
             }
         }
-
         private void rb_mov_CheckedChanged(object sender, EventArgs e)
         {
             if (rb_mov.Checked == true)

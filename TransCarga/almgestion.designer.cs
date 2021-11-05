@@ -467,11 +467,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.advancedDataGridView1.AutoGenerateContextFilters = true;
-            this.advancedDataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.advancedDataGridView1.DateWithTime = false;
             this.advancedDataGridView1.Location = new System.Drawing.Point(2, 83);
             this.advancedDataGridView1.Name = "advancedDataGridView1";
-            this.advancedDataGridView1.RowTemplate.Height = 17;
+            this.advancedDataGridView1.RowTemplate.Height = 23;
             this.advancedDataGridView1.Size = new System.Drawing.Size(969, 407);
             this.advancedDataGridView1.TabIndex = 170;
             this.advancedDataGridView1.TimeFilter = false;

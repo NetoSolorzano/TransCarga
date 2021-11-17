@@ -20,7 +20,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "cabpregr";            // 
-        
+
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -63,6 +63,15 @@ namespace TransCarga
         DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
         DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
+
+        public Rectangle coc = new Rectangle();     // cobranza
+        public Rectangle cod = new Rectangle();
+        public Rectangle grc = new Rectangle();     // guia
+        public Rectangle grd = new Rectangle();
+        public Rectangle plc = new Rectangle();     // manifiesto
+        public Rectangle pld = new Rectangle();
+        public Rectangle dvc = new Rectangle();     // documento de venta
+        public Rectangle dvd = new Rectangle();
 
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
@@ -443,7 +452,7 @@ namespace TransCarga
             //
             if (modo == "1")
             {
-                for (int i=1;i<10;i++)
+                for (int i = 1; i < 10; i++)
                 {
                     dgv_resumen.Columns[i].Visible = false;
                 }
@@ -566,7 +575,7 @@ namespace TransCarga
         }
         private void tx_codped_Leave(object sender, EventArgs e)        // RESUMEN CLIENTE valida existencia de # documento
         {
-            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
+            if (tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
                 try
                 {
@@ -583,7 +592,7 @@ namespace TransCarga
                         MySqlDataReader dr = micon.ExecuteReader();
                         if (dr.Read())
                         {
-                            if(dr[0] == null)
+                            if (dr[0] == null)
                             {
                                 MessageBox.Show("No existe el cliente", "Atención verifique", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                                 tx_codped.Text = "";
@@ -618,7 +627,7 @@ namespace TransCarga
         }
         private void bt_resumen_Click(object sender, EventArgs e)       // genera resumen de cliente
         {
-            if(tx_codped.Text.Trim() != "" && tx_dat_tido.Text != "")
+            if (tx_codped.Text.Trim() != "" && tx_dat_tido.Text != "")
             {
                 tx_codped_Leave(null, null);
                 dt.Clear();
@@ -638,7 +647,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@nudo", tx_codped.Text.Trim());
                         micon.Parameters.AddWithValue("@fecini", dtp_ser_fini.Value.ToString("yyyy-MM-dd"));
                         micon.Parameters.AddWithValue("@fecfin", dtp_ser_fina.Value.ToString("yyyy-MM-dd"));
-                        micon.Parameters.AddWithValue("@tope", (rb_total.Checked == true)? "T" : "P");      // T=todos || P=pendientes de cob
+                        micon.Parameters.AddWithValue("@tope", (rb_total.Checked == true) ? "T" : "P");      // T=todos || P=pendientes de cob
                         MySqlDataAdapter da = new MySqlDataAdapter(micon);
                         da.Fill(dt);
                         dgv_resumen.DataSource = dt;
@@ -672,7 +681,7 @@ namespace TransCarga
         {
             if (rb_GR_dest.Checked == false && rb_GR_origen.Checked == false && cmb_sede_guias.SelectedIndex > -1)
             {
-                MessageBox.Show("Seleccione origen o destino?","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("Seleccione origen o destino?", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 rb_GR_origen.Focus();
                 return;
             }
@@ -680,7 +689,7 @@ namespace TransCarga
             {
                 conn.Open();
                 string consulta = "rep_oper_guiai1";
-                using (MySqlCommand micon = new MySqlCommand(consulta,conn))
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
                     micon.Parameters.AddWithValue("@loca", (tx_sede_guias.Text != "") ? tx_sede_guias.Text : "");
@@ -724,7 +733,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@fecfin", dtp_fter_plan.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@loca", (tx_dat_sede_plan.Text != "") ? tx_dat_sede_plan.Text : "");
                     micon.Parameters.AddWithValue("@esta", (tx_dat_estad_plan.Text != "") ? tx_dat_estad_plan.Text : "");
-                    micon.Parameters.AddWithValue("@excl", (chk_exclu_plan.Checked == true)? "1" : "0");
+                    micon.Parameters.AddWithValue("@excl", (chk_exclu_plan.Checked == true) ? "1" : "0");
                     micon.Parameters.AddWithValue("@orides", (rb_PLA_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
@@ -787,6 +796,9 @@ namespace TransCarga
                         da.Fill(dt);
                         dgv_histGR.DataSource = dt;
                         grilla("dgv_histGR");
+                        //
+                        histograma hg = new histograma(dt);
+                        hg.Show();
                     }
                     string resulta = lib.ult_mov(nomform, nomtab, asd);
                     if (resulta != "OK")                                        // actualizamos la tabla usuarios
@@ -800,7 +812,7 @@ namespace TransCarga
         {
             if (rb_imSimp.Checked == false && rb_imComp.Checked == false)
             {
-                MessageBox.Show("Seleccione formato","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("Seleccione formato", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 rb_imSimp.Focus();
                 return;
             }
@@ -1026,7 +1038,7 @@ namespace TransCarga
             if (tabControl1.Enabled == false) return;
             if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)        // resumen de cliente
             {
-                nombre = "resumen_cliente_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "resumen_cliente_" + tx_codped.Text.Trim() + "_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
@@ -1412,7 +1424,7 @@ namespace TransCarga
                 dgv_guias.Enabled = true;
                 dgv_guias.ReadOnly = false;
                 dgv_guias.Columns[0].ReadOnly = false;
-                for (int i=1;i<dgv_guias.Columns.Count;i++)     // NO SALE EL CHECK, NO SE VE
+                for (int i = 1; i < dgv_guias.Columns.Count; i++)     // NO SALE EL CHECK, NO SE VE
                 {
                     dgv_guias.Columns[i].ReadOnly = true;
                 }
@@ -1510,7 +1522,7 @@ namespace TransCarga
             }
             if (tabControl1.SelectedTab.Name == "tabvtas")
             {
-                
+
             }
             if (tabControl1.SelectedTab.Name == "tabgrti")
             {
@@ -1550,7 +1562,7 @@ namespace TransCarga
                                 "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " +
                                 "left join desc_loc c on c.idcodice=a.locorigen " +
                                 "left join desc_loc d on d.idcodice=a.locdestin " +
-                                "left join desc_est e on e.idcodice=a.estadoser " + 
+                                "left join desc_est e on e.idcodice=a.estadoser " +
                                 "where a.serplacar=@ser and a.numplacar=@num";
                             using (MySqlCommand micon = new MySqlCommand(consulta, con))
                             {
@@ -1591,7 +1603,7 @@ namespace TransCarga
             }
             if (tabControl1.SelectedTab.Name == "tabreval")
             {
-                
+
             }
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos

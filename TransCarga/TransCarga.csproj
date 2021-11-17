@@ -197,6 +197,12 @@
     <Compile Include="guiati.designer.cs">
       <DependentUpon>guiati.cs</DependentUpon>
     </Compile>
+    <Compile Include="histograma.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="histograma.Designer.cs">
+      <DependentUpon>histograma.cs</DependentUpon>
+    </Compile>
     <Compile Include="ingcargalm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -420,6 +426,9 @@
     <EmbeddedResource Include="guiati.resx">
       <DependentUpon>guiati.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="histograma.resx">
+      <DependentUpon>histograma.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ingcargalm.resx">
       <DependentUpon>ingcargalm.cs</DependentUpon>
     </EmbeddedResource>
@@ -558,6 +567,9 @@
     <None Include="Resources\logo_solorsoft.png" />
     <None Include="Resources\ticket32.png" />
     <None Include="Resources\close_square.png" />
+    <None Include="Resources\flecha100.png" />
+    <None Include="Resources\flecha100T.png" />
+    <None Include="Resources\abajo100T.png" />
     <Content Include="solorsoft.ico" />
   </ItemGroup>
   <ItemGroup>

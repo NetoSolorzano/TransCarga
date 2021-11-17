@@ -624,7 +624,8 @@ namespace TransCarga
                         {
                             if (lib.procConn(conn) == true)
                             {
-                                string consulta = "select count(id) from cabegresos where concat(serdoco,numdoco)=@doco";
+                                //string consulta = "select count(id) from cabegresos where concat(serdoco,numdoco)=@doco";
+                                string consulta = "select count(id) from cabegresos where concat(seregre,numegre)=@doco";       // 16/11/2021
                                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                                 {
                                     micon.Parameters.AddWithValue("@doco", tx_serie.Text + tx_numero.Text);

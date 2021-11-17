@@ -42,6 +42,7 @@ namespace TransCarga
             jaladatos();
             //
             Tx_user.Focus();
+            //MessageBox.Show(DB_CONN_STR);
         }
         private void init()
         {

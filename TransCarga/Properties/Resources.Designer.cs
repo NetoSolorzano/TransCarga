@@ -63,6 +63,16 @@ namespace TransCarga.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap abajo100T {
+            get {
+                object obj = ResourceManager.GetObject("abajo100T", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap almacen48 {
             get {
                 object obj = ResourceManager.GetObject("almacen48", resourceCulture);
@@ -96,6 +106,26 @@ namespace TransCarga.Properties {
         internal static System.Drawing.Bitmap fec_elect21 {
             get {
                 object obj = ResourceManager.GetObject("fec_elect21", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap flecha100 {
+            get {
+                object obj = ResourceManager.GetObject("flecha100", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap flecha100T {
+            get {
+                object obj = ResourceManager.GetObject("flecha100T", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

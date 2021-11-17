@@ -247,3 +247,6 @@ form repsalmac, agregar reporte de salidas de merca ............................
 form recshum, creación del formulario para administrar recursos humanos ............................ ok 04/11/2021 - 1ra versión, en la segunda se mejorá
 form TransMain, agregar form de rr.hh. en el menú .................................................. ok 04/11/2021
 form movimas, agregar autocompletado a campo repartidor ............................................ ok 05/11/2021
+P.A. res_serv_clte, agregar columnas de almacen y reparto .......................................... ok 08/11/2021
+P.A. rep_oper_histGR, agregar filas para almacen y reparto ......................................... ok 08/11/2021
+form egresosdep, correccion de validacion de vale/recibo repetido .................................. ok 16/11/2021

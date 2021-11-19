@@ -1421,8 +1421,11 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                     micon.ExecuteNonQuery();
                 }
-                using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
+                string vavo = "select numnota from cabdebcred where martnot=@mtdvta and sernota=@sernot order by id desc limit 1";
+                using (MySqlCommand micon = new MySqlCommand(vavo, conn))  // select last_insert_id()
                 {
+                    micon.Parameters.AddWithValue("@mtdvta", cmb_tdv.Text.Substring(0, 1) + tx_dat_inot.Text.Trim());
+                    micon.Parameters.AddWithValue("@sernot", tx_serie.Text);
                     using (MySqlDataReader dr = micon.ExecuteReader())
                     {
                         if (dr.Read())

@@ -12,15 +12,20 @@ namespace TransCarga
 {
     public partial class histograma : Form
     {
+        publico pub = new publico();
         public DataTable data;
-        public histograma(DataTable dt)
+        string fCR_gr;                                  // nombre del formato CR para guias
+        string fCR_pl;                                  // nombre del formato CR para planillas de carga
+        public histograma(DataTable dt, string rpt_grt, string rpt_pla) // datatable,CR_gr,CR_planilla,
         {
             InitializeComponent();
             this.Width = 500;
-            this.Height = 600;
+            this.Height = 480;
+            this.Left = Screen.PrimaryScreen.Bounds.Width - this.Width - 20;
             if (data != null ) data.Clear();
             data = dt.Copy();
-            
+            fCR_gr = rpt_grt;
+            fCR_pl = rpt_pla;
         }
         private void flechaV(int ptox, int ptoy, int anchox, int largox)
         {
@@ -44,25 +49,27 @@ namespace TransCarga
             box.Height = largox;
             this.Controls.Add(box);
         }
-        private void cuadro_Click(object sender, MouseEventArgs e)  // 
+        private void cuadro_Click(object sender, MouseEventArgs e) 
         {
             Panel algo = sender as Panel;
-            MessageBox.Show(algo.Tag.ToString());
-
+            string ser = algo.Tag.ToString().Substring(3, 4);
+            string num = algo.Tag.ToString().Substring(8, 8);
+            if (algo.Tag.ToString().Substring(0, 2) == "GR") pub.muestra_gr(ser, num, fCR_gr);
+            if (algo.Tag.ToString().Substring(0, 2) == "PC") pub.muestra_pl(ser, num, fCR_pl);
         }
         private void histograma_Load(object sender, EventArgs e)
         {
             Font tdet = new Font("Arial", 7);                    // leta para detalles
-            int ctg = 0, ctp = 0, ctd = 0, ctcdv = 0, ctcgr = 0; // contador de cuadros guia, manifiestos, comprobantes, cobranzas de FT, cobranzas de GR
-            int anchox = 120;       // ancho caja
+            int ctg = 0, ctp = 0, ctd = 0, ctcdv = 0, ctcgr = 0; // contador de cuadros guia, manifiestos, comprobantes, cobranzasFT, cobranzasGR
+            int ctr = 0, ctnc = 0;   // contador de cuadros recepAlm, notasCred
+            int anchox = 140;       // ancho caja
             int largoy = 140;       // largo caja
             int larFlecha = 100;     // largo de las flechas
-                                    //
-            int ptoxf2_ini = 50;
+            int ptoxf2_ini = 20;
             int alfidet = 13;       // alto fila detalle
             int distdet = 11;       // distancia entre filas detalle
-            int ptoxF1 = 50;
-            int ptoyF1 = 50;
+            int ptoxF1 = 20;
+            int ptoyF1 = 20;
             int ptoxF2 = ptoxf2_ini;
             int ptoyF2 = ptoyF1 + largoy + 10;
             int ccf2 = 0;
@@ -75,13 +82,21 @@ namespace TransCarga
                 }
                 if (row.ItemArray[0].ToString() == "PLA.CARGA") // Fila1
                 {
-                    ptoxF1 = 50 + anchox + 10;
+                    ptoxF1 = ptoxF1 + anchox + 10;
                     flechaH(ptoxF1, ptoyF1, larFlecha, largoy);
                     ptoxF1 = ptoxF1 + larFlecha + 10;
-                    ptoyF1 = 50;
                     ctp = ctp + 1;
                     pinta_mani(ctp, anchox, largoy, ptoxF1, ptoyF1, alfidet, distdet, tdet, row);
                 }
+                if (row.ItemArray[0].ToString() == "RECEPCION") // fila 1
+                {
+                    ptoxF1 = ptoxF1 + anchox + 10;
+                    flechaH(ptoxF1, ptoyF1, larFlecha, largoy);
+                    ptoxF1 = ptoxF1 + larFlecha + 10;
+                    ctr = ctr + 1;
+                    pinta_recep(ctr, anchox, largoy, ptoxF1, ptoyF1, alfidet, distdet, tdet, row);  // recepcion almacen
+                }
+                // ENTREGA / DESPACHO
                 if (row.ItemArray[0].ToString() == "DOC.VENTA") // fila2
                 {
                     if (ccf2 == 0)
@@ -133,7 +148,27 @@ namespace TransCarga
                     ctcgr = ctcgr + 1;
                     pinta_cogr(ctcgr, anchox, largoy, ptoxF2, ptoyF2, alfidet, distdet, tdet, row);
                 }
+                // NOTA DE CREDITO
+                if (row.ItemArray[0].ToString() == "NOTA CRED.")    // fila 2
+                {
+                    if (ccf2 == 0)
+                    {
+                        flechaV(ptoxF2, ptoyF2, anchox, larFlecha);
+                        ptoyF2 = ptoyF2 + larFlecha + 10;
+                    }
+                    else
+                    {
+                        ptoxF2 = ptoxF2 + anchox + 10;
+                        flechaH(ptoxF2, ptoyF2, larFlecha, largoy);
+                        ptoxF2 = ptoxF2 + larFlecha + 10;
+                    }
+                    ccf2 = ccf2 + 1;
+                    ctnc = ctnc + 1;
+                    pinta_ncred(ctnc, anchox, largoy, ptoxF2, ptoyF2, alfidet, distdet, tdet, row);
+                }
             }
+            if (this.Width <= (ptoxF2 + anchox + 10)) this.Width = ptoxF2 + anchox + 30;
+            if (this.Width <= (ptoxF1 + anchox + 10)) this.Width = ptoxF1 + anchox + 30;
         }
         private void pinta_guia(int ctg, int anchox, int largoy, int ptoxF1, int ptoyF1, int alfidet, int distdet, Font tdet, DataRow row)
         {
@@ -196,9 +231,10 @@ namespace TransCarga
             tdsa.Width = anchox;
 
             Panel cuadro = new Panel();
-            cuadro.BackColor = Color.LightBlue;
+            if (row.ItemArray[1].ToString() == "Anulado") cuadro.BackColor = Color.Pink;
+            else cuadro.BackColor = Color.LightBlue;
             cuadro.BorderStyle = BorderStyle.Fixed3D;
-            cuadro.Tag = "GR" + row.ItemArray[11].ToString();
+            cuadro.Tag = "GR-" + row.ItemArray[3].ToString();
             cuadro.Name = "tx_guia" + ctg;
             cuadro.Width = anchox;
             cuadro.Height = largoy;
@@ -274,11 +310,12 @@ namespace TransCarga
             tdde.AutoSize = false;
             tdde.Height = alfidet;
             tdde.Width = anchox;
-            //
+
             Panel cmani = new Panel();
-            cmani.BackColor = Color.LightBlue;
+            if (row.ItemArray[1].ToString() == "Anulado") cmani.BackColor = Color.Pink;
+            else cmani.BackColor = Color.LightBlue;
             cmani.BorderStyle = BorderStyle.Fixed3D;
-            cmani.Tag = "PC" + row.ItemArray[11].ToString();
+            cmani.Tag = "PC-" + row.ItemArray[3].ToString();
             cmani.Name = "tx_manif" + ctp;
             cmani.Width = anchox;
             cmani.Height = largoy;
@@ -355,7 +392,8 @@ namespace TransCarga
             tdor.Width = anchox;
 
             Panel cdv = new Panel();
-            cdv.BackColor = Color.LightBlue;
+            if (row.ItemArray[1].ToString() == "Anulado") cdv.BackColor = Color.Pink;
+            else cdv.BackColor = Color.LightBlue;
             cdv.BorderStyle = BorderStyle.Fixed3D;
             cdv.Tag = "DV" + row.ItemArray[11].ToString();
             cdv.Name = "tx_dv" + ctd;
@@ -371,7 +409,8 @@ namespace TransCarga
             cdv.Controls.Add(tdfe);
             cdv.Controls.Add(tdor);
             cdv.Controls.Add(tdva);
-            cdv.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
+
+            //cdv.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
         }
         private void pinta_codv(int ctcdv, int anchox, int largoy, int ptoxF2, int ptoyF2, int alfidet, int distdet, Font tdet, DataRow row)
         {
@@ -432,9 +471,17 @@ namespace TransCarga
             tdor.AutoSize = false;
             tdor.Height = alfidet;
             tdor.Width = anchox;
-
+            Label tdba = new Label();
+            tdba.Text = "D.Base: " + row.ItemArray[12].ToString();
+            tdba.Name = "dbase";
+            tdba.Left = 3; tdba.Top = tdor.Top + distdet;
+            tdba.Font = tdet;
+            tdba.AutoSize = false;
+            tdba.Height = alfidet;
+            tdba.Width = anchox;
             Panel ccodv = new Panel();
-            ccodv.BackColor = Color.LightBlue;
+            if (row.ItemArray[1].ToString() == "Anulado") ccodv.BackColor = Color.Pink;
+            else ccodv.BackColor = Color.LightBlue;
             ccodv.BorderStyle = BorderStyle.Fixed3D;
             ccodv.Tag = "CODV" + row.ItemArray[11].ToString();
             ccodv.Name = "tx_codv" + ctcdv;
@@ -450,7 +497,8 @@ namespace TransCarga
             ccodv.Controls.Add(tdfe);
             ccodv.Controls.Add(tdor);
             ccodv.Controls.Add(tdva);
-            ccodv.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
+            ccodv.Controls.Add(tdba);
+            //ccodv.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
         }
         private void pinta_cogr(int ctcgr, int anchox, int largoy, int ptoxF2, int ptoyF2, int alfidet, int distdet, Font tdet, DataRow row)
         {
@@ -513,7 +561,8 @@ namespace TransCarga
             tdor.Width = anchox;
 
             Panel ccogr = new Panel();
-            ccogr.BackColor = Color.LightBlue;
+            if (row.ItemArray[1].ToString() == "Anulado") ccogr.BackColor = Color.Pink;
+            else ccogr.BackColor = Color.LightBlue;
             ccogr.BorderStyle = BorderStyle.Fixed3D;
             ccogr.Tag = "COGR" + row.ItemArray[11].ToString();
             ccogr.Name = "tx_cogr" + ctcgr;
@@ -529,7 +578,168 @@ namespace TransCarga
             ccogr.Controls.Add(tdfe);
             ccogr.Controls.Add(tdor);
             ccogr.Controls.Add(tdva);
-            ccogr.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
+
+            //ccogr.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
+        }
+        private void pinta_recep(int ctr, int anchox, int largoy, int ptoxF1, int ptoyF1, int alfidet, int distdet, Font tdet, DataRow row)
+        {
+            TextBox tit = new TextBox();
+            tit.Name = "tx_recepAlm" + ctr;
+            tit.Text = "RECEPCION";
+            tit.Enabled = false;
+            tit.TextAlign = HorizontalAlignment.Center;
+            tit.ForeColor = Color.Black;
+            tit.BackColor = Color.White;
+            tit.Width = anchox;
+
+            Label tdid = new Label();
+            tdid.Text = "Id.: " + row.ItemArray[11].ToString();
+            tdid.Name = "id";
+            tdid.Left = 3; tdid.Top = 20;
+            tdid.AutoSize = false;
+            tdid.Height = alfidet;
+            tdid.Width = anchox;
+            tdid.Font = tdet;
+            Label tdes = new Label();
+            tdes.Text = "Estado: " + row.ItemArray[1].ToString();
+            tdes.Name = "estado";
+            tdes.Left = 3; tdes.Top = tdid.Top + distdet;
+            tdes.Font = tdet;
+            tdes.AutoSize = false;
+            tdes.Height = alfidet;
+            tdes.Width = anchox;
+            Label tdnr = new Label();
+            tdnr.Text = "Nro.: " + row.ItemArray[3].ToString();
+            tdnr.Name = "Nro.";
+            tdnr.Left = 3; tdnr.Top = tdes.Top + distdet;
+            tdnr.Font = tdet;
+            tdnr.AutoSize = false;
+            tdnr.Height = alfidet;
+            tdnr.Width = anchox;
+            Label tdfe = new Label();
+            tdfe.Text = "F.Emisión: " + row.ItemArray[2].ToString().Substring(0, 10);
+            tdfe.Name = "Emisión";
+            tdfe.Left = 3; tdfe.Top = tdnr.Top + distdet;
+            tdfe.Font = tdet;
+            tdfe.AutoSize = false;
+            tdfe.Height = alfidet;
+            tdfe.Width = anchox;
+            Label tdor = new Label();
+            tdor.Text = "Origen: " + row.ItemArray[4].ToString();
+            tdor.Name = "Origen";
+            tdor.Left = 3; tdor.Top = tdfe.Top + distdet;
+            tdor.Font = tdet;
+            tdor.AutoSize = false;
+            tdor.Height = alfidet;
+            tdor.Width = anchox;
+            Label tdde = new Label();
+            tdde.Text = "Destino: " + row.ItemArray[5].ToString();
+            tdde.Name = "destino";
+            tdde.Left = 3; tdde.Top = tdor.Top + distdet;
+            tdde.Font = tdet;
+            tdde.AutoSize = false;
+            tdde.Height = alfidet;
+            tdde.Width = anchox;
+            // x.DOCUMENTO,ESTADO,x.FECHA,x.NUMERO,ORIGEN,DESTINO,x.CANT,x.PESO,MONEDA,x.TOTAL,x.SALDO,x.ID
+            Panel cmani = new Panel();
+            if (row.ItemArray[1].ToString() == "Anulado") cmani.BackColor = Color.Pink;
+            else cmani.BackColor = Color.LightBlue;
+            cmani.BorderStyle = BorderStyle.Fixed3D;
+            cmani.Tag = "RE-" + row.ItemArray[3].ToString();
+            cmani.Name = "tx_recepAlm" + ctr;
+            cmani.Width = anchox;
+            cmani.Height = largoy;
+            cmani.Left = ptoxF1;
+            cmani.Top = ptoyF1;
+            this.Controls.Add(cmani);
+            cmani.Controls.Add(tdid);
+            cmani.Controls.Add(tdes);
+            cmani.Controls.Add(tdnr);
+            cmani.Controls.Add(tdfe);
+            cmani.Controls.Add(tdor);
+            cmani.Controls.Add(tdde);
+            cmani.Controls.Add(tit);
+            //cmani.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
+        }
+        private void pinta_ncred(int ctnc, int anchox, int largoy, int ptoxF1, int ptoyF1, int alfidet, int distdet, Font tdet, DataRow row)
+        {
+            TextBox tit = new TextBox();
+            tit.Name = "tx_notdred" + ctnc;
+            tit.Text = "NOTA CRED.";
+            tit.Enabled = false;
+            tit.TextAlign = HorizontalAlignment.Center;
+            tit.ForeColor = Color.Black;
+            tit.BackColor = Color.White;
+            tit.Width = anchox;
+
+            Label tdid = new Label();
+            tdid.Text = "Id.: " + row.ItemArray[11].ToString();
+            tdid.Name = "id";
+            tdid.Left = 3; tdid.Top = 20;
+            tdid.AutoSize = false;
+            tdid.Height = alfidet;
+            tdid.Width = anchox;
+            tdid.Font = tdet;
+            Label tdes = new Label();
+            tdes.Text = "Estado: " + row.ItemArray[1].ToString();
+            tdes.Name = "estado";
+            tdes.Left = 3; tdes.Top = tdid.Top + distdet;
+            tdes.Font = tdet;
+            tdes.AutoSize = false;
+            tdes.Height = alfidet;
+            tdes.Width = anchox;
+            Label tdnr = new Label();
+            tdnr.Text = "Nro.: " + row.ItemArray[3].ToString();
+            tdnr.Name = "Nro.";
+            tdnr.Left = 3; tdnr.Top = tdes.Top + distdet;
+            tdnr.Font = tdet;
+            tdnr.AutoSize = false;
+            tdnr.Height = alfidet;
+            tdnr.Width = anchox;
+            Label tdfe = new Label();
+            tdfe.Text = "F.Emisión: " + row.ItemArray[2].ToString().Substring(0, 10);
+            tdfe.Name = "Emisión";
+            tdfe.Left = 3; tdfe.Top = tdnr.Top + distdet;
+            tdfe.Font = tdet;
+            tdfe.AutoSize = false;
+            tdfe.Height = alfidet;
+            tdfe.Width = anchox;
+            Label tdor = new Label();
+            tdor.Text = "Sede: " + row.ItemArray[4].ToString();
+            tdor.Name = "Origen";
+            tdor.Left = 3; tdor.Top = tdfe.Top + distdet;
+            tdor.Font = tdet;
+            tdor.AutoSize = false;
+            tdor.Height = alfidet;
+            tdor.Width = anchox;
+            Label tdde = new Label();
+            tdde.Text = "D.Base: " + row.ItemArray[12].ToString();
+            tdde.Name = "docbase";
+            tdde.Left = 3; tdde.Top = tdor.Top + distdet;
+            tdde.Font = tdet;
+            tdde.AutoSize = false;
+            tdde.Height = alfidet;
+            tdde.Width = anchox;
+            // x.DOCUMENTO,ESTADO,x.FECHA,x.NUMERO,ORIGEN,DESTINO,x.CANT,x.PESO,MONEDA,x.TOTAL,x.SALDO,x.ID,x.DOCORIG
+            Panel cmani = new Panel();
+            if (row.ItemArray[1].ToString() == "Anulado") cmani.BackColor = Color.Pink;
+            else cmani.BackColor = Color.LightBlue;
+            cmani.BorderStyle = BorderStyle.Fixed3D;
+            cmani.Tag = "RE-" + row.ItemArray[3].ToString();
+            cmani.Name = "tx_recepAlm" + ctnc;
+            cmani.Width = anchox;
+            cmani.Height = largoy;
+            cmani.Left = ptoxF1;
+            cmani.Top = ptoyF1;
+            this.Controls.Add(cmani);
+            cmani.Controls.Add(tdid);
+            cmani.Controls.Add(tdes);
+            cmani.Controls.Add(tdnr);
+            cmani.Controls.Add(tdfe);
+            cmani.Controls.Add(tdor);
+            cmani.Controls.Add(tdde);
+            cmani.Controls.Add(tit);
+            //cmani.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
         }
     }
 }

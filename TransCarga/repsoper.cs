@@ -63,16 +63,6 @@ namespace TransCarga
         DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
         DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
-        /*
-        public Rectangle coc = new Rectangle();     // cobranza
-        public Rectangle cod = new Rectangle();
-        public Rectangle grc = new Rectangle();     // guia
-        public Rectangle grd = new Rectangle();
-        public Rectangle plc = new Rectangle();     // manifiesto
-        public Rectangle pld = new Rectangle();
-        public Rectangle dvc = new Rectangle();     // documento de venta
-        public Rectangle dvd = new Rectangle();
-        */
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 

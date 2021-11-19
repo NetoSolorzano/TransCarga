@@ -61,7 +61,7 @@ namespace TransCarga
         {
             Font tdet = new Font("Arial", 7);                    // leta para detalles
             int ctg = 0, ctp = 0, ctd = 0, ctcdv = 0, ctcgr = 0; // contador de cuadros guia, manifiestos, comprobantes, cobranzasFT, cobranzasGR
-            int ctr = 0, ctnc = 0;   // contador de cuadros recepAlm, notasCred
+            int ctr = 0, ctnc = 0, cte = 0;                      // contador de cuadros recepAlm, notasCred, entrega cliente
             int anchox = 140;       // ancho caja
             int largoy = 140;       // largo caja
             int larFlecha = 100;     // largo de las flechas
@@ -77,6 +77,8 @@ namespace TransCarga
             {
                 if (row.ItemArray[0].ToString() == "GUIA T.")   // Fila1
                 {
+                    ptoxF1 = 20;
+                    ptoyF1 = 20;
                     ctg = ctg + 1;
                     pinta_guia(ctg, anchox, largoy, ptoxF1, ptoyF1, alfidet, distdet, tdet, row);
                 }
@@ -96,7 +98,14 @@ namespace TransCarga
                     ctr = ctr + 1;
                     pinta_recep(ctr, anchox, largoy, ptoxF1, ptoyF1, alfidet, distdet, tdet, row);  // recepcion almacen
                 }
-                // ENTREGA / DESPACHO
+                if (row.ItemArray[0].ToString() == "ENTREGA")
+                {
+                    ptoxF1 = ptoxF1 + anchox + 10;
+                    flechaH(ptoxF1, ptoyF1, larFlecha, largoy);
+                    ptoxF1 = ptoxF1 + larFlecha + 10;
+                    cte = cte + 1;
+                    pinta_entclt(cte, anchox, largoy, ptoxF1, ptoyF1, alfidet, distdet, tdet, row);  // salida/entrega a clientes
+                }
                 if (row.ItemArray[0].ToString() == "DOC.VENTA") // fila2
                 {
                     if (ccf2 == 0)
@@ -148,7 +157,6 @@ namespace TransCarga
                     ctcgr = ctcgr + 1;
                     pinta_cogr(ctcgr, anchox, largoy, ptoxF2, ptoyF2, alfidet, distdet, tdet, row);
                 }
-                // NOTA DE CREDITO
                 if (row.ItemArray[0].ToString() == "NOTA CRED.")    // fila 2
                 {
                     if (ccf2 == 0)
@@ -740,6 +748,86 @@ namespace TransCarga
             cmani.Controls.Add(tdde);
             cmani.Controls.Add(tit);
             //cmani.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
+        }
+        private void pinta_entclt(int cte, int anchox, int largoy, int ptoxF1, int ptoyF1, int alfidet, int distdet, Font tdet, DataRow row)
+        {
+            TextBox tit = new TextBox();
+            tit.Name = "tx_entregClt" + cte;
+            tit.Text = "ENTREGA";
+            tit.Enabled = false;
+            tit.TextAlign = HorizontalAlignment.Center;
+            tit.ForeColor = Color.Black;
+            tit.BackColor = Color.White;
+            tit.Width = anchox;
+
+            Label tdid = new Label();
+            tdid.Text = "Id.: " + row.ItemArray[11].ToString();
+            tdid.Name = "id";
+            tdid.Left = 3; tdid.Top = 20;
+            tdid.AutoSize = false;
+            tdid.Height = alfidet;
+            tdid.Width = anchox;
+            tdid.Font = tdet;
+            Label tdes = new Label();
+            tdes.Text = "Estado: " + row.ItemArray[1].ToString();
+            tdes.Name = "estado";
+            tdes.Left = 3; tdes.Top = tdid.Top + distdet;
+            tdes.Font = tdet;
+            tdes.AutoSize = false;
+            tdes.Height = alfidet;
+            tdes.Width = anchox;
+            Label tdnr = new Label();
+            tdnr.Text = "Nro.: " + row.ItemArray[3].ToString();
+            tdnr.Name = "Nro.";
+            tdnr.Left = 3; tdnr.Top = tdes.Top + distdet;
+            tdnr.Font = tdet;
+            tdnr.AutoSize = false;
+            tdnr.Height = alfidet;
+            tdnr.Width = anchox;
+            Label tdfe = new Label();
+            tdfe.Text = "F.Emisión: " + row.ItemArray[2].ToString().Substring(0, 10);
+            tdfe.Name = "Emisión";
+            tdfe.Left = 3; tdfe.Top = tdnr.Top + distdet;
+            tdfe.Font = tdet;
+            tdfe.AutoSize = false;
+            tdfe.Height = alfidet;
+            tdfe.Width = anchox;
+            Label tdor = new Label();
+            tdor.Text = "Almacén: " + row.ItemArray[4].ToString();
+            tdor.Name = "almacen";
+            tdor.Left = 3; tdor.Top = tdfe.Top + distdet;
+            tdor.Font = tdet;
+            tdor.AutoSize = false;
+            tdor.Height = alfidet;
+            tdor.Width = anchox;
+            Label tdde = new Label();
+            tdde.Text = "Destino: " + row.ItemArray[5].ToString();
+            tdde.Name = "destino";
+            tdde.Left = 3; tdde.Top = tdor.Top + distdet;
+            tdde.Font = tdet;
+            tdde.AutoSize = false;
+            tdde.Height = alfidet;
+            tdde.Width = anchox;
+            // x.DOCUMENTO,ESTADO,x.FECHA,x.NUMERO,ORIGEN,DESTINO,x.CANT,x.PESO,MONEDA,x.TOTAL,x.SALDO,x.ID
+            Panel centre = new Panel();
+            if (row.ItemArray[1].ToString() == "Anulado") centre.BackColor = Color.Pink;
+            else centre.BackColor = Color.LightBlue;
+            centre.BorderStyle = BorderStyle.Fixed3D;
+            centre.Tag = "EN-" + row.ItemArray[3].ToString();
+            centre.Name = "tx_entrClt" + cte;
+            centre.Width = anchox;
+            centre.Height = largoy;
+            centre.Left = ptoxF1;
+            centre.Top = ptoyF1;
+            this.Controls.Add(centre);
+            centre.Controls.Add(tdid);
+            centre.Controls.Add(tdes);
+            centre.Controls.Add(tdnr);
+            centre.Controls.Add(tdfe);
+            centre.Controls.Add(tdor);
+            centre.Controls.Add(tdde);
+            centre.Controls.Add(tit);
+            //centre.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
         }
     }
 }

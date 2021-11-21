@@ -191,8 +191,12 @@ namespace TransCarga
                 cmb_sede_stk.ValueMember = "idcodice";
                 // PANEL DESPACHOS
                 cmb_sede_desp.DataSource = dttaller;
-                cmb_sede_desp.DisplayMember = "descrizionerid"; ;
+                cmb_sede_desp.DisplayMember = "descrizionerid";
                 cmb_sede_desp.ValueMember = "idcodice";
+                // ingresos almacen
+                cmb_ingalm.DataSource = dttaller;
+                cmb_ingalm.DisplayMember = "descrizionerid";
+                cmb_ingalm.ValueMember = "idcodice";
 
                 // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
@@ -308,6 +312,33 @@ namespace TransCarga
                     }
                     suma_grilla("dgv_claves");
                     break;
+                case "dgv_ingre":
+                    dgv_ingre.Font = tiplg;
+                    dgv_ingre.DefaultCellStyle.Font = tiplg;
+                    dgv_ingre.RowTemplate.Height = 15;
+                    dgv_ingre.AllowUserToAddRows = false;
+                    dgv_ingre.Width = Parent.Width - 70; // 1015;
+                    if (dgv_ingre.DataSource == null) dgv_ingre.ColumnCount = 11;
+                    if (dgv_ingre.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_ingre.Columns.Count; i++)
+                        {
+                            dgv_ingre.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_ingre.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_ingre.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_ingre.Columns.Count; i++)
+                        {
+                            int a = dgv_ingre.Columns[i].Width;
+                            b += a;
+                            dgv_ingre.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_ingre.Columns[i].Width = a;
+                        }
+                        if (b < dgv_ingre.Width) dgv_ingre.Width = b - 20;    // b + 60 ;
+                        dgv_ingre.ReadOnly = true;
+                    }
+                    break;
             }
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte STOCK
@@ -404,6 +435,44 @@ namespace TransCarga
                 }
             }
         }
+        private void bt_ingre_Click(object sender, EventArgs e)
+        {
+            if (tx_dat_seding.Text.Trim() == "")
+            {
+                MessageBox.Show("Seleccione un almacén","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                return;
+            }
+            string coning = "rep_alm_ingresos";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    using (MySqlCommand micon = new MySqlCommand(coning,conn))
+                    {
+                        micon.CommandType = CommandType.StoredProcedure;
+                        micon.Parameters.AddWithValue("@loca", tx_dat_seding.Text);
+                        micon.Parameters.AddWithValue("@fecini", dtp_fini_ing.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@fecfin", dtp_fina_ing.Value.ToString("yyyy-MM-dd"));
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            {
+                                DataTable dt = new DataTable();
+                                da.Fill(dt);
+                                dgv_ingre.DataSource = null;
+                                dgv_ingre.DataSource = dt;
+                                grilla("dgv_ingre");
+                                //dt.Dispose();
+                            }
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         private void suma_grilla(string dgv)
         {
             DataRow[] row = dtestad.Select("idcodice='" + codAnul + "'");   // dtestad
@@ -486,6 +555,19 @@ namespace TransCarga
             {
                 cmb_estad_stk.SelectedIndex = -1;
                 tx_estad_stk.Text = "";
+            }
+        }
+        private void cmb_ingalm_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_ingalm.SelectedValue != null) tx_dat_seding.Text = cmb_ingalm.SelectedValue.ToString();
+            else tx_dat_seding.Text = "";
+        }
+        private void cmb_ingalm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_ingalm.SelectedIndex = -1;
+                tx_dat_seding.Text = "";
             }
         }
         #endregion
@@ -594,6 +676,7 @@ namespace TransCarga
             //
             cmb_sede_stk.SelectedIndex = -1;
             cmb_estad_stk.SelectedIndex = -1;
+            cmb_ingalm.SelectedIndex = -1;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {

@@ -133,6 +133,29 @@
             this.bt_claves = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.tabingres = new System.Windows.Forms.TabPage();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.groupBox29 = new System.Windows.Forms.GroupBox();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.groupBox32 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.tx_dat_seding = new System.Windows.Forms.TextBox();
+            this.cmb_ingalm = new System.Windows.Forms.ComboBox();
+            this.groupBox33 = new System.Windows.Forms.GroupBox();
+            this.groupBox34 = new System.Windows.Forms.GroupBox();
+            this.groupBox35 = new System.Windows.Forms.GroupBox();
+            this.groupBox36 = new System.Windows.Forms.GroupBox();
+            this.dgv_ingre = new ADGV.AdvancedDataGridView();
+            this.button2 = new System.Windows.Forms.Button();
+            this.dtp_fina_ing = new System.Windows.Forms.DateTimePicker();
+            this.dtp_fini_ing = new System.Windows.Forms.DateTimePicker();
+            this.bt_ingre = new System.Windows.Forms.Button();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
             this.tx_totkgs = new TransCarga.NumericTextBox();
             this.tx_tfi_f = new TransCarga.NumericTextBox();
             this.tx_totval = new TransCarga.NumericTextBox();
@@ -162,6 +185,12 @@
             this.groupBox19.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_claves)).BeginInit();
             this.groupBox27.SuspendLayout();
+            this.tabingres.SuspendLayout();
+            this.groupBox29.SuspendLayout();
+            this.groupBox31.SuspendLayout();
+            this.groupBox33.SuspendLayout();
+            this.groupBox35.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_ingre)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -423,6 +452,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabstock);
+            this.tabControl1.Controls.Add(this.tabingres);
             this.tabControl1.Controls.Add(this.tabdspachs);
             this.tabControl1.Controls.Add(this.tabclaves);
             this.tabControl1.Location = new System.Drawing.Point(3, 3);
@@ -749,9 +779,7 @@
             // tabdspachs
             // 
             this.tabdspachs.Controls.Add(this.groupBox9);
-            this.tabdspachs.Controls.Add(this.tx_tfi_n);
             this.tabdspachs.Controls.Add(this.label16);
-            this.tabdspachs.Controls.Add(this.tx_totval_n);
             this.tabdspachs.Controls.Add(this.label17);
             this.tabdspachs.Controls.Add(this.chk_exclu_desp);
             this.tabdspachs.Controls.Add(this.groupBox23);
@@ -771,6 +799,8 @@
             this.tabdspachs.Controls.Add(this.bt_dspchs);
             this.tabdspachs.Controls.Add(this.label5);
             this.tabdspachs.Controls.Add(this.label6);
+            this.tabdspachs.Controls.Add(this.tx_tfi_n);
+            this.tabdspachs.Controls.Add(this.tx_totval_n);
             this.tabdspachs.Location = new System.Drawing.Point(4, 22);
             this.tabdspachs.Name = "tabdspachs";
             this.tabdspachs.Size = new System.Drawing.Size(1026, 377);
@@ -1308,6 +1338,254 @@
             this.label13.TabIndex = 394;
             this.label13.Text = "Fech Inicial";
             // 
+            // tabingres
+            // 
+            this.tabingres.Controls.Add(this.checkBox1);
+            this.tabingres.Controls.Add(this.groupBox29);
+            this.tabingres.Controls.Add(this.textBox1);
+            this.tabingres.Controls.Add(this.comboBox1);
+            this.tabingres.Controls.Add(this.label19);
+            this.tabingres.Controls.Add(this.groupBox31);
+            this.tabingres.Controls.Add(this.label20);
+            this.tabingres.Controls.Add(this.tx_dat_seding);
+            this.tabingres.Controls.Add(this.cmb_ingalm);
+            this.tabingres.Controls.Add(this.groupBox33);
+            this.tabingres.Controls.Add(this.groupBox35);
+            this.tabingres.Controls.Add(this.dgv_ingre);
+            this.tabingres.Controls.Add(this.button2);
+            this.tabingres.Controls.Add(this.dtp_fina_ing);
+            this.tabingres.Controls.Add(this.dtp_fini_ing);
+            this.tabingres.Controls.Add(this.bt_ingre);
+            this.tabingres.Controls.Add(this.label21);
+            this.tabingres.Controls.Add(this.label22);
+            this.tabingres.Location = new System.Drawing.Point(4, 22);
+            this.tabingres.Name = "tabingres";
+            this.tabingres.Size = new System.Drawing.Size(1026, 377);
+            this.tabingres.TabIndex = 10;
+            this.tabingres.Text = "Ingresos";
+            this.tabingres.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(387, 29);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(63, 17);
+            this.checkBox1.TabIndex = 407;
+            this.checkBox1.Text = "Excluye";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.Visible = false;
+            // 
+            // groupBox29
+            // 
+            this.groupBox29.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox29.Controls.Add(this.groupBox30);
+            this.groupBox29.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox29.Location = new System.Drawing.Point(209, 46);
+            this.groupBox29.Name = "groupBox29";
+            this.groupBox29.Size = new System.Drawing.Size(154, 1);
+            this.groupBox29.TabIndex = 421;
+            this.groupBox29.TabStop = false;
+            this.groupBox29.Visible = false;
+            // 
+            // groupBox30
+            // 
+            this.groupBox30.Location = new System.Drawing.Point(0, -26);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Size = new System.Drawing.Size(164, 1);
+            this.groupBox30.TabIndex = 113;
+            this.groupBox30.TabStop = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(189, 29);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(17, 20);
+            this.textBox1.TabIndex = 422;
+            this.textBox1.Visible = false;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.DropDownWidth = 100;
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(296, 26);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(85, 21);
+            this.comboBox1.TabIndex = 406;
+            this.comboBox1.Visible = false;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(211, 31);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(79, 13);
+            this.label19.TabIndex = 420;
+            this.label19.Text = "Estado servicio";
+            this.label19.Visible = false;
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox31.Controls.Add(this.groupBox32);
+            this.groupBox31.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox31.Location = new System.Drawing.Point(209, 24);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(137, 1);
+            this.groupBox31.TabIndex = 419;
+            this.groupBox31.TabStop = false;
+            // 
+            // groupBox32
+            // 
+            this.groupBox32.Location = new System.Drawing.Point(0, -26);
+            this.groupBox32.Name = "groupBox32";
+            this.groupBox32.Size = new System.Drawing.Size(164, 1);
+            this.groupBox32.TabIndex = 113;
+            this.groupBox32.TabStop = false;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(211, 9);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(61, 13);
+            this.label20.TabIndex = 417;
+            this.label20.Text = "Local Sede";
+            // 
+            // tx_dat_seding
+            // 
+            this.tx_dat_seding.Location = new System.Drawing.Point(189, 5);
+            this.tx_dat_seding.Name = "tx_dat_seding";
+            this.tx_dat_seding.Size = new System.Drawing.Size(20, 20);
+            this.tx_dat_seding.TabIndex = 418;
+            this.tx_dat_seding.Visible = false;
+            // 
+            // cmb_ingalm
+            // 
+            this.cmb_ingalm.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.cmb_ingalm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_ingalm.DropDownWidth = 100;
+            this.cmb_ingalm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_ingalm.FormattingEnabled = true;
+            this.cmb_ingalm.Location = new System.Drawing.Point(279, 4);
+            this.cmb_ingalm.Name = "cmb_ingalm";
+            this.cmb_ingalm.Size = new System.Drawing.Size(85, 21);
+            this.cmb_ingalm.TabIndex = 405;
+            this.cmb_ingalm.SelectedIndexChanged += new System.EventHandler(this.cmb_ingalm_SelectionChangeCommitted);
+            this.cmb_ingalm.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_ingalm_KeyDown);
+            // 
+            // groupBox33
+            // 
+            this.groupBox33.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox33.Controls.Add(this.groupBox34);
+            this.groupBox33.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox33.Location = new System.Drawing.Point(476, 46);
+            this.groupBox33.Name = "groupBox33";
+            this.groupBox33.Size = new System.Drawing.Size(161, 1);
+            this.groupBox33.TabIndex = 416;
+            this.groupBox33.TabStop = false;
+            // 
+            // groupBox34
+            // 
+            this.groupBox34.Location = new System.Drawing.Point(0, -26);
+            this.groupBox34.Name = "groupBox34";
+            this.groupBox34.Size = new System.Drawing.Size(164, 1);
+            this.groupBox34.TabIndex = 113;
+            this.groupBox34.TabStop = false;
+            // 
+            // groupBox35
+            // 
+            this.groupBox35.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox35.Controls.Add(this.groupBox36);
+            this.groupBox35.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox35.Location = new System.Drawing.Point(476, 24);
+            this.groupBox35.Name = "groupBox35";
+            this.groupBox35.Size = new System.Drawing.Size(161, 1);
+            this.groupBox35.TabIndex = 415;
+            this.groupBox35.TabStop = false;
+            // 
+            // groupBox36
+            // 
+            this.groupBox36.Location = new System.Drawing.Point(0, -26);
+            this.groupBox36.Name = "groupBox36";
+            this.groupBox36.Size = new System.Drawing.Size(164, 1);
+            this.groupBox36.TabIndex = 113;
+            this.groupBox36.TabStop = false;
+            // 
+            // dgv_ingre
+            // 
+            this.dgv_ingre.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv_ingre.AutoGenerateContextFilters = true;
+            this.dgv_ingre.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_ingre.DateWithTime = false;
+            this.dgv_ingre.Location = new System.Drawing.Point(3, 51);
+            this.dgv_ingre.Name = "dgv_ingre";
+            this.dgv_ingre.Size = new System.Drawing.Size(1020, 323);
+            this.dgv_ingre.TabIndex = 414;
+            this.dgv_ingre.TimeFilter = false;
+            // 
+            // button2
+            // 
+            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.button2.Enabled = false;
+            this.button2.Location = new System.Drawing.Point(753, 5);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(50, 41);
+            this.button2.TabIndex = 413;
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // dtp_fina_ing
+            // 
+            this.dtp_fina_ing.Checked = false;
+            this.dtp_fina_ing.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_fina_ing.Location = new System.Drawing.Point(542, 27);
+            this.dtp_fina_ing.Name = "dtp_fina_ing";
+            this.dtp_fina_ing.Size = new System.Drawing.Size(95, 20);
+            this.dtp_fina_ing.TabIndex = 409;
+            // 
+            // dtp_fini_ing
+            // 
+            this.dtp_fini_ing.Checked = false;
+            this.dtp_fini_ing.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_fini_ing.Location = new System.Drawing.Point(542, 5);
+            this.dtp_fini_ing.Name = "dtp_fini_ing";
+            this.dtp_fini_ing.Size = new System.Drawing.Size(95, 20);
+            this.dtp_fini_ing.TabIndex = 408;
+            // 
+            // bt_ingre
+            // 
+            this.bt_ingre.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bt_ingre.Location = new System.Drawing.Point(664, 11);
+            this.bt_ingre.Name = "bt_ingre";
+            this.bt_ingre.Size = new System.Drawing.Size(59, 29);
+            this.bt_ingre.TabIndex = 410;
+            this.bt_ingre.Text = "Filtra";
+            this.bt_ingre.UseVisualStyleBackColor = true;
+            this.bt_ingre.Click += new System.EventHandler(this.bt_ingre_Click);
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(486, 32);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(53, 13);
+            this.label21.TabIndex = 412;
+            this.label21.Text = "Fech final";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(478, 9);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(61, 13);
+            this.label22.TabIndex = 411;
+            this.label22.Text = "Fech Inicial";
+            // 
             // tx_totkgs
             // 
             this.tx_totkgs.AllowSpace = false;
@@ -1432,6 +1710,13 @@
             this.groupBox19.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_claves)).EndInit();
             this.groupBox27.ResumeLayout(false);
+            this.tabingres.ResumeLayout(false);
+            this.tabingres.PerformLayout();
+            this.groupBox29.ResumeLayout(false);
+            this.groupBox31.ResumeLayout(false);
+            this.groupBox33.ResumeLayout(false);
+            this.groupBox35.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_ingre)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1550,5 +1835,28 @@
         private System.Windows.Forms.Label label13;
         private NumericTextBox tx_totkgs;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TabPage tabingres;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.GroupBox groupBox29;
+        private System.Windows.Forms.GroupBox groupBox30;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.GroupBox groupBox31;
+        private System.Windows.Forms.GroupBox groupBox32;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox tx_dat_seding;
+        private System.Windows.Forms.ComboBox cmb_ingalm;
+        private System.Windows.Forms.GroupBox groupBox33;
+        private System.Windows.Forms.GroupBox groupBox34;
+        private System.Windows.Forms.GroupBox groupBox35;
+        private System.Windows.Forms.GroupBox groupBox36;
+        private ADGV.AdvancedDataGridView dgv_ingre;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.DateTimePicker dtp_fina_ing;
+        private System.Windows.Forms.DateTimePicker dtp_fini_ing;
+        private System.Windows.Forms.Button bt_ingre;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label22;
     }
 }

@@ -254,3 +254,6 @@ Trigger cabdebcred_before_insert, arreglo de numeracion automatica .............
 form notcredclts, arreglo de numeracion de notas cuando graba nueva nota ........................... ok 17/11/2021
 form histograma, adecuaciones en visualizacion y P.A. .............................................. ok 19/11/2021
 form repsalmac, agregar reporte de ingresos de almacen ............................................. ok 20/11/2021
+form facelect, arreglo de limite de guias en detalle ............................................... ok 22/11/2021
+form notcredclts, arreglo de conteo en detalle de guias en Ft a crear la nota ...................... ok 22/11/2021
+form facelect, evitar que se hagan FT de varias guias pagadas, parciales o sin pago ................   TODAS DEBEN ESTAR PAGADAS O PENDIENTES AL 100%

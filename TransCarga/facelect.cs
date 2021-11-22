@@ -1483,7 +1483,8 @@ namespace TransCarga
                 _forpa + sep +                  // INF.ADICIONAL FORMA DE PAGO
                 _valcr + sep                    // INF.ADICIONAL FORMA DE PAGO
             );
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // DETALLE
+            int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+            for (int s = 0; s < tfg; s++)  // DETALLE
             {
                 double _msigv = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
                 string Ipreuni = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
@@ -1558,7 +1559,7 @@ namespace TransCarga
                     "" + sep + "" + sep + "" + sep                      // BOLSAS DE PLASTICO
                 );
             }
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
+            for (int s = 0; s < tfg; s++)
             {
                 writer.WriteLine("T" + sep +
                     "31" + sep +
@@ -1615,7 +1616,7 @@ namespace TransCarga
                 codleyd + sep +         // codigo leyenda monto en letras
                 glosdet + sep);            // Leyenda: Monto expresado en Letras
             }
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
+            for (int s = 0; s < tfg; s++)
             {
                 writer.WriteLine("E" + sep +
                 codobs + sep +
@@ -2863,7 +2864,8 @@ namespace TransCarga
                 if (dataGridView1.Rows.Count > 0)
                 {
                     int fila = 1;
-                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    for (int i = 0; i < tfg; i++)
                     {
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
@@ -4040,7 +4042,8 @@ namespace TransCarga
                     StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                     SizeF siz = new SizeF(70, 15);
                     RectangleF recto = new RectangleF(puntoF, siz);
-                    for (int l = 0; l < dataGridView1.Rows.Count - 1; l++)
+                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    for (int l = 0; l < tfg; l++)
                     {
                         if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
                         {
@@ -4152,14 +4155,14 @@ namespace TransCarga
                         // forma de pago
                         posi = posi + (alfi/1.5F);
                         string ahiva = "";
-                        if (rb_si.Checked == true)
-                        {
-                            ahiva = "PAGO AL CONTADO " + tx_flete.Text;
-                        }
-                        else
+                        if (rb_no.Checked == true)
                         {
                             string _fechc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("dd-MM-yyyy");    // "yyyy-MM-dd"
                             ahiva = "- AL CREDITO -" + " 1 CUOTA - VCMTO: " + _fechc;
+                        }
+                        else
+                        {
+                            ahiva = "PAGO AL CONTADO " + tx_flete.Text;
                         }
                         puntoF = new PointF(coli, posi);
                         e.Graphics.DrawString(ahiva, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);

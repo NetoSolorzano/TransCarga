@@ -256,4 +256,5 @@ form histograma, adecuaciones en visualizacion y P.A. ..........................
 form repsalmac, agregar reporte de ingresos de almacen ............................................. ok 20/11/2021
 form facelect, arreglo de limite de guias en detalle ............................................... ok 22/11/2021
 form notcredclts, arreglo de conteo en detalle de guias en Ft a crear la nota ...................... ok 22/11/2021
-form facelect, evitar que se hagan FT de varias guias pagadas, parciales o sin pago ................   TODAS DEBEN ESTAR PAGADAS O PENDIENTES AL 100%
+form facelect, evitar que se hagan FT de varias guias pagadas, parciales o sin pago ................ ok 23/11/2021 TODAS DEBEN ESTAR PAGADAS O PENDIENTES AL 100%
+form publico, aumente de 3600 a 36000 los segundos de permanencia del cacheManager ................. ok 23/11/2021

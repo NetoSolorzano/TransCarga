@@ -126,7 +126,7 @@ namespace TransCarga
         DataTable tdfe = new DataTable();       // facturacion electronica -detalle
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -825,6 +825,7 @@ namespace TransCarga
                 datguias[14] = "";
                 datguias[15] = "";  // local origen-destino
                 datguias[16] = "";  // unid medida
+                datguias[17] = "";  // saldo de la GR
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -923,6 +924,7 @@ namespace TransCarga
                                         datguias[14] = dr.GetString("confvegri");
                                         datguias[15] = dr.GetString("orides");
                                         datguias[16] = dr.GetString("umed");
+                                        datguias[17] = dr.GetString("salgri");
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -2155,7 +2157,24 @@ namespace TransCarga
         {
             if (dataUbig == null)
             {
-                DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
+                //DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
+                using (MySqlConnection conn =  new MySqlConnection(DB_CONN_STR))
+                {
+                    if (lib.procConn(conn) == true)
+                    {
+                        // tabla de ubigeos - departamentos, provincias, distritos
+                        string consulta = "select * from ubigeos";
+                        using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                        {
+                            using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                            {
+                                DataTable dtu = new DataTable();
+                                da.Fill(dtu);
+                                CacheManager.AddItem("ubigeos", dtu, 3600);
+                            }
+                        }
+                    }
+                }
             }
             DataRow[] depar = dataUbig.Select("depart<>'00' and provin='00' and distri='00'");
             departamentos.Clear();
@@ -2228,20 +2247,6 @@ namespace TransCarga
         {
             if (tx_serGR.Text.Trim() != "" && tx_numGR.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
             {
-                // validamos que no se repita la GR
-                for (int i = 0; i < dataGridView1.Rows.Count; i++)
-                {
-                    if (dataGridView1.Rows[i].Cells[0].Value != null)
-                    {
-                        if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() == (tx_serGR.Text.Trim() + "-" + tx_numGR.Text.Trim()))
-                        {
-                            MessageBox.Show("Esta repitiendo la Guía!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            tx_numGR.Text = "";
-                            tx_numGR.Focus();
-                            return;
-                        }
-                    }
-                }
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 if (validGR(tx_serGR.Text, tx_numGR.Text) == false)
                 {
@@ -2254,8 +2259,30 @@ namespace TransCarga
                 {
                     rb_desGR.PerformClick();
                 }
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    if (dataGridView1.Rows[i].Cells[0].Value != null)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() == (tx_serGR.Text.Trim() + "-" + tx_numGR.Text.Trim()))
+                        {
+                            MessageBox.Show("Esta repitiendo la Guía!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_numGR.Text = "";
+                            tx_numGR.Focus();
+                            return;
+                        }
+                        // validamos si la guia que ya esta tiene saldo o no y es = a la guia que se va a insertar
+                        if (decimal.Parse(dataGridView1.Rows[i].Cells[12].Value.ToString()) > 0 && decimal.Parse(datguias[17]) == 0 ||
+                            decimal.Parse(dataGridView1.Rows[i].Cells[12].Value.ToString()) == 0 && decimal.Parse(datguias[17]) > 0)
+                        {
+                            MessageBox.Show("Todas las guías deben estar cobradas o no cobradas", "Error, las GR deben o no tener saldo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_numGR.Text = "";
+                            tx_numGR.Focus();
+                            return;
+                        }
+                    }
+                }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15], datguias[16]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15], datguias[16], datguias[17]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR

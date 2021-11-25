@@ -439,9 +439,9 @@
             this.bt_caja.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.bt_caja.Image = global::TransCarga.Properties.Resources.process24;
             this.bt_caja.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.bt_caja.Location = new System.Drawing.Point(617, 9);
+            this.bt_caja.Location = new System.Drawing.Point(617, 8);
             this.bt_caja.Name = "bt_caja";
-            this.bt_caja.Size = new System.Drawing.Size(59, 29);
+            this.bt_caja.Size = new System.Drawing.Size(67, 30);
             this.bt_caja.TabIndex = 3;
             this.bt_caja.Text = "Filtra";
             this.bt_caja.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -505,6 +505,7 @@
             this.Name = "busyarreg";
             this.Text = "Busqueda y Corrección - datos de Guías Transportista";
             this.Load += new System.EventHandler(this.busyarreg_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.busyarreg_KeyDown);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).EndInit();

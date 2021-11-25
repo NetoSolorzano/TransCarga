@@ -39,14 +39,18 @@ namespace TransCarga
         string img_btr = "";
         string img_btf = "";
         string img_btq = "";
-        string nfCRgr = "";                                 // nombre formato CR para visualizacion de guias
+        string nfCRgr = "";             // nombre formato CR para visualizacion de guias
+        string vcestper = "";           // nombres de estados que si se permite el arreglo o modificacion
         #endregion
 
         public busyarreg()
         {
             InitializeComponent();
         }
-
+        private void busyarreg_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
+        }
         private void busyarreg_Load(object sender, EventArgs e)
         {
             advancedDataGridView1.Enabled = false;
@@ -97,7 +101,7 @@ namespace TransCarga
                     }
                     if (row["formulario"].ToString() == nomform)
                     {
-
+                        if (row["campo"].ToString() == "estadPer" && row["param"].ToString() == "permitidos") vcestper = row["valor"].ToString().Trim();       // estados permitos para arreglar
                     }
                     if (row["formulario"].ToString() == "guiati")
                     {
@@ -124,7 +128,8 @@ namespace TransCarga
             {
                 string sqlCmd = "select a.id AS ID,a.fechopegr as FECHA,lo.descrizionerid as SEDE,ld.descrizionerid as DESTINO,a.sergui as SERIE,a.numgui as GUIA,dr.descrizionerid as DR,a.nudoregri as NUMDOCR," +
                     "a.nombregri as REMITENTE,dd.descrizionerid as DD,a.nudodegri as NUMDOCD,a.nombdegri as DESTINATARIO,a.docsremit as DOCSREMIT,mo.descrizionerid as MON,a.totgri as FLETE," +
-                    "es.descrizionerid as ESTADO,concat(a.serplagri, '-', a.numplagri) AS MANIFIESTO, ifnull(concat(dv.descrizionerid, '-', a.serdocvta, '-', a.numdocvta), '') as DOC_VTA " +
+                    "es.descrizionerid as ESTADO,concat(a.serplagri, '-', a.numplagri) AS MANIFIESTO, ifnull(concat(dv.descrizionerid, '-', a.serdocvta, '-', a.numdocvta), '') as DOC_VTA," +
+                    "a.estadoser " +
                     "from cabguiai a " +
                     "left join desc_loc lo on lo.idcodice = a.locorigen " +
                     "left join desc_loc ld on ld.idcodice = a.locdestin " +
@@ -133,7 +138,8 @@ namespace TransCarga
                     "left join desc_mon mo on mo.idcodice = a.tipmongri " +
                     "left join desc_est es on es.idcodice = a.estadoser " +
                     "left join desc_tdv dv on dv.idcodice = a.tipdocvta " +
-                    "where a.fechopegr between @fini and @ffin and a.sergui = @ser";
+                    "where a.fechopegr between @fini and @ffin and a.sergui = @ser " +
+                    "order by a.sergui,a.numgui";
                 MySqlCommand micon = new MySqlCommand(sqlCmd, cn);
                 micon.Parameters.AddWithValue("@ser", tx_ser.Text);
                 micon.Parameters.AddWithValue("@fini", dtp_fini.Value.ToString("yyyy-MM-dd"));
@@ -161,7 +167,7 @@ namespace TransCarga
             advancedDataGridView1.RowHeadersDefaultCellStyle.Font = font;
             advancedDataGridView1.RowTemplate.Height = 15;
             advancedDataGridView1.AllowUserToAddRows = false;
-            advancedDataGridView1.ColumnCount = 18;
+            advancedDataGridView1.ColumnCount = 19;
             advancedDataGridView1.Columns[0].Width = 40;             // id
             advancedDataGridView1.Columns[0].ReadOnly = true;
             advancedDataGridView1.Columns[0].Name = "ID";
@@ -179,7 +185,7 @@ namespace TransCarga
             advancedDataGridView1.Columns[3].Name = "DESTINO";
             advancedDataGridView1.Columns[3].HeaderText = "DESTINO";
             advancedDataGridView1.Columns[4].Width = 50;             // serie guia transportista
-            advancedDataGridView1.Columns[4].ReadOnly = true;
+            advancedDataGridView1.Columns[4].ReadOnly = false;
             advancedDataGridView1.Columns[4].Name = "SERIE";
             advancedDataGridView1.Columns[4].HeaderText = "SERIE";
             advancedDataGridView1.Columns[5].Width = 60;             // numero guia transportista
@@ -234,7 +240,9 @@ namespace TransCarga
             advancedDataGridView1.Columns[17].ReadOnly = true;
             advancedDataGridView1.Columns[17].Name = "DOC_VTA";
             advancedDataGridView1.Columns[17].HeaderText = "DOC_VTA";
-            // ID,FECHA,SEDE,DESTINO,SERIE,GUIA,DR,NUMDOCR,REMITENTE,DD,NUMDOCD,DESTINATARIO,DOCSREMIT,MON,FLETE,ESTADO,MANIFIESTO,DOC_VTA 
+            advancedDataGridView1.Columns[18].Name = "codEst";
+            advancedDataGridView1.Columns[18].Visible = false;
+            // ID,FECHA,SEDE,DESTINO,SERIE,GUIA,DR,NUMDOCR,REMITENTE,DD,NUMDOCD,DESTINATARIO,DOCSREMIT,MON,FLETE,ESTADO,MANIFIESTO,DOC_VTA,codEst 
             foreach (DataRow row in dt.Rows)    // if (dt.Rows.Count > 0)   // advancedDataGridView1.Rows.Count > 0
             {
                 advancedDataGridView1.Rows.Add(row.ItemArray[0].ToString(),
@@ -254,7 +262,8 @@ namespace TransCarga
                     row.ItemArray[14].ToString(),
                     row.ItemArray[15].ToString(),
                     row.ItemArray[16].ToString(),
-                    row.ItemArray[17].ToString()
+                    row.ItemArray[17].ToString(),
+                    row.ItemArray[18].ToString()
                     );
             }
             if (dt.Rows.Count > 0)
@@ -293,36 +302,31 @@ namespace TransCarga
         private void grabacam(int idm, string campo, string valor)                      // graba el cambio en la tabla
         {
             // ID,FECHA,SEDE,DESTINO,SERIE,GUIA,DR,NUMDOCR,REMITENTE,DD,NUMDOCD,DESTINATARIO,DOCSREMIT,MON,FLETE,ESTADO,MANIFIESTO,DOC_VTA 
-            string campoT = "";
             switch(campo)
             {
                 case "FECHA":
-                    campoT = "coming";
+                    // ummmm no creo ah
                     break;
                 case "SEDE":
-
+                    // aca tampoco ahh
                     break;
-                case "SERIE":
-                    campoT = "";
-                    break;
-                case "GUIA":
-
-                    break;
-            }
-            using (MySqlConnection cn0 = new MySqlConnection(DB_CONN_STR))
-            {
-                if (lib.procConn(cn0) == true)
-                {
-                    string sqlCmd = "";
-                    using (MySqlCommand micon = new MySqlCommand(sqlCmd, cn0))
+                case "SERIE": case "GUIA":
+                    using (MySqlConnection cn0 = new MySqlConnection(DB_CONN_STR))
                     {
-                        micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@idr", idm);
-                        micon.Parameters.AddWithValue("@cam", campo);
-                        micon.Parameters.AddWithValue("@nva", valor);
-                        micon.ExecuteNonQuery();
+                        if (lib.procConn(cn0) == true)
+                        {
+                            string sqlCmd = "arreglaGR";
+                            using (MySqlCommand micon = new MySqlCommand(sqlCmd, cn0))
+                            {
+                                micon.CommandType = CommandType.StoredProcedure;
+                                micon.Parameters.AddWithValue("@v_idr", idm);
+                                micon.Parameters.AddWithValue("@v_cam", campo);
+                                micon.Parameters.AddWithValue("@v_nva", valor);
+                                micon.ExecuteNonQuery();
+                            }
+                        }
                     }
-                }
+                    break;
             }
         }
         private void bt_caja_Click(object sender, EventArgs e)                          // boton genera
@@ -434,6 +438,7 @@ namespace TransCarga
             dtp_fini.Enabled = true;
             dtp_ffin.Enabled = true;
             bt_caja.Enabled = true;
+            tx_ser.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -443,6 +448,7 @@ namespace TransCarga
             dtp_fini.Enabled = true;
             dtp_ffin.Enabled = true;
             bt_caja.Enabled = true;
+            tx_ser.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -493,17 +499,26 @@ namespace TransCarga
         {
             if (advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null)
             {
-                valnue = advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                int index = advancedDataGridView1.Columns["ID"].Index;
-                var ao = MessageBox.Show("Modifica el dato " + advancedDataGridView1.Columns[e.ColumnIndex].Name + " ?", "Confirme por favor",
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (ao == DialogResult.Yes)
+                // solo campos SERIE Y GUIA se pueden cambiar
+                if (vcestper.Contains(advancedDataGridView1.Rows[e.RowIndex].Cells["codEst"].Value.ToString()) &&
+                    advancedDataGridView1.Rows[e.RowIndex].Cells["DOC_VTA"].Value.ToString().Trim() == "")
                 {
-                    grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells[advancedDataGridView1.Columns["ID"].Index].Value.ToString()),
-                        advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(), valnue);
+                    valnue = advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                    var ao = MessageBox.Show("Modifica el dato " + advancedDataGridView1.Columns[e.ColumnIndex].Name + " ?", "Confirme por favor",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (ao == DialogResult.Yes)
+                    {
+                        grabacam(int.Parse(advancedDataGridView1.Rows[e.RowIndex].Cells[advancedDataGridView1.Columns["ID"].Index].Value.ToString()),
+                            advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(), valnue);
+                    }
+                    else
+                    {
+                        advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valant;
+                    }
                 }
                 else
                 {
+                    MessageBox.Show("No se puede cambiar valor", "La GR tiene cobranza o Doc.Venta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valant;
                 }
             }
@@ -545,10 +560,10 @@ namespace TransCarga
         }
         private void advancedDataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (Tx_modo.Text.Trim() != "" && advancedDataGridView1.Columns[e.ColumnIndex].Name == "GUIA")
+            if (Tx_modo.Text.Trim() != "" && advancedDataGridView1.Columns[e.ColumnIndex].Name == "SERIE")
             {
-                string vser = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(0, 4);
-                string vnum = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(4, 8);
+                string vser = advancedDataGridView1.Rows[e.RowIndex].Cells["SERIE"].Value.ToString();
+                string vnum = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString();
                 pub.muestra_gr(vser, vnum, nfCRgr);
             }
         }

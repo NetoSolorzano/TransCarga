@@ -260,4 +260,5 @@ form facelect, evitar que se hagan FT de varias guias pagadas, parciales o sin p
 form publico, aumente de 3600 a 36000 los segundos de permanencia del cacheManager ................. ok 23/11/2021
 form planicarga, no jala datos del vehiculo y carreta si tercero ................................... ok 24/11/2021
 form planicarga, permitir ordenamiento de grilla por guia .......................................... ok 24/11/2021
-form busyarreg, form para buscar y arreglar correlativos de guias .................................. 
+form busyarreg, form para buscar y arreglar correlativos de guias .................................. ok 25/11/2021
+

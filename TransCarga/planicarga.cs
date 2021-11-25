@@ -1712,7 +1712,15 @@ namespace TransCarga
                 }
             }
         }
-        //...
+        private void rb_orden_gr_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count > 0 && rb_orden_gr.Checked == true)
+            {
+                // DETALLE  
+                dataGridView1.Sort(dataGridView1.Columns["numguia"], System.ComponentModel.ListSortDirection.Ascending);
+                //if (rb_orden_dir.Checked == true) dataGridView1.Sort(dataGridView1.Columns[14], System.ComponentModel.ListSortDirection.Ascending);
+            }
+        }
         #endregion
 
         #region botones_de_comando
@@ -2291,6 +2299,5 @@ namespace TransCarga
         }
         // evento click en el checkbox de la coumna 14
         #endregion
-
     }
 }

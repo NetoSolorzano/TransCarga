@@ -61,10 +61,26 @@ namespace TransCarga
         //public string ReturnValue2 { get; set; }        // valor en moneda local
         //public string ReturnValue3 { get; set; }        // tipo de cambio de la operacion
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)                  // cierra seleccionando una placa
         {
-            ReturnValue1 = dataGridView1.CurrentRow.Index;
-            //
+            try
+            {
+                if (dataGridView1.CurrentRow.Index > -1)
+                {
+                    ReturnValue1 = dataGridView1.CurrentRow.Index;
+                    this.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Seleccione una placa","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                return;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)              // cierra sin seleccionar placa
+        {
+            ReturnValue1 = -1;
             this.Close();
         }
     }

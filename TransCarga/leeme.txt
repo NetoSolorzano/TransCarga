@@ -261,4 +261,7 @@ form publico, aumente de 3600 a 36000 los segundos de permanencia del cacheManag
 form planicarga, no jala datos del vehiculo y carreta si tercero ................................... ok 24/11/2021
 form planicarga, permitir ordenamiento de grilla por guia .......................................... ok 24/11/2021
 form busyarreg, form para buscar y arreglar correlativos de guias .................................. ok 25/11/2021
-
+form vplancar, da error si no se selecciona placa y se da enter sin hacer nada ..................... ok 06/12/2021
+form vplancar, agregar boton para salir sin seleccionar placa, guia sin placa ...................... ok 06/12/2021
+from guiati, agregar codigo para aceptar grabar guia sin manifiesto ................................ ok 06/12/2021
+form guiati, corregir combo moneda, no aceptaba dolares ............................................ ok 06/12/2021

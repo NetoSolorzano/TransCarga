@@ -2742,7 +2742,7 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text.Trim().Contains("NUEVO,EDITAR"))   // ("NUEVO,EDITAR").Contains(Tx_modo.Text.Trim())
+            if (Tx_modo.Text.Trim() == "NUEVO" || Tx_modo.Text.Trim() == "EDITAR")   // ("NUEVO,EDITAR").Contains(Tx_modo.Text.Trim())
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {
@@ -2858,20 +2858,39 @@ namespace TransCarga
                                             // aca seleccionamos la fila que sea de la placa seleccionada
                                         }
                                     }
-                                    DataRow row = data.Rows[nfila];
-                                    tx_idplan.Text = row["id"].ToString();
-                                    tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
-                                    tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
-                                    tx_pla_placa.Text = row["platracto"].ToString();
-                                    tx_pla_carret.Text = row["placarret"].ToString();
-                                    tx_pla_autor.Text = row["autorizac"].ToString();
-                                    tx_pla_confv.Text = row["confvehic"].ToString();
-                                    tx_pla_brevet.Text = row["brevchofe"].ToString();
-                                    tx_pla_nomcho.Text = row["nomchofe"].ToString();
-                                    // row["nomayuda"].ToString();
-                                    tx_pla_ruc.Text = row["rucpropie"].ToString();
-                                    tx_pla_propiet.Text = row["razonsocial"].ToString();
-                                    tx_marcamion.Text = row["marca"].ToString();
+                                    if (nfila == -1)
+                                    {
+                                        tx_idplan.Text = "";
+                                        tx_pla_fech.Text = "";
+                                        tx_pla_plani.Text = "";
+                                        tx_pla_placa.Text = "";
+                                        tx_pla_carret.Text = "";
+                                        tx_pla_autor.Text = "";
+                                        tx_pla_confv.Text = "";
+                                        tx_pla_brevet.Text = "";
+                                        tx_pla_nomcho.Text = "";
+                                        // row["nomayuda"].ToString();
+                                        tx_pla_ruc.Text = "";
+                                        tx_pla_propiet.Text = "";
+                                        tx_marcamion.Text = "";
+                                    }
+                                    else
+                                    {
+                                        DataRow row = data.Rows[nfila];
+                                        tx_idplan.Text = row["id"].ToString();
+                                        tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
+                                        tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
+                                        tx_pla_placa.Text = row["platracto"].ToString();
+                                        tx_pla_carret.Text = row["placarret"].ToString();
+                                        tx_pla_autor.Text = row["autorizac"].ToString();
+                                        tx_pla_confv.Text = row["confvehic"].ToString();
+                                        tx_pla_brevet.Text = row["brevchofe"].ToString();
+                                        tx_pla_nomcho.Text = row["nomchofe"].ToString();
+                                        // row["nomayuda"].ToString();
+                                        tx_pla_ruc.Text = row["rucpropie"].ToString();
+                                        tx_pla_propiet.Text = row["razonsocial"].ToString();
+                                        tx_marcamion.Text = row["marca"].ToString();
+                                    }
                                 }
                                 else
                                 {

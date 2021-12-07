@@ -2535,7 +2535,7 @@ namespace TransCarga
                         else
                         {
                             MessageBox.Show("No existe ruta o no es valida para" + Environment.NewLine +
-                                        "generar la anulación electrónica", "Ruta para Fact.Electrónica", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                                        "generar el comprobante electrónico", "Ruta para Fact.Electrónica", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                             iserror = "si";
                         }
                     }

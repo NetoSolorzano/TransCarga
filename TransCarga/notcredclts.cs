@@ -1354,7 +1354,8 @@ namespace TransCarga
                     MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 // debe limpiar los campos y actualizar la grilla
-                initIngreso();          // limpiamos todo para volver a empesar
+                //initIngreso();          // 04/01/2022, mejor salimos del form cada vez que grabamos
+                this.Close();
             }
         }
         private bool graba()

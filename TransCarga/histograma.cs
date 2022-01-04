@@ -393,7 +393,7 @@ namespace TransCarga
             Label tdor = new Label();
             tdor.Text = "Origen: " + row.ItemArray[4].ToString();
             tdor.Name = "Origen";
-            tdor.Left = 3; tdor.Top = tdfe.Top + distdet;
+            tdor.Left = 3; tdor.Top = tdva.Top + distdet;
             tdor.Font = tdet;
             tdor.AutoSize = false;
             tdor.Height = alfidet;
@@ -415,9 +415,8 @@ namespace TransCarga
             cdv.Controls.Add(tdes);
             cdv.Controls.Add(tdnr);
             cdv.Controls.Add(tdfe);
-            cdv.Controls.Add(tdor);
             cdv.Controls.Add(tdva);
-
+            cdv.Controls.Add(tdor);
             //cdv.MouseDoubleClick += new MouseEventHandler(cuadro_Click);
         }
         private void pinta_codv(int ctcdv, int anchox, int largoy, int ptoxF2, int ptoyF2, int alfidet, int distdet, Font tdet, DataRow row)
@@ -474,7 +473,7 @@ namespace TransCarga
             Label tdor = new Label();
             tdor.Text = "Origen: " + row.ItemArray[4].ToString();
             tdor.Name = "Origen";
-            tdor.Left = 3; tdor.Top = tdfe.Top + distdet;
+            tdor.Left = 3; tdor.Top = tdva.Top + distdet;
             tdor.Font = tdet;
             tdor.AutoSize = false;
             tdor.Height = alfidet;

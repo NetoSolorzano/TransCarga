@@ -265,3 +265,5 @@ form vplancar, da error si no se selecciona placa y se da enter sin hacer nada .
 form vplancar, agregar boton para salir sin seleccionar placa, guia sin placa ...................... ok 06/12/2021
 from guiati, agregar codigo para aceptar grabar guia sin manifiesto ................................ ok 06/12/2021
 form guiati, corregir combo moneda, no aceptaba dolares ............................................ ok 06/12/2021
+form notcredclts, cerrar el form despues de grabar la operación por si las dudas ................... ok 04/01/2022
+form histograma, correccion de visualización de moneda y valor en cob y DV ......................... ok 04/04/2022

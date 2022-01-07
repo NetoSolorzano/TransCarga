@@ -266,4 +266,5 @@ form vplancar, agregar boton para salir sin seleccionar placa, guia sin placa ..
 from guiati, agregar codigo para aceptar grabar guia sin manifiesto ................................ ok 06/12/2021
 form guiati, corregir combo moneda, no aceptaba dolares ............................................ ok 06/12/2021
 form notcredclts, cerrar el form despues de grabar la operación por si las dudas ................... ok 04/01/2022
-form histograma, correccion de visualización de moneda y valor en cob y DV ......................... ok 04/04/2022
+form histograma, correccion de visualización de moneda y valor en cob y DV ......................... ok 04/01/2022
+form repsoper, servicio por cliente, agregar opción de busqeuda por nombre ......................... ok 07/01/2022

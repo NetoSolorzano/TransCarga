@@ -1485,7 +1485,7 @@ namespace TransCarga
                 _forpa + sep +                  // INF.ADICIONAL FORMA DE PAGO
                 _valcr + sep                    // INF.ADICIONAL FORMA DE PAGO
             );
-            int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+            int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet) && int.Parse(tx_tfil.Text) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
             for (int s = 0; s < tfg; s++)  // DETALLE
             {
                 double _msigv = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
@@ -2891,7 +2891,8 @@ namespace TransCarga
                 if (dataGridView1.Rows.Count > 0)
                 {
                     int fila = 1;
-                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    //int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet) && int.Parse(tx_tfil.Text) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
                     for (int i = 0; i < tfg; i++)
                     {
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
@@ -4069,7 +4070,8 @@ namespace TransCarga
                     StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                     SizeF siz = new SizeF(70, 15);
                     RectangleF recto = new RectangleF(puntoF, siz);
-                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    //int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet) && int.Parse(tx_tfil.Text) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
                     for (int l = 0; l < tfg; l++)
                     {
                         if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))

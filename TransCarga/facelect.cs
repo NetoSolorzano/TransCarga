@@ -276,6 +276,10 @@ namespace TransCarga
             }
             if (Tx_modo.Text == "NUEVO")
             {
+                rb_contado.Enabled = true;
+                rb_contado.Checked = false;
+                rb_credito.Enabled = true;
+                rb_credito.Checked = false;
                 rb_si.Enabled = true;
                 rb_no.Enabled = true;
                 if (codsuser_cu.Contains(asd)) chk_cunica.Enabled = true;
@@ -1314,13 +1318,13 @@ namespace TransCarga
                 {
                     if (Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01"))  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
                     {
-                        _forpa = "Contado";
+                        _forpa = "Contado"; 
                         _valcr = "";
                     }
                 }
                 else
                 {
-                    if (rb_no.Checked == true)
+                    if (rb_no.Checked == true && rb_credito.Checked == true)
                     {
                         if (tx_dat_dpla.Text.Trim() == "") tx_dat_dpla.Text = "7";
                         if (Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01"))  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
@@ -1786,7 +1790,7 @@ namespace TransCarga
                 }
                 else
                 {
-                    if (rb_no.Checked == true)
+                    if (rb_no.Checked == true && rb_credito.Checked == true)
                     {
                         if (tx_dat_dpla.Text.Trim() == "") tx_dat_dpla.Text = "7";
                         string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
@@ -2449,6 +2453,13 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                // valida contado o credito
+                if (rb_contado.Checked == false && rb_credito.Checked == false)
+                {
+                    MessageBox.Show("Seleccione si el comprobante se mitirá" + Environment.NewLine +
+                         "al Contado o al Crédito","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    return;
+                }
                 // valida pago y calcula
                 if (rb_si.Checked == false && rb_no.Checked == false && rb_si.Enabled == true)
                 {
@@ -2854,7 +2865,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pagaut", (rb_si.Checked == true)? "S" : "N");
                     micon.Parameters.AddWithValue("@tipdco", (rb_si.Checked == true)? v_codcob : "");
                     micon.Parameters.AddWithValue("@idcaj", (rb_si.Checked == true)? tx_idcaja.Text : "0");
-                    micon.Parameters.AddWithValue("@plazc", (rb_no.Checked == true)? codppc : "");
+                    micon.Parameters.AddWithValue("@plazc", (rb_no.Checked == true)? (rb_credito.Checked == true)? codppc: "": "");
                     micon.Parameters.AddWithValue("@pordesc", (tx_dat_porcDscto.Text.Trim() == "") ? "0" : tx_dat_porcDscto.Text);
                     micon.Parameters.AddWithValue("@valdesc", (tx_valdscto.Text.Trim() == "") ? "0" : tx_valdscto.Text);
                     micon.Parameters.AddWithValue("@caruni", (chk_cunica.Checked == true)? 1 : 0);
@@ -3464,9 +3475,42 @@ namespace TransCarga
             tx_pagado.Text = "0.00";
             tx_salxcob.Text = tx_flete.Text;
             tx_salxcob.BackColor = Color.Red;
-            cmb_plazoc.Enabled = true;
-            cmb_plazoc.SelectedValue = codppc;
-            tx_dat_plazo.Text = codppc;
+            if (rb_credito.Checked == true)
+            {
+                cmb_plazoc.Enabled = true;
+                cmb_plazoc.SelectedValue = codppc;
+                tx_dat_plazo.Text = codppc;
+            }
+        }
+        private void rb_contado_Click(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO")
+            {
+                if (rb_contado.Checked == true)
+                {
+                    rb_si.Checked = false;
+                    rb_si.Enabled = true;
+                    rb_no.Checked = false;
+                    rb_no.Enabled = true;
+                    cmb_plazoc.SelectedIndex = -1;
+                    tx_dat_dpla.Text = "";
+                    cmb_plazoc.Enabled = false;
+                }
+            }
+        }
+        private void rb_credito_Click(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO")
+            {
+                if (rb_credito.Checked == true)
+                {
+                    rb_si.Checked = false;
+                    rb_si.Enabled = false;
+                    rb_no.Checked = true;
+                    rb_no.Enabled = true;
+                    cmb_plazoc.Enabled = true;
+                }
+            }
         }
         private void chk_sinco_CheckedChanged(object sender, EventArgs e)
         {
@@ -4184,7 +4228,7 @@ namespace TransCarga
                         // forma de pago
                         posi = posi + (alfi/1.5F);
                         string ahiva = "";
-                        if (rb_no.Checked == true)
+                        if (rb_no.Checked == true && rb_credito.Checked == true)
                         {
                             string _fechc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("dd-MM-yyyy");    // "yyyy-MM-dd"
                             ahiva = "- AL CREDITO -" + " 1 CUOTA - VCMTO: " + _fechc;

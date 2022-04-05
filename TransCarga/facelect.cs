@@ -2342,11 +2342,17 @@ namespace TransCarga
                     MessageBox.Show("La GR esta cancelada, el documento de venta"+ Environment.NewLine +
                          "se creará con el estado cancelado","Atención verifique",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     //rb_si.PerformClick();
+                    rb_contado.Checked = true;
+                    rb_credito.Enabled = false;
+                    rb_contado.Enabled = false;
                     rb_si.Checked = false;
-                    rb_no.Enabled = false;
+                    rb_no.Checked = false;
                     rb_si.Enabled = false;
+                    rb_no.Enabled = false;
+                    cmb_plazoc.SelectedIndex = -1;
+                    cmb_plazoc.Enabled = false;
                     tx_salxcob.Text = "0";
-                    tx_pagado.Text = tx_flete.Text;
+                    tx_pagado.Text = "0";   // tx_flete.Text;
                 }
                 else
                 {
@@ -2851,7 +2857,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);                    // total inc. igv
                     micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
-                    micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "" || tx_pagado.Text == "0.00") ? tx_dat_estad.Text : codCanc); // estado
+                    micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "" || tx_pagado.Text == "0.00" || tx_pagado.Text == "0") ? tx_dat_estad.Text : codCanc); // estado
                     micon.Parameters.AddWithValue("@frase1", "");                   // no hay nada que poner 19/11/2020
                     micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);      // tipo de cliente credito o contado
                     micon.Parameters.AddWithValue("@m1clte", tx_dat_m1clte.Text);

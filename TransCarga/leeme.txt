@@ -273,3 +273,4 @@ P.A. rep_cuadre_sede, le agregue codigo en cobranzas para poner valor 0 si la co
 form ayccaja, debe salir del sistema despues de abrir caja ......................................... 
 form facelect, adecuar contado,credito a contado sin ingreso de dinero a caja ...................... ok 04/04/2022
 form facelect, si la guía a facturar ya esta cobrada no debe dar opción a cancela o no ............. ok 05/04/2022
+form notcredclts,error en jalar datos detalle de notas en jaladet() ................................ ok 25/04/2022

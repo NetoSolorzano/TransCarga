@@ -220,12 +220,12 @@ namespace TransCarga
             if (Tx_modo.Text == "NUEVO")
             {
                 gbox_serie.Enabled = true;
-                tx_dat_tnota.Text = v_codnot;
-                cmb_tnota.SelectedValue = v_codnot;
                 cmb_tnota.Enabled = false;
                 tx_serie.ReadOnly = true;
                 cmb_tnota_SelectedIndexChanged(null, null);
             }
+            tx_dat_tnota.Text = v_codnot;
+            cmb_tnota.SelectedValue = v_codnot;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -427,7 +427,7 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr,b.fechopegr,b.docsremit " +
+            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr,ifnull(b.fechopegr,''),ifnull(b.docsremit,'') " +
                 "from detdebcred a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -449,7 +449,7 @@ namespace TransCarga
                                 row[7].ToString(),
                                 null,
                                 null,
-                                row[8].ToString().Substring(6, 4) + "-" + row[8].ToString().Substring(3, 2) + "-" + row[8].ToString().Substring(0, 2),
+                                (row[8].ToString() == "") ? "" : row[8].ToString().Substring(6, 4) + "-" + row[8].ToString().Substring(3, 2) + "-" + row[8].ToString().Substring(0, 2),
                                 row[9].ToString(),
                                 row[6].ToString());
                         }

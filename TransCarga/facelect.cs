@@ -259,7 +259,7 @@ namespace TransCarga
             tx_fletLetras.ReadOnly = true;
             if (Tx_modo.Text == "NUEVO" && v_estcaj == codAbie)      // caja esta abierta?
             {
-                if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy
+                if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy ..... me quede aca, este dato debe limpiarse al cerrar la caja
                 {
                     MessageBox.Show("Las fechas no coinciden" + Environment.NewLine +
                         "Fecha de caja vs Fecha actual", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -2493,6 +2493,11 @@ namespace TransCarga
                         tx_flete.Focus();
                         return;
                     }
+                }
+                if (fshoy != lib.fechCajaLoc(TransCarga.Program.almuser, codGene) && rb_si.Checked == true) // si la caja esta abierta permite cobrar sino NO!
+                {
+                    MessageBox.Show("No puede cobrar en automático","No existe caja abierta");
+                    rb_no.PerformClick();
                 }
                 if (rb_si.Checked == true)
                 {

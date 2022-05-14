@@ -435,7 +435,8 @@ namespace TransCarga
                                         }
                                     }
                                 }
-                                this.Close();
+                                MessageBox.Show("Es necesario salir del sistema","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                                Application.Exit();
                             }
                         }
                     }
@@ -526,6 +527,8 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
+                        //
+                        Program.vg_fcaj = "";           // limpiamos la fecha de la caja
                         retorna = true;
                     }
                 }

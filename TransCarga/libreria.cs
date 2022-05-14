@@ -2141,7 +2141,7 @@ namespace TransCarga
                 Application.Exit();
             }
         }
-        public Boolean email_bien_escrito(String email)                    // valida correo electronico, que tenga @ y . 
+        public Boolean email_bien_escrito(String email)                     // valida correo electronico, que tenga @ y . 
         {
             String expresion;
             expresion = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
@@ -2212,6 +2212,31 @@ namespace TransCarga
             {
                 MessageBox.Show("Se perdió conexión con el servidor en librerías", "Error en conectividad");
                 Application.Exit();
+            }
+            return retorna;
+        }
+        public string fechCajaLoc(string loca, string estAbi)               // retorna fecha de la caja ABIERTA del local, si no esta abierta retorna en blanco
+        {
+            string retorna = "";    // retorna en formato ansi
+            string consulta = "select DATE_FORMAT(fechope, '%Y-%m-%d') from cabccaja where loccaja=@loc and statusc=@eca";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                if (conn.State == ConnectionState.Open) 
+                {
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@loc", loca);
+                        micon.Parameters.AddWithValue("@eca", estAbi);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                retorna = dr.GetString(0);
+                            }
+                        }
+                    }
+                }
             }
             return retorna;
         }
@@ -2356,7 +2381,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string fechaServ(string forma)                                           // retorna fecha del servidor FORMATO AAAA-MM-DD
+        public string fechaServ(string forma)                               // retorna fecha del servidor FORMATO AAAA-MM-DD
         {
             string retorna = "";
             string consulta = "";

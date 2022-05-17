@@ -388,7 +388,7 @@ namespace TransCarga
             MaximizeBox = true;
             MinimizeBox = true;
             FormBorderStyle = FormBorderStyle.Sizable;  // FormBorderStyle.FixedSingle
-            Text = Program.tituloF;
+            Text = Program.tituloF + "  - B.D. " + login.data;
             Left = Screen.PrimaryScreen.Bounds.Left;
             Top = Screen.PrimaryScreen.Bounds.Top;
             //Width = Screen.PrimaryScreen.Bounds.Width;

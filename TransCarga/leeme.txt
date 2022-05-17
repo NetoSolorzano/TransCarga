@@ -274,5 +274,7 @@ form facelect, adecuar contado,credito a contado sin ingreso de dinero a caja ..
 form facelect, si la guía a facturar ya esta cobrada no debe dar opción a cancela o no ............. ok 05/04/2022
 form notcredclts,error en jalar datos detalle de notas en jaladet() ................................ ok 25/04/2022
 form ayccaja, debe salir del sistema despues de abrir/cerrar caja .................................. ok 12/05/2022
-form facelect, leer si hay caja abierta cada vez que hace cobranza automática ...................... 
-form cobranzas, leer si caja abierta antes de efectuar cada cobranza ............................... 
+form transmain, agregar base de datos al titulo del form ........................................... ok 16/05/2022
+form facelect, leer si hay caja abierta cada vez que hace cobranza automática ...................... ok 16/05/2022 antes de grabar verifica si hay caja abierta
+form libreria, crear funcion que retorna fecha de la caja abierta del local ........................ ok 16/05/2022
+form cobranzas, leer si caja abierta antes de efectuar cada cobranza ............................... ok 17/05/2022

@@ -999,6 +999,12 @@ namespace TransCarga
                 MessageBox.Show("No existe Caja!","No puede continuar",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 return;
             }
+            if (lib.fechCajaLoc(v_clu, codAbie) == "")
+            {
+                MessageBox.Show("No existe caja Abierta!, la caja" + Environment.NewLine + 
+                    "fue cerrada recientemente", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             #endregion
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;

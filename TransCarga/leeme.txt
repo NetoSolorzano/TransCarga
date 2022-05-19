@@ -285,3 +285,5 @@ form facelect, evitar que el operador cambie la serie del comprobante ..........
 P.A. rep_cuadre_sede, ordenar las cobranzas por tipo, serie y numero ............................... ok 18/05/2022
 P.A. rep_vtas_fact1, se agrego userc, fechc ........................................................ ok 18/05/2022
 P.A. rep_adm_cob1, se agrego userc, fechc .......................................................... ok 18/05/2022
+form facelect, agregar código para validar que la GR a facturar tenga el detalle completo .......... ok 19/05/2022
+form facelect, validar detalle comprobante con guía <codgror> ...................................... pensar bien como hacerlo ... ver los datos en caliente

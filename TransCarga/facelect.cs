@@ -878,7 +878,7 @@ namespace TransCarga
                             "left join desc_mon m on m.idcodice=a.tipmongri " +
                             "left join desc_loc lo on lo.idcodice=a.locorigen " +
                             "left join desc_loc ld on ld.idcodice=a.locdestin " +
-                            "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est) AND c.fecdocvta IS NULL";
+                            "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est) AND c.fecdocvta IS NULL";   // descprodi
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
                             micon.Parameters.AddWithValue("@ser", serie);
@@ -909,9 +909,9 @@ namespace TransCarga
                                         datcltsD[6] = dr.GetString("numtel1D");
                                         datcltsD[7] = dr.GetString("numtel2D");
                                         datcltsD[8] = dr.GetString("tipsdes");
-                                        //
+                                        //  
                                         datguias[0] = serie + "-" + corre;                 // GR
-                                        datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip
+                                        datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip = descprodi
                                         datguias[2] = (dr.IsDBNull(19)) ? "0" : dr.GetString("bultos");          // cant bultos
                                         datguias[3] = dr.GetString("mon");             // nombre moneda de la GR
                                         datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
@@ -2262,6 +2262,13 @@ namespace TransCarga
                 }
                 else
                 {
+                    if (datguias[1].Trim() == "")   // datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip = descprodi
+                    {
+                        MessageBox.Show("La GR tiene el detalle incompleto", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_numGR.Text = "";
+                        tx_numGR.Focus();
+                        return;
+                    }
                     rb_desGR.PerformClick();
                 }
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)

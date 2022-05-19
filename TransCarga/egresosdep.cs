@@ -275,7 +275,7 @@ namespace TransCarga
                 {
                     string consulta = "SELECT a.id,ifnull(f.descrizionerid,'') as tipeg,a.seregre,a.numegre,d.descrizionerid as mon,a.totpago,a.totpaMN,ifnull(u.descrizionerid,'') as tdv," +
                         "a.serdoco,a.numdoco,ifnull(e.descrizionerid,'') as teg,ifnull(c.descrizionerid,'') as cta,a.refctap,ifnull(a.fechdep,'') as fechdep,a.obscobc," +
-                        "a.fechope,a.timegre,a.codmopa,a.codgrpe,a.ctaprop,a.estdegr,a.userc,b.nom_user,a.tipegre " +
+                        "a.fechope,a.timegre,a.codmopa,a.codgrpe,a.ctaprop,a.estdegr,a.userc,b.nom_user,a.tipegre,a.tipdoco " +
                         "FROM cabegresos a " +
                         "LEFT JOIN desc_mon d ON d.idcodice = a.codmopa " +
                         "left join desc_tdv u on u.idcodice = a.tipdoco " +
@@ -316,7 +316,8 @@ namespace TransCarga
                                     dr.GetString("userc"),
                                     dr.GetString("nom_user"),
                                     dr.GetString("codgrpe"),
-                                    dr.GetString("tipegre")
+                                    dr.GetString("tipegre"),
+                                    dr.GetString("tipdoco")
                                     );
                         }
                         /*else
@@ -909,7 +910,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (true)     // donde validas que la caja este abierta ?????
+                    if (tx_idcaja.Text == lib.validacaja(v_clu, codAbie))     // id debe ser = al id de la caja abierta actual
                     {
                         string actua = "update cabegresos a set " +
                             "a.fechope=@fechop,a.locegre=@ldcpgr,a.estdegr=@estado,a.tipegre=@tipegr,a.codtegr=@codteg,a.tipdoco=@tipdoc,a.martdve=@martdv,a.serdoco=@serdoc," +
@@ -950,6 +951,11 @@ namespace TransCarga
                         // EDICION DEL DETALLE .... no hay detalle
                         micon.Dispose();
                     }
+                    else
+                    {
+                        MessageBox.Show("No se encontro caja abierta!", "Error modificando documento",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                        return;
+                    }
                     conn.Close();
                 }
                 catch (MySqlException ex)
@@ -968,31 +974,39 @@ namespace TransCarga
         }
         private void anula()
         {
-            // en este caso solo hay ANULACION FISICA
-            // Anulacion fisica se "anula" el numero del documento en sistema y
-            // se borran todos los enlaces mediante triggers en la B.D.
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            if (tx_idcaja.Text == lib.validacaja(v_clu, codAbie))
             {
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                // en este caso solo hay ANULACION FISICA
+                // Anulacion fisica se "anula" el numero del documento en sistema y
+                // se borran todos los enlaces mediante triggers en la B.D.
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
-                    string canul = "update cabegresos set estdegr=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
-                        "where id=@idr";
-                    using (MySqlCommand micon = new MySqlCommand(canul, conn))
+                    conn.Open();
+                    if (conn.State == ConnectionState.Open)
                     {
-                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@estser", codAnul);
-                        micon.Parameters.AddWithValue("@obse", tx_obser1.Text);
-                        micon.Parameters.AddWithValue("@asd", asd);
-                        micon.Parameters.AddWithValue("@dil4", lib.iplan());
-                        micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
-                        micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
-                        micon.Parameters.AddWithValue("@veap", verapp);
-                        micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
-                        micon.ExecuteNonQuery();
+                        string canul = "update cabegresos set estdegr=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
+                            "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
+                            "where id=@idr";
+                        using (MySqlCommand micon = new MySqlCommand(canul, conn))
+                        {
+                            micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                            micon.Parameters.AddWithValue("@estser", codAnul);
+                            micon.Parameters.AddWithValue("@obse", tx_obser1.Text);
+                            micon.Parameters.AddWithValue("@asd", asd);
+                            micon.Parameters.AddWithValue("@dil4", lib.iplan());
+                            micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
+                            micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
+                            micon.Parameters.AddWithValue("@veap", verapp);
+                            micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
+                            micon.ExecuteNonQuery();
+                        }
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("No se encontro caja abierta!", "Error anulando documento", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
         }
         #endregion boton_form;
@@ -1483,7 +1497,7 @@ namespace TransCarga
                     tx_serie.Text = dataGridView1.Rows[e.RowIndex].Cells["serie"].Value.ToString();
                     tx_numero.Text = dataGridView1.Rows[e.RowIndex].Cells["numero"].Value.ToString();
                     tx_dat_estad.Text = codGene;
-                    if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "1")
+                    if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "1")            // pago efectuado
                     {
                         rb_pago.Checked = true;
                         //rb_pago.PerformClick();
@@ -1497,8 +1511,10 @@ namespace TransCarga
                         tx_numGR.Enabled = true;
                         cmb_grupo.Enabled = true;
                         tx_dat_tdv.Text = v_codc;
+                        tx_dat_comp.Text = dataGridView1.Rows[e.RowIndex].Cells["tipdoco"].Value.ToString();
+                        cmb_comp.SelectedValue = tx_dat_comp.Text;
                     }
-                    if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "2")
+                    if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "2")            // deposito
                     {
                         rb_depo.Checked = true;
                         //rb_depo.PerformClick();
@@ -1513,8 +1529,6 @@ namespace TransCarga
                         cmb_grupo.Enabled = false;
                         tx_dat_tdv.Text = v_codd;
                     }
-                    tx_dat_tdv.Text = dataGridView1.Rows[e.RowIndex].Cells["comprob"].Value.ToString();
-                    tx_dat_comp.Text = "";
                     tx_serGR.Text = dataGridView1.Rows[e.RowIndex].Cells["sercomp"].Value.ToString();
                     tx_numGR.Text = dataGridView1.Rows[e.RowIndex].Cells["numcomp"].Value.ToString();
                     tx_dat_grupo.Text = dataGridView1.Rows[e.RowIndex].Cells["codgrpe"].Value.ToString(); 

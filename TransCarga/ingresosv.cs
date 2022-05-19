@@ -577,7 +577,7 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear el Ingreso?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (true)
+                        if (tx_idcaja.Text == lib.validacaja(v_clu, codAbie))
                         {
                             if (graba() == true)
                             {
@@ -593,6 +593,12 @@ namespace TransCarga
                             {
                                 iserror = "si";
                             }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se encontro caja abierta!", "Error insertando documento", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            iserror = "si";
+                            return;
                         }
                     }
                     else
@@ -772,7 +778,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (true)     // donde validas que la caja este abierta ?????
+                    if (tx_idcaja.Text == lib.validacaja(v_clu, codAbie))   // el id de caja es el mismo que el actual de la base de datos? 
                     {
                         string actua = "update cabingresosv a set " +
                             "a.idcaja=@idcaja,a.fechope=@fechop,a.seringv=@servin,a.locingv=@ldcpgr,a.estingv=@estado,a.codting=@tip,a.tipdoco=@tipdoc,a.serdoco=@serdoc," +
@@ -812,6 +818,11 @@ namespace TransCarga
                         // EDICION DEL DETALLE .... no hay detalle
                         micon.Dispose();
                     }
+                    else
+                    {
+                        MessageBox.Show("No se encontro caja abierta!", "Error editando documento", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
                     conn.Close();
                 }
                 catch (MySqlException ex)
@@ -832,31 +843,39 @@ namespace TransCarga
         }
         private void anula()
         {
-            // en este caso solo hay ANULACION FISICA
-            // Anulacion fisica se "anula" el numero del documento en sistema y
-            // se borran todos los enlaces mediante triggers en la B.D.
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            if (tx_idcaja.Text == lib.validacaja(v_clu, codAbie))
             {
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                // en este caso solo hay ANULACION FISICA
+                // Anulacion fisica se "anula" el numero del documento en sistema y
+                // se borran todos los enlaces mediante triggers en la B.D.
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
-                    string canul = "update cabingresosv set estingv=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
-                        "where id=@idr";
-                    using (MySqlCommand micon = new MySqlCommand(canul, conn))
+                    conn.Open();
+                    if (conn.State == ConnectionState.Open)
                     {
-                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@estser", codAnul);
-                        micon.Parameters.AddWithValue("@obse", tx_obser1.Text);
-                        micon.Parameters.AddWithValue("@asd", asd);
-                        micon.Parameters.AddWithValue("@dil4", lib.iplan());
-                        micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
-                        micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
-                        micon.Parameters.AddWithValue("@veap", verapp);
-                        micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
-                        micon.ExecuteNonQuery();
+                        string canul = "update cabingresosv set estingv=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
+                            "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
+                            "where id=@idr";
+                        using (MySqlCommand micon = new MySqlCommand(canul, conn))
+                        {
+                            micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                            micon.Parameters.AddWithValue("@estser", codAnul);
+                            micon.Parameters.AddWithValue("@obse", tx_obser1.Text);
+                            micon.Parameters.AddWithValue("@asd", asd);
+                            micon.Parameters.AddWithValue("@dil4", lib.iplan());
+                            micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
+                            micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
+                            micon.Parameters.AddWithValue("@veap", verapp);
+                            micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
+                            micon.ExecuteNonQuery();
+                        }
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("No se encontro caja abierta!", "Error enulando documento", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
         }
         #endregion boton_form;
@@ -892,7 +911,7 @@ namespace TransCarga
         }
         private void tx_pago_Leave(object sender, EventArgs e)
         {
-            if (tx_PAGO.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
+            if (tx_PAGO.Text.Trim() != "" && Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
                 decimal vpag = decimal.Parse(tx_PAGO.Text);
                 if (vpag <= 0)
@@ -915,7 +934,7 @@ namespace TransCarga
         }
         private void cmb_mon_Enter(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO") cmb_mon.DroppedDown = true;
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") cmb_mon.DroppedDown = true;
         }
         private void cmb_mpago_Enter(object sender, EventArgs e)
         {
@@ -1148,7 +1167,7 @@ namespace TransCarga
         }
         private void cmb_mon_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO")
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {

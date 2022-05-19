@@ -278,3 +278,10 @@ form transmain, agregar base de datos al titulo del form .......................
 form facelect, leer si hay caja abierta cada vez que hace cobranza automática ...................... ok 16/05/2022 antes de grabar verifica si hay caja abierta
 form libreria, crear funcion que retorna fecha de la caja abierta del local ........................ ok 16/05/2022
 form cobranzas, leer si caja abierta antes de efectuar cada cobranza ............................... ok 17/05/2022
+Trigger cabegresos_after_update, agregar codigo para actualizar caja si se edito un egreso ......... ok 18/05/2022
+form egresosdep, arreglo en edicion, arreglo que no permita grabar con caja recien cerrada ......... ok 18/05/2022   comprueba que la caja este abierta antes de grabar
+form ingresosv, arreglo en edicion y anulacion que no permita grabar con caja recien cerrada ....... ok 18/05/2022
+form facelect, evitar que el operador cambie la serie del comprobante .............................. ok 18/05/2022
+P.A. rep_cuadre_sede, ordenar las cobranzas por tipo, serie y numero ............................... ok 18/05/2022
+P.A. rep_vtas_fact1, se agrego userc, fechc ........................................................ ok 18/05/2022
+P.A. rep_adm_cob1, se agrego userc, fechc .......................................................... ok 18/05/2022

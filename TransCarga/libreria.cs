@@ -2269,6 +2269,44 @@ namespace TransCarga
             }
             return retorna;
         }
+        public string validacaja(string loca, string estAbi)               // valida existencia de caja ABIERTA, devuelve ID de caja abierta en la fecha
+        {
+            string retorna = "";       // busca en la maestra de cajas buscando una que este abierta
+            string consulta = "select ifnull(id,'') from cabccaja where loccaja=@loc and statusc=@sta order by id desc limit 1";
+            MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
+            conl.Open();
+            if (conl.State == ConnectionState.Open)
+            {
+                MySqlCommand micon = new MySqlCommand(consulta, conl);
+                micon.Parameters.AddWithValue("@loc", loca);
+                micon.Parameters.AddWithValue("@sta", estAbi);
+                try
+                {
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        if (dr.Read()) retorna = dr.GetString(0);
+                        dr.Close();
+                    }
+                    else
+                    {
+                        dr.Close();
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error en busqueda de id caja");
+                    Application.Exit();
+                }
+                finally { conl.Close(); }
+            }
+            else
+            {
+                MessageBox.Show("Se perdió conexión con el servidor en librerías", "Error de conectividad");
+                Application.Exit();
+            }
+            return retorna;
+        }
         public string idegresos(string idcaja)                              // retorna el idr de egresos segun id de caja
         {
             string retorna = "";
@@ -2486,45 +2524,6 @@ namespace TransCarga
                 catch (MySqlException ex)
                 {
                     MessageBox.Show(ex.Message, "Error en consulta de cajas");
-                    Application.Exit();
-                }
-                finally { conl.Close(); }
-            }
-            else
-            {
-                MessageBox.Show("Se perdió conexión con el servidor en librerías", "Error de conectividad");
-                Application.Exit();
-            }
-            return retorna;
-        }
-        public string validacaja(string loca)                               // valida existencia de caja abierta
-        {
-            string retorna = "";       // busca en la maestra de cajas buscando una que este abierta
-            string consulta = "select id from macajas where local=@loc and status=@sta order by id desc limit 1";
-            MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
-            conl.Open();
-            if (conl.State == ConnectionState.Open)
-            {
-                MySqlCommand micon = new MySqlCommand(consulta, conl);
-                micon.Parameters.AddWithValue("@loc", loca);
-                micon.Parameters.AddWithValue("@sta", enlaces("frmcajas", "tx_status", "Default"));
-                try
-                {
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.HasRows)
-                    {
-                        if (dr.Read()) retorna = dr.GetString(0);
-                        dr.Close();
-                    }
-                    else
-                    {
-                        dr.Close();
-                        MessageBox.Show("No existe caja abierta!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en busqueda de caja");
                     Application.Exit();
                 }
                 finally { conl.Close(); }

@@ -2222,6 +2222,7 @@ namespace TransCarga
         {
             lp.escribe(this);
             tx_nomRem.ReadOnly = true;
+            tx_serie.ReadOnly = true;
             //tx_dirRem.ReadOnly = true;
             //tx_dptoRtt.ReadOnly = true;
             //tx_provRtt.ReadOnly = true;

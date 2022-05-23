@@ -2907,6 +2907,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                     micon.ExecuteNonQuery();
                 }
+                /*  ESO LO COMENTE EL 21/05/2022 ... VEREMOS SI CON ESTO MAS EL UPDATE CON TIPO,SERIE Y NUMERO MEJORAMOS EN ALGO
                 using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
                 {
                     using (MySqlDataReader dr = micon.ExecuteReader())
@@ -2917,24 +2918,26 @@ namespace TransCarga
                         }
                     }
                 }
+                */
                 // detalle
                 if (dataGridView1.Rows.Count > 0)
                 {
                     int fila = 1;
-                    //int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
                     int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet) && int.Parse(tx_tfil.Text) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
                     for (int i = 0; i < tfg; i++)
                     {
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
-
                             string inserd2 = "update detfactu set " +
                                 "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret,codMN=@cmnn," +
                                 "totalgrMN=@tgrmn,pagauto=@pagaut " +
-                                "where idc=@idr and filadet=@fila";
+                                "where tipdvta=@tdv and serdvta=@sdv and numdvta=@cdv and filadet=@fila"; // "where idc=@idr and filadet=@fila"
                             using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                             {
-                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                micon.CommandTimeout = 60;
+                                micon.Parameters.AddWithValue("@tdv", tx_dat_tdv.Text);
+                                micon.Parameters.AddWithValue("@sdv", tx_serie.Text);
+                                micon.Parameters.AddWithValue("@cdv", tx_numero.Text);
                                 micon.Parameters.AddWithValue("@fila", fila);
                                 micon.Parameters.AddWithValue("@guia", dataGridView1.Rows[i].Cells[0].Value.ToString());
                                 micon.Parameters.AddWithValue("@bult", dataGridView1.Rows[i].Cells[2].Value.ToString());

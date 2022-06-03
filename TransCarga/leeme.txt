@@ -287,3 +287,4 @@ P.A. rep_vtas_fact1, se agrego userc, fechc ....................................
 P.A. rep_adm_cob1, se agrego userc, fechc .......................................................... ok 18/05/2022
 form facelect, agregar código para validar que la GR a facturar tenga el detalle completo .......... ok 19/05/2022
 form facelect, cambio de codigo en grabar comprobante, ya no id en detalle ......................... ok 23/05/2022 ahora actualizamos el detalle por tipo serie y numero del comprob.
+form facelect, arreglo error en grabar detalle de fact ............................................. ok 23/05/2022

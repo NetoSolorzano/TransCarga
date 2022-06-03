@@ -2931,7 +2931,7 @@ namespace TransCarga
                             string inserd2 = "update detfactu set " +
                                 "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret,codMN=@cmnn," +
                                 "totalgrMN=@tgrmn,pagauto=@pagaut " +
-                                "where tipdvta=@tdv and serdvta=@sdv and numdvta=@cdv and filadet=@fila"; // "where idc=@idr and filadet=@fila"
+                                "where tipdocvta=@tdv and serdvta=@sdv and numdvta=@cdv and filadet=@fila"; // "where idc=@idr and filadet=@fila"
                             using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                             {
                                 micon.CommandTimeout = 60;

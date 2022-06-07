@@ -1128,24 +1128,24 @@ namespace TransCarga
                 tx_dptoDrio.Focus();
                 return;
             }
-            if (tx_numDocRem.Text.Trim().Length != Int16.Parse(tx_mld.Text))
-            {
-                MessageBox.Show("Seleccione tipo de documento correcto","Error en remitente",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                cmb_docRem.Focus();
-                return;
-            }
-            if (tx_numDocDes.Text.Trim().Length != Int16.Parse(tx_mldD.Text))
-            {
-                MessageBox.Show("Seleccione tipo de documento correcto", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                cmb_docDes.Focus();
-                return;
-            }
             #endregion
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                if (tx_numDocRem.Text.Trim().Length != Int16.Parse(tx_mld.Text))
+                {
+                    MessageBox.Show("Seleccione tipo de documento correcto", "Error en remitente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_docRem.Focus();
+                    return;
+                }
+                if (tx_numDocDes.Text.Trim().Length != Int16.Parse(tx_mldD.Text))
+                {
+                    MessageBox.Show("Seleccione tipo de documento correcto", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_docDes.Focus();
+                    return;
+                }
                 // valida que las filas de la grilla esten completas
                 if (valiGri() != true)
                 {
@@ -1358,11 +1358,25 @@ namespace TransCarga
                 //if ((tx_pla_plani.Text.Trim() != "") && tx_impreso.Text == "S")
                 else
                 {
-                    sololee();
-                    MessageBox.Show("No se puede Anular" + Environment.NewLine +
-                        "Tiene planilla de carga y/o Doc.Venta","Atención|" + tx_DV.Text.Trim()+"|", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    tx_dat_tdRem.Focus();
-                    return;
+                    var AQ = MessageBox.Show("No se debería Anular" + Environment.NewLine +
+                        "Tiene planilla de carga y/o Doc.Venta" + Environment.NewLine +
+                        "CONFIRMA QUE SI DESEA ANULAR?", "Atención|" + tx_DV.Text.Trim()+"|", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (AQ == DialogResult.Yes)
+                    {
+                        anula();
+                        // actualizamos la tabla seguimiento de usuarios
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        sololee();
+                        tx_dat_tdRem.Focus();
+                        return;
+                    }
                 }
             }
             if (iserror == "no")

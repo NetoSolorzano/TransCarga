@@ -486,16 +486,23 @@ namespace TransCarga
         }
         private void bt_prev_caja_Click(object sender, EventArgs e)     // impresion cuadre de caja
         {
+            if (rb_secuencial.Checked == false && rb_docvta.Checked == false)
+            {
+                MessageBox.Show("Selecione un ordenamiento","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                return;
+            }
             if (dgv_ccaja.Rows.Count > 0 && dgv_ccaja.CurrentRow.Index > -1)
             {
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     if (lib.procConn(conn) == true)
                     {
-                        using (MySqlCommand micon = new MySqlCommand("rep_cuadre_sede", conn))
+                        using (MySqlCommand micon = new MySqlCommand("rep_cuadre_sede2", conn))
                         {
                             micon.CommandType = CommandType.StoredProcedure;
                             micon.Parameters.AddWithValue("@idc", dgv_ccaja.CurrentRow.Cells[0].Value.ToString());
+                            micon.Parameters.AddWithValue("@orden", (rb_secuencial.Checked == true)? "0" : "1");
+                            micon.Parameters.AddWithValue("@usuar", asd);
                             using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                             {
                                 dtcuad.Rows.Clear(); 

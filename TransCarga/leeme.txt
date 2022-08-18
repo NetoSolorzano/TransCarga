@@ -291,3 +291,4 @@ form facelect, arreglo error en grabar detalle de fact .........................
 CR planillas de carga, se cambio "ayudante" por "copiloto"  pedido de Elmer ........................ ok 02/06/2022
 form guiati, correc de error al anular guia, valid de tip doc remitente, lo puse solo para NUEVO ... ok 06/06/2022
 form guiati, se agrega codigo para confirmar anulacion a pesar de tener manifiesto o FT/BV ......... ok 06/06/2022
+form repadmcaja, agregar seleccion de orden en reporte de cuadre de caja ........................... ok 18/08/2022

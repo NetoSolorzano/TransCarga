@@ -200,6 +200,9 @@
             this.dgv_pend = new ADGV.AdvancedDataGridView();
             this.tx_tfi_p = new TransCarga.NumericTextBox();
             this.tx_totpend = new TransCarga.NumericTextBox();
+            this.gb_orden = new System.Windows.Forms.GroupBox();
+            this.rb_secuencial = new System.Windows.Forms.RadioButton();
+            this.rb_docvta = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
@@ -237,6 +240,7 @@
             this.groupBox35.SuspendLayout();
             this.groupBox33.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pend)).BeginInit();
+            this.gb_orden.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -511,6 +515,7 @@
             // 
             // tabres
             // 
+            this.tabres.Controls.Add(this.gb_orden);
             this.tabres.Controls.Add(this.tx_ting_c);
             this.tabres.Controls.Add(this.label31);
             this.tabres.Controls.Add(this.tx_tegr_c);
@@ -2133,6 +2138,39 @@
             this.tx_totpend.TabIndex = 412;
             this.tx_totpend.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // gb_orden
+            // 
+            this.gb_orden.Controls.Add(this.rb_docvta);
+            this.gb_orden.Controls.Add(this.rb_secuencial);
+            this.gb_orden.Location = new System.Drawing.Point(833, 6);
+            this.gb_orden.Name = "gb_orden";
+            this.gb_orden.Size = new System.Drawing.Size(188, 44);
+            this.gb_orden.TabIndex = 441;
+            this.gb_orden.TabStop = false;
+            this.gb_orden.Text = " Ordenamiento ";
+            // 
+            // rb_secuencial
+            // 
+            this.rb_secuencial.AutoSize = true;
+            this.rb_secuencial.Location = new System.Drawing.Point(7, 18);
+            this.rb_secuencial.Name = "rb_secuencial";
+            this.rb_secuencial.Size = new System.Drawing.Size(78, 17);
+            this.rb_secuencial.TabIndex = 0;
+            this.rb_secuencial.TabStop = true;
+            this.rb_secuencial.Text = "Secuencial";
+            this.rb_secuencial.UseVisualStyleBackColor = true;
+            // 
+            // rb_docvta
+            // 
+            this.rb_docvta.AutoSize = true;
+            this.rb_docvta.Location = new System.Drawing.Point(91, 18);
+            this.rb_docvta.Name = "rb_docvta";
+            this.rb_docvta.Size = new System.Drawing.Size(76, 17);
+            this.rb_docvta.TabIndex = 1;
+            this.rb_docvta.TabStop = true;
+            this.rb_docvta.Text = "Doc.Venta";
+            this.rb_docvta.UseVisualStyleBackColor = true;
+            // 
             // repadmcaja
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2190,6 +2228,8 @@
             this.groupBox35.ResumeLayout(false);
             this.groupBox33.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pend)).EndInit();
+            this.gb_orden.ResumeLayout(false);
+            this.gb_orden.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2368,5 +2408,8 @@
         private System.Windows.Forms.GroupBox groupBox48;
         private NumericTextBox tx_tfc;
         private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.GroupBox gb_orden;
+        private System.Windows.Forms.RadioButton rb_docvta;
+        private System.Windows.Forms.RadioButton rb_secuencial;
     }
 }

@@ -294,3 +294,5 @@ form guiati, se agrega codigo para confirmar anulacion a pesar de tener manifies
 form repadmcaja, agregar seleccion de orden en reporte de cuadre de caja ........................... ok 18/08/2022
 form defs, TPA, mostrar en el form dias de credito en numero ....................................... OK 02/11/2022
 form guiati, quitar espacios en blanco en numDocRem y numDocDes antes de grabar .................... ok 02/11/2022
+form ayccaja, Cuadre de caja, no se limpia la grilla cada vez que se da click a botones ............ ok 03/11/2022
+form facelect, no esta jalando bien el plazo de pago en creditos ................................... no hay ningun problema 

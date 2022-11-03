@@ -127,6 +127,7 @@ namespace TransCarga
             tx_dat_userdoc.Text = asd;
             tx_digit.Text = v_nbu;
             //tx_dat_estad.Text = codAbie;
+            dataGridView1.Rows.Clear();
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {

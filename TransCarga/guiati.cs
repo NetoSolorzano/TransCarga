@@ -1471,12 +1471,12 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@numgr", tx_numero.Text);
                     micon.Parameters.AddWithValue("@npregr", tx_pregr_num.Text);
                     micon.Parameters.AddWithValue("@tdcdes", tx_dat_tDdest.Text);
-                    micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text);
+                    micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text.Trim());
                     micon.Parameters.AddWithValue("@nomdes", tx_nomDrio.Text);
                     micon.Parameters.AddWithValue("@dircde", tx_dirDrio.Text);
                     micon.Parameters.AddWithValue("@ubicde", tx_ubigDtt.Text);
                     micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
-                    micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
+                    micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text.Trim());
                     micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
                     micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
                     micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
@@ -1599,7 +1599,7 @@ namespace TransCarga
                     using (MySqlCommand micon = new MySqlCommand(actua, conn))
                     {
                         micon.Parameters.AddWithValue("@tdc1", tx_dat_tdRem.Text);
-                        micon.Parameters.AddWithValue("@ndc1", tx_numDocRem.Text);
+                        micon.Parameters.AddWithValue("@ndc1", tx_numDocRem.Text.Trim());
                         micon.Parameters.AddWithValue("@ndir", rl[2]);
                         micon.Parameters.AddWithValue("@ubig", rl[1]);
                         micon.Parameters.AddWithValue("@dist", rl[5]);
@@ -1618,7 +1618,7 @@ namespace TransCarga
                     using (MySqlCommand micon = new MySqlCommand(actua, conn))
                     {
                         micon.Parameters.AddWithValue("@tdc1", tx_dat_tDdest.Text);
-                        micon.Parameters.AddWithValue("@ndc1", tx_numDocDes.Text);
+                        micon.Parameters.AddWithValue("@ndc1", tx_numDocDes.Text.Trim());
                         micon.Parameters.AddWithValue("@ndir", dl[2]);
                         micon.Parameters.AddWithValue("@ubig", dl[1]);
                         micon.Parameters.AddWithValue("@dist", dl[5]);
@@ -1671,12 +1671,12 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                         micon.Parameters.AddWithValue("@tdcdes", tx_dat_tDdest.Text);
-                        micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text);
+                        micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text.Trim());
                         micon.Parameters.AddWithValue("@nomdes", tx_nomDrio.Text);
                         micon.Parameters.AddWithValue("@dircde", tx_dirDrio.Text);
                         micon.Parameters.AddWithValue("@ubicde", tx_ubigDtt.Text);
                         micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
-                        micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
+                        micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text.Trim());
                         micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
                         micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
                         micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);

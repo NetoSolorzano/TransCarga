@@ -425,7 +425,6 @@
             this.tx_desenc.ReadOnly = true;
             this.tx_desenc.Size = new System.Drawing.Size(526, 20);
             this.tx_desenc.TabIndex = 190;
-            this.tx_desenc.Visible = false;
             // 
             // tx_encrip
             // 
@@ -434,7 +433,6 @@
             this.tx_encrip.ReadOnly = true;
             this.tx_encrip.Size = new System.Drawing.Size(526, 20);
             this.tx_encrip.TabIndex = 189;
-            this.tx_encrip.Visible = false;
             // 
             // chk_permisos
             // 

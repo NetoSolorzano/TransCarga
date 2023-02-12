@@ -42,6 +42,7 @@ namespace TransCarga
         string codCier = "";            // codigo caja cerrada
         decimal vsali = 0;              // saldo inicial del cuadre
         decimal vsalf = 0;              // saldo final del cuadre
+        string obliFactD = "";          // obliga o no a facturar todas las guias cobradas 
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -163,7 +164,11 @@ namespace TransCarga
                             if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
                             if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                             if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                            if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();         // imagen del boton grabar visualizar
+                            if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();      // imagen del boton grabar visualizar
+                        }
+                        if (row["campo"].ToString() == "factDiaria")
+                        {
+                            if (row["param"].ToString() == "obligado") obliFactD = row["valor"].ToString().Trim();      // SI | NO => obliga o no a facturar todas las GR cobradas 
                         }
                     }
                     if (row["formulario"].ToString() == nomform)
@@ -347,6 +352,40 @@ namespace TransCarga
             tx_totcant.Text = tp.ToString();
             */
         }
+        private int validaGRcobradas()         // valida que las GR cobradas tengan DV, retorna cantidad filas sin DV
+        {
+            int n=1;                        // 1 = tiene guias sin DV
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        string busca = "select concat(b.descrizionerid,'-',a.serdoco,'-',a.numdoco) as GUIA from cabcobran a " +
+                                        "left join desc_tdv b on b.idcodice = a.tipdoco " +
+                                        "where a.idcaja = @idc and a.martdve = ''";
+                        using (MySqlCommand micon = new MySqlCommand(busca, conn))
+                        {
+                            micon.Parameters.AddWithValue("@idc", tx_idr.Text);
+                            using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                            {
+                                using (DataTable dtt = new DataTable())
+                                {
+                                    da.Fill(dtt);
+                                    n = dtt.Rows.Count;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Application.Exit();
+                    return n;
+                }
+            }
+            return n;
+        }
 
         #region limpiadores_modos
         private void sololee()
@@ -395,6 +434,15 @@ namespace TransCarga
                 if (button1.Text == "CIERRA CAJA")
                 {
                     keta = "CERRAR";
+                }
+                if (keta == "CERRAR" && obliFactD == "SI")      // obliga a validar si todas las GR cobradas tienen DV
+                {
+                    if (validaGRcobradas() > 0) 
+                    {
+                        MessageBox.Show("Tiene GRs sin documento de venta" + Environment.NewLine + 
+                            "Debe generar sus respectivos comprobantes","No puede continuar",MessageBoxButtons.OK,MessageBoxIcon.Stop);
+                        return;
+                    }
                 }
                 // vamos con todo
                 if (tx_idr.Text.Trim() == "")

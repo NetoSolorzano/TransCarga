@@ -107,6 +107,11 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.bt_jala = new System.Windows.Forms.Button();
+            this.groupBox25 = new System.Windows.Forms.GroupBox();
+            this.groupBox26 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBox14 = new System.Windows.Forms.TextBox();
+            this.tx_claveWeb = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox23.SuspendLayout();
             this.groupBox21.SuspendLayout();
@@ -120,6 +125,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox25.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -871,7 +877,7 @@
             this.button1.Location = new System.Drawing.Point(669, 270);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 13;
+            this.button1.TabIndex = 14;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -885,6 +891,57 @@
             this.bt_jala.UseVisualStyleBackColor = true;
             this.bt_jala.Click += new System.EventHandler(this.bt_jala_Click);
             // 
+            // groupBox25
+            // 
+            this.groupBox25.BackColor = System.Drawing.Color.White;
+            this.groupBox25.Controls.Add(this.groupBox26);
+            this.groupBox25.Location = new System.Drawing.Point(11, 270);
+            this.groupBox25.Name = "groupBox25";
+            this.groupBox25.Size = new System.Drawing.Size(311, 1);
+            this.groupBox25.TabIndex = 278;
+            this.groupBox25.TabStop = false;
+            // 
+            // groupBox26
+            // 
+            this.groupBox26.Location = new System.Drawing.Point(0, -26);
+            this.groupBox26.Name = "groupBox26";
+            this.groupBox26.Size = new System.Drawing.Size(164, 1);
+            this.groupBox26.TabIndex = 113;
+            this.groupBox26.TabStop = false;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label13.Location = new System.Drawing.Point(13, 254);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(95, 13);
+            this.label13.TabIndex = 277;
+            this.label13.Tag = "Clave para acceder al sistema web transcarga clientes";
+            this.label13.Text = "Clave acceso web";
+            // 
+            // textBox14
+            // 
+            this.textBox14.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox14.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox14.Location = new System.Drawing.Point(111, 252);
+            this.textBox14.MaxLength = 0;
+            this.textBox14.Name = "textBox14";
+            this.textBox14.Size = new System.Drawing.Size(211, 18);
+            this.textBox14.TabIndex = 13;
+            this.textBox14.Leave += new System.EventHandler(this.textBox14_Leave);
+            // 
+            // tx_claveWeb
+            // 
+            this.tx_claveWeb.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_claveWeb.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_claveWeb.Location = new System.Drawing.Point(11, 289);
+            this.tx_claveWeb.MaxLength = 0;
+            this.tx_claveWeb.Name = "tx_claveWeb";
+            this.tx_claveWeb.Size = new System.Drawing.Size(621, 18);
+            this.tx_claveWeb.TabIndex = 279;
+            this.tx_claveWeb.Visible = false;
+            // 
             // clients
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -892,6 +949,10 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 408);
+            this.Controls.Add(this.tx_claveWeb);
+            this.Controls.Add(this.groupBox25);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.textBox14);
             this.Controls.Add(this.bt_jala);
             this.Controls.Add(this.tx_mld);
             this.Controls.Add(this.groupBox23);
@@ -961,6 +1022,7 @@
             this.groupBox5.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox25.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1045,5 +1107,10 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button bt_jala;
+        private System.Windows.Forms.GroupBox groupBox25;
+        private System.Windows.Forms.GroupBox groupBox26;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBox14;
+        private System.Windows.Forms.TextBox tx_claveWeb;
     }
 }

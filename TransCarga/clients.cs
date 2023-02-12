@@ -931,6 +931,11 @@ namespace TransCarga
             textBox3.Text = "";
             textBox3.Focus();
         }
+        private void textBox14_Leave(object sender, EventArgs e)        // clave acceso web para trancarga web clientes
+        {
+            //if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") tx_claveWeb.Text = lib.GetSHA256(textBox14.Text);
+        }
+
         #endregion leaves;
 
         #region botones_de_comando_y_clients  
@@ -1010,6 +1015,7 @@ namespace TransCarga
             limpia_combos();
             textBox1.ReadOnly = true;
             textBox5.Text = vapadef;
+            textBox14.ReadOnly = true;
             textBox5.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
@@ -1023,6 +1029,7 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             //jalaoc("tx_idr");
+            textBox14.ReadOnly = true;
             textBox1.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)

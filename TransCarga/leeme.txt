@@ -296,3 +296,8 @@ form defs, TPA, mostrar en el form dias de credito en numero ...................
 form guiati, quitar espacios en blanco en numDocRem y numDocDes antes de grabar .................... ok 02/11/2022
 form ayccaja, Cuadre de caja, no se limpia la grilla cada vez que se da click a botones ............ ok 03/11/2022
 form facelect, no esta jalando bien el plazo de pago en creditos ................................... no hay ningun problema 
+form libreria, crear funcion para encriptar clave web clientes ..................................... ok no lo usaremos aun 29/11/2022
+form clientes, agregar campos para clave web clientes de Transcarga ................................ ok solo para visualizar, la clave se genera en el sitio web
+************** adecuaciones para obligar o no a facturar guias cobradas en el día ******************
+form ayccaja, agregar enlace para configurar si se obliga a fact todo o no ......................... ok falta probar
+form ayccaja, agregar rutina para validar si todas las guias "cobradas en efectivo" tiene DV ....... ok falta probar

@@ -168,7 +168,7 @@ namespace TransCarga
         {
             return Environment.MachineName;
         }
-        public string Encrypt(string toEncrypt, bool useHashing)
+        public string Encrypt(string toEncrypt, bool useHashing)            // encriptación para usuarios del sistema transcarga
         {
             byte[] keyArray;
             byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
@@ -213,7 +213,7 @@ namespace TransCarga
             //Return the encrypted data into unreadable string format
             return Convert.ToBase64String(resultArray, 0, resultArray.Length);
         }
-        public string Decrypt(string cipherString, bool useHashing)
+        public string Decrypt(string cipherString, bool useHashing)         // desencriptar claves usuarios
         {
             byte[] keyArray;
             //get the byte code of the string
@@ -257,6 +257,16 @@ namespace TransCarga
             tdes.Clear();
             //return the Clear decrypted TEXT
             return UTF8Encoding.UTF8.GetString(resultArray);
+        }
+        public string GetSHA256(string str)                                 // encriptación para clientes remitentes/destinatario del sistema web clientes
+        {
+            SHA256 sha256 = SHA256Managed.Create();
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] stream = null;
+            StringBuilder sb = new StringBuilder();
+            stream = sha256.ComputeHash(encoding.GetBytes(str));
+            for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
+            return sb.ToString();
         }
         public string mesletras(int mes)                                    // mes en letras
         {

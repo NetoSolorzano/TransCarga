@@ -231,6 +231,7 @@
             this.tx_serGR = new TransCarga.NumericTextBox();
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
+            this.label33 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -964,12 +965,12 @@
             // 
             this.tx_ubigRtt.BackColor = System.Drawing.SystemColors.Window;
             this.tx_ubigRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ubigRtt.Location = new System.Drawing.Point(142, 95);
+            this.tx_ubigRtt.Location = new System.Drawing.Point(710, 125);
             this.tx_ubigRtt.MaxLength = 6;
             this.tx_ubigRtt.Name = "tx_ubigRtt";
-            this.tx_ubigRtt.Size = new System.Drawing.Size(23, 18);
+            this.tx_ubigRtt.ReadOnly = true;
+            this.tx_ubigRtt.Size = new System.Drawing.Size(53, 18);
             this.tx_ubigRtt.TabIndex = 294;
-            this.tx_ubigRtt.Visible = false;
             this.tx_ubigRtt.Leave += new System.EventHandler(this.textBox13_Leave);
             // 
             // dataGridView1
@@ -1661,7 +1662,7 @@
             this.groupBox9.Controls.Add(this.groupBox13);
             this.groupBox9.Location = new System.Drawing.Point(144, 142);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(539, 1);
+            this.groupBox9.Size = new System.Drawing.Size(619, 1);
             this.groupBox9.TabIndex = 356;
             this.groupBox9.TabStop = false;
             // 
@@ -1698,7 +1699,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(550, 127);
+            this.label4.Location = new System.Drawing.Point(531, 127);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 358;
@@ -1708,7 +1709,7 @@
             // 
             this.tx_telc1.BackColor = System.Drawing.SystemColors.Window;
             this.tx_telc1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_telc1.Location = new System.Drawing.Point(603, 125);
+            this.tx_telc1.Location = new System.Drawing.Point(581, 125);
             this.tx_telc1.MaxLength = 0;
             this.tx_telc1.Name = "tx_telc1";
             this.tx_telc1.Size = new System.Drawing.Size(80, 18);
@@ -1719,7 +1720,7 @@
             // 
             this.tx_telc2.BackColor = System.Drawing.SystemColors.Window;
             this.tx_telc2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_telc2.Location = new System.Drawing.Point(683, 125);
+            this.tx_telc2.Location = new System.Drawing.Point(686, 54);
             this.tx_telc2.MaxLength = 0;
             this.tx_telc2.Name = "tx_telc2";
             this.tx_telc2.Size = new System.Drawing.Size(80, 18);
@@ -2304,6 +2305,16 @@
             this.tx_totcant.TabIndex = 25;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label33.Location = new System.Drawing.Point(668, 127);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(41, 13);
+            this.label33.TabIndex = 429;
+            this.label33.Text = "Ubigeo";
+            // 
             // facelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2311,6 +2322,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.label33);
             this.Controls.Add(this.tx_dat_porcDscto);
             this.Controls.Add(this.lin_dscto);
             this.Controls.Add(this.lb_dscto);
@@ -2647,5 +2659,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.RadioButton rb_credito;
         private System.Windows.Forms.RadioButton rb_contado;
+        private System.Windows.Forms.Label label33;
     }
 }

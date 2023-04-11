@@ -62,6 +62,8 @@ namespace TransCarga
         string v_igv = "";              // igv
         string caractNo = "";           // caracter prohibido en campos texto, caracter delimitador para los TXT de fact. electronica
         string v_idoco = "";            // letras iniciales del campo docs.origen
+        string webdni = "";             // ruta web del buscador de DNI
+        string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -291,6 +293,15 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                        }
+                        if (row["campo"].ToString() == "rutas")
+                        {
+                            //if (lite.GetString(2).ToString() == "grt_txt") rutatxt = lite.GetString(3).ToString().Trim();         // ruta de los txt para las guías elect
+                            if (row["param"].ToString() == "web_dni") webdni = row["valor"].ToString().Trim();         // web para busqueda de dni 
+                        }
+                        if (row["campo"].ToString() == "conector")
+                        {
+                            if (row["param"].ToString() == "noRetGlosa") NoRetGl = row["valor"].ToString().Trim();          // glosa que retorna umasapa cuando no encuentra dato
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -1969,6 +1980,7 @@ namespace TransCarga
         {
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() != "" && ("NUEVO,EDITAR").Contains(Tx_modo.Text))
             {
+                tx_nomRem.Text = "";
                 if (tx_numDocRem.Text.Trim().Length != Int16.Parse(tx_mld.Text))
                 {
                     MessageBox.Show("El número de caracteres para" + Environment.NewLine +
@@ -2047,10 +2059,19 @@ namespace TransCarga
                                 // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020, arreglado 10/12/2020
                                 //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
                                 rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
-                                tx_nomRem.Text = rl[0];      // nombre
-                                //tx_numDocRem.Text = rl[1];     // num dni
+                                if (rl[0].Replace("\r\n", "") == NoRetGl)
+                                {
+                                    MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                                   "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    System.Diagnostics.Process.Start(webdni);
+                                    tx_nomRem.Enabled = true;
+                                    tx_nomRem.ReadOnly = false;
+                                }
+                                else
+                                {
+                                    tx_nomRem.Text = rl[0];      // nombre
+                                }
                                 v_clte_rem = "N";             // marca de cliente nuevo  
-                                //tx_numDocRem.ReadOnly = false;
                             }
                         }
                     }
@@ -2086,6 +2107,7 @@ namespace TransCarga
         {
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() != "" && ("NUEVO,EDITAR").Contains(Tx_modo.Text))
             {
+                tx_nomDrio.Text = "";
                 if (tx_numDocDes.Text.Trim().Length != Int16.Parse(tx_mldD.Text))
                 {
                     MessageBox.Show("El número de caracteres para" + Environment.NewLine +
@@ -2151,7 +2173,12 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    // debe grabar la direccion en la maestra de clientes rl[]
+                                    if (dl[0] != "")
+                                    {
+                                        v_clte_des = "N";
+                                        // Se va a grabar la direccion de la guia
+                                        // luego de insertar el registro se debe actualizar la tabla de clientes con los datos de la direccion fiscal
+                                    }
                                 }
                             }
                         }
@@ -2165,9 +2192,18 @@ namespace TransCarga
                                 // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020 ... 10/12/2020
                                 //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
                                 dl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
-                                tx_nomDrio.Text = dl[0];      // nombre
-                                //tx_numDocDes.Text = rl[1];     // num dni
-                                //tx_nomDrio.ReadOnly = false;
+                                if (rl[0].Replace("\r\n", "") == NoRetGl)
+                                {
+                                    MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                                    "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    System.Diagnostics.Process.Start(webdni);
+                                    tx_nomDrio.Enabled = true;
+                                    tx_nomDrio.ReadOnly = false;
+                                }
+                                else
+                                {
+                                    tx_nomDrio.Text = dl[0];    // nombre
+                                }
                                 v_clte_des = "N";
                             }
                         }

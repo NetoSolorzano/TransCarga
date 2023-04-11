@@ -2223,6 +2223,7 @@ namespace TransCarga
             lp.escribe(this);
             tx_nomRem.ReadOnly = true;
             tx_serie.ReadOnly = true;
+            tx_ubigRtt.ReadOnly = true;
             //tx_dirRem.ReadOnly = true;
             //tx_dptoRtt.ReadOnly = true;
             //tx_provRtt.ReadOnly = true;
@@ -2423,6 +2424,12 @@ namespace TransCarga
             {
                 MessageBox.Show("Ingrese la dirección", " Error en Remitente ");
                 tx_dirRem.Focus();
+                return;
+            }
+            if (tx_ubigRtt.Text.Trim().Length != 6)
+            {
+                MessageBox.Show("Registre correctamente el departamento, provincia y distrito", "Ubigeo incompleto", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                tx_dptoRtt.Focus();
                 return;
             }
             if (tx_dptoRtt.Text.Trim() == "" || tx_provRtt.Text.Trim() == "" || tx_distRtt.Text.Trim() == "")
@@ -3131,7 +3138,7 @@ namespace TransCarga
                 DataRow[] row = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and nombre='" + tx_provRtt.Text.Trim() + "' and provin<>'00' and distri='00'");
                 if (row.Length > 0)
                 {
-                    tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0, 2) + row[0].ItemArray[2].ToString();
+                    tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0, 2) + row[row.Length - 1].ItemArray[2].ToString();
                     autodist();
                 }
                 else tx_provRtt.Text = "";
@@ -3144,7 +3151,8 @@ namespace TransCarga
                 DataRow[] row = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and nombre='" + tx_distRtt.Text.Trim() + "'");
                 if (row.Length > 0)
                 {
-                    tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0, 4) + row[0].ItemArray[3].ToString(); // lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());
+                    tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0, 4) + row[row.Length -1].ItemArray[3].ToString();
+                    //else tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0, 4) + row[1].ItemArray[3].ToString();
                 }
                 else tx_distRtt.Text = "";
             }

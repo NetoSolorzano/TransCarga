@@ -299,5 +299,10 @@ form facelect, no esta jalando bien el plazo de pago en creditos ...............
 form libreria, crear funcion para encriptar clave web clientes ..................................... ok no lo usaremos aun 29/11/2022
 form clientes, agregar campos para clave web clientes de Transcarga ................................ ok solo para visualizar, la clave se genera en el sitio web
 ************** adecuaciones para obligar o no a facturar guias cobradas en el día ******************
-form ayccaja, agregar enlace para configurar si se obliga a fact todo o no ......................... ok falta probar
-form ayccaja, agregar rutina para validar si todas las guias "cobradas en efectivo" tiene DV ....... ok falta probar
+form ayccaja, agregar enlace para configurar si se obliga a fact todo o no ......................... ok
+form ayccaja, agregar rutina para validar si todas las guias "cobradas en efectivo" tiene DV ....... ok
+****
+OJO, requerimiento no posible con Horizont, no tienen eso en su estructura
+- Agregar el campo observación en la facturación electrónica, el campo actual que sea imprimible.
+****
+form facelect, mejorar el ingreso de rucs y dni ...................................................... 

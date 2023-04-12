@@ -98,6 +98,8 @@ namespace TransCarga
         string tipdocAnu = "";          // Tipos de documentos que se pueden dar de baja
         string tdocsBol = "";           // tipos de documentos de clientes que permiten boletas
         string tdocsFac = "";           // tipos de documentos de clientes que permiten facturas
+        string NoRetGl = "";            // 
+        string webdni = "";             // 
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -336,7 +338,12 @@ namespace TransCarga
                         }
                         if (row["campo"].ToString() == "rutas")
                         {
-                            if (row["param"].ToString() == "fe_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para la fact. electronica
+                            if (row["param"].ToString() == "fe_txt") rutatxt = row["valor"].ToString().Trim();          // ruta de los txt para la fact. electronica
+                            if (row["param"].ToString() == "web_dni") webdni = row["valor"].ToString().Trim();          // pag web para busqueda de dni
+                        }
+                        if (row["campo"].ToString() == "conector")
+                        {
+                            if (row["param"].ToString() == "noRetGlosa") NoRetGl = row["valor"].ToString().Trim();          // glosa que retorna umasapa cuando no encuentra dato
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -3187,6 +3194,15 @@ namespace TransCarga
                 string encuentra = "no";
                 if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
+                    tx_nomRem.Text = "";
+                    tx_dirRem.Text = "";
+                    tx_dptoRtt.Text = "";
+                    tx_provRtt.Text = "";
+                    tx_distRtt.Text = "";
+                    tx_ubigRtt.Text = "";
+                    tx_email.Text = "";
+                    tx_telc1.Text = "";
+
                     string[] datos = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
                     if (datos[0] != "")  // datos.Length > 0
                     {
@@ -3211,17 +3227,68 @@ namespace TransCarga
                     }
                     if (tx_dat_tdRem.Text == vtc_ruc)
                     {
-                        if (encuentra == "no")
+                        if (true)       // encuentra == "no"    11/04/2023
                         {
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
                             {
                                 string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
-                                tx_nomRem.Text = rl[0];      // razon social
-                                tx_ubigRtt.Text = rl[1];     // ubigeo
-                                tx_dirRem.Text = rl[2];      // direccion
-                                tx_dptoRtt.Text = rl[3];      // departamento
-                                tx_provRtt.Text = rl[4];      // provincia
-                                tx_distRtt.Text = rl[5];      // distrito
+                                string myStr = rl[0].Replace("\r\n", "");
+                                if (rl[0] == "" || myStr == NoRetGl)
+                                {
+                                    var aa = MessageBox.Show(" No encontramos el documento en ningún registro. " + Environment.NewLine +
+                                                            " Deberá ingresarlo manualmente si esta seguro(a) " + Environment.NewLine +
+                                                            " de la validez del número y documento. " + Environment.NewLine +
+                                                            "" + Environment.NewLine +
+                                                            "Confirma que desea ingresarlo manualmente?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                    if (aa == DialogResult.No)
+                                    {
+                                        tx_numDocRem.Text = "";
+                                        tx_nomRem.Text = "";
+                                        tx_dirRem.Text = "";
+                                        tx_dptoRtt.Text = "";
+                                        tx_provRtt.Text = "";
+                                        tx_distRtt.Text = "";
+                                        tx_ubigRtt.Text = "";
+                                        tx_email.Text = "";
+                                        tx_telc1.Text = "";
+                                        tx_numDocRem.Focus();
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    if (rl[6] != "ACTIVO" || rl[7] != "HABIDO")
+                                    {
+                                        var aa = MessageBox.Show("No debería generar el comprobante" + Environment.NewLine +
+                                            "el ruc tiene el estado o condición no correcto" + Environment.NewLine + Environment.NewLine +
+                                            "Condición: " + rl[7] + Environment.NewLine +
+                                            "Estado: " + rl[6] + Environment.NewLine + Environment.NewLine +
+                                            "CONFIRMA QUE DESEA CONTINUAR?", "Alerta - no debería continuar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                        if (aa == DialogResult.No)
+                                        {
+                                            tx_numDocRem.Text = "";
+                                            tx_nomRem.Text = "";
+                                            tx_dirRem.Text = "";
+                                            tx_dptoRtt.Text = "";
+                                            tx_provRtt.Text = "";
+                                            tx_distRtt.Text = "";
+                                            tx_ubigRtt.Text = "";
+                                            tx_email.Text = "";
+                                            tx_telc1.Text = "";
+                                            tx_numDocRem.Focus();
+                                            return;
+                                        }
+                                    }
+                                    if (tx_numDocRem.Text.Substring(0,2) == "20")
+                                    {
+                                        tx_nomRem.Text = rl[0].Trim().Replace("\r\n", "");      // razon social
+                                        tx_ubigRtt.Text = rl[1].Trim().Replace("\r\n", "");     // ubigeo
+                                        tx_dirRem.Text = rl[2].Trim().Replace("\r\n", "");      // direccion
+                                        tx_dptoRtt.Text = (rl[3].Trim().Replace("\r\n", "") == "PROV. CONST. DEL CALLAO") ? "CALLAO" : rl[3];      // departamento
+                                        tx_provRtt.Text = (rl[4].Trim().Replace("\r\n", "") == "PROV.CONST.DEL CALLAO") ? "CALLAO" : rl[4];      // provincia
+                                        tx_distRtt.Text = rl[5].Trim().Replace("\r\n", "");      // distrito
+                                    }
+                                }
                                 tx_dat_m1clte.Text = "N";
                             }
                         }
@@ -3233,8 +3300,17 @@ namespace TransCarga
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                             {
                                 string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
-                                tx_nomRem.Text = rl[0];      // nombre
-                                //tx_numDocRem.Text = rl[1];     // num dni
+                                string myStr = rl[0].Replace("\r\n", "");
+                                if (rl[0] == "" || myStr == NoRetGl)
+                                {
+                                    MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                                    "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    System.Diagnostics.Process.Start(webdni);    // "https://eldni.com/pe/buscar-por-dni"
+                                }
+                                else
+                                {
+                                    tx_nomRem.Text = rl[0];      // nombre
+                                }
                                 tx_dat_m1clte.Text = "N";
                             }
                         }
@@ -3343,6 +3419,13 @@ namespace TransCarga
             tx_dptoRtt.Text = "";
             tx_provRtt.Text = "";
             tx_distRtt.Text = "";
+            
+            DataRow[] fila = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");
+            foreach (DataRow row in fila)
+            {
+                tx_mld.Text = row[2].ToString();
+            }
+            
             if (datcltsR[4].ToString().Trim() != "")
             {
                 DataRow[] row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin='00' and distri='00'");
@@ -3371,6 +3454,13 @@ namespace TransCarga
             tx_dptoRtt.Text = "";
             tx_provRtt.Text = "";
             tx_distRtt.Text = "";
+
+            DataRow[] fila = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");
+            foreach (DataRow row in fila)
+            {
+                tx_mld.Text = row[2].ToString();
+            }
+
             try
             {
                 if (datcltsD[4].ToString().Trim() != "")

@@ -971,6 +971,7 @@
             this.tx_ubigRtt.ReadOnly = true;
             this.tx_ubigRtt.Size = new System.Drawing.Size(53, 18);
             this.tx_ubigRtt.TabIndex = 294;
+            this.tx_ubigRtt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_ubigRtt.Leave += new System.EventHandler(this.textBox13_Leave);
             // 
             // dataGridView1

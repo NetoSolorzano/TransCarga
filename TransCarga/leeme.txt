@@ -305,4 +305,5 @@ form ayccaja, agregar rutina para validar si todas las guias "cobradas en efecti
 OJO, requerimiento no posible con Horizont, no tienen eso en su estructura
 - Agregar el campo observación en la facturación electrónica, el campo actual que sea imprimible.
 ****
-form facelect, mejorar el ingreso de rucs y dni ...................................................... 
+form facelect, mejorar el ingreso de rucs y dni ..................................................... ok 11/04/2023
+form clients, mejorar el ingreso, actualizacion de rucs y dni ....................................... ok 11/04/2023

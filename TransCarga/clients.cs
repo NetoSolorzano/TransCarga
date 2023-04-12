@@ -35,6 +35,8 @@ namespace TransCarga
         string vapadef = "";            // variable pais por defecto para los clientes
         string vtc_dni = "";
         string vtc_ruc = "";
+        string NoRetGl = "";            // retorno del conector cuando no encuentra el ruc o dni
+        string webdni = "";             // sitio wep para busquedas de dni
         static libreria lib = new libreria();
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
@@ -143,24 +145,35 @@ namespace TransCarga
                 for (int t = 0; t < dt.Rows.Count; t++)
                 {
                     DataRow row = dt.Rows[t];
-                    if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "imagenes")
+                    if (row["formulario"].ToString() == "main")
                     {
-                        if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
-                        if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
-                        if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                        if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                        //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                        // boton de vista preliminar .... esta por verse su utlidad
-                        if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
-                        if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
-                        if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
-                        if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
-                        if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
-                        if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                    }
-                    if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "pais" && row["param"].ToString() == "default")
-                    {
-                        vapadef = row["valor"].ToString().Trim();            // pais por defecto
+                        if (row["campo"].ToString() == "imagenes")
+                        {
+                            if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
+                            if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
+                            if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                            if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
+                            //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                                                                                                                        // boton de vista preliminar .... esta por verse su utlidad
+                            if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
+                            if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
+                            if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
+                            if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
+                            if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
+                            if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                        }
+                        if (row["campo"].ToString() == "pais" && row["param"].ToString() == "default")
+                        {
+                            vapadef = row["valor"].ToString().Trim();            // pais por defecto
+                        }
+                        if (row["campo"].ToString() == "conector")
+                        {
+                            if (row["param"].ToString() == "noRetGlosa") NoRetGl = row["valor"].ToString().Trim();          // glosa que retorna umasapa cuando no encuentra dato
+                        }
+                        if (row["campo"].ToString() == "rutas")
+                        {
+                            if (row["param"].ToString() == "web_dni") webdni = row["valor"].ToString().Trim();          // pag web para busqueda de dni
+                        }
                     }
                     if (row["formulario"].ToString() == nomform && row["campo"].ToString() == "documento")
                     {
@@ -252,7 +265,7 @@ namespace TransCarga
         }
         public void bt_jala_Click(object sender, EventArgs e)   // reconecta y jala datos de conectores
         {
-            if (textBox2.Text != "" && textBox3.Text != "" && Tx_modo.Text == "EDITAR")
+            if (textBox2.Text != "" && textBox3.Text != "") //  && Tx_modo.Text == "EDITAR"
             {
                 if (textBox2.Text == vtc_ruc)
                 {
@@ -265,12 +278,57 @@ namespace TransCarga
                     if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
                     {
                         string[] rl = lib.conectorSolorsoft("RUC", textBox3.Text);
-                        textBox4.Text = rl[0];      // razon social
-                        textBox13.Text = rl[1];     // ubigeo
-                        textBox6.Text = rl[2];      // direccion
-                        textBox7.Text = rl[3];      // departamento
-                        textBox8.Text = rl[4];      // provincia
-                        textBox9.Text = rl[5];      // distrito
+                        string myStr = rl[0].Replace("\r\n", "");
+                        if (rl[0] == "" || myStr == NoRetGl)
+                        {
+                            var aa = MessageBox.Show(" No encontramos el documento en ningún registro. " + Environment.NewLine +
+                                                    " Deberá ingresarlo manualmente si esta seguro(a) " + Environment.NewLine +
+                                                    " de la validez del número y documento. " + Environment.NewLine +
+                                                    "" + Environment.NewLine +
+                                                    "Confirma que desea ingresarlo manualmente?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (aa == DialogResult.No)
+                            {
+                                textBox3.Text = "";
+                                textBox4.Text = "";      // razon social
+                                textBox13.Text = "";     // ubigeo
+                                textBox6.Text = "";      // direccion
+                                textBox7.Text = "";      // departamento
+                                textBox8.Text = "";      // provincia
+                                textBox9.Text = "";      // distrito
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (rl[6] != "ACTIVO" || rl[7] != "HABIDO")
+                            {
+                                var aa = MessageBox.Show("No debería crear al cliente" + Environment.NewLine +
+                                    "el ruc tiene estado o condición no correcto" + Environment.NewLine + Environment.NewLine +
+                                    "Condición: " + rl[7] + Environment.NewLine +
+                                    "Estado: " + rl[6] + Environment.NewLine + Environment.NewLine +
+                                    "CONFIRMA QUE DESEA CONTINUAR?", "Alerta - no debería continuar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (aa == DialogResult.No)
+                                {
+                                    textBox3.Text = "";
+                                    textBox4.Text = "";      // razon social
+                                    textBox13.Text = "";     // ubigeo
+                                    textBox6.Text = "";      // direccion
+                                    textBox7.Text = "";      // departamento
+                                    textBox8.Text = "";      // provincia
+                                    textBox9.Text = "";      // distrito
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                textBox4.Text = rl[0].Trim().Replace("\r\n", "");      // razon social
+                                textBox13.Text = rl[1].Trim().Replace("\r\n", "");     // ubigeo
+                                textBox6.Text = rl[2].Trim().Replace("\r\n", "");      // direccion
+                                textBox7.Text = (rl[3].Trim().Replace("\r\n", "") == "PROV. CONST. DEL CALLAO") ? "CALLAO" : rl[3];      // departamento      
+                                textBox8.Text = (rl[4].Trim().Replace("\r\n", "") == "PROV.CONST.DEL CALLAO") ? "CALLAO" : rl[4];      // provincia    
+                                textBox9.Text = rl[5].Trim().Replace("\r\n", "");      // distrito
+                            }
+                        }
                     }
                 }
                 if (textBox2.Text == vtc_dni)
@@ -278,8 +336,18 @@ namespace TransCarga
                     if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                     {
                         string[] rl = lib.conectorSolorsoft("DNI", textBox3.Text);
-                        textBox4.Text = rl[0];      // nombre
-                        textBox3.Text = rl[1];     // num dni
+                        string myStr = rl[0].Replace("\r\n", "");
+                        if (rl[0] == "" || myStr == NoRetGl)
+                        {
+                            MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                            "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            System.Diagnostics.Process.Start(webdni);    // "https://eldni.com/pe/buscar-por-dni"
+                        }
+                        else
+                        {
+                            textBox4.Text = rl[0];      // nombre
+                            textBox3.Text = rl[1];     // num dni
+                        }
                     }
                 }
             }
@@ -731,14 +799,15 @@ namespace TransCarga
                 textBox9.Focus();
             }
         }
-        private void textBox9_Leave(object sender, EventArgs e)
+        private void textBox9_Leave(object sender, EventArgs e)         // distrito
         {
             if(textBox9.Text.Trim() != "" && textBox8.Text.Trim() != "" && textBox7.Text.Trim() != "")  //  && TransCarga.Program.vg_conSol == false
             {
                 DataRow[] row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin='" + textBox13.Text.Substring(2, 2) + "' and nombre='" + textBox9.Text.Trim() + "' and distri<>'00'");
                 if (row.Length > 0)
                 {
-                    textBox13.Text = textBox13.Text.Trim().Substring(0,4) + row[0].ItemArray[3].ToString();
+                    //textBox13.Text = textBox13.Text.Trim().Substring(0,4) + row[0].ItemArray[3].ToString();
+                    textBox13.Text = textBox13.Text.Trim().Substring(0, 4) + row[row.Length - 1].ItemArray[3].ToString();
                 }
                 else textBox9.Text = "";
             }
@@ -833,7 +902,7 @@ namespace TransCarga
                             }
                             if (encuentra == "no")
                             {
-                                if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
+                                /* if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
                                 {
                                     string[] rl = lib.conectorSolorsoft("RUC", textBox3.Text);
                                     textBox4.Text = rl[0];      // razon social
@@ -842,7 +911,8 @@ namespace TransCarga
                                     textBox7.Text = rl[3];      // departamento
                                     textBox8.Text = rl[4];      // provincia
                                     textBox9.Text = rl[5];      // distrito
-                                }
+                                } */
+                                bt_jala.PerformClick();
                             }
                         }
                         if (textBox2.Text == vtc_dni)
@@ -851,9 +921,19 @@ namespace TransCarga
                             {
                                 if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                                 {
-                                    string[] rl = lib.conectorSolorsoft("DNI", textBox3.Text);
-                                    textBox4.Text = rl[0];      // nombre
-                                    textBox3.Text = rl[1];     // num dni
+                                    if (textBox3.Text.Length != 8)
+                                    {
+                                        MessageBox.Show("Cantidad de dígitos erroneo!", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        textBox3.Focus();
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        //string[] rl = lib.conectorSolorsoft("DNI", textBox3.Text);
+                                        //textBox4.Text = rl[0];      // nombre
+                                        //textBox3.Text = rl[1];     // num dni
+                                        bt_jala.PerformClick();
+                                    }
                                 }
                             }
                         }

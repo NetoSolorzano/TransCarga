@@ -827,7 +827,190 @@ namespace TransCarga
             }
             return retorna;
         }
+        private void valiruc_dni(string quien)              // valida ruc/dni del remitente y destinatario
+        {
+            string encuentra = "no";
+            if (quien == "REMITENTE")
+            {
+                datosR = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
+                if (datosR[0] != "")   // datos.Length > 0
+                {
+                    tx_nomRem.Text = datosR[0];
+                    tx_telR.Text = datosR[6];
+                    if (rb_car_clte.Checked == true)
+                    {
+                        tx_dirRem.Text = datosR[1];
+                        tx_dptoRtt.Text = datosR[2];
+                        tx_provRtt.Text = datosR[3];
+                        tx_distRtt.Text = datosR[4];
+                        tx_ubigRtt.Text = datosR[5];
+                    }
+                    encuentra = "si";
+                    //tx_numDocRem.ReadOnly = true;
+                }
+                if (tx_dat_tdRem.Text == vtc_ruc)
+                {
+                    if (encuentra == "no")
+                    {
+                        if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
+                        {
+                            rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
+                            tx_nomRem.Text = rl[0];      // razon social
+                            if (rb_car_clte.Checked == true)
+                            {
+                                tx_ubigRtt.Text = rl[1];     // ubigeo
+                                tx_dirRem.Text = rl[2];      // direccion
+                                tx_dptoRtt.Text = rl[3];      // departamento
+                                tx_provRtt.Text = rl[4];      // provincia
+                                tx_distRtt.Text = rl[5];      // distrito
+                            }
+                            else
+                            {
+                                // debe grabar la direccion en la maestra de clientes rl[]
+                            }
+                            v_clte_rem = "N";             // marca de cliente nuevo  
+                        }
+                    }
+                }
+                if (tx_dat_tdRem.Text == vtc_dni)
+                {
+                    if (encuentra == "no")
+                    {
+                        if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
+                        {
+                            // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020, arreglado 10/12/2020
+                            //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
+                            rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
+                            if (rl[0].Replace("\r\n", "") == NoRetGl)
+                            {
+                                MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                               "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                System.Diagnostics.Process.Start(webdni);
+                                tx_nomRem.Enabled = true;
+                                tx_nomRem.ReadOnly = false;
+                            }
+                            else
+                            {
+                                tx_nomRem.Text = rl[0];      // nombre
+                            }
+                            v_clte_rem = "N";             // marca de cliente nuevo  
+                        }
+                    }
+                }
+                if (tx_dat_tdRem.Text != vtc_ruc && tx_dat_tdRem.Text != vtc_dni)
+                {
+                    if (encuentra == "no")
+                    {
+                        v_clte_rem = "N";             // marca de cliente nuevo 
+                    }
+                }
+                if (tx_nomRem.Text.Trim() == "")
+                {
+                    tx_nomRem.ReadOnly = false;
+                }
+                // si la direccion esta en blanco, debe permitir escribir
+                if (tx_dirRem.Text.Trim() == "" || tx_dirRem.Text.Trim().Substring(0, 3) == "- -")
+                {
+                    tx_dirRem.ReadOnly = false;
+                    tx_dptoRtt.ReadOnly = false;
+                    tx_provRtt.ReadOnly = false;
+                    tx_distRtt.ReadOnly = false;
+                    tx_telR.ReadOnly = false;
+                    //v_clte_rem = "E";
+                }
+            }
+            if (quien == "DESTINATARIO")
+            {
+                datosD = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
+                if (datosD[0] != "")   // datos.Length > 0
+                {
+                    tx_nomDrio.Text = datosD[0];
+                    tx_telD.Text = datosD[6];
+                    if (rb_ent_clte.Checked == true)
+                    {
+                        tx_dirDrio.Text = datosD[1];
+                        tx_dptoDrio.Text = datosD[2];
+                        tx_proDrio.Text = datosD[3];
+                        tx_disDrio.Text = datosD[4];
+                        tx_ubigDtt.Text = datosD[5];
+                    }
+                    encuentra = "si";
+                    //tx_nomDrio.ReadOnly = true;
+                }
+                if (tx_dat_tDdest.Text == vtc_ruc)
+                {
+                    if (encuentra == "no")
+                    {
+                        if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
+                        {
+                            dl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
+                            tx_nomDrio.Text = dl[0];      // razon social
+                            if (rb_ent_clte.Checked == true)
+                            {
+                                tx_ubigDtt.Text = dl[1];     // ubigeo
+                                tx_dirDrio.Text = dl[2];      // direccion
+                                tx_dptoDrio.Text = dl[3];      // departamento
+                                tx_proDrio.Text = dl[4];      // provincia
+                                tx_disDrio.Text = dl[5];      // distrito
+                                //v_clte_des = "N";
+                            }
+                            else
+                            {
+                                // debe grabar la direccion en la maestra
+                            }
+                            v_clte_des = "N";
+                        }
+                    }
+                }
+                if (tx_dat_tDdest.Text == vtc_dni)
+                {
+                    if (encuentra == "no")
+                    {
+                        if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
+                        {
+                            // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020 ... 10/12/2020
+                            //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
+                            dl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
+                            if (dl[0].Replace("\r\n", "") == NoRetGl)
+                            {
+                                MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                                "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                System.Diagnostics.Process.Start(webdni);
+                                tx_nomDrio.Enabled = true;
+                                tx_nomDrio.ReadOnly = false;
+                            }
+                            else
+                            {
+                                tx_nomDrio.Text = dl[0];    // nombre
+                            }
+                            v_clte_des = "N";
+                        }
+                    }
+                }
+                if (tx_dat_tDdest.Text != vtc_ruc && tx_dat_tDdest.Text != vtc_dni)
+                {
+                    if (encuentra == "no")
+                    {
+                        v_clte_des = "N";
+                    }
+                }
+                if (tx_nomDrio.Text.Trim() == "")
+                {
+                    tx_nomDrio.ReadOnly = false;
+                }
+                // si la direccion esta en blanco debe permitir actualizar
+                if (tx_dirDrio.Text.Trim() == "" || tx_dirDrio.Text.Trim().Substring(0, 3) == "- -")   // tx_dirDrio.Text.Trim() == ""
+                {
+                    tx_dirDrio.ReadOnly = false;
+                    tx_dptoDrio.ReadOnly = false;
+                    tx_proDrio.ReadOnly = false;
+                    tx_disDrio.ReadOnly = false;
+                    tx_telD.ReadOnly = false;
+                    //v_clte_des = "E";
+                }
 
+            }
+        }
         #region autocompletados
         private void autodepa()                 // 
         {
@@ -1995,108 +2178,19 @@ namespace TransCarga
                     return;
                 }
                 tx_telR.ReadOnly = false;
-                string encuentra = "no";
-                if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+                v_clte_rem = "";            // variable cliente remitente
+                if (rb_car_clte.Checked == true)
                 {
-                    v_clte_rem = "";            // variable cliente remitente
-                    if (rb_car_clte.Checked == true)
-                    {
-                        tx_nomRem.Text = "";
-                        tx_dirRem.Text = "";
-                        tx_dptoRtt.Text = "";
-                        tx_provRtt.Text = "";
-                        tx_distRtt.Text = "";
-                        tx_ubigRtt.Text = "";
-                        tx_telR.Text = "";
-                    }
-                    datosR = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
-                    if (datosR[0] != "")   // datos.Length > 0
-                    {
-                        tx_nomRem.Text = datosR[0];
-                        tx_telR.Text = datosR[6];
-                        if (rb_car_clte.Checked == true)
-                        {
-                            tx_dirRem.Text = datosR[1];
-                            tx_dptoRtt.Text = datosR[2];
-                            tx_provRtt.Text = datosR[3];
-                            tx_distRtt.Text = datosR[4];
-                            tx_ubigRtt.Text = datosR[5];
-                        }
-                        encuentra = "si";
-                        //tx_numDocRem.ReadOnly = true;
-                    }
-                    if (tx_dat_tdRem.Text == vtc_ruc)
-                    {
-                        if (encuentra == "no")
-                        {
-                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
-                            {
-                                //string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
-                                rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
-                                tx_nomRem.Text = rl[0];      // razon social
-                                if (rb_car_clte.Checked == true)
-                                {
-                                    tx_ubigRtt.Text = rl[1];     // ubigeo
-                                    tx_dirRem.Text = rl[2];      // direccion
-                                    tx_dptoRtt.Text = rl[3];      // departamento
-                                    tx_provRtt.Text = rl[4];      // provincia
-                                    tx_distRtt.Text = rl[5];      // distrito
-                                }
-                                else
-                                {
-                                    // debe grabar la direccion en la maestra de clientes rl[]
-                                }
-                                v_clte_rem = "N";             // marca de cliente nuevo  
-                            }
-                        }
-                    }
-                    if (tx_dat_tdRem.Text == vtc_dni)
-                    {
-                        if (encuentra == "no")
-                        {
-                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
-                            {
-                                // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020, arreglado 10/12/2020
-                                //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
-                                rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
-                                if (rl[0].Replace("\r\n", "") == NoRetGl)
-                                {
-                                    MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
-                                   "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    System.Diagnostics.Process.Start(webdni);
-                                    tx_nomRem.Enabled = true;
-                                    tx_nomRem.ReadOnly = false;
-                                }
-                                else
-                                {
-                                    tx_nomRem.Text = rl[0];      // nombre
-                                }
-                                v_clte_rem = "N";             // marca de cliente nuevo  
-                            }
-                        }
-                    }
-                    if (tx_dat_tdRem.Text != vtc_ruc && tx_dat_tdRem.Text != vtc_dni)
-                    {
-                        if (encuentra == "no")
-                        {
-                            v_clte_rem = "N";             // marca de cliente nuevo 
-                        }
-                    }
-                    if (tx_nomRem.Text.Trim() == "")
-                    {
-                        tx_nomRem.ReadOnly = false;
-                    }
-                    // si la direccion esta en blanco, debe permitir escribir
-                    if (tx_dirRem.Text.Trim() == "" || tx_dirRem.Text.Trim().Substring(0,3) == "- -")
-                    {
-                        tx_dirRem.ReadOnly = false;
-                        tx_dptoRtt.ReadOnly = false;
-                        tx_provRtt.ReadOnly = false;
-                        tx_distRtt.ReadOnly = false;
-                        tx_telR.ReadOnly = false;
-                        //v_clte_rem = "E";
-                    }
+                    tx_nomRem.Text = "";
+                    tx_dirRem.Text = "";
+                    tx_dptoRtt.Text = "";
+                    tx_provRtt.Text = "";
+                    tx_distRtt.Text = "";
+                    tx_ubigRtt.Text = "";
+                    tx_telR.Text = "";
                 }
+                // validamos 
+                valiruc_dni("REMITENTE");
             }
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() == "")
             {
@@ -2121,115 +2215,20 @@ namespace TransCarga
                     tx_numDocDes.Focus();
                     return;
                 }
-                string encuentra = "no";
                 tx_telD.ReadOnly = false;
-                if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+                v_clte_des = "";                // variable para marcar si destinatario es nuevo
+                if (rb_ent_clte.Checked == true)
                 {
-                    v_clte_des = "";                // variable para marcar si destinatario es nuevo
-                    if (rb_ent_clte.Checked == true)
-                    {
-                        tx_nomDrio.Text = "";
-                        tx_dirDrio.Text = "";
-                        tx_dptoDrio.Text = "";
-                        tx_proDrio.Text = "";
-                        tx_disDrio.Text = "";
-                        tx_ubigDtt.Text = "";
-                        tx_telD.Text = "";
-                    }
-                    datosD = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
-                    if (datosD[0] != "")   // datos.Length > 0
-                    {
-                        tx_nomDrio.Text = datosD[0];
-                        tx_telD.Text = datosD[6];
-                        if (rb_ent_clte.Checked == true)
-                        {
-                            tx_dirDrio.Text = datosD[1];
-                            tx_dptoDrio.Text = datosD[2];
-                            tx_proDrio.Text = datosD[3];
-                            tx_disDrio.Text = datosD[4];
-                            tx_ubigDtt.Text = datosD[5];
-                            
-                        }
-                        encuentra = "si";
-                        tx_nomDrio.ReadOnly = true;
-                    }
-                    if (tx_dat_tDdest.Text == vtc_ruc)
-                    {
-                        if (encuentra == "no")
-                        {
-                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
-                            {
-                                //string[] rl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
-                                dl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
-                                tx_nomDrio.Text = dl[0];      // razon social
-                                if (rb_ent_clte.Checked == true)
-                                {
-                                    tx_ubigDtt.Text = dl[1];     // ubigeo
-                                    tx_dirDrio.Text = dl[2];      // direccion
-                                    tx_dptoDrio.Text = dl[3];      // departamento
-                                    tx_proDrio.Text = dl[4];      // provincia
-                                    tx_disDrio.Text = dl[5];      // distrito
-                                    v_clte_des = "N";
-                                }
-                                else
-                                {
-                                    if (dl[0] != "")
-                                    {
-                                        v_clte_des = "N";
-                                        // Se va a grabar la direccion de la guia
-                                        // luego de insertar el registro se debe actualizar la tabla de clientes con los datos de la direccion fiscal
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (tx_dat_tDdest.Text == vtc_dni)
-                    {
-                        if (encuentra == "no")
-                        {
-                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
-                            {
-                                // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020 ... 10/12/2020
-                                //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
-                                dl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
-                                if (rl[0].Replace("\r\n", "") == NoRetGl)
-                                {
-                                    MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
-                                    "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    System.Diagnostics.Process.Start(webdni);
-                                    tx_nomDrio.Enabled = true;
-                                    tx_nomDrio.ReadOnly = false;
-                                }
-                                else
-                                {
-                                    tx_nomDrio.Text = dl[0];    // nombre
-                                }
-                                v_clte_des = "N";
-                            }
-                        }
-                    }
-                    if (tx_dat_tDdest.Text != vtc_ruc && tx_dat_tDdest.Text != vtc_dni)
-                    {
-                        if (encuentra == "no")
-                        {
-                            v_clte_des = "N";
-                        }
-                    }
-                    if (tx_nomDrio.Text.Trim() == "")
-                    {
-                        tx_nomDrio.ReadOnly = false;
-                    }
-                    // si la direccion esta en blanco debe permitir actualizar
-                    if (tx_dirDrio.Text.Trim() == "" || tx_dirDrio.Text.Trim().Substring(0,3) == "- -")   // tx_dirDrio.Text.Trim() == ""
-                    {
-                        tx_dirDrio.ReadOnly = false;
-                        tx_dptoDrio.ReadOnly = false;
-                        tx_proDrio.ReadOnly = false;
-                        tx_disDrio.ReadOnly = false;
-                        tx_telD.ReadOnly = false;
-                        //v_clte_des = "E";
-                    }
+                    tx_nomDrio.Text = "";
+                    tx_dirDrio.Text = "";
+                    tx_dptoDrio.Text = "";
+                    tx_proDrio.Text = "";
+                    tx_disDrio.Text = "";
+                    tx_ubigDtt.Text = "";
+                    tx_telD.Text = "";
                 }
+                // validamos 
+                valiruc_dni("DESTINATARIO");
             }
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() == "")
             {

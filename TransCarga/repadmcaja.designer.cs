@@ -55,15 +55,14 @@
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabres = new System.Windows.Forms.TabPage();
-            this.tx_ting_c = new TransCarga.NumericTextBox();
+            this.gb_orden = new System.Windows.Forms.GroupBox();
+            this.rb_docvta = new System.Windows.Forms.RadioButton();
+            this.rb_secuencial = new System.Windows.Forms.RadioButton();
             this.label31 = new System.Windows.Forms.Label();
-            this.tx_tegr_c = new TransCarga.NumericTextBox();
             this.label30 = new System.Windows.Forms.Label();
-            this.tx_tcob_c = new TransCarga.NumericTextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.groupBox47 = new System.Windows.Forms.GroupBox();
             this.groupBox48 = new System.Windows.Forms.GroupBox();
-            this.tx_tfc = new TransCarga.NumericTextBox();
             this.label29 = new System.Windows.Forms.Label();
             this.chk_excCaj = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -88,11 +87,9 @@
             this.label12 = new System.Windows.Forms.Label();
             this.dgv_ccaja = new System.Windows.Forms.DataGridView();
             this.tabvtas = new System.Windows.Forms.TabPage();
-            this.tx_tcob = new TransCarga.NumericTextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.groupBox45 = new System.Windows.Forms.GroupBox();
             this.groupBox46 = new System.Windows.Forms.GroupBox();
-            this.tx_tf_c = new TransCarga.NumericTextBox();
             this.label22 = new System.Windows.Forms.Label();
             this.chk_excluye = new System.Windows.Forms.CheckBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
@@ -120,7 +117,6 @@
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.tabgrti = new System.Windows.Forms.TabPage();
-            this.tx_tegre = new TransCarga.NumericTextBox();
             this.label19 = new System.Windows.Forms.Label();
             this.groupBox43 = new System.Windows.Forms.GroupBox();
             this.groupBox44 = new System.Windows.Forms.GroupBox();
@@ -147,9 +143,7 @@
             this.bt_guias = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.tx_tf_e = new TransCarga.NumericTextBox();
             this.tabplacar = new System.Windows.Forms.TabPage();
-            this.tx_ingv = new TransCarga.NumericTextBox();
             this.label18 = new System.Windows.Forms.Label();
             this.groupBox41 = new System.Windows.Forms.GroupBox();
             this.groupBox42 = new System.Windows.Forms.GroupBox();
@@ -176,7 +170,6 @@
             this.bt_filtra_plan = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.tx_tf_iv = new TransCarga.NumericTextBox();
             this.tabpend = new System.Windows.Forms.TabPage();
             this.groupBox39 = new System.Windows.Forms.GroupBox();
             this.groupBox40 = new System.Windows.Forms.GroupBox();
@@ -198,14 +191,22 @@
             this.bt_pend = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.dgv_pend = new ADGV.AdvancedDataGridView();
+            this.tx_ting_c = new TransCarga.NumericTextBox();
+            this.tx_tegr_c = new TransCarga.NumericTextBox();
+            this.tx_tcob_c = new TransCarga.NumericTextBox();
+            this.tx_tfc = new TransCarga.NumericTextBox();
+            this.tx_tcob = new TransCarga.NumericTextBox();
+            this.tx_tf_c = new TransCarga.NumericTextBox();
+            this.tx_tegre = new TransCarga.NumericTextBox();
+            this.tx_tf_e = new TransCarga.NumericTextBox();
+            this.tx_ingv = new TransCarga.NumericTextBox();
+            this.tx_tf_iv = new TransCarga.NumericTextBox();
             this.tx_tfi_p = new TransCarga.NumericTextBox();
             this.tx_totpend = new TransCarga.NumericTextBox();
-            this.gb_orden = new System.Windows.Forms.GroupBox();
-            this.rb_secuencial = new System.Windows.Forms.RadioButton();
-            this.rb_docvta = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
+            this.gb_orden.SuspendLayout();
             this.groupBox47.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox27.SuspendLayout();
@@ -240,7 +241,6 @@
             this.groupBox35.SuspendLayout();
             this.groupBox33.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pend)).BeginInit();
-            this.gb_orden.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -551,17 +551,38 @@
             this.tabres.UseVisualStyleBackColor = true;
             this.tabres.Enter += new System.EventHandler(this.tabres_Enter);
             // 
-            // tx_ting_c
+            // gb_orden
             // 
-            this.tx_ting_c.AllowSpace = false;
-            this.tx_ting_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_ting_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ting_c.Location = new System.Drawing.Point(799, 353);
-            this.tx_ting_c.Name = "tx_ting_c";
-            this.tx_ting_c.ReadOnly = true;
-            this.tx_ting_c.Size = new System.Drawing.Size(76, 20);
-            this.tx_ting_c.TabIndex = 439;
-            this.tx_ting_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gb_orden.Controls.Add(this.rb_docvta);
+            this.gb_orden.Controls.Add(this.rb_secuencial);
+            this.gb_orden.Location = new System.Drawing.Point(833, 6);
+            this.gb_orden.Name = "gb_orden";
+            this.gb_orden.Size = new System.Drawing.Size(188, 44);
+            this.gb_orden.TabIndex = 441;
+            this.gb_orden.TabStop = false;
+            this.gb_orden.Text = " Ordenamiento ";
+            // 
+            // rb_docvta
+            // 
+            this.rb_docvta.AutoSize = true;
+            this.rb_docvta.Location = new System.Drawing.Point(91, 18);
+            this.rb_docvta.Name = "rb_docvta";
+            this.rb_docvta.Size = new System.Drawing.Size(76, 17);
+            this.rb_docvta.TabIndex = 1;
+            this.rb_docvta.TabStop = true;
+            this.rb_docvta.Text = "Doc.Venta";
+            this.rb_docvta.UseVisualStyleBackColor = true;
+            // 
+            // rb_secuencial
+            // 
+            this.rb_secuencial.AutoSize = true;
+            this.rb_secuencial.Location = new System.Drawing.Point(7, 18);
+            this.rb_secuencial.Name = "rb_secuencial";
+            this.rb_secuencial.Size = new System.Drawing.Size(78, 17);
+            this.rb_secuencial.TabIndex = 0;
+            this.rb_secuencial.TabStop = true;
+            this.rb_secuencial.Text = "Secuencial";
+            this.rb_secuencial.UseVisualStyleBackColor = true;
             // 
             // label31
             // 
@@ -575,18 +596,6 @@
             this.label31.Text = "Total Ing.Varios S/";
             this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_tegr_c
-            // 
-            this.tx_tegr_c.AllowSpace = false;
-            this.tx_tegr_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tegr_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tegr_c.Location = new System.Drawing.Point(597, 353);
-            this.tx_tegr_c.Name = "tx_tegr_c";
-            this.tx_tegr_c.ReadOnly = true;
-            this.tx_tegr_c.Size = new System.Drawing.Size(76, 20);
-            this.tx_tegr_c.TabIndex = 437;
-            this.tx_tegr_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // label30
             // 
             this.label30.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -598,18 +607,6 @@
             this.label30.TabIndex = 438;
             this.label30.Text = "Total Egresos S/";
             this.label30.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tx_tcob_c
-            // 
-            this.tx_tcob_c.AllowSpace = false;
-            this.tx_tcob_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tcob_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tcob_c.Location = new System.Drawing.Point(401, 353);
-            this.tx_tcob_c.Name = "tx_tcob_c";
-            this.tx_tcob_c.ReadOnly = true;
-            this.tx_tcob_c.Size = new System.Drawing.Size(76, 20);
-            this.tx_tcob_c.TabIndex = 435;
-            this.tx_tcob_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label23
             // 
@@ -641,18 +638,6 @@
             this.groupBox48.Size = new System.Drawing.Size(164, 1);
             this.groupBox48.TabIndex = 113;
             this.groupBox48.TabStop = false;
-            // 
-            // tx_tfc
-            // 
-            this.tx_tfc.AllowSpace = false;
-            this.tx_tfc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tfc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfc.Location = new System.Drawing.Point(226, 353);
-            this.tx_tfc.Name = "tx_tfc";
-            this.tx_tfc.ReadOnly = true;
-            this.tx_tfc.Size = new System.Drawing.Size(41, 20);
-            this.tx_tfc.TabIndex = 433;
-            this.tx_tfc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label29
             // 
@@ -888,7 +873,6 @@
             this.tabvtas.Controls.Add(this.tx_tcob);
             this.tabvtas.Controls.Add(this.label21);
             this.tabvtas.Controls.Add(this.groupBox45);
-            this.tabvtas.Controls.Add(this.tx_tf_c);
             this.tabvtas.Controls.Add(this.label22);
             this.tabvtas.Controls.Add(this.chk_excluye);
             this.tabvtas.Controls.Add(this.groupBox19);
@@ -909,6 +893,7 @@
             this.tabvtas.Controls.Add(this.bt_vtasfiltra);
             this.tabvtas.Controls.Add(this.label24);
             this.tabvtas.Controls.Add(this.label25);
+            this.tabvtas.Controls.Add(this.tx_tf_c);
             this.tabvtas.Location = new System.Drawing.Point(4, 22);
             this.tabvtas.Name = "tabvtas";
             this.tabvtas.Size = new System.Drawing.Size(1026, 377);
@@ -916,18 +901,6 @@
             this.tabvtas.Text = "Cobranzas";
             this.tabvtas.UseVisualStyleBackColor = true;
             this.tabvtas.Enter += new System.EventHandler(this.tabvtas_Enter);
-            // 
-            // tx_tcob
-            // 
-            this.tx_tcob.AllowSpace = false;
-            this.tx_tcob.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tcob.Location = new System.Drawing.Point(588, 352);
-            this.tx_tcob.Name = "tx_tcob";
-            this.tx_tcob.ReadOnly = true;
-            this.tx_tcob.Size = new System.Drawing.Size(76, 20);
-            this.tx_tcob.TabIndex = 430;
-            this.tx_tcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label21
             // 
@@ -959,18 +932,6 @@
             this.groupBox46.Size = new System.Drawing.Size(164, 1);
             this.groupBox46.TabIndex = 113;
             this.groupBox46.TabStop = false;
-            // 
-            // tx_tf_c
-            // 
-            this.tx_tf_c.AllowSpace = false;
-            this.tx_tf_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tf_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tf_c.Location = new System.Drawing.Point(410, 352);
-            this.tx_tf_c.Name = "tx_tf_c";
-            this.tx_tf_c.ReadOnly = true;
-            this.tx_tf_c.Size = new System.Drawing.Size(41, 20);
-            this.tx_tf_c.TabIndex = 428;
-            this.tx_tf_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label22
             // 
@@ -1272,18 +1233,6 @@
             this.tabgrti.UseVisualStyleBackColor = true;
             this.tabgrti.Enter += new System.EventHandler(this.tabgrti_Enter);
             // 
-            // tx_tegre
-            // 
-            this.tx_tegre.AllowSpace = false;
-            this.tx_tegre.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tegre.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tegre.Location = new System.Drawing.Point(574, 352);
-            this.tx_tegre.Name = "tx_tegre";
-            this.tx_tegre.ReadOnly = true;
-            this.tx_tegre.Size = new System.Drawing.Size(76, 20);
-            this.tx_tegre.TabIndex = 425;
-            this.tx_tegre.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // label19
             // 
             this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1548,18 +1497,6 @@
             this.label4.TabIndex = 376;
             this.label4.Text = "Fech Inicial";
             // 
-            // tx_tf_e
-            // 
-            this.tx_tf_e.AllowSpace = false;
-            this.tx_tf_e.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tf_e.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tf_e.Location = new System.Drawing.Point(396, 352);
-            this.tx_tf_e.Name = "tx_tf_e";
-            this.tx_tf_e.ReadOnly = true;
-            this.tx_tf_e.Size = new System.Drawing.Size(41, 20);
-            this.tx_tf_e.TabIndex = 423;
-            this.tx_tf_e.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // tabplacar
             // 
             this.tabplacar.Controls.Add(this.tx_ingv);
@@ -1592,18 +1529,6 @@
             this.tabplacar.Text = "Ing.Varios";
             this.tabplacar.UseVisualStyleBackColor = true;
             this.tabplacar.Enter += new System.EventHandler(this.tabplacar_Enter);
-            // 
-            // tx_ingv
-            // 
-            this.tx_ingv.AllowSpace = false;
-            this.tx_ingv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_ingv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ingv.Location = new System.Drawing.Point(583, 352);
-            this.tx_ingv.Name = "tx_ingv";
-            this.tx_ingv.ReadOnly = true;
-            this.tx_ingv.Size = new System.Drawing.Size(76, 20);
-            this.tx_ingv.TabIndex = 420;
-            this.tx_ingv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label18
             // 
@@ -1869,18 +1794,6 @@
             this.label6.TabIndex = 391;
             this.label6.Text = "Fech Inicial";
             // 
-            // tx_tf_iv
-            // 
-            this.tx_tf_iv.AllowSpace = false;
-            this.tx_tf_iv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tf_iv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tf_iv.Location = new System.Drawing.Point(405, 352);
-            this.tx_tf_iv.Name = "tx_tf_iv";
-            this.tx_tf_iv.ReadOnly = true;
-            this.tx_tf_iv.Size = new System.Drawing.Size(41, 20);
-            this.tx_tf_iv.TabIndex = 418;
-            this.tx_tf_iv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // tabpend
             // 
             this.tabpend.Controls.Add(this.groupBox39);
@@ -2114,6 +2027,126 @@
             this.dgv_pend.SortStringChanged += new System.EventHandler(this.dgv_pend_SortStringChanged);
             this.dgv_pend.FilterStringChanged += new System.EventHandler(this.dgv_pend_FilterStringChanged);
             // 
+            // tx_ting_c
+            // 
+            this.tx_ting_c.AllowSpace = false;
+            this.tx_ting_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_ting_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_ting_c.Location = new System.Drawing.Point(799, 353);
+            this.tx_ting_c.Name = "tx_ting_c";
+            this.tx_ting_c.ReadOnly = true;
+            this.tx_ting_c.Size = new System.Drawing.Size(76, 20);
+            this.tx_ting_c.TabIndex = 439;
+            this.tx_ting_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tegr_c
+            // 
+            this.tx_tegr_c.AllowSpace = false;
+            this.tx_tegr_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tegr_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tegr_c.Location = new System.Drawing.Point(597, 353);
+            this.tx_tegr_c.Name = "tx_tegr_c";
+            this.tx_tegr_c.ReadOnly = true;
+            this.tx_tegr_c.Size = new System.Drawing.Size(76, 20);
+            this.tx_tegr_c.TabIndex = 437;
+            this.tx_tegr_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tcob_c
+            // 
+            this.tx_tcob_c.AllowSpace = false;
+            this.tx_tcob_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tcob_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tcob_c.Location = new System.Drawing.Point(401, 353);
+            this.tx_tcob_c.Name = "tx_tcob_c";
+            this.tx_tcob_c.ReadOnly = true;
+            this.tx_tcob_c.Size = new System.Drawing.Size(76, 20);
+            this.tx_tcob_c.TabIndex = 435;
+            this.tx_tcob_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tfc
+            // 
+            this.tx_tfc.AllowSpace = false;
+            this.tx_tfc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tfc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfc.Location = new System.Drawing.Point(226, 353);
+            this.tx_tfc.Name = "tx_tfc";
+            this.tx_tfc.ReadOnly = true;
+            this.tx_tfc.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfc.TabIndex = 433;
+            this.tx_tfc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tcob
+            // 
+            this.tx_tcob.AllowSpace = false;
+            this.tx_tcob.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tcob.Location = new System.Drawing.Point(588, 352);
+            this.tx_tcob.Name = "tx_tcob";
+            this.tx_tcob.ReadOnly = true;
+            this.tx_tcob.Size = new System.Drawing.Size(76, 20);
+            this.tx_tcob.TabIndex = 430;
+            this.tx_tcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tf_c
+            // 
+            this.tx_tf_c.AllowSpace = false;
+            this.tx_tf_c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tf_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tf_c.Location = new System.Drawing.Point(410, 352);
+            this.tx_tf_c.Name = "tx_tf_c";
+            this.tx_tf_c.ReadOnly = true;
+            this.tx_tf_c.Size = new System.Drawing.Size(41, 20);
+            this.tx_tf_c.TabIndex = 428;
+            this.tx_tf_c.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tegre
+            // 
+            this.tx_tegre.AllowSpace = false;
+            this.tx_tegre.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tegre.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tegre.Location = new System.Drawing.Point(574, 352);
+            this.tx_tegre.Name = "tx_tegre";
+            this.tx_tegre.ReadOnly = true;
+            this.tx_tegre.Size = new System.Drawing.Size(76, 20);
+            this.tx_tegre.TabIndex = 425;
+            this.tx_tegre.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tf_e
+            // 
+            this.tx_tf_e.AllowSpace = false;
+            this.tx_tf_e.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tf_e.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tf_e.Location = new System.Drawing.Point(396, 352);
+            this.tx_tf_e.Name = "tx_tf_e";
+            this.tx_tf_e.ReadOnly = true;
+            this.tx_tf_e.Size = new System.Drawing.Size(41, 20);
+            this.tx_tf_e.TabIndex = 423;
+            this.tx_tf_e.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_ingv
+            // 
+            this.tx_ingv.AllowSpace = false;
+            this.tx_ingv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_ingv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_ingv.Location = new System.Drawing.Point(583, 352);
+            this.tx_ingv.Name = "tx_ingv";
+            this.tx_ingv.ReadOnly = true;
+            this.tx_ingv.Size = new System.Drawing.Size(76, 20);
+            this.tx_ingv.TabIndex = 420;
+            this.tx_ingv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tf_iv
+            // 
+            this.tx_tf_iv.AllowSpace = false;
+            this.tx_tf_iv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tf_iv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tf_iv.Location = new System.Drawing.Point(405, 352);
+            this.tx_tf_iv.Name = "tx_tf_iv";
+            this.tx_tf_iv.ReadOnly = true;
+            this.tx_tf_iv.Size = new System.Drawing.Size(41, 20);
+            this.tx_tf_iv.TabIndex = 418;
+            this.tx_tf_iv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // tx_tfi_p
             // 
             this.tx_tfi_p.AllowSpace = false;
@@ -2138,43 +2171,13 @@
             this.tx_totpend.TabIndex = 412;
             this.tx_totpend.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // gb_orden
-            // 
-            this.gb_orden.Controls.Add(this.rb_docvta);
-            this.gb_orden.Controls.Add(this.rb_secuencial);
-            this.gb_orden.Location = new System.Drawing.Point(833, 6);
-            this.gb_orden.Name = "gb_orden";
-            this.gb_orden.Size = new System.Drawing.Size(188, 44);
-            this.gb_orden.TabIndex = 441;
-            this.gb_orden.TabStop = false;
-            this.gb_orden.Text = " Ordenamiento ";
-            // 
-            // rb_secuencial
-            // 
-            this.rb_secuencial.AutoSize = true;
-            this.rb_secuencial.Location = new System.Drawing.Point(7, 18);
-            this.rb_secuencial.Name = "rb_secuencial";
-            this.rb_secuencial.Size = new System.Drawing.Size(78, 17);
-            this.rb_secuencial.TabIndex = 0;
-            this.rb_secuencial.TabStop = true;
-            this.rb_secuencial.Text = "Secuencial";
-            this.rb_secuencial.UseVisualStyleBackColor = true;
-            // 
-            // rb_docvta
-            // 
-            this.rb_docvta.AutoSize = true;
-            this.rb_docvta.Location = new System.Drawing.Point(91, 18);
-            this.rb_docvta.Name = "rb_docvta";
-            this.rb_docvta.Size = new System.Drawing.Size(76, 17);
-            this.rb_docvta.TabIndex = 1;
-            this.rb_docvta.TabStop = true;
-            this.rb_docvta.Text = "Doc.Venta";
-            this.rb_docvta.UseVisualStyleBackColor = true;
-            // 
             // repadmcaja
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1040, 443);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.toolStrip1);
@@ -2189,6 +2192,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabres.ResumeLayout(false);
             this.tabres.PerformLayout();
+            this.gb_orden.ResumeLayout(false);
+            this.gb_orden.PerformLayout();
             this.groupBox47.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox27.ResumeLayout(false);
@@ -2228,8 +2233,6 @@
             this.groupBox35.ResumeLayout(false);
             this.groupBox33.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pend)).EndInit();
-            this.gb_orden.ResumeLayout(false);
-            this.gb_orden.PerformLayout();
             this.ResumeLayout(false);
 
         }

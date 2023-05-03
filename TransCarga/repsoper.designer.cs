@@ -185,6 +185,11 @@
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.tabres = new System.Windows.Forms.TabPage();
+            this.groupBox47 = new System.Windows.Forms.GroupBox();
+            this.groupBox46 = new System.Windows.Forms.GroupBox();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.rb_busDoc = new System.Windows.Forms.RadioButton();
+            this.rb_busNom = new System.Windows.Forms.RadioButton();
             this.panel5 = new System.Windows.Forms.Panel();
             this.rb_pend = new System.Windows.Forms.RadioButton();
             this.rb_total = new System.Windows.Forms.RadioButton();
@@ -220,11 +225,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.bt_resumen = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.panel8 = new System.Windows.Forms.Panel();
-            this.rb_busDoc = new System.Windows.Forms.RadioButton();
-            this.rb_busNom = new System.Windows.Forms.RadioButton();
-            this.groupBox46 = new System.Windows.Forms.GroupBox();
-            this.groupBox47 = new System.Windows.Forms.GroupBox();
             this.toolStrip1.SuspendLayout();
             this.tabgrhist.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).BeginInit();
@@ -258,12 +258,12 @@
             this.groupBox17.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabres.SuspendLayout();
+            this.panel8.SuspendLayout();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).BeginInit();
             this.groupBox33.SuspendLayout();
             this.groupBox35.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.panel8.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -2025,6 +2025,59 @@
             this.tabres.UseVisualStyleBackColor = true;
             this.tabres.Enter += new System.EventHandler(this.tabres_Enter);
             // 
+            // groupBox47
+            // 
+            this.groupBox47.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox47.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox47.Location = new System.Drawing.Point(104, 32);
+            this.groupBox47.Name = "groupBox47";
+            this.groupBox47.Size = new System.Drawing.Size(182, 1);
+            this.groupBox47.TabIndex = 396;
+            this.groupBox47.TabStop = false;
+            // 
+            // groupBox46
+            // 
+            this.groupBox46.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox46.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox46.Location = new System.Drawing.Point(627, 59);
+            this.groupBox46.Name = "groupBox46";
+            this.groupBox46.Size = new System.Drawing.Size(180, 1);
+            this.groupBox46.TabIndex = 395;
+            this.groupBox46.TabStop = false;
+            // 
+            // panel8
+            // 
+            this.panel8.Controls.Add(this.rb_busDoc);
+            this.panel8.Controls.Add(this.rb_busNom);
+            this.panel8.Location = new System.Drawing.Point(104, 9);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(185, 23);
+            this.panel8.TabIndex = 394;
+            // 
+            // rb_busDoc
+            // 
+            this.rb_busDoc.AutoSize = true;
+            this.rb_busDoc.Location = new System.Drawing.Point(87, 3);
+            this.rb_busDoc.Name = "rb_busDoc";
+            this.rb_busDoc.Size = new System.Drawing.Size(97, 17);
+            this.rb_busDoc.TabIndex = 1;
+            this.rb_busDoc.TabStop = true;
+            this.rb_busDoc.Text = "Por documento";
+            this.rb_busDoc.UseVisualStyleBackColor = true;
+            this.rb_busDoc.CheckedChanged += new System.EventHandler(this.rb_busDoc_CheckedChanged);
+            // 
+            // rb_busNom
+            // 
+            this.rb_busNom.AutoSize = true;
+            this.rb_busNom.Location = new System.Drawing.Point(4, 3);
+            this.rb_busNom.Name = "rb_busNom";
+            this.rb_busNom.Size = new System.Drawing.Size(79, 17);
+            this.rb_busNom.TabIndex = 0;
+            this.rb_busNom.TabStop = true;
+            this.rb_busNom.Text = "Por nombre";
+            this.rb_busNom.UseVisualStyleBackColor = true;
+            this.rb_busNom.CheckedChanged += new System.EventHandler(this.rb_busNom_CheckedChanged);
+            // 
             // panel5
             // 
             this.panel5.Controls.Add(this.rb_pend);
@@ -2385,63 +2438,13 @@
             this.tabControl1.Size = new System.Drawing.Size(1034, 403);
             this.tabControl1.TabIndex = 4;
             // 
-            // panel8
-            // 
-            this.panel8.Controls.Add(this.rb_busDoc);
-            this.panel8.Controls.Add(this.rb_busNom);
-            this.panel8.Location = new System.Drawing.Point(104, 9);
-            this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(185, 23);
-            this.panel8.TabIndex = 394;
-            // 
-            // rb_busDoc
-            // 
-            this.rb_busDoc.AutoSize = true;
-            this.rb_busDoc.Location = new System.Drawing.Point(87, 3);
-            this.rb_busDoc.Name = "rb_busDoc";
-            this.rb_busDoc.Size = new System.Drawing.Size(97, 17);
-            this.rb_busDoc.TabIndex = 1;
-            this.rb_busDoc.TabStop = true;
-            this.rb_busDoc.Text = "Por documento";
-            this.rb_busDoc.UseVisualStyleBackColor = true;
-            this.rb_busDoc.CheckedChanged += new System.EventHandler(this.rb_busDoc_CheckedChanged);
-            // 
-            // rb_busNom
-            // 
-            this.rb_busNom.AutoSize = true;
-            this.rb_busNom.Location = new System.Drawing.Point(4, 3);
-            this.rb_busNom.Name = "rb_busNom";
-            this.rb_busNom.Size = new System.Drawing.Size(79, 17);
-            this.rb_busNom.TabIndex = 0;
-            this.rb_busNom.TabStop = true;
-            this.rb_busNom.Text = "Por nombre";
-            this.rb_busNom.UseVisualStyleBackColor = true;
-            this.rb_busNom.CheckedChanged += new System.EventHandler(this.rb_busNom_CheckedChanged);
-            // 
-            // groupBox46
-            // 
-            this.groupBox46.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox46.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox46.Location = new System.Drawing.Point(627, 59);
-            this.groupBox46.Name = "groupBox46";
-            this.groupBox46.Size = new System.Drawing.Size(180, 1);
-            this.groupBox46.TabIndex = 395;
-            this.groupBox46.TabStop = false;
-            // 
-            // groupBox47
-            // 
-            this.groupBox47.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox47.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox47.Location = new System.Drawing.Point(104, 32);
-            this.groupBox47.Name = "groupBox47";
-            this.groupBox47.Size = new System.Drawing.Size(182, 1);
-            this.groupBox47.TabIndex = 396;
-            this.groupBox47.TabStop = false;
-            // 
             // repsoper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1040, 443);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.toolStrip1);
@@ -2495,14 +2498,14 @@
             this.panel1.PerformLayout();
             this.tabres.ResumeLayout(false);
             this.tabres.PerformLayout();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).EndInit();
             this.groupBox33.ResumeLayout(false);
             this.groupBox35.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
-            this.panel8.ResumeLayout(false);
-            this.panel8.PerformLayout();
             this.ResumeLayout(false);
 
         }

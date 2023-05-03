@@ -893,7 +893,8 @@ namespace TransCarga
             string nombre = "";
             if (tabControl1.SelectedTab == tabres && dgv_ccaja.Rows.Count > 0)
             {
-                nombre = "reporte_cajas_" + "<local>" +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                if (tx_dat_sedecaj.Text != "") nombre = "reporte_cajas_" + cmb_sedeCaj.Text + "_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                else nombre = "reporte_cajas_todos_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)

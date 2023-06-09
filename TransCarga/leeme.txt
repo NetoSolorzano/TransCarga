@@ -312,3 +312,6 @@ form repadmcaja, error en exportar cajas de una sede en específico ............
 form repadmcaja, problema de grilla que no se ajusta automaticamente al ancho del form .............. ok 03/05/2023
 form repsventas, problema de grilla que no se ajusta automaticamente al ancho del form .............. ok 03/05/2023
 form repsoper, problema de grilla que no se ajusta automaticamente al ancho del form ................ ok 03/05/2023
+form facelect, defecto en la función jaladet(), no estaba jalando el detalle correcto de la guía 
+	facturada ....................................................................................... ok 08/06/2023
+

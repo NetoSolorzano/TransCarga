@@ -582,7 +582,7 @@ namespace TransCarga
                 "left join desc_loc lo on lo.idcodice=c.locorigen " +
                 "left join desc_loc ld on ld.idcodice=c.locdestin " +
                 "where a.idc=@idr";
-            */
+            
             string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
                 "y.unimedpro,y.docsremit,y.fechopegr,concat(lo.descrizionerid, '-', ld.descrizionerid) as orides " +
                 "from detfactu a " +
@@ -591,6 +591,10 @@ namespace TransCarga
                 "left join desc_loc lo on lo.idcodice = y.locorigen " +
                 "left join desc_loc ld on ld.idcodice = y.locdestin " +
                 "where a.idc = @idr";
+            */
+            string jalad = "SELECT a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
+                "'' as unimedpro, '' as docsremit, '' as fechopegr,'' as orides " +
+                "FROM detfactu a where a.idc = @idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -601,6 +605,31 @@ namespace TransCarga
                     {
                         DataTable dt = new DataTable();
                         da.Fill(dt);
+                        // aca buscamos los datos detalle de la guía
+                        for (int i = 0; i<dt.Rows.Count; i++)
+                        {
+                            string busdet = "SELECT z.id, z.docsremit, max(x.unimedpro) AS unimedpro, z.locorigen, z.locdestin, z.fechopegr, CONCAT(lo.descrizionerid,'-',ld.DescrizioneRid) AS orides " +
+                                "FROM cabguiai z LEFT JOIN detguiai x ON z.id = x.idc " +
+                                "left join desc_loc lo on lo.idcodice = z.locorigen " +
+                                "left join desc_loc ld on ld.idcodice = z.locdestin " +
+                                "WHERE concat(z.sergui,'-',z.numgui)=@grd";
+                            using (MySqlCommand midet = new MySqlCommand(busdet, conn))
+                            {
+                                midet.Parameters.AddWithValue("@grd", dt.Rows[i].ItemArray[1].ToString());
+                                using (MySqlDataReader dr = midet.ExecuteReader())
+                                {
+                                    if (dr.Read())
+                                    {
+                                        // actualizamos el dt con los datos encontrados
+                                        dt.Rows[i][8] = dr.GetString("unimedpro");
+                                        dt.Rows[i][9] = dr.GetString("docsremit");
+                                        dt.Rows[i][10] = dr.GetString("fechopegr");
+                                        dt.Rows[i][11] = dr.GetString("orides");
+                                    }
+                                }
+                            }
+                        }
+
                         foreach (DataRow row in dt.Rows)
                         {
                             dataGridView1.Rows.Add(
@@ -611,7 +640,7 @@ namespace TransCarga
                                 row[7].ToString(),
                                 "",
                                 "",
-                                row[10].ToString().Substring(6,4) + "-" + row[10].ToString().Substring(3, 2) + "-" + row[10].ToString().Substring(0, 2),
+                                row[10].ToString().Substring(6, 4) + "-" + row[10].ToString().Substring(3, 2) + "-" + row[10].ToString().Substring(0, 2),
                                 row[9].ToString(),
                                 "",
                                 row[11].ToString(),

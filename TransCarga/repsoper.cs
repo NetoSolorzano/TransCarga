@@ -52,6 +52,28 @@ namespace TransCarga
         string v_impTK = "";            // nombre de la impresora de TK para guias
         string v_CR_ctacte = "";        // ruta y nombre del formato CR para el reporte cta cte clientes
         //int pageCount = 1, cuenta = 0;
+        string ruta_logo = "";          // ruta y nombre del logo
+        string impriLogi = "";          // Imprime logo o no en el formato guia simple - notita
+        string client_id_sunat = "";    // id del cliente api sunat para guias electrónicas 
+        string client_pass_sunat = "";  // clave api sunat para guias electrónicas
+        string u_sol_sunat = "";        // usuario sol sunat del cliente
+        string c_sol_sunat = "";        // clave sol sunat del cliente
+        string scope_sunat = "";        // scope sunat del api
+        string cGR_sunat = "";          // codigo sunat para GR transportista
+        string usa_gre = "";            // usa GRE en la organización? S/N
+        string firmDocElec = "";        // Firma xml, true=firma, false=no firma
+        string rutaCertifc = "";        // Ruta y nombre del certificado .pfx
+        string claveCertif = "";        // Clave del certificado
+        string rutatxt = "";            // ruta de los txt para las guías elect
+        string rutaxml = "";            // ruta para los xml de las guías electrónicas
+        string vtc_dni = "";            // codigo dni
+        string vtc_ruc = "";            // codigo ruc
+        string vtc_ext = "";            // codigo carne extranjería
+        string despedid1 = "";          // despedida del ticket 1
+        string despedid2 = "";          // despedida del ticket 2
+        string glosa1 = "";             // glosa comprobante final 1
+        string glosa2 = "";             // 
+        string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token
         #endregion
 
         libreria lib = new libreria();
@@ -63,6 +85,26 @@ namespace TransCarga
         DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
         DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
+                                                    //
+        acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
+        DataTable dtsunatE = new DataTable();       // guías transp elec - estados
+        string[] filaimp = { "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
+        {
+            Name = "chck",
+            HeaderText = " ",
+            Width = 30,
+            ReadOnly = false,
+            FillWeight = 10
+        };
+        DataGridViewCheckBoxColumn chkGRE = new DataGridViewCheckBoxColumn()
+        {
+            Name = "chkGRE",
+            HeaderText = " ",
+            Width = 30,
+            ReadOnly = false,
+            FillWeight = 10
+        };
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -153,12 +195,14 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@pla,@clie,@grt)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@pla,@clie,@grt,@nofi,@gret)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@pla", "planicarga");
                 micon.Parameters.AddWithValue("@clie", "clients");
                 micon.Parameters.AddWithValue("@grt", "guiati");
+                micon.Parameters.AddWithValue("@nofi", nomform);
+                micon.Parameters.AddWithValue("@gret", "guiati_e");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -179,6 +223,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
                             if (row["param"].ToString() == "img_imprime") img_imprime = row["valor"].ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
                             if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();  // imagen del boton VISTA PRELIMINAR
+                            if (row["param"].ToString() == "logoPrin") ruta_logo = row["valor"].ToString().Trim();      // logo de la empresa a imprimir
                         }
                         if (row["campo"].ToString() == "estado")
                         {
@@ -186,6 +231,25 @@ namespace TransCarga
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
                             DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
                             nomAnul = fila[0][0].ToString();
+                        }
+                        if (row["campo"].ToString() == "sunat")
+                        {
+                            if (row["param"].ToString() == "usa_gre") usa_gre = row["valor"].ToString().Trim();                   // se usa GRE? S/N
+                            if (row["param"].ToString() == "client_id") client_id_sunat = row["valor"].ToString().Trim();         // id del api sunat
+                            if (row["param"].ToString() == "client_pass") client_pass_sunat = row["valor"].ToString().Trim();     // password del api sunat
+                            if (row["param"].ToString() == "user_sol") u_sol_sunat = row["valor"].ToString().Trim();              // usuario sol portal sunat del cliente 
+                            if (row["param"].ToString() == "clave_sol") c_sol_sunat = row["valor"].ToString().Trim();             // clave sol portal sunat del cliente 
+                            if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
+                            if (row["param"].ToString() == "codgre") cGR_sunat = row["valor"].ToString().Trim();                 // codigo sunat para GR transportista
+                            //  "true" + " " + "certificado.pfx" + " " + "190969Sorol"
+                            if (row["param"].ToString() == "firmDocElec") firmDocElec = row["valor"].ToString().Trim();           // Firma xml, true=firma, false=no firma
+                            if (row["param"].ToString() == "rutaCertifc") rutaCertifc = row["valor"].ToString().Trim();           // Ruta y nombre del certificado .pfx
+                            if (row["param"].ToString() == "claveCertif") claveCertif = row["valor"].ToString().Trim();           // Clave del certificado
+                        }
+                        if (row["campo"].ToString() == "rutas")
+                        {
+                            if (row["param"].ToString() == "grt_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para las guías elect
+                            if (row["param"].ToString() == "grt_xml") rutaxml = row["valor"].ToString().Trim();         // ruta para los xml de las guías electrónicas
                         }
                     }
                     if (row["formulario"].ToString() == "planicarga")
@@ -201,13 +265,49 @@ namespace TransCarga
                     }
                     if (row["formulario"].ToString() == "clients")
                     {
-                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") v_tipdocR = row["valor"].ToString().Trim();         // tipo documento RUC
+                        if (row["campo"].ToString() == "documento")
+                        {
+                            if (row["param"].ToString() == "ruc") v_tipdocR = row["valor"].ToString().Trim();         // tipo documento RUC
+                            if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                        }
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "ctacte_cr") v_CR_ctacte = row["valor"].ToString().Trim(); // 
                     }
+                    if (row["formulario"].ToString() == nomform)
+                    {
+                        if (row["campo"].ToString() == "impLogo")
+                        {
+                            if (row["param"].ToString() == "grSimple") impriLogi = row["valor"].ToString().Trim();         // SI= imprime logo | NO=no imprime logo
+                        }
+                    }
+                    if (row["formulario"].ToString() == "guiati_e")
+                    {
+                        if (row["campo"].ToString() == "glosas")
+                        {
+                            if (row["param"].ToString() == "glosa1") glosa1 = row["valor"].ToString();          // glosa final del ticket 1
+                            if (row["param"].ToString() == "glosa2") glosa2 = row["valor"].ToString();
+                        }
+                        if (row["campo"].ToString() == "despedida")
+                        {
+                            if (row["param"].ToString() == "desped1") despedid1 = row["valor"].ToString();          // glosa despedida del ticket 1
+                            if (row["param"].ToString() == "desped2") despedid2 = row["valor"].ToString();
+
+                        }
+                        //if (row["campo"].ToString() == "impTK") v_impTK = row["valor"].ToString();
+                    }
+
                 }
                 da.Dispose();
                 dt.Dispose();
                 conn.Close();
+                // parametros para token
+                c_t[0] = client_id_sunat;
+                c_t[1] = scope_sunat;
+                c_t[2] = client_id_sunat;
+                c_t[3] = client_pass_sunat;
+                c_t[4] = u_sol_sunat;
+                c_t[5] = c_sol_sunat;
             }
             catch (MySqlException ex)
             {
@@ -252,6 +352,10 @@ namespace TransCarga
                 cmb_sede_plan.DataSource = dttaller;
                 cmb_sede_plan.DisplayMember = "descrizionerid"; ;
                 cmb_sede_plan.ValueMember = "idcodice";
+                // PANEL ESTADOS SUNAT GUIAS ELECTRONICAS
+                cmb_GRE_sede.DataSource = dttaller;
+                cmb_GRE_sede.DisplayMember = "descrizionerid";
+                cmb_GRE_sede.ValueMember = "idcodice";
                 // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
@@ -280,8 +384,27 @@ namespace TransCarga
                 cmb_tidoc.DataSource = dttd;
                 cmb_tidoc.DisplayMember = "descrizionerid";
                 cmb_tidoc.ValueMember = "idcodice";
-                //
                 datad.Dispose();
+                // **************** seleccion de placa 
+                string conplac = "select placa from vehiculos order by placa asc";
+                cmd = new MySqlCommand(conplac, conn);
+                MySqlDataAdapter datpla = new MySqlDataAdapter(cmd);
+                DataTable dtpla = new DataTable();
+                datpla.Fill(dtpla);
+                //cmb_placa.DataSource = dtpla;
+                //cmb_placa.DisplayMember = "placa";
+                //cmb_placa.ValueMember = "placa";
+                datpla.Dispose();
+                // panel estados sunat de las guias electrónicas
+                string conesu = "select descrizionerid,idcodice from desc_esu where numero=1 order by idcodice";
+                cmd = new MySqlCommand(conesu, conn);
+                MySqlDataAdapter datesu = new MySqlDataAdapter(cmd);
+                DataTable dtesu = new DataTable();
+                datesu.Fill(dtesu);
+                cmb_GRE_est.DataSource = dtesu;
+                cmb_GRE_est.DisplayMember = "descrizionerid";
+                cmb_GRE_est.ValueMember = "idcodice";
+                datesu.Dispose();
             }
             conn.Close();
         }
@@ -440,7 +563,151 @@ namespace TransCarga
                     }
                     */
                     break;
+                case "dgv_GRE_est":
+                    dgv_GRE_est.Font = tiplg;
+                    dgv_GRE_est.DefaultCellStyle.Font = tiplg;
+                    dgv_GRE_est.RowTemplate.Height = 18;
+                    dgv_GRE_est.AllowUserToAddRows = false;
+                    if (dgv_GRE_est.DataSource == null) dgv_GRE_est.ColumnCount = 7;
+                    dgv_GRE_est.Width = Parent.Width - 50; // 1015;
+
+                    Padding padding = new Padding();
+                    padding.Left = 16;
+                    padding.Right = 16;
+                    padding.Top = 0;
+                    padding.Bottom = 0;
+
+                    Font chiq = new Font("Arial", 6, FontStyle.Bold);
+
+                    DataGridViewButtonColumn btnTk = new DataGridViewButtonColumn();
+                    btnTk.HeaderText = "iTK";
+                    //btnTk.UseColumnTextForButtonValue = true;
+                    btnTk.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnTk.Name = "iTK";
+                    btnTk.Width = 60;
+                    btnTk.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnTk.DefaultCellStyle.Padding = padding;
+                    btnTk.DefaultCellStyle.Font = chiq;
+                    btnTk.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    DataGridViewButtonColumn btnCDR = new DataGridViewButtonColumn();
+                    btnCDR.HeaderText = "CDR";
+                    btnCDR.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnCDR.Name = "cdr";
+                    btnCDR.Width = 60;
+                    btnCDR.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnCDR.DefaultCellStyle.Padding = padding;
+                    btnCDR.DefaultCellStyle.Font = chiq;
+                    btnCDR.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    DataGridViewButtonColumn btnPDF = new DataGridViewButtonColumn();
+                    btnPDF.HeaderText = "PDF";
+                    btnPDF.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnPDF.Name = "pdf";
+                    btnPDF.Width = 60;
+                    btnPDF.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnPDF.DefaultCellStyle.Padding = padding;
+                    btnPDF.DefaultCellStyle.Font = chiq;
+                    btnPDF.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    DataGridViewButtonColumn btnAct = new DataGridViewButtonColumn();
+                    btnAct.HeaderText = "Sunat"; // ACTUALIZA
+                    btnAct.Text = "...Actualiza...";
+                    btnAct.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnAct.Name = "consulta";
+                    btnAct.Width = 140;
+                    btnAct.UseColumnTextForButtonValue = true;
+                    btnAct.DefaultCellStyle.Padding = padding;
+
+                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror
+                    //     0        1       2      3       4     5      6     7 8 9 10    11      12         13        14        15        16
+                    //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
+                    dgv_GRE_est.CellClick += DataGridView1_CellClick;
+                    dgv_GRE_est.Columns.Insert(7, btnTk);
+                    dgv_GRE_est.Columns.Insert(8, btnPDF);   // .Add(btnPDF);
+                    dgv_GRE_est.Columns.Insert(9, btnCDR);   // .Add(btnCDR);
+                    dgv_GRE_est.Columns.Insert(10, btnAct);   // .Add(btnAct);
+                    dgv_GRE_est.Columns[11].Visible = false;
+                    dgv_GRE_est.Columns[12].Visible = false;
+                    dgv_GRE_est.Columns[13].Visible = false;
+                    dgv_GRE_est.Columns[14].Visible = false;
+                    dgv_GRE_est.Columns[15].Visible = false;
+                    dgv_GRE_est.Columns[16].Visible = true;
+                    if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
+                    {
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 10; i++)
+                        {
+                            dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_GRE_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_GRE_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 10; i++)
+                        {
+                            int a = dgv_GRE_est.Columns[i].Width;
+                            b += a;
+                            dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_GRE_est.Columns[i].Width = a;
+                        }
+                        if (b < dgv_GRE_est.Width) dgv_GRE_est.Width = dgv_GRE_est.Width - 10;
+                        dgv_GRE_est.ReadOnly = true;
+                    }
+                    if (dgv_GRE_est.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                        {
+                            dgv_GRE_est.Rows[i].Cells[7].Value = "TK";
+                            if (dgv_GRE_est.Rows[i].Cells[6].Value != null)
+                            {
+                                if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "1")
+                                {
+                                    dgv_GRE_est.Rows[i].Cells[8].ReadOnly = false;
+                                    dgv_GRE_est.Rows[i].Cells[8].Value = "PDF";
+                                    dgv_GRE_est.Rows[i].Cells[9].ReadOnly = false;
+                                    dgv_GRE_est.Rows[i].Cells[9].Value = "CDR";
+                                    dgv_GRE_est.Rows[i].Cells[10].ReadOnly = true;
+                                }
+                                else
+                                {
+                                    dgv_GRE_est.Rows[i].Cells[8].ReadOnly = true;
+                                    dgv_GRE_est.Rows[i].Cells[8].Value = "";
+                                    dgv_GRE_est.Rows[i].Cells[9].ReadOnly = true;
+                                    dgv_GRE_est.Rows[i].Cells[9].Value = "";
+                                    dgv_GRE_est.Rows[i].Cells[10].ReadOnly = false;
+                                }
+                            }
+                        }
+                    }
+                    sumaGrilla("dgv_GRE_est");
+                    break;
             }
+        }
+        private string consultaE(string ticket, int rowIndex)       // consulta estado en Sunat
+        {
+            string retorna = "";
+            //Tuple<string, string> resCon = null;
+
+            if (ticket == "") return retorna;
+
+            string token = _E.conex_token_(c_t);
+            var resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "adiguiar" : "adiguias", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
+                dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(0, 4), dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(5, 8), rutaxml);
+            if (resCon == null)
+            {
+                MessageBox.Show("La respuesta del ticket fue nulo", "Error en consultar ticket", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                {
+                    // resCon != null && (resCon.Item1 == "Aceptado" || resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                    // Acá, en lugar de hacer una consulta debería actualizarse la grilla con los valores devueltos en resCon
+
+                    MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            return retorna;
         }
         private void grillares(string modo)                         // modo 0=todo,1=sin preguias
         {
@@ -562,6 +829,22 @@ namespace TransCarga
                         tx_treval.Text = tgr.ToString("#0.00");
                         tx_trant.Text = tvv.ToString("#0.00");
                         tx_frv.Text = cr.ToString();
+                        break;
+                    case "dgv_GRE_est":
+                        for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                        {
+                            if (dgv_GRE_est.Rows[i].Cells[4].Value.ToString() != etiq_anulado)
+                            {
+                                cr = cr + 1;
+                            }
+                            else
+                            {
+                                dgv_GRE_est.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                                ca = ca + 1;
+                            }
+                        }
+                        tx_GRE_fa.Text = ca.ToString();
+                        tx_GRE_fv.Text = cr.ToString();
                         break;
                 }
             }
@@ -831,6 +1114,87 @@ namespace TransCarga
                 }
             }
         }
+        private void muestra_gr(string ser, string cor)                 // muestra la grt 
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    string consulta = "select a.id,a.fechopegr,a.sergui,a.numgui,a.numpregui,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri," +
+                        "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,lo.descrizionerid as ORIGEN,a.dirorigen,a.ubiorigen," +
+                        "ld.descrizionerid as DESTINO,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri," +
+                        "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,round(a.totgri,1) as totgri,a.totpag,a.salgri,s.descrizionerid as ESTADO,a.impreso," +
+                        "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
+                        "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
+                        "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
+                        "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
+                        "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
+                        "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
+                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.autor1,'') as autCarret," +
+                        "a.teleregri as telrem,a.teledegri as teldes,ifnull(t.nombclt,'') as clifact," +
+                        "u1.nombre AS distrem,u2.nombre as provrem,u3.nombre as deptrem,v1.nombre as distdes,v2.nombre as provdes,v3.nombre as deptdes,mo.descrizionerid as MON " +
+                        "from cabguiai a " +
+                        "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
+                        "left join desc_tdv f on f.idcodice=b.tipdocvta " +
+                        "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
+                        "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
+                        "left join vehiculos d on d.placa=a.plaplagri " +
+                        "left join vehiculos r on r.placa=a.carplagri " +
+                        "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
+                        "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " +
+                        "left join desc_est s on s.idcodice=a.estadoser " +
+                        "left join desc_loc lo on lo.idcodice=a.locorigen " +
+                        "left join desc_loc ld on ld.idcodice=a.locdestin " +
+                        "left join desc_mon mo on mo.idcodice=a.tipmongri " +
+                        "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= a.ubigregri " +
+                        "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(a.ubigregri, 2) AND u2.provin = concat(substr(a.ubigregri, 3, 2)) " +
+                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') u3 ON u3.depart = left(a.ubigregri, 2) " +
+                        "LEFT JOIN ubigeos v1 ON CONCAT(v1.depart, v1.provin, v1.distri)= a.ubigdegri " +
+                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') v2 ON v2.depart = left(a.ubigdegri, 2) AND v2.provin = concat(substr(a.ubigdegri, 3, 2)) " +
+                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') v3 ON v3.depart = left(a.ubigdegri, 2) " +
+                        "where a.sergui = @ser and a.numgui = @num";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ser", ser);
+                        micon.Parameters.AddWithValue("@num", cor);
+                        micon.Parameters.AddWithValue("@tdep", v_tipdocR);
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dtgrtcab.Clear();
+                            da.Fill(dtgrtcab);
+                        }
+                    }
+                    consulta = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
+                        "from detguiai where sergui = @ser and numgui = @num";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ser", ser);
+                        micon.Parameters.AddWithValue("@num", cor);
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dtgrtdet.Clear();
+                            da.Fill(dtgrtdet);
+                        }
+                    }
+                }
+                // llenamos el set
+                if (("tabgrti,tabres").Contains(tabControl1.SelectedTab.Name))
+                {
+                    setParaCrystal("GRT");
+                }
+                if (tabControl1.SelectedTab.Name == "tabgrhist")
+                {
+                    if (rb_simple.Checked == true)
+                    {
+                        setParaCrystal("GrGrupal");
+                    }
+                    else
+                    {
+                        setParaCrystal("GRT");
+                    }
+                }
+            }
+        }
         private void bt_dale_Click(object sender, EventArgs e)          // impresion GRUPAL de guias
         {
             if (rb_imSimp.Checked == false && rb_imComp.Checked == false)
@@ -841,6 +1205,155 @@ namespace TransCarga
             }
             setParaCrystal("GrGrupal");
             chk_impGrp.Checked = false;
+        }
+        private void button6_Click(object sender, EventArgs e)          // vista previa de guias completa o simple
+        {
+            if (rb_complet.Checked == true)
+            {
+                if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
+                {
+                    muestra_gr(tx_ser.Text, tx_num.Text);
+                }
+                else
+                {
+                    tx_ser.Focus();
+                    return;
+                }
+            }
+            else
+            {
+                if (rb_simple.Checked == true)
+                {
+                    if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
+                    {
+                        muestra_gr(tx_ser.Text, tx_num.Text);
+
+                    }
+                    else
+                    {
+                        tx_ser.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Seleccione un tipo de impresion de guía", "Atención - seleccione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+        }
+        private void bt_greEst_Click(object sender, EventArgs e)        // Guías de Remisión Electrónicas - Estados
+        {
+            chk_GRE_imp.Checked = false;
+            dtsunatE.Rows.Clear();
+            dtsunatE.Columns.Clear();
+            // validaciones
+            if (rb_GRE_R.Checked == false && rb_GRE_T.Checked == false)
+            {
+                MessageBox.Show("Seleccione el tipo de GRE", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                rb_GRE_R.Focus();
+                return;
+            }
+            if (rb_GRE_orig.Checked == false && rb_GRE_dest.Checked == false)
+            {
+                MessageBox.Show("Seleccione si es local Origen o Destino", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                rb_GRE_orig.Focus();
+                return;
+            }
+            //
+            string consulta = "";
+            if (rb_GRE_R.Checked == true)
+            {
+                consulta = "SELECT g.fechopegr AS EMISION,concat(g.serguir,'-',g.numguir) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
+                    "FROM cabguiar g LEFT JOIN adiguiar ad ON ad.idg = g.id " +
+                    "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
+                    "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
+                    "LEFT JOIN desc_est es ON es.IDCodice = g.estadoser " +
+                    "WHERE marca_gre<>'' AND g.fechopegr between @fecini and @fecfin";
+            }
+            if (rb_GRE_T.Checked == true)
+            {
+                consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
+                    "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
+                    "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
+                    "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
+                    "LEFT JOIN desc_est es ON es.IDCodice = g.estadoser " +
+                    "WHERE marca_gre<>'' AND g.fechopegr between @fecini and @fecfin";
+            }
+            string parte = "";
+            if (tx_dat_GRE_sede.Text != "" && rb_GRE_orig.Checked == true) parte = parte + " and g.locorigen=@loca";
+            if (tx_dat_GRE_sede.Text != "" && rb_GRE_dest.Checked == true) parte = parte + " and g.locdestin=@loca";
+            if (tx_dat_GRE_est.Text != "") parte = parte + " and ad.estadoS=@esta";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand micon = new MySqlCommand(consulta + parte, conn))
+                {
+                    micon.Parameters.AddWithValue("@loca", (tx_dat_GRE_sede.Text != "") ? tx_dat_GRE_sede.Text : "");
+                    micon.Parameters.AddWithValue("@fecini", dtp_GRE_fini.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_GRE_fter.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@esta", (tx_dat_GRE_est.Text != "") ? tx_dat_GRE_est.Text : "");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_GRE_est.DataSource = null;
+                        dgv_GRE_est.Columns.Clear();
+                        dgv_GRE_est.Rows.Clear();
+                        //
+                        da.Fill(dtsunatE);
+                        dgv_GRE_est.DataSource = dtsunatE;
+                        grilla("dgv_GRE_est");
+                    }
+                }
+            }
+
+        }
+        private void bt_consMas_Click(object sender, EventArgs e)       // hace la consulta de todas las GRE de la grilla
+        {
+            dgv_GRE_est.Enabled = false;
+            bt_consMas.Enabled = false;
+            // hacemos las consultas
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                {
+                    if ((dgv_GRE_est.Rows[i].Cells[5].Value.ToString() == "Enviado" || dgv_GRE_est.Rows[i].Cells[5].Value.ToString() == "En proceso") &&
+                        (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "0" || dgv_GRE_est.Rows[i].Cells[6].Value.ToString().Trim() == ""))
+                    {
+                        consultaE(dgv_GRE_est.Rows[i].Cells[12].Value.ToString(), i);
+                    }
+                }
+            }
+            // terminado todo ...
+            dgv_GRE_est.Enabled = true;
+            bt_consMas.Enabled = true;
+        }
+        private void marca_check(string etiqueta, CheckBox check)       // marca columna 0 de la grilla dgv_GRE_est
+        {
+            // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.....,ad.cdr,ad.textoQR,ad.nticket
+            //    0        1         2     3      4      5      6    7 8 9    10     11           12
+            if (check.CheckState == CheckState.Checked)
+            {
+                for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                {
+                    if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == etiqueta)
+                    {
+                        dgv_GRE_est.Rows[i].Cells[0].Value = true;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                {
+                    if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == etiqueta)
+                    {
+                        dgv_GRE_est.Rows[i].Cells[0].Value = false;
+                    }
+                }
+            }
         }
 
         #region combos
@@ -929,6 +1442,42 @@ namespace TransCarga
             {
                 cmb_estad_guias.SelectedIndex = -1;
                 tx_estad_guias.Text = "";
+            }
+        }
+        private void cmb_placa_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_placa.SelectedIndex = -1;
+            }
+        }
+        private void cmb_GRE_sede_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_GRE_sede.SelectedValue != null) tx_dat_GRE_sede.Text = cmb_GRE_sede.SelectedValue.ToString();
+            else tx_dat_GRE_sede.Text = "";
+        }
+        private void cmb_GRE_sede_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_GRE_sede.SelectedIndex = -1;
+            }
+        }
+        private void cmb_GRE_est_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_GRE_est.SelectedValue != null)
+            {
+                //tx_dat_GRE_est.Text = cmb_GRE_est.SelectedValue.ToString(); 
+                tx_dat_GRE_est.Text = cmb_GRE_est.Text;
+            }
+            else tx_dat_GRE_est.Text = "";
+        }
+        private void cmb_GRE_est_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                tx_dat_GRE_est.Text = "";
+                cmb_GRE_est.SelectedIndex = -1;
             }
         }
 
@@ -1042,6 +1591,7 @@ namespace TransCarga
             //
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
+            cmb_placa.SelectedIndex = -1;
             //
             rb_imComp.Visible = false;
             rb_imSimp.Visible = false;
@@ -1049,6 +1599,18 @@ namespace TransCarga
             //
             checkBox1.Checked = true;
             rb_total.Checked = true;
+            //
+            rb_busDoc.Checked = true;
+            //
+            chk_GRE_iAcep.Visible = false;
+            chk_GRE_iEnpr.Visible = false;
+            chk_GRE_iEnvia.Visible = false;
+            bt_GRE_impri.Visible = false;
+            rb_GRE_T.Checked = true;            // por defecto estados de guias transportista
+            rb_GRE_trans.Checked = true;        // por defecto reporte de guias transportista
+            //
+            cmb_GRE_est.SelectedIndex = -1;
+            cmb_GRE_sede.SelectedIndex = -1;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -1149,6 +1711,22 @@ namespace TransCarga
                     this.Close();
                 }
             }
+            if (tabControl1.SelectedTab == tabGREstad && dgv_GRE_est.Rows.Count > 0)
+            {
+                nombre = "Estados_Sunat_GRE_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_GRE_est.DataSource;
+                    wb.Worksheets.Add(dt, "Est_sunat");
+                    wb.SaveAs(nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }       // Estados sunat de guías de remisión electrónicas
+
         }
         #endregion
 
@@ -1418,6 +1996,69 @@ namespace TransCarga
                 tx_cliente.ReadOnly = false;
             }
         }
+        private void tx_cliente_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tx_cliente.Text.Trim() != "")
+            {
+                // nada
+            }
+        }
+        private void chk_GRE_imp_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (dgv_GRE_est.Rows.Count > 0)
+            {
+                if (chk_GRE_imp.CheckState == CheckState.Checked)
+                {
+                    dgv_GRE_est.Columns.Insert(0, chkGRE);
+                    dgv_GRE_est.Enabled = true;
+                    dgv_GRE_est.ReadOnly = false;
+                    dgv_GRE_est.Columns[0].ReadOnly = false;
+                    for (int i = 1; i < dgv_GRE_est.Columns.Count - 10; i++)
+                    {
+                        dgv_GRE_est.Columns[i].ReadOnly = true;
+                    }
+                    for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                    {
+                        // dgv_GRE_est.Rows[i].Cells[0].Value = true;
+                    }
+
+                    chk_GRE_iAcep.Visible = true;
+                    chk_GRE_iEnpr.Visible = true;
+                    chk_GRE_iEnvia.Visible = true;
+                    bt_GRE_impri.Visible = true;
+                    panel4.ForeColor = Color.FromArgb(32, 178, 170);
+                }
+                else
+                {
+                    for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                    {
+                        dgv_GRE_est.Rows[i].Cells[0].Value = false;
+                    }
+                    chk_GRE_iAcep.Checked = false;
+                    chk_GRE_iAcep.Visible = false;
+                    chk_GRE_iEnpr.Checked = false;
+                    chk_GRE_iEnpr.Visible = false;
+                    chk_GRE_iEnvia.Checked = false;
+                    chk_GRE_iEnvia.Visible = false;
+                    bt_GRE_impri.Visible = false;
+                    dgv_GRE_est.Columns.Remove(chkGRE);
+                    panel4.ForeColor = Color.FromArgb(255, 255, 255);
+                }
+            }
+        }
+        private void chk_GRE_iAcep_CheckStateChanged(object sender, EventArgs e)
+        {
+            marca_check("Aceptado", chk_GRE_iAcep);
+        }
+        private void chk_GRE_iEnpr_CheckStateChanged(object sender, EventArgs e)
+        {
+            marca_check("En Proceso", chk_GRE_iEnpr);
+        }
+        private void chk_GRE_iEnvia_CheckStateChanged(object sender, EventArgs e)
+        {
+            marca_check("", chk_GRE_iEnvia);
+        }
+
         #endregion
 
         #region advancedatagridview
@@ -1576,7 +2217,407 @@ namespace TransCarga
                 }
             }*/
         }
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
+        {
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+            {
+                if (dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "Enviado" || dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "En proceso")
+                {
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                    {
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
+                        consultaE(dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                    }
+                }
+            }
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
+            {
+                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                {
+                    string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString();
+                    System.Diagnostics.Process.Start(urlPdf);
+                }
+            }
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
+            {
+                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                {
+                    string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[11].Value.ToString();
+                    string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
+                    string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
+                    var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
+                    if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
+                        rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
+            {
+                imprime(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8), (rb_GRE_R.Checked == true) ? "R" : "T");
+            }
+        }
+        private void grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)      // no estamos usando porque no sirve
+        {
+            if (e.RowIndex < 0)
+                return;
+            if (e.ColumnIndex < 0)
+                return;
+
+            // pintar una imagen en alguna celda, acá pondremos el icono el pdf y cdr en los respectivos botones
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name == "pdf")
+            {
+                if (dgv_GRE_est.CurrentRow.Cells[6].Value.ToString() == "1")
+                {
+                    e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+
+                    var w = Properties.Resources.pdf_logo_24x11.Width;
+                    var h = Properties.Resources.pdf_logo_24x11.Height;
+                    var x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
+                    var y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
+
+                    e.Graphics.DrawImage(Properties.Resources.pdf_logo_24x11, new Rectangle(x, y, w, h));
+                    e.Handled = true;
+                }
+            }
+        }
+        private void dgv_GRE_est_CellDoubleClick(object sender, DataGridViewCellEventArgs e)    // MUESTRA EL MENSAJE DE ERROR
+        {
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "ULT_ERROR")
+            {
+                MessageBox.Show(dgv_GRE_est.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), "ULTIMO ERROR", MessageBoxButtons.OK);
+            }
+        }
+
         #endregion
+
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
+            Font lt_gra = new Font("Arial", 13);                // grande
+            Font lt_tit = new Font("Lucida Console", 10);       // mediano
+            Font lt_med = new Font("Arial", 9);                // normal textos
+            Font lt_peq = new Font("Arial", 8);                 // pequeño
+            //
+            float anchTik = 7.8F;                               // ancho del TK en centimetros
+            int coli = 5;                                      // columna inicial
+            int colm = 80;
+            float posi = 20;                                    // posicion x,y inicial
+            int alfi = 20;                                      // alto de cada fila
+            float ancho = 360.0F;                                // ancho de la impresion
+            {
+                //lt = (ancho - e.Graphics.MeasureString(rasclie, lt_gra).Width) / 2;
+                PointF puntoF = new PointF();
+                if (impriLogi == "SI")   // va con logo o no?
+                {
+                    puntoF = new PointF(coli, posi);
+                    System.Drawing.Image img = System.Drawing.Image.FromFile(ruta_logo);
+                    //Point loc = new Point(100, 100);
+                    e.Graphics.DrawImage(img, puntoF);
+                    posi = posi + alfi * 5;
+                }
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("CONTROL", lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 30, posi + 5.0F);
+                e.Graphics.DrawString(filaimp[0] + "-" + filaimp[1], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("FECHA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[2], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("CLIENTE", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[3], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("DIRECC", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                SizeF cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
+                RectangleF recdom = new RectangleF(puntoF, cuad);
+                e.Graphics.DrawString(filaimp[4], lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);
+                posi = posi + alfi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("DNI/RUC", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[5], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("RUTA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[6], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("PLACA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[7], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("REMITENTE", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[12], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(filaimp[8], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(filaimp[9], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(filaimp[10], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("TOTAL", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[11], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi * 9;
+                puntoF = new PointF(coli + 40, posi);
+                e.Graphics.DrawString("---------------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli + 40, posi);
+                e.Graphics.DrawString("   RECIBI CONFORME", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi * 2;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+            }
+        }
+        private void bt_GRE_impri_Click(object sender, EventArgs e)
+        {
+            // hacemos un ciclo recorriendo fila x fila y jalamos los datos de la guia
+            for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+            {
+                if (dgv_GRE_est.Rows[i].Cells[0].Value != null && dgv_GRE_est.Rows[i].Cells[0].Value.ToString() == "True")
+                {
+                    imprime(dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8), (rb_GRE_R.Checked == true) ? "R" : "T");
+                }
+            }
+        }
+        private void imprime(string serie, string numero, string rt)
+        {
+            // Jalamos los datos que nos falta y los ponemos en sus arreglos
+            string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", "", ""};    // 10
+            string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 17
+            string[] va = { "", "", "", "", "", "" };       // 6
+            string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                if (conn.State == ConnectionState.Open)
+                {
+                    string pedaso1 = "";
+                    string pedaso2 = "";
+                    string pedaso3 = "";
+                    string pedaso4 = "";
+                    string pedaso5 = "";
+                    if (rt == "T")
+                    {
+                        pedaso1 = "a.sergui = @ser AND a.numgui = @num";
+                        pedaso2 = "a.sergui,a.numgui";
+                        pedaso3 = "cabguiai a ";
+                        pedaso4 = "detguiai a ";
+                        pedaso5 = "adiguias ad on ad.idg=a.id";
+                    }
+                    if (rt == "R")
+                    {
+                        pedaso1 = "a.serguir = @ser AND a.numguir = @num";
+                        pedaso2 = "a.serguir,a.numguir";
+                        pedaso3 = "cabguiar a ";
+                        pedaso4 = "detguiar a ";
+                        pedaso5 = "adiguiar ad on ad.idg=a.id";
+                    }
+
+                    string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,round(a.pesoprodi,1) as pesoprodi " +
+                        "from " + pedaso4 + "where " + pedaso1;
+
+                    string consulta = "SELECT " + pedaso2 + ",a.fechopegr,a.dirorigen,a.userc,substring(a.fechc,12,5) as 'fechc',loc.DescrizioneRid as 'locorigen'," +
+                        "a.tidocor,dd1.DescrizioneRid AS 'NomTidor1',a.docsremit,a.rucDorig,ifnull(a.tidocor2, '') AS 'tidocor2',ifnull(dd2.DescrizioneRid, '') AS 'NomTidor2',ifnull(a.docsremit2, '') AS 'docsremit2',ifnull(a.rucDorig2, '') AS 'rucDorig2'," +
+                        "a.tidoregri,dr1.DescrizioneRid AS 'NomDocRem',a.nudoregri,a.nombregri,a.direregri,a.ubigregri," +
+                        "ifnull(ud1.nombre,'') AS 'dept_ure',ifnull(up1.nombre,'') AS 'prov_ure',ifnull(ub1.nombre,'') AS 'dist_ure'," +
+                        "a.tidodegri,dr2.DescrizioneRid AS 'NomDocDes',a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri," +
+                        "ifnull(ud2.nombre,'') AS 'dept_ude',ifnull(up2.nombre,'') AS 'prov_ude',ifnull(ub2.nombre,'') AS 'dist_ude'," +
+                        "ifnull(a.fechplani,'') as 'fechplani',a.pestotgri,a.pesoKT," +
+                        "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
+                        "ifnull(c.razonsocial, '') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
+                        "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe, '') as chocamcar,ad.textoQR,ad.cdrgener " +
+                        "FROM " + pedaso3 +
+                        "LEFT JOIN desc_dtm dd1 ON dd1.IDCodice = a.tidocor " +
+                        "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
+                        "LEFT JOIN desc_doc dr1 ON dr1.IDCodice = a.tidoregri " +
+                        "LEFT JOIN desc_doc dr2 ON dr2.IDCodice = a.tidodegri " +
+                        "LEFT JOIN desc_loc loc ON loc.IDCodice = a.locorigen " +
+                        "left join anag_for c on c.ruc = a.proplagri and c.tipdoc = @tdep " +
+                        "left join vehiculos d on d.placa = a.plaplagri " +
+                        "left join vehiculos r on r.placa = a.carplagri " +
+                        "left join cabplacar p on p.id = a.idplani " +
+                        "LEFT JOIN ubi_dep ud1 ON ud1.depart = LEFT(a.ubigregri, 2) " +
+                        "LEFT join ubi_pro up1 ON concat(up1.depart, up1.provin)= SUBSTRING(a.ubigregri, 1, 4) " +
+                        "LEFT JOIN ubigeos ub1 ON concat(ub1.depart, ub1.provin, ub1.distri)= a.ubigregri " +
+                        "LEFT JOIN ubi_dep ud2 ON ud2.depart = LEFT(a.ubigdegri, 2) " +
+                        "LEFT join ubi_pro up2 ON concat(up2.depart, up2.provin)= SUBSTRING(a.ubigdegri, 1, 4) " +
+                        "LEFT JOIN ubigeos ub2 ON concat(ub2.depart, ub2.provin, ub2.distri)= a.ubigdegri " +
+                        "left join " + pedaso5 + " " +
+                        "where " + pedaso1; // a.sergui = @ser AND a.numgui = @num
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ser", serie);
+                        micon.Parameters.AddWithValue("@num", numero);
+                        micon.Parameters.AddWithValue("@tdep", vtc_ruc);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr != null)
+                            {
+                                if (dr.Read())
+                                {
+                                    vs[0] = (rt == "T") ? dr.GetString("sergui") : dr.GetString("serguir");                         // 0
+                                    vs[1] = (rt == "T") ? dr.GetString("numgui") : dr.GetString("numguir");                         // 1
+                                    vs[2] = dr.GetString("fechopegr").Substring(0, 10);     // 2
+                                    vs[3] = dr.GetString("dirorigen");                      // 3
+                                    vs[4] = dr.GetString("NomTidor1");                      // 4
+                                    vs[5] = dr.GetString("docsremit");                      // 5
+                                    vs[6] = dr.GetString("rucDorig");                       // 6
+                                    vs[7] = dr.GetString("NomTidor2");                      // 7
+                                    vs[8] = dr.GetString("docsremit2");                     // 8
+                                    vs[9] = dr.GetString("rucDorig2");                      // 9
+                                    vs[10] = dr.GetString("NomDocRem");                     // 10
+                                    vs[11] = dr.GetString("nudoregri");                     // 11
+                                    vs[12] = dr.GetString("nombregri");                     // 12
+                                    vs[13] = dr.GetString("NomDocDes");                     // 13
+                                    vs[14] = dr.GetString("nudodegri");                     // 14
+                                    vs[15] = dr.GetString("nombdegri");                     // 15
+                                    vs[16] = dr.GetString("fechplani");                     // 16
+                                    vs[17] = dr.GetString("pestotgri");                     // 17
+                                    vs[18] = dr.GetString("pesoKT");                        // 18
+                                    vs[19] = dr.GetString("direregri");                     // 19
+                                    vs[20] = dr.GetString("dept_ure");                      // 20
+                                    vs[21] = dr.GetString("prov_ure");                      // 21
+                                    vs[22] = dr.GetString("dist_ure");                      // 22
+                                    vs[23] = dr.GetString("diredegri");                     // 23
+                                    vs[24] = dr.GetString("dept_ude");                      // 24
+                                    vs[25] = dr.GetString("prov_ude");                      // 25
+                                    vs[26] = dr.GetString("dist_ude");                      // 26
+                                    vs[27] = dr.GetString("userc");                         // 27
+                                    vs[28] = dr.GetString("locorigen");                     // 28
+                                    vs[29] = dr.GetString("fechc");                         // 29
+
+                                    vc[0] = dr.GetString("plaplagri");                   // Placa veh principal
+                                    vc[1] = dr.GetString("autplagri");                   // Autoriz. vehicular
+                                    vc[2] = "";                                          // Num Registro MTC 
+                                    vc[3] = dr.GetString("confvegri");                   // Conf. vehicular
+                                    vc[4] = dr.GetString("carplagri");                   // Placa carreta
+                                    vc[5] = dr.GetString("autCarret");                   // Autoriz. vehicular
+                                    vc[6] = "";                                          // Num Registro MTC
+                                    vc[7] = dr.GetString("confvCarret");                 // Conf. vehicular 
+                                    vc[8] = "";                                          // Choferes - Dni chofer principal
+                                    vc[9] = dr.GetString("breplagri");                   // Choferes - Brevete chofer principal
+                                    vc[10] = dr.GetString("chocamcar");                  // Choferes - Nombres 
+                                    vc[11] = "";                                         // Choferes - Apellidos
+                                    vc[12] = "";                                         // Choferes - Dni chofer secundario
+                                    vc[13] = "";                                        // Choferes - Brevete chofer secundario
+                                    vc[14] = "";                                        // Choferes - Nombres
+                                    vc[15] = "";                                        // Choferes - Apellidos
+                                    vc[16] = "";                                        // Texto del QR
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No existe el número de guía!", "Atención - Error interno",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No existen datos!", "Atención - Error interno2",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                return;
+                            }
+                            // varios
+                            va[0] = (dr.GetString("cdrgener") == "1") ? dr.GetString("textoQR") : "";                            // Varios: texto del código QR
+                            va[1] = "";
+                            va[2] = despedid1;
+                            va[3] = despedid2;
+                            va[4] = glosa1;
+                            va[5] = glosa2;
+                        }
+                    }
+                    // detalle de la guía
+                    int y = 0;
+                    using (MySqlCommand micomd = new MySqlCommand(consdeta, conn))
+                    {
+                        micomd.Parameters.AddWithValue("@ser", serie);   // dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4)
+                        micomd.Parameters.AddWithValue("@num", numero);   // dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8)
+                        using (MySqlDataReader drg = micomd.ExecuteReader())
+                        {
+                            while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
+                            {
+                                dt[y, 0] = (y + 1).ToString();
+                                dt[y, 1] = drg.GetString(0);
+                                dt[y, 2] = drg.GetString(1);
+                                dt[y, 3] = drg.GetString(2);
+                                dt[y, 4] = drg.GetString(3);
+                                y += 1;
+                            }
+
+                        }
+
+                    }
+                    // llamamos a la clase que imprime
+                    impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc);
+                }
+            }
+        }
+        private void rb_GRE_rem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "IMPRIMIR")
+            {
+                if (rb_GRE_rem.Checked == true)
+                {
+                    panel6.Visible = false;
+                    cmb_placa.Enabled = false;
+                }
+                else
+                {
+                    panel6.Visible = true;
+                    cmb_placa.Enabled = true;
+                }
+            }
+        }
+        int CentimeterToPixel(double Centimeter)
+        {
+            double pixel = -1;
+            using (Graphics g = this.CreateGraphics())
+            {
+                pixel = Centimeter * g.DpiY / 2.54d;
+            }
+            return (int)pixel;
+        }
 
     }
 }

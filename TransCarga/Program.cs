@@ -49,7 +49,8 @@ namespace TransCarga
         public static string tituloF = "SOLORSOFT - TransCarga";      // titulo del sistema
         public static string vg_ipwan = "";     // ip wan del cliente
         public static bool vg_conSol = false;   // usa conector solorsoft para ruc y dni
-
+        //
+        public static string regmtc = "";       // registro MTC de la empresa de transportes
         [STAThread]
         static void Main()
         {

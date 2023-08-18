@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Data;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Data.Sqlite;
 
 namespace TransCarga
 {
@@ -19,6 +21,8 @@ namespace TransCarga
         public static string data = ConfigurationManager.AppSettings["data"].ToString();
         public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
+        public DataTable dt_enlaces = new DataTable();
+        public static string CadenaConexion = "Data Source=TransCarga.db";
 
         public login()
         {
@@ -27,22 +31,22 @@ namespace TransCarga
         private void login_Load(object sender, EventArgs e)
         {
             lb_version.Text = "Versión " + System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
-            lb_titulo.Text = "Solución para empresas de Transporte de Carga" + Program.tituloF;
+            lb_titulo.Text = "Solución para empresas de Transporte de Carga" + Environment.NewLine + Program.tituloF;
             lb_titulo.BackColor = System.Drawing.Color.White;
             //lb_titulo.Parent = pictureBox1;
-            //Image logo = Image.FromFile("recursos/logo_solorsoft_2p.png");
+            Image logo = Image.FromFile("recursos/logo_solorsoft_2p.png");
             Image salir = Image.FromFile("recursos/Close_32.png");
             //Image entrar = Image.FromFile("recursos/ok.png");
             //pictureBox1.Image = logo;
             Button2.Image = salir;
             Button2.ImageAlign = ContentAlignment.MiddleCenter;
             //Button1.Image = entrar;
+            barra.Visible = false;
             init();
             // jala datos de configuracion
             jaladatos();
-            //
-            Tx_user.Focus();
-            //MessageBox.Show(DB_CONN_STR);
+            //jaladatper();
+            //Tx_user.Focus();
         }
         private void init()
         {
@@ -51,6 +55,11 @@ namespace TransCarga
             tx_newcon.MaxLength = 10;
             //
             this.BackColor = System.Drawing.ColorTranslator.FromHtml(Program.colbac);
+            //
+            Tx_user.ReadOnly = true;
+            Tx_pwd.ReadOnly = true;
+            barra.Visible = true;
+            backgroundWorker1.RunWorkerAsync();     // 08/03/2023
         }
         private void Button1_Click(object sender, EventArgs e)
         {
@@ -299,7 +308,8 @@ namespace TransCarga
             MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
             if (lib.procConn(cn) == true)
             {
-                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv,b.direcc,b.distrit,b.provin,b.depart,b.ubigeo,b.ctadetra,b.valdetra,b.detra,b.coddetra,b.email,b.telef1 " +
+                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv,b.direcc,b.distrit,b.provin,b.depart,b.ubigeo," +
+                    "b.ctadetra,b.valdetra,b.detra,b.coddetra,b.email,b.telef1,b.referen2 " +
                     "from confmod a INNER JOIN baseconf b";
                 MySqlCommand micon = new MySqlCommand(consulta, cn);
                 MySqlDataReader dr = micon.ExecuteReader();
@@ -341,6 +351,7 @@ namespace TransCarga
                         TransCarga.Program.coddetra = dr.GetString(14);         // codigo detraccion sunat
                         TransCarga.Program.mailclte = dr.GetString(15);         // correo electronico emisor
                         TransCarga.Program.telclte1 = dr.GetString(16);         // telefono emisor
+                        TransCarga.Program.regmtc = dr.GetString(17);           // Num. Registro del MTC
                     }
                     dr.Close();
                     micon.Dispose();
@@ -357,6 +368,152 @@ namespace TransCarga
         {
             if(checkBox1.Checked == true) tx_newcon.Visible = true;
             else tx_newcon.Visible = false;
+        }
+        private void jaladatper()
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand mico = new MySqlCommand("select id,formulario,campo,descrip,valor,param from enlaces", conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
+                    {
+                        da.Fill(dt_enlaces);
+                        using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+                        {
+                            cnx.Open();
+                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces; DROP TABLE IF EXISTS sunat_webservices";
+                            using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
+                            {
+                                cmdB.ExecuteNonQuery();
+                            }
+                            string sqlTabla = "create table dt_enlaces (id integer primary key autoincrement, formulario varchar(20), campo varchar(20), descrip varchar(150), valor varchar(100), param varchar(50))";
+                            using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                            foreach (DataRow row in dt_enlaces.Rows)
+                            {
+                                string metela = "insert into dt_enlaces (formulario, campo, descrip, valor, param) " +
+                                    "values ('" + row.ItemArray[1].ToString() + "','" + row.ItemArray[2].ToString() + "','" +
+                                    row.ItemArray[3].ToString() + "','" + row.ItemArray[4].ToString() + "','" + row.ItemArray[5].ToString() + "')";
+                                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                                /*
+                                configuracion.dt_enlacesRow nr = setC.dt_enlaces.Newdt_enlacesRow();
+                                nr.id = int.Parse(row.ItemArray[0].ToString());
+                                nr.formulario = row.ItemArray[1].ToString();
+                                nr.campo = row.ItemArray[2].ToString();
+                                nr.descrip = row.ItemArray[3].ToString();
+                                nr.valor = row.ItemArray[4].ToString();
+                                nr.param = row.ItemArray[5].ToString();
+                                setC.dt_enlaces.Adddt_enlacesRow(nr);
+                                */
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            int i = 10;
+            backgroundWorker1.ReportProgress(i);
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand mico = new MySqlCommand("select id,formulario,campo,descrip,valor,param from enlaces", conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
+                    {
+                        da.Fill(dt_enlaces);
+                        i = i + 40;
+                        backgroundWorker1.ReportProgress(i);
+
+                        using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+                        {
+                            cnx.Open();
+                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces"; // ; DROP TABLE IF EXISTS sunat_webservices
+                            using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
+                            {
+                                cmdB.ExecuteNonQuery();
+                            }
+                            string sqlTabla = "create table dt_enlaces (id integer primary key autoincrement, formulario varchar(20), campo varchar(20), descrip varchar(150), valor varchar(100), param varchar(50))";
+                            using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                            i = i + 49;
+                            backgroundWorker1.ReportProgress(i);
+
+                            foreach (DataRow row in dt_enlaces.Rows)
+                            {
+                                string metela = "insert into dt_enlaces (formulario, campo, descrip, valor, param) " +
+                                    "values ('" + row.ItemArray[1].ToString() + "','" + row.ItemArray[2].ToString() + "','" +
+                                    row.ItemArray[3].ToString() + "','" + row.ItemArray[4].ToString() + "','" + row.ItemArray[5].ToString() + "')";
+                                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                                /*
+                                configuracion.dt_enlacesRow nr = setC.dt_enlaces.Newdt_enlacesRow();
+                                nr.id = int.Parse(row.ItemArray[0].ToString());
+                                nr.formulario = row.ItemArray[1].ToString();
+                                nr.campo = row.ItemArray[2].ToString();
+                                nr.descrip = row.ItemArray[3].ToString();
+                                nr.valor = row.ItemArray[4].ToString();
+                                nr.param = row.ItemArray[5].ToString();
+                                setC.dt_enlaces.Adddt_enlacesRow(nr);
+                                */
+                            }
+                            sqlTabla = "create table IF NOT EXISTS sunat_webservices (id integer primary key autoincrement, sunat_plazoT integer default 0, sunat_horaT text default '', sunat_TokenAct varchar(500) default '')";
+                            using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                            int k = 0;
+                            using (SqliteCommand cmd = new SqliteCommand("select count(id) from sunat_webservices", cnx))
+                            {
+                                using (SqliteDataReader dr = cmd.ExecuteReader())
+                                {
+                                    if (dr.Read())
+                                    {
+                                        k = dr.GetInt16(0);
+                                    }
+                                }
+                            }
+                            if (k == 0)
+                            {
+                                string insta = "insert into sunat_webservices (sunat_plazoT,sunat_horaT,sunat_TokenAct) values (0,'','')";
+                                using (SqliteCommand cmd = new SqliteCommand(insta, cnx))
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+
+                            i = i + 1;
+                            backgroundWorker1.ReportProgress(i);
+                        }
+                    }
+                }
+            }
+            
+        }
+        private void backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            //ProgressBar bar = new ProgressBar();
+            //bar.Value = e.ProgressPercentage;
+            progressBar1.Value = e.ProgressPercentage;
+        }
+        private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            barra.Visible = false;
+            MessageBox.Show("Carga de datos terminada","Atención");
+            Tx_user.ReadOnly = false;
+            Tx_pwd.ReadOnly = false;
+            Tx_user.Focus();
         }
     }
 }

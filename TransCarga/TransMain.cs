@@ -488,8 +488,8 @@ namespace TransCarga
             //
             pic_icon_menu.Image = TransCarga.Properties.Resources.etiq_venta32;
             menuStrip1.Items.Clear();
-            menuStrip1.Items.Add("Pre-Guías",img_v_c, vc_registro_Click);
-            menuStrip1.Items.Add("GR Transp.",img_v_pc, vpc_registro_Click);
+            menuStrip1.Items.Add("GRE Transp.", img_v_c, vc_registro_Click);
+            menuStrip1.Items.Add("GR-T Mecánica", img_v_pc, vpc_registro_Click);
             menuStrip1.Items.Add("GR Remitente",img_v_i, vic_registro_Click);
             menuStrip1.Items.Add("Plan.Carga",img_v_s, vsc_registro_Click);
             menuStrip1.Items.Add("Transbordo", img_v_t, vtc_registro_Click);
@@ -497,9 +497,17 @@ namespace TransCarga
             menuStrip1.Items.Add("Corrección",img_v_b, vbc_registro_Click);
             menuStrip1.Visible = true;
         }
-        private void vc_registro_Click(object sender, EventArgs e)          // Pre guías transportista
+        private void vc_registro_Click(object sender, EventArgs e)          // Guías remisión ELECTRONICA transportista
         {
-            preguiat fvc = new preguiat();
+            /* preguiat fvc = new preguiat();
+            fvc.TopLevel = false;
+            fvc.Parent = this;
+            pn_centro.Controls.Add(fvc);
+            fvc.Location = new Point((pn_centro.Width - fvc.Width) / 2, (pn_centro.Height - fvc.Height) / 2);
+            fvc.Anchor = AnchorStyles.None;
+            fvc.Show();
+            fvc.BringToFront(); */
+            guiati_e fvc = new guiati_e();
             fvc.TopLevel = false;
             fvc.Parent = this;
             pn_centro.Controls.Add(fvc);
@@ -521,7 +529,15 @@ namespace TransCarga
         }      
         private void vic_registro_Click(object sender, EventArgs e)         // Guías Remisión Remitente
         {
-            MessageBox.Show("Form Guía de Remisión de Remitente", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form Guía de Remisión de Remitente", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            guiari_e fvc = new guiari_e();
+            fvc.TopLevel = false;
+            fvc.Parent = this;
+            pn_centro.Controls.Add(fvc);
+            fvc.Location = new Point((pn_centro.Width - fvc.Width) / 2, (pn_centro.Height - fvc.Height) / 2);
+            fvc.Anchor = AnchorStyles.None;
+            fvc.Show();
+            fvc.BringToFront();
         }
         private void vsc_registro_Click(object sender, EventArgs e)         // Planilla de carga
         {

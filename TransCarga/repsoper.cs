@@ -391,9 +391,9 @@ namespace TransCarga
                 MySqlDataAdapter datpla = new MySqlDataAdapter(cmd);
                 DataTable dtpla = new DataTable();
                 datpla.Fill(dtpla);
-                //cmb_placa.DataSource = dtpla;
-                //cmb_placa.DisplayMember = "placa";
-                //cmb_placa.ValueMember = "placa";
+                cmb_placa.DataSource = dtpla;
+                cmb_placa.DisplayMember = "placa";
+                cmb_placa.ValueMember = "placa";
                 datpla.Dispose();
                 // panel estados sunat de las guias electrónicas
                 string conesu = "select descrizionerid,idcodice from desc_esu where numero=1 order by idcodice";
@@ -1208,39 +1208,7 @@ namespace TransCarga
         }
         private void button6_Click(object sender, EventArgs e)          // vista previa de guias completa o simple
         {
-            if (rb_complet.Checked == true)
-            {
-                if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
-                {
-                    muestra_gr(tx_ser.Text, tx_num.Text);
-                }
-                else
-                {
-                    tx_ser.Focus();
-                    return;
-                }
-            }
-            else
-            {
-                if (rb_simple.Checked == true)
-                {
-                    if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
-                    {
-                        muestra_gr(tx_ser.Text, tx_num.Text);
 
-                    }
-                    else
-                    {
-                        tx_ser.Focus();
-                        return;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Seleccione un tipo de impresion de guía", "Atención - seleccione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                }
-            }
         }
         private void bt_greEst_Click(object sender, EventArgs e)        // Guías de Remisión Electrónicas - Estados
         {
@@ -1446,10 +1414,7 @@ namespace TransCarga
         }
         private void cmb_placa_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
-            {
-                cmb_placa.SelectedIndex = -1;
-            }
+            cmb_placa.SelectedIndex = -1;
         }
         private void cmb_GRE_sede_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -1480,7 +1445,6 @@ namespace TransCarga
                 cmb_GRE_est.SelectedIndex = -1;
             }
         }
-
         #endregion
 
         #region botones de comando
@@ -1711,7 +1675,7 @@ namespace TransCarga
                     this.Close();
                 }
             }
-            if (tabControl1.SelectedTab == tabGREstad && dgv_GRE_est.Rows.Count > 0)
+            if (tabControl1.SelectedTab == tabGREstat && dgv_GRE_est.Rows.Count > 0)
             {
                 nombre = "Estados_Sunat_GRE_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -2271,13 +2235,13 @@ namespace TransCarga
                 if (dgv_GRE_est.CurrentRow.Cells[6].Value.ToString() == "1")
                 {
                     e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-
+                    /*
                     var w = Properties.Resources.pdf_logo_24x11.Width;
                     var h = Properties.Resources.pdf_logo_24x11.Height;
                     var x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
                     var y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
-
                     e.Graphics.DrawImage(Properties.Resources.pdf_logo_24x11, new Rectangle(x, y, w, h));
+                    */
                     e.Handled = true;
                 }
             }
@@ -2595,19 +2559,7 @@ namespace TransCarga
         }
         private void rb_GRE_rem_CheckedChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "IMPRIMIR")
-            {
-                if (rb_GRE_rem.Checked == true)
-                {
-                    panel6.Visible = false;
-                    cmb_placa.Enabled = false;
-                }
-                else
-                {
-                    panel6.Visible = true;
-                    cmb_placa.Enabled = true;
-                }
-            }
+
         }
         int CentimeterToPixel(double Centimeter)
         {

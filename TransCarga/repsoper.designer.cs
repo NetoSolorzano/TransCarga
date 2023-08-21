@@ -54,6 +54,10 @@
             this.Bt_fin = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tabgrhist = new System.Windows.Forms.TabPage();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.rb_complet = new System.Windows.Forms.RadioButton();
+            this.rb_simple = new System.Windows.Forms.RadioButton();
+            this.button7 = new System.Windows.Forms.Button();
             this.tx_ser = new System.Windows.Forms.TextBox();
             this.tx_num = new System.Windows.Forms.TextBox();
             this.groupBox31 = new System.Windows.Forms.GroupBox();
@@ -266,8 +270,16 @@
             this.cmb_GRE_sede = new System.Windows.Forms.ComboBox();
             this.tx_GRE_fa = new TransCarga.NumericTextBox();
             this.tx_GRE_fv = new TransCarga.NumericTextBox();
+            this.panel12 = new System.Windows.Forms.Panel();
+            this.rb_GRE_trans = new System.Windows.Forms.RadioButton();
+            this.rb_GRE_rem = new System.Windows.Forms.RadioButton();
+            this.label34 = new System.Windows.Forms.Label();
+            this.cmb_placa = new System.Windows.Forms.ComboBox();
+            this.groupBox48 = new System.Windows.Forms.GroupBox();
+            this.groupBox59 = new System.Windows.Forms.GroupBox();
             this.toolStrip1.SuspendLayout();
             this.tabgrhist.SuspendLayout();
+            this.panel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).BeginInit();
             this.tabreval.SuspendLayout();
             this.groupBox44.SuspendLayout();
@@ -315,6 +327,8 @@
             this.groupBox49.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).BeginInit();
             this.groupBox51.SuspendLayout();
+            this.panel12.SuspendLayout();
+            this.groupBox48.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -572,6 +586,8 @@
             // 
             // tabgrhist
             // 
+            this.tabgrhist.Controls.Add(this.panel7);
+            this.tabgrhist.Controls.Add(this.button7);
             this.tabgrhist.Controls.Add(this.tx_ser);
             this.tabgrhist.Controls.Add(this.tx_num);
             this.tabgrhist.Controls.Add(this.groupBox31);
@@ -585,6 +601,47 @@
             this.tabgrhist.TabIndex = 10;
             this.tabgrhist.Text = "Seguimiento GR";
             this.tabgrhist.UseVisualStyleBackColor = true;
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.rb_complet);
+            this.panel7.Controls.Add(this.rb_simple);
+            this.panel7.Location = new System.Drawing.Point(707, 8);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(108, 41);
+            this.panel7.TabIndex = 421;
+            // 
+            // rb_complet
+            // 
+            this.rb_complet.AutoSize = true;
+            this.rb_complet.Location = new System.Drawing.Point(13, 21);
+            this.rb_complet.Name = "rb_complet";
+            this.rb_complet.Size = new System.Drawing.Size(69, 17);
+            this.rb_complet.TabIndex = 2;
+            this.rb_complet.TabStop = true;
+            this.rb_complet.Text = "Completa";
+            this.rb_complet.UseVisualStyleBackColor = true;
+            // 
+            // rb_simple
+            // 
+            this.rb_simple.AutoSize = true;
+            this.rb_simple.Location = new System.Drawing.Point(13, 3);
+            this.rb_simple.Name = "rb_simple";
+            this.rb_simple.Size = new System.Drawing.Size(56, 17);
+            this.rb_simple.TabIndex = 1;
+            this.rb_simple.TabStop = true;
+            this.rb_simple.Text = "Simple";
+            this.rb_simple.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.button7.Image = global::TransCarga.Properties.Resources.view24_ex;
+            this.button7.Location = new System.Drawing.Point(824, 8);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(50, 41);
+            this.button7.TabIndex = 420;
+            this.button7.UseVisualStyleBackColor = true;
             // 
             // tx_ser
             // 
@@ -1291,6 +1348,10 @@
             // 
             // tabgrti
             // 
+            this.tabgrti.Controls.Add(this.groupBox48);
+            this.tabgrti.Controls.Add(this.panel12);
+            this.tabgrti.Controls.Add(this.label34);
+            this.tabgrti.Controls.Add(this.cmb_placa);
             this.tabgrti.Controls.Add(this.panel4);
             this.tabgrti.Controls.Add(this.label19);
             this.tabgrti.Controls.Add(this.label20);
@@ -1472,7 +1533,7 @@
             // rb_GR_origen
             // 
             this.rb_GR_origen.AutoSize = true;
-            this.rb_GR_origen.Location = new System.Drawing.Point(3, 3);
+            this.rb_GR_origen.Location = new System.Drawing.Point(4, 4);
             this.rb_GR_origen.Name = "rb_GR_origen";
             this.rb_GR_origen.Size = new System.Drawing.Size(56, 17);
             this.rb_GR_origen.TabIndex = 358;
@@ -1592,7 +1653,7 @@
             this.groupBox5.BackColor = System.Drawing.Color.DimGray;
             this.groupBox5.Controls.Add(this.groupBox6);
             this.groupBox5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox5.Location = new System.Drawing.Point(476, 47);
+            this.groupBox5.Location = new System.Drawing.Point(664, 48);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(161, 1);
             this.groupBox5.TabIndex = 387;
@@ -1611,7 +1672,7 @@
             this.groupBox11.BackColor = System.Drawing.Color.DimGray;
             this.groupBox11.Controls.Add(this.groupBox12);
             this.groupBox11.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox11.Location = new System.Drawing.Point(476, 23);
+            this.groupBox11.Location = new System.Drawing.Point(664, 24);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(161, 1);
             this.groupBox11.TabIndex = 386;
@@ -1697,7 +1758,7 @@
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(753, 5);
+            this.button1.Location = new System.Drawing.Point(941, 6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(50, 41);
             this.button1.TabIndex = 378;
@@ -1707,7 +1768,7 @@
             // 
             this.dtp_fin_guias.Checked = false;
             this.dtp_fin_guias.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtp_fin_guias.Location = new System.Drawing.Point(542, 28);
+            this.dtp_fin_guias.Location = new System.Drawing.Point(730, 29);
             this.dtp_fin_guias.Name = "dtp_fin_guias";
             this.dtp_fin_guias.Size = new System.Drawing.Size(95, 20);
             this.dtp_fin_guias.TabIndex = 374;
@@ -1716,7 +1777,7 @@
             // 
             this.dtp_ini_guias.Checked = false;
             this.dtp_ini_guias.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtp_ini_guias.Location = new System.Drawing.Point(542, 4);
+            this.dtp_ini_guias.Location = new System.Drawing.Point(730, 5);
             this.dtp_ini_guias.Name = "dtp_ini_guias";
             this.dtp_ini_guias.Size = new System.Drawing.Size(95, 20);
             this.dtp_ini_guias.TabIndex = 373;
@@ -1724,7 +1785,7 @@
             // bt_guias
             // 
             this.bt_guias.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bt_guias.Location = new System.Drawing.Point(664, 10);
+            this.bt_guias.Location = new System.Drawing.Point(852, 11);
             this.bt_guias.Name = "bt_guias";
             this.bt_guias.Size = new System.Drawing.Size(59, 29);
             this.bt_guias.TabIndex = 375;
@@ -1735,7 +1796,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(486, 33);
+            this.label3.Location = new System.Drawing.Point(674, 34);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 377;
@@ -1744,7 +1805,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(478, 8);
+            this.label4.Location = new System.Drawing.Point(666, 9);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(61, 13);
             this.label4.TabIndex = 376;
@@ -2578,7 +2639,7 @@
             // bt_consMas
             // 
             this.bt_consMas.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bt_consMas.Location = new System.Drawing.Point(412, 355);
+            this.bt_consMas.Location = new System.Drawing.Point(412, 352);
             this.bt_consMas.Name = "bt_consMas";
             this.bt_consMas.Size = new System.Drawing.Size(99, 24);
             this.bt_consMas.TabIndex = 455;
@@ -2593,7 +2654,7 @@
             this.panel10.Controls.Add(this.chk_GRE_iAcep);
             this.panel10.Controls.Add(this.bt_GRE_impri);
             this.panel10.Controls.Add(this.chk_GRE_imp);
-            this.panel10.Location = new System.Drawing.Point(567, 354);
+            this.panel10.Location = new System.Drawing.Point(567, 351);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(454, 27);
             this.panel10.TabIndex = 454;
@@ -2649,13 +2710,14 @@
             this.chk_GRE_imp.TabIndex = 0;
             this.chk_GRE_imp.Text = "Impresión Grupal";
             this.chk_GRE_imp.UseVisualStyleBackColor = true;
+            this.chk_GRE_imp.CheckStateChanged += new System.EventHandler(this.chk_GRE_imp_CheckStateChanged);
             // 
             // label41
             // 
             this.label41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label41.AutoSize = true;
             this.label41.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label41.Location = new System.Drawing.Point(9, 362);
+            this.label41.Location = new System.Drawing.Point(9, 358);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(75, 13);
             this.label41.TabIndex = 452;
@@ -2667,7 +2729,7 @@
             this.label42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label42.AutoSize = true;
             this.label42.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label42.Location = new System.Drawing.Point(196, 362);
+            this.label42.Location = new System.Drawing.Point(196, 358);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(71, 13);
             this.label42.TabIndex = 449;
@@ -2742,6 +2804,7 @@
             this.bt_greEst.Text = " Filtra";
             this.bt_greEst.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.bt_greEst.UseVisualStyleBackColor = true;
+            this.bt_greEst.Click += new System.EventHandler(this.bt_greEst_Click);
             // 
             // label38
             // 
@@ -2842,6 +2905,8 @@
             this.cmb_GRE_est.Name = "cmb_GRE_est";
             this.cmb_GRE_est.Size = new System.Drawing.Size(85, 21);
             this.cmb_GRE_est.TabIndex = 438;
+            this.cmb_GRE_est.SelectionChangeCommitted += new System.EventHandler(this.cmb_GRE_est_SelectionChangeCommitted);
+            this.cmb_GRE_est.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_GRE_est_KeyDown);
             // 
             // dgv_GRE_est
             // 
@@ -2851,7 +2916,7 @@
             this.dgv_GRE_est.AutoGenerateContextFilters = true;
             this.dgv_GRE_est.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_GRE_est.DateWithTime = false;
-            this.dgv_GRE_est.Location = new System.Drawing.Point(3, 53);
+            this.dgv_GRE_est.Location = new System.Drawing.Point(3, 52);
             this.dgv_GRE_est.Name = "dgv_GRE_est";
             this.dgv_GRE_est.Size = new System.Drawing.Size(1020, 299);
             this.dgv_GRE_est.TabIndex = 437;
@@ -2913,13 +2978,15 @@
             this.cmb_GRE_sede.Name = "cmb_GRE_sede";
             this.cmb_GRE_sede.Size = new System.Drawing.Size(85, 21);
             this.cmb_GRE_sede.TabIndex = 431;
+            this.cmb_GRE_sede.SelectionChangeCommitted += new System.EventHandler(this.cmb_GRE_sede_SelectionChangeCommitted);
+            this.cmb_GRE_sede.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_GRE_sede_KeyDown);
             // 
             // tx_GRE_fa
             // 
             this.tx_GRE_fa.AllowSpace = false;
             this.tx_GRE_fa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_GRE_fa.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_GRE_fa.Location = new System.Drawing.Point(86, 358);
+            this.tx_GRE_fa.Location = new System.Drawing.Point(86, 355);
             this.tx_GRE_fa.Name = "tx_GRE_fa";
             this.tx_GRE_fa.ReadOnly = true;
             this.tx_GRE_fa.Size = new System.Drawing.Size(41, 20);
@@ -2931,12 +2998,85 @@
             this.tx_GRE_fv.AllowSpace = false;
             this.tx_GRE_fv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_GRE_fv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_GRE_fv.Location = new System.Drawing.Point(269, 358);
+            this.tx_GRE_fv.Location = new System.Drawing.Point(269, 355);
             this.tx_GRE_fv.Name = "tx_GRE_fv";
             this.tx_GRE_fv.ReadOnly = true;
             this.tx_GRE_fv.Size = new System.Drawing.Size(41, 20);
             this.tx_GRE_fv.TabIndex = 450;
             this.tx_GRE_fv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel12
+            // 
+            this.panel12.Controls.Add(this.rb_GRE_trans);
+            this.panel12.Controls.Add(this.rb_GRE_rem);
+            this.panel12.Location = new System.Drawing.Point(9, 4);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(126, 45);
+            this.panel12.TabIndex = 434;
+            // 
+            // rb_GRE_trans
+            // 
+            this.rb_GRE_trans.AutoSize = true;
+            this.rb_GRE_trans.Location = new System.Drawing.Point(6, 25);
+            this.rb_GRE_trans.Name = "rb_GRE_trans";
+            this.rb_GRE_trans.Size = new System.Drawing.Size(112, 17);
+            this.rb_GRE_trans.TabIndex = 359;
+            this.rb_GRE_trans.TabStop = true;
+            this.rb_GRE_trans.Text = "GRE Transportista";
+            this.rb_GRE_trans.UseVisualStyleBackColor = true;
+            // 
+            // rb_GRE_rem
+            // 
+            this.rb_GRE_rem.AutoSize = true;
+            this.rb_GRE_rem.Location = new System.Drawing.Point(6, 3);
+            this.rb_GRE_rem.Name = "rb_GRE_rem";
+            this.rb_GRE_rem.Size = new System.Drawing.Size(99, 17);
+            this.rb_GRE_rem.TabIndex = 358;
+            this.rb_GRE_rem.TabStop = true;
+            this.rb_GRE_rem.Text = "GRE Remitente";
+            this.rb_GRE_rem.UseVisualStyleBackColor = true;
+            this.rb_GRE_rem.CheckedChanged += new System.EventHandler(this.rb_GRE_rem_CheckedChanged);
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(487, 8);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(34, 13);
+            this.label34.TabIndex = 433;
+            this.label34.Text = "Placa";
+            // 
+            // cmb_placa
+            // 
+            this.cmb_placa.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.cmb_placa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_placa.DropDownWidth = 100;
+            this.cmb_placa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_placa.FormattingEnabled = true;
+            this.cmb_placa.Location = new System.Drawing.Point(555, 3);
+            this.cmb_placa.Name = "cmb_placa";
+            this.cmb_placa.Size = new System.Drawing.Size(85, 21);
+            this.cmb_placa.TabIndex = 432;
+            this.cmb_placa.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_placa_KeyDown);
+            // 
+            // groupBox48
+            // 
+            this.groupBox48.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox48.Controls.Add(this.groupBox59);
+            this.groupBox48.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox48.Location = new System.Drawing.Point(483, 23);
+            this.groupBox48.Name = "groupBox48";
+            this.groupBox48.Size = new System.Drawing.Size(138, 1);
+            this.groupBox48.TabIndex = 435;
+            this.groupBox48.TabStop = false;
+            // 
+            // groupBox59
+            // 
+            this.groupBox59.Location = new System.Drawing.Point(0, -26);
+            this.groupBox59.Name = "groupBox59";
+            this.groupBox59.Size = new System.Drawing.Size(164, 1);
+            this.groupBox59.TabIndex = 113;
+            this.groupBox59.TabStop = false;
             // 
             // repsoper
             // 
@@ -2958,6 +3098,8 @@
             this.toolStrip1.PerformLayout();
             this.tabgrhist.ResumeLayout(false);
             this.tabgrhist.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).EndInit();
             this.tabreval.ResumeLayout(false);
             this.tabreval.PerformLayout();
@@ -3020,6 +3162,9 @@
             this.groupBox49.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).EndInit();
             this.groupBox51.ResumeLayout(false);
+            this.panel12.ResumeLayout(false);
+            this.panel12.PerformLayout();
+            this.groupBox48.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3264,5 +3409,16 @@
         private System.Windows.Forms.ComboBox cmb_GRE_sede;
         private NumericTextBox tx_GRE_fa;
         private NumericTextBox tx_GRE_fv;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.RadioButton rb_complet;
+        private System.Windows.Forms.RadioButton rb_simple;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Panel panel12;
+        private System.Windows.Forms.RadioButton rb_GRE_trans;
+        private System.Windows.Forms.RadioButton rb_GRE_rem;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.ComboBox cmb_placa;
+        private System.Windows.Forms.GroupBox groupBox48;
+        private System.Windows.Forms.GroupBox groupBox59;
     }
 }

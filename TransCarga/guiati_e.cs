@@ -2117,12 +2117,6 @@ namespace TransCarga
                 tx_dirDrio.Focus();
                 return;
             }
-            if (tx_docsOr.Text.Trim() == "")
-            {
-                MessageBox.Show("Registre los documentos origen", " Faltan datos ");
-                tx_docsOr.Focus();
-                return;
-            }
             if (tx_dptoDrio.Text.Trim() == "" || tx_proDrio.Text.Trim() == "" || tx_disDrio.Text.Trim() == "")
             {
                 MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2160,55 +2154,24 @@ namespace TransCarga
             }
             if (tx_dat_docOr.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione un documento origen","Faltan datos",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                cmb_docorig.Focus();
-                return;
-            }
-            if (tx_docsOr.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el documento origen", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_docsOr.Focus();
-                return;
-            }
-            if (tx_rucEorig.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el ruc del emisor del documento origen", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_rucEorig.Focus();
-                return;
-            }
-            if (tx_dat_docOr2.Text.Trim() == "" && tx_docsOr2.Text.Trim() != "")
-            {
-                MessageBox.Show("Seleccione el tipo de documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                cmb_docorig2.Focus();
-                return;
-            }
-            if (tx_dat_docOr2.Text.Trim() != "" && tx_docsOr2.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_docsOr2.Focus();
-                return;
-            }
-            if (tx_dat_docOr2.Text.Trim() != "" && tx_rucEorig2.Text == "")
-            {
-                MessageBox.Show("Ingrese el ruc del documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_rucEorig2.Focus();
-                return;
+                var aa = MessageBox.Show("Debería registrar al menos un documento origen" + Environment.NewLine +
+                    "Confirma que desea continuar sin datos?", "Documento Relacionado",MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (aa == DialogResult.No)
+                {
+                    cmb_docorig.Focus();
+                    return;
+                }
+                else
+                {
+                    tx_rucEorig.Text = "";
+                    tx_docsOr.Text = "";
+                }
             }
             if (tx_pla_dniChof.Text.Trim() == "")
             {
                 MessageBox.Show("No existe DNI del chofer!", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            /* if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
-            {
-                {
-                    MessageBox.Show("El Remitente y el Destinatario son LOS MISMOS!" + Environment.NewLine +
-                        "En este caso debe usar una guía de remitente del tipo" + Environment.NewLine +
-                        "Traslado entre establecimientos de una misma empresa", "Atención, corrija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    tx_numDocDes.Focus();
-                    return;
-                }
-            } */
             if (tx_pla_placa.Text == "")
             {
                 MessageBox.Show("Las guías electrónicas de transportista" + Environment.NewLine + 
@@ -2237,7 +2200,7 @@ namespace TransCarga
                 return;
             }
             // validaciones SUNAT - formatos del número de documento origen
-            if ("'01','03','04','09'".Contains(tx_dat_dorigS.Text))
+            if (tx_dat_dorigS.Text.Trim() != "" && "'01','03','04','09'".Contains(tx_dat_dorigS.Text))
             {
                 if (tx_docsOr.Text.Length > 13 || tx_docsOr.Text.Length < 3 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
                     lib.separador(tx_docsOr.Text, '-', 1).Length > 4 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 ||
@@ -2265,7 +2228,7 @@ namespace TransCarga
                     return;
                 }
             }     // facturas,boletas,liq.de compras, guias de remision
-            if ("'50'.'52'".Contains(tx_dat_dorigS.Text))
+            if (tx_dat_dorigS.Text.Trim() != "" && "'50','52'".Contains(tx_dat_dorigS.Text))
             {
                 if (tx_docsOr.Text.Length > 18 || tx_docsOr.Text.Length < 8 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
                 lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
@@ -2293,7 +2256,7 @@ namespace TransCarga
                     return;
                 }
             }               // Declaración de aduana DAM y de Mudanza
-            if ("80".Contains(tx_dat_dorigS.Text))
+            if (tx_dat_dorigS.Text != "" && "80".Contains(tx_dat_dorigS.Text))
             {
                 if (tx_docsOr.Text.Length > 15 || tx_docsOr.Text.Length < 3 || lib.IsAllDigits(tx_docsOr.Text) == false ||
                     int.Parse(tx_docsOr.Text) <= 0)
@@ -2315,7 +2278,7 @@ namespace TransCarga
                     return;
                 }
             }                      // Constancia de deposito
-            if ("12".Contains(tx_dat_dorigS.Text))
+            if (tx_dat_dorigS.Text != "" && "12".Contains(tx_dat_dorigS.Text))
             {
                 if (tx_docsOr.Text.Length < 3 || tx_docsOr.Text.Length > 41 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
                     lib.separador(tx_docsOr.Text, '-', 1).Length > 20 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 ||
@@ -2341,7 +2304,7 @@ namespace TransCarga
                     return;
                 }
             }                      // Ticket, cintas de maquinas registradoras
-            if ("48".Contains(tx_dat_dorigS.Text))
+            if (tx_dat_dorigS.Text != "" && "48".Contains(tx_dat_dorigS.Text))
             {
                 if (tx_docsOr.Text.Trim().Length < 3 || tx_docsOr.Text.Length > 12 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
                     lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false || lib.separador(tx_docsOr.Text, '-', 2).Length > 7 ||
@@ -2375,7 +2338,7 @@ namespace TransCarga
             {
                 // acá se permite todo menos espacios en blanco, saltos de linea y demas comunes
             }
-            if ("09".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0,1)) == false)
+            if (tx_dat_dorigS.Text != "" && "09".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0,1)) == false)
             {
                 if (tx_numDocRem.Text != tx_rucEorig.Text)
                 {
@@ -2396,7 +2359,7 @@ namespace TransCarga
                     return;
                 }
             }                                       // RUC emisor doc. relacionado GUIA remitente debe ser igual al ruc del remitente
-            if ("31".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0, 1)) == false)
+            if (tx_dat_dorigS.Text != "" && "31".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0, 1)) == false)
             {
                 if (tx_pla_ruc.Text != tx_rucEorig.Text)
                 {
@@ -4461,13 +4424,29 @@ namespace TransCarga
                     cmb_docorig2.SelectedIndex = -1;
                     tx_dat_docOr2.Text = "";
                     tx_docsOr2.Text = "";
+                    tx_dat_dorigS2.Text = "";
                     tx_docsOr2.ReadOnly = true;
                     tx_rucEorig2.Text = "";
                     tx_rucEorig2.ReadOnly = true;
                 }
             }
         }
-
+        private void cmb_docorig_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                if (e.KeyCode == Keys.Delete)
+                {
+                    cmb_docorig.SelectedIndex = -1;
+                    tx_dat_docOr.Text = "";
+                    tx_dat_dorigS.Text = "";
+                    tx_docsOr.Text = "";
+                    tx_docsOr.ReadOnly = true;
+                    tx_rucEorig.Text = "";
+                    tx_rucEorig.ReadOnly = true;
+                }
+            }
+        }
         #endregion comboboxes
 
         #region datagridview

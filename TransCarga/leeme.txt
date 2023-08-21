@@ -316,10 +316,14 @@ form facelect, defecto en la función jaladet(), no estaba jalando el detalle co
 	facturada ....................................................................................... ok 08/06/2023
 *************************** ADECUACIONES PARA GUIAS ELECTRONICAS ************************************
 TransMain, adecuación de menus operaciones .......................................................... ok 18/08/2023
-guiari_e, creación y adecuación del form ............................................................ 
+guiari_e, creación y adecuación del form ............................................................ ok 21/08/2023
 acGRE_sunat, creación y adecuación del form ......................................................... ok 18/08/2023
 Program, agregar las variables de los nuevos form ................................................... ok 18/08/2023
 login, creación de asignación de variables .......................................................... ok 18/08/2023
 libreria, creación de funciones nuevas .............................................................. ok 18/08/2023
 impGRE_T, crear la clase ............................................................................ ok 18/08/2023
-form repsoper, creación de la opción de estados de guías ............................................ 
+repsoper, creación de la opción de estados de guías ................................................. ok 18/08/2023
+guiati_e, creación y adecuación del form ............................................................ ok 21/08/2023
+*****************************************************************************************************
+form guiari_e, arreglo en toolboton para mostrar visualización y demas .............................. ok 19/08/2023
+guiati_e, adecuación para permitir grabar sin documento relacionado ................................. ok 21/08/2023

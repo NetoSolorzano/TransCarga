@@ -272,6 +272,8 @@ namespace TransCarga
                 tx_telef1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["telefono1"].Value.ToString();    // telefono 1
                 tx_usersis.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["usersist"].Value.ToString();   // usuario
                 tx_coment.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["coment"].Value.ToString();      // comentario
+                rb_fem.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["genero"].Value.ToString() == "0") ? true : false; 
+                rb_mas.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["genero"].Value.ToString() == "1") ? true : false;
             }
             if (campo == "tx_idr")
             {

@@ -12,17 +12,26 @@ namespace TransCarga
 {
     public partial class login : Form
     {
-        libreria lib = new libreria();
-        // conexion a la base de datos
+
+        /* conexion a la base de datos
         public static string serv = Decrypt(ConfigurationManager.AppSettings["serv"].ToString(), true);     // "solorsoft.com";
         public static string port = ConfigurationManager.AppSettings["port"].ToString();
         public static string usua = ConfigurationManager.AppSettings["user"].ToString();                    // "solorsof_rei";
         public static string cont = Decrypt(ConfigurationManager.AppSettings["pass"].ToString(), true);     // "190969Sorol";
         public static string data = ConfigurationManager.AppSettings["data"].ToString();
         public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
+        */
+        public static string serv = Decrypt("zORwZzvn6JifDLi2lP9llA==", true); // Decrypt(ConfigurationManager.AppSettings["serv"].ToString(), true);     // "solorsoft.com";
+        public static string port = "3306";          // ConfigurationManager.AppSettings["port"].ToString();    // "3306"; 
+        public static string usua = "solorsof_TCE_LP6";  // ConfigurationManager.AppSettings["user"].ToString();                    // "solorsof_rei";
+        public static string cont = Decrypt("sXh045JtbXAqp4DtU1Excw==", true);   // Decrypt(ConfigurationManager.AppSettings["pass"].ToString(), true);     // "190969Sorol";
+        public static string data = "solorsof_carrionExp"; //ConfigurationManager.AppSettings["data"].ToString();
+        public static string ctl = "";               // ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
+
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
         public DataTable dt_enlaces = new DataTable();
         public static string CadenaConexion = "Data Source=TransCarga.db";
+        libreria lib = new libreria();
 
         public login()
         {
@@ -30,6 +39,7 @@ namespace TransCarga
         }
         private void login_Load(object sender, EventArgs e)
         {
+            // 21/08/2023
             lb_version.Text = "Versión " + System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
             lb_titulo.Text = "Solución para empresas de Transporte de Carga" + Environment.NewLine + Program.tituloF;
             lb_titulo.BackColor = System.Drawing.Color.White;
@@ -47,6 +57,7 @@ namespace TransCarga
             jaladatos();
             //jaladatper();
             //Tx_user.Focus();
+            //
         }
         private void init()
         {

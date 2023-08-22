@@ -273,6 +273,12 @@
     <Compile Include="movimas.designer.cs">
       <DependentUpon>movimas.cs</DependentUpon>
     </Compile>
+    <Compile Include="nlogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="nlogin.Designer.cs">
+      <DependentUpon>nlogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="notcredclts.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -303,6 +309,12 @@
     </Compile>
     <Compile Include="planicarga.designer.cs">
       <DependentUpon>planicarga.cs</DependentUpon>
+    </Compile>
+    <Compile Include="planicargaC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="planicargaC.designer.cs">
+      <DependentUpon>planicargaC.cs</DependentUpon>
     </Compile>
     <Compile Include="preguiat.cs">
       <SubType>Form</SubType>
@@ -402,6 +414,12 @@
     <Compile Include="vehiculos.designer.cs">
       <DependentUpon>vehiculos.cs</DependentUpon>
     </Compile>
+    <Compile Include="vehiculosC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="vehiculosC.designer.cs">
+      <DependentUpon>vehiculosC.cs</DependentUpon>
+    </Compile>
     <Compile Include="vplancar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -493,6 +511,9 @@
     <EmbeddedResource Include="movimas.resx">
       <DependentUpon>movimas.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="nlogin.resx">
+      <DependentUpon>nlogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="notcredclts.resx">
       <DependentUpon>notcredclts.cs</DependentUpon>
     </EmbeddedResource>
@@ -509,6 +530,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="planicarga.resx">
       <DependentUpon>planicarga.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="planicargaC.resx">
+      <DependentUpon>planicargaC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="preguiat.resx">
       <DependentUpon>preguiat.cs</DependentUpon>
@@ -568,6 +592,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="vehiculos.resx">
       <DependentUpon>vehiculos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="vehiculosC.resx">
+      <DependentUpon>vehiculosC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="vplancar.resx">
       <DependentUpon>vplancar.cs</DependentUpon>

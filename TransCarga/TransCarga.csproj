@@ -173,6 +173,12 @@
     <Compile Include="defs.designer.cs">
       <DependentUpon>defs.cs</DependentUpon>
     </Compile>
+    <Compile Include="defsC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="defsC.designer.cs">
+      <DependentUpon>defsC.cs</DependentUpon>
+    </Compile>
     <Compile Include="defs_anterior.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -460,6 +466,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="defs.resx">
       <DependentUpon>defs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="defsC.resx">
+      <DependentUpon>defsC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="defs_anterior.resx">
       <DependentUpon>defs_anterior.cs</DependentUpon>

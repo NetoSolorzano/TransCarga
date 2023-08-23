@@ -107,6 +107,8 @@ namespace TransCarga
         string glosa1 = "";             // glosa comprobante final 1
         string glosa2 = "";             // 
         string det3dtm = "";            // palabra nombre descriptivo de las guias de remision electronicas de transportista
+        // uso de pre-guias, tipo de uso registro manual del número, solo para marcar los bultos
+        string usoPGm = "";             // en blanco -> no se usa preguias manuales, "manual" -> Si usa pre-guias (orden servicio) manuales solo numero para marcar bultos
 
         double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
@@ -246,9 +248,9 @@ namespace TransCarga
             tx_det_umed.MaxLength = 14;
             tx_det_desc.MaxLength = 95;     // no ampliar porque la descripcion a grabar en la tabla = glosa + tx_det_desc.text
             //
-            tx_pregr_num.MaxLength = 8;
-            tx_serie.MaxLength = 4;         // serie pre guia
-            tx_numero.MaxLength = 8;        // numero pre guia
+            tx_pregr_num.MaxLength = 8;     // numero de la pre-guia
+            tx_serie.MaxLength = 4;         // serie guia
+            tx_numero.MaxLength = 8;        // numero guia
             tx_dirRem.MaxLength = 100;
             tx_nomRem.MaxLength = 100;           // nombre remitente
             tx_distRtt.MaxLength = 45;
@@ -303,6 +305,12 @@ namespace TransCarga
             //dataGridView1.Rows.Clear();
             //if (Tx_modo.Text == "NUEVO") dataGridView1.ReadOnly = false;
             //else dataGridView1.ReadOnly = true;
+            if (usoPGm == "manual")
+            {
+                tx_pregr_num.Enabled = true;
+                tx_pregr_num.ReadOnly = ("NUEVO,EDITAR".Contains(Tx_modo.Text)) ? false : true;
+                tx_pregr_num.Text = "";
+            }
             lb_glodeta.Text = gloDeta;
             tx_flete.Text = "";
             tx_pagado.Text = "";
@@ -425,6 +433,7 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "ini_GRET") v_iniGRET = lite.GetString(3).ToString().Trim();          // inicial (sigla) de las GRE-T
                                         if (lite.GetString(2).ToString() == "UsuRegen") v_urege = lite.GetString(3).ToString().Trim();            // usuarios que pueden regenerar txt
                                         if (lite.GetString(2).ToString() == "UsuAnuInt") v_uagin = lite.GetString(3).ToString().Trim();           // usuarios que pueden hacer anulaciones internas
+                                        if (lite.GetString(2).ToString() == "usoPGm") usoPGm = lite.GetString(3).ToString().Trim();               // uso de pre-guias manuales para el marcado de bultos = "manual"
                                     }
                                     if (lite.GetString(1).ToString() == "impresion")
                                     {
@@ -3065,20 +3074,21 @@ namespace TransCarga
                         // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
                         // EDICION DE CABECERA ... al 05/05/2022 se permite editar docs.origen si eres usuario autorizado
                         string actua = "update cabguiai a set " +
-                            "a.docsremit=@dooprg,a.docsremit2=@dooprg2,a.tidocor=@tdocor,a.tidocor2=@tdocor2,a.rucDorig=@rucDor,a.rucDorig2=@rucDor2," +
-                            "a.obspregri=@obsprg,a.clifingri=@conprg," +
+                            "a.obspregri=@obsprg,a.clifingri=@conprg,a.numpregui=@npregr," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
+                        //"a.docsremit=@dooprg,a.docsremit2=@dooprg2,a.tidocor=@tdocor,a.tidocor2=@tdocor2,a.rucDorig=@rucDor,a.rucDorig2=@rucDor2," +
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
-                        micon.Parameters.AddWithValue("@dooprg2", tx_docsOr2.Text);
-                        micon.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);
-                        micon.Parameters.AddWithValue("@tdocor2", tx_dat_docOr2.Text);
-                        micon.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);
-                        micon.Parameters.AddWithValue("@rucDor2", tx_rucEorig2.Text);
+                        //micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
+                        //micon.Parameters.AddWithValue("@dooprg2", tx_docsOr2.Text);
+                        //micon.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);
+                        //micon.Parameters.AddWithValue("@tdocor2", tx_dat_docOr2.Text);
+                        //micon.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);
+                        //micon.Parameters.AddWithValue("@rucDor2", tx_rucEorig2.Text);
                         micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                         micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
+                        micon.Parameters.AddWithValue("@npregr", tx_pregr_num.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -3548,7 +3558,44 @@ namespace TransCarga
         }
         private void tx_pregr_num_Leave(object sender, EventArgs e)     // numero pre guía
         {
-            if (Tx_modo.Text == "NUEVO" && tx_pregr_num.Text.Trim() != "" && tx_pregr_num.ReadOnly == false)
+            if (usoPGm == "manual")
+            {
+                // validamos que no se repita este numero, ojo que si esta en blanco no validamos
+                if ("NUEVO,EDITAR".Contains(Tx_modo.Text) && tx_pregr_num.Text.Trim() != "")
+                {
+                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                    if (lib.procConn(conn) == true)
+                    {
+                        using (MySqlCommand micon = new MySqlCommand("select count(id) from cabguiai where sergui=@sgr and numpregui=@npg", conn))
+                        {
+                            micon.Parameters.AddWithValue("@sgr", tx_serie.Text);
+                            micon.Parameters.AddWithValue("@npg", tx_pregr_num.Text);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.Read())
+                                {
+                                    if (dr.GetInt32(0) == 1)
+                                    {
+                                        MessageBox.Show("Esta repitiendo el número de pre guía" + Environment.NewLine + 
+                                            "","Error",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                                        tx_pregr_num.Text = "";
+                                        tx_pregr_num.Focus();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+
+                        cmb_destino.Focus();
+                    }
+                    else
+                    {
+                        Application.Exit();
+                        return;
+                    }
+                }
+            }
+            /* if (Tx_modo.Text == "NUEVO" && tx_pregr_num.Text.Trim() != "" && tx_pregr_num.ReadOnly == false)
             {
                 tx_pregr_num.Text = lib.Right("00000000" + tx_pregr_num.Text, 8);
                 jalapg(tx_pregr_num.Text);
@@ -3591,7 +3638,7 @@ namespace TransCarga
                     //dataGridView1_RowLeave(null, null);
                     //dataGridView1.ReadOnly = true;
                 }
-            }
+            } */
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
@@ -3940,7 +3987,7 @@ namespace TransCarga
                 Bt_sig.Enabled = false;
                 Bt_ret.Enabled = false;
                 Bt_fin.Enabled = false;
-                tx_numero.Focus();              //cmb_destino.Focus();
+                tx_pregr_num.Focus();
             }
         }
         private void Bt_edit_Click(object sender, EventArgs e)

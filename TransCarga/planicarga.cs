@@ -181,11 +181,14 @@ namespace TransCarga
                 var result = ayu3.ShowDialog();
                 if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
                 {
-                    tx_dat_tdchof.Text = ayu3.ReturnValueA[1];
-                    tx_dniC.Text = ayu3.ReturnValueA[2];   // ayu3.ReturnValue0;
-                    tx_pla_brevet.Text = ayu3.ReturnValueA[4];
-                    tx_pla_nomcho.Text = ayu3.ReturnValueA[3];
-                    cmb_doc.SelectedValue = tx_dat_tdchof.Text;
+                    if (ayu3.ReturnValueA != null && ayu3.ReturnValueA[1].ToString() != "")
+                    {
+                        tx_dat_tdchof.Text = ayu3.ReturnValueA[1];
+                        tx_dniC.Text = ayu3.ReturnValueA[2];   // ayu3.ReturnValue0;
+                        tx_pla_brevet.Text = ayu3.ReturnValueA[4];
+                        tx_pla_nomcho.Text = ayu3.ReturnValueA[3];
+                        cmb_doc.SelectedValue = tx_dat_tdchof.Text;
+                    }
                 }
                 return true;
             }
@@ -198,11 +201,14 @@ namespace TransCarga
                 var result = ayu3.ShowDialog();
                 if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
                 {
-                    tx_dat_tdayu.Text = ayu3.ReturnValueA[1];
-                    tx_dniA.Text = ayu3.ReturnValueA[2];
-                    tx_pla_ayud.Text = ayu3.ReturnValueA[4]; ;
-                    tx_pla_nomayu.Text = ayu3.ReturnValueA[3];
-                    cmb_doca.SelectedValue = tx_dat_tdayu.Text;
+                    if (ayu3.ReturnValueA != null && ayu3.ReturnValueA[1].ToString() != "")
+                    {
+                        tx_dat_tdayu.Text = ayu3.ReturnValueA[1];
+                        tx_dniA.Text = ayu3.ReturnValueA[2];
+                        tx_pla_ayud.Text = ayu3.ReturnValueA[4]; ;
+                        tx_pla_nomayu.Text = ayu3.ReturnValueA[3];
+                        cmb_doca.SelectedValue = tx_dat_tdayu.Text;
+                    }
                 }
                 return true;
             }

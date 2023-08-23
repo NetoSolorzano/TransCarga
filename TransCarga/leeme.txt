@@ -324,8 +324,10 @@ libreria, creación de funciones nuevas ........................................
 impGRE_T, crear la clase ............................................................................ ok 18/08/2023
 repsoper, creación de la opción de estados de guías ................................................. ok 18/08/2023
 guiati_e, creación y adecuación del form ............................................................ ok 21/08/2023
-planicarga, adecuaciones al formulario para los nuevos campos relacionados a choferes y registros ... 
-vehiculos, adecuaciones al formulario para los nuevos campos ........................................ 
+planicarga, adecuaciones al formulario para los nuevos campos relacionados a choferes y registros ... OK 22/08/2023
+vehiculos, adecuaciones al formulario para los nuevos campos ........................................ OK 22/08/2023
+defs, adecuaciones de nuevos tipos DTM por ejemplo .................................................. ok 22/08/2023
+guiati_e, adecuar el registro de pre-guías manualmente .............................................. ok 22/08/2023
 *****************************************************************************************************
 form guiari_e, arreglo en toolboton para mostrar visualización y demas .............................. ok 19/08/2023
 guiati_e, adecuación para permitir grabar sin documento relacionado ................................. ok 21/08/2023

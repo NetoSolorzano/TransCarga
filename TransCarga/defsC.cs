@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace TransCarga
 {
-    public partial class defs : Form
+    public partial class defsC : Form
     {
         static string nomform = "defs"; // nombre del formulario
         string asd = TransCarga.Program.vg_user;   // usuario conectado al sistema
@@ -43,7 +43,7 @@ namespace TransCarga
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         DataTable dtg = new DataTable();
 
-        public defs()
+        public defsC()
         {
             InitializeComponent();
         }
@@ -108,7 +108,6 @@ namespace TransCarga
             tx_det4.MaxLength = 45;
             tx_det5.MaxLength = 6;
             tx_enla1.MaxLength = 6;
-            tx_csunat.MaxLength = 6;
         }
         private void grilla()                   // arma la grilla
         {
@@ -171,7 +170,6 @@ namespace TransCarga
             advancedDataGridView1.Columns[13].Visible = false;            // marca2
             advancedDataGridView1.Columns[14].Visible = false;            // marca3
             advancedDataGridView1.Columns[15].Visible = false;            // enlace1
-            advancedDataGridView1.Columns[16].Visible = false;            // codsunat
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -246,7 +244,6 @@ namespace TransCarga
             }
             chk_marc2.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[13].Value.ToString() == "1") ? true : false;
             chk_marc3.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[14].Value.ToString() == "1") ? true : false;
-            tx_csunat.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[16].Value.ToString();  // codigo sunat
             comboBox1.SelectedValue = textBox4.Text;
         }
         public void dataload()                  // jala datos para los combos y la grilla
@@ -274,7 +271,7 @@ namespace TransCarga
             comboBox1.ValueMember = "idtabella";
             // datos de las deficiones
             string datgri = "select id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
-                "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3,enlace1,codsunat " +
+                "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3,enlace1 " +
                 "from descrittive order by idtabella,idcodice";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
@@ -357,11 +354,6 @@ namespace TransCarga
                     lb_descriz.Text = "Descripción";
                     lb_descrizrid.Text = "Descrip. Corta";
                     lb_enla1.Text = "Días plazo";
-                    break;
-                case "DTM":
-                    lb_det3.Text = "GRE Aplicable";
-                    lb_det4.Text = "GRE Aplicable";
-                    chk_marc1.Text = "Mas de 1";
                     break;
             }
         }
@@ -520,10 +512,10 @@ namespace TransCarga
                 }
                 string consulta = "insert into descrittive (" +
                     "idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
-                    "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3,enlace1,codsunat," +
+                    "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3,enlace1," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname)" +
                     " values (" +
-                    "@idt,@idc,@cod,@des,@der,@num,@det1,@det2,@det3,@det4,@det5,@mar1,@mar2,@mar3,@enl1,@csun," +
+                    "@idt,@idc,@cod,@des,@der,@num,@det1,@det2,@det3,@det4,@det5,@mar1,@mar2,@mar3,@enl1," +
                     "@veap,@asd,now(),@dipl,@dipw,@nbna)";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
@@ -554,7 +546,6 @@ namespace TransCarga
                     }
                     mycomand.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
                     mycomand.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
-                    mycomand.Parameters.AddWithValue("@csun", tx_csunat.Text);
                     mycomand.Parameters.AddWithValue("@veap", verapp);
                     mycomand.Parameters.AddWithValue("@asd", asd);
                     mycomand.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -598,7 +589,6 @@ namespace TransCarga
                     dr[13] = (chk_marc2.Checked == true) ? "1" : "0";
                     dr[14] = (chk_marc3.Checked == true) ? "1" : "0";
                     dr[15] = (textBox4.Text == "TPA") ? "" : tx_enla1.Text;
-                    dr[16] = tx_csunat.Text;
                     dtg.Rows.Add(dr);
                 }
                 else
@@ -613,7 +603,7 @@ namespace TransCarga
                 string consulta = "update descrittive set " +
                         "descrizione=@des,descrizionerid=@der,numero=@num,codigo=@cod," +
                         "deta1=@det1,deta2=@det2,deta3=@det3,deta4=@det4,ubidir=@det5," +
-                        "marca1=@mar1,marca2=@mar2,marca3=@mar3,enlace1=@enl1,codsunat=@csun," +
+                        "marca1=@mar1,marca2=@mar2,marca3=@mar3,enlace1=@enl1," +
                         "verApp=@veap,userm=@asd,fechm=now(),diriplan4=@dipl,diripwan4=@dipw,netbname=@nbna " +
                         "where id=@idc";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -642,7 +632,6 @@ namespace TransCarga
                     }
                     mycom.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
                     mycom.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
-                    mycom.Parameters.AddWithValue("@csun", tx_csunat.Text);
                     mycom.Parameters.AddWithValue("@veap", verapp);
                     mycom.Parameters.AddWithValue("@asd", asd);
                     mycom.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -685,7 +674,6 @@ namespace TransCarga
                             dtg.Rows[i][13] = (chk_marc2.Checked == true) ? "1" : "0";
                             dtg.Rows[i][14] = (chk_marc3.Checked == true) ? "1" : "0";
                             dtg.Rows[i][15] = (textBox4.Text == "TPA") ? "" : tx_enla1.Text;
-                            dtg.Rows[i][16] = tx_csunat.Text;
                         }
                     }
                 }
@@ -756,7 +744,6 @@ namespace TransCarga
                     chk_marc2.Checked = (row[13].ToString() == "0") ? false : true;
                     chk_marc3.Checked = (row[14].ToString() == "0") ? false : true;
                     tx_enla1.Text = row[15].ToString();
-                    tx_csunat.Text = row[16].ToString();
                 }
                 if(contador == 0)
                 {
@@ -775,7 +762,6 @@ namespace TransCarga
                     chk_marc2.Checked = false;
                     chk_marc3.Checked = false;
                     tx_enla1.Text = "";
-                    tx_csunat.Text = "";
                     return;
                 }
             }

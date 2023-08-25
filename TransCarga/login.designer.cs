@@ -45,8 +45,8 @@
             this.lb_titulo = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.barra = new System.Windows.Forms.Panel();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label3 = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -92,7 +92,6 @@
             // 
             // Tx_user
             // 
-            this.Tx_user.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.Tx_user.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.Tx_user.Location = new System.Drawing.Point(66, 17);
             this.Tx_user.Name = "Tx_user";
@@ -227,13 +226,6 @@
             this.barra.Size = new System.Drawing.Size(315, 27);
             this.barra.TabIndex = 36;
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(128, 2);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(185, 23);
-            this.progressBar1.TabIndex = 36;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -243,6 +235,13 @@
             this.label3.Size = new System.Drawing.Size(124, 18);
             this.label3.TabIndex = 37;
             this.label3.Text = "Datos iniciales ";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(128, 2);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(185, 23);
+            this.progressBar1.TabIndex = 36;
             // 
             // login
             // 

@@ -91,6 +91,7 @@ namespace TransCarga
         string correo_gen = "";         // correo generico del emisor cuando el cliente no tiene correo propio
         string codusanu = "";           // usuarios que pueden anular fuera de plazo
         string cusdscto = "";           // usuarios que pueden hacer descuentos
+        string usercfece = "";          // usuarios que pueden cambiar fecha de emision
         string otro = "";               // ruta y nombre del png código QR
         string caractNo = "";           // caracter prohibido en campos texto, caracter delimitador para los TXT
         string nipfe = "";              // nombre identificador del proveedor de fact electronica
@@ -259,23 +260,6 @@ namespace TransCarga
             tx_idcaja.ReadOnly = true;
             tx_idcaja.Text = "";
             tx_fletLetras.ReadOnly = true;
-            if (Tx_modo.Text == "NUEVO" && v_estcaj == codAbie)      // caja esta abierta?
-            {
-                if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy ..... me quede aca, este dato debe limpiarse al cerrar la caja
-                {
-                    MessageBox.Show("Las fechas no coinciden" + Environment.NewLine +
-                        "Fecha de caja vs Fecha actual", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    //return;
-                }
-                else
-                {
-                    tx_idcaja.Text = v_idcaj;
-                }
-            }
-            if (Tx_modo.Text == "EDITAR")
-            {
-                fshoy = tx_fechope.Text;
-            }
             if (Tx_modo.Text == "NUEVO")
             {
                 rb_contado.Enabled = true;
@@ -288,7 +272,25 @@ namespace TransCarga
                 else chk_cunica.Enabled = false;
                 if (cusdscto.Contains(asd)) tx_flete.ReadOnly = false;
                 else tx_flete.ReadOnly = true;
+                if (v_estcaj == codAbie)      // caja esta abierta?
+                {
+                    if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy ..... me quede aca, este dato debe limpiarse al cerrar la caja
+                    {
+                        MessageBox.Show("Las fechas no coinciden" + Environment.NewLine +
+                            "Fecha de caja vs Fecha actual", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        //return;
+                    }
+                    else
+                    {
+                        tx_idcaja.Text = v_idcaj;
+                    }
+                }
             }
+            if (Tx_modo.Text == "EDITAR")
+            {
+                fshoy = tx_fechope.Text;
+            }
+            if ("NUEVO,EDITAR".Contains(Tx_modo.Text) && usercfece.ToUpper().Contains(asd.ToUpper())) { tx_fechope.Enabled = true; tx_fechope.ReadOnly = false; }
             cargaunica();
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
@@ -370,6 +372,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "diasanul") v_cdpa = int.Parse(row["valor"].ToString());            // cant dias en que usuario normal puede anular 
                             if (row["param"].ToString() == "useranul") codusanu = row["valor"].ToString();                      // usuarios autorizados a anular fuera de plazo 
                             if (row["param"].ToString() == "userdscto") cusdscto = row["valor"].ToString();                 // usuarios que pueden hacer descuentos
+                            if (row["param"].ToString() == "usercfece") usercfece = row["valor"].ToString();                 // usuarios que pueden cambiar fecha de emision
                             if (row["param"].ToString() == "cltesBol") tdocsBol = row["valor"].ToString();                  // tipos de documento de clientes para boletas
                             if (row["param"].ToString() == "cltesFac") tdocsFac = row["valor"].ToString();                  // tipos de documento de clientes para facturas
                         }
@@ -3020,11 +3023,12 @@ namespace TransCarga
                 {
                     if (true)     // EDICION DE CABECERA
                     {
-                        string actua = "update cabfactu a set obsdvta=@obsprg," +
+                        string actua = "update cabfactu a set obsdvta=@obsprg,fechope=@fechop," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                        micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                         micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);

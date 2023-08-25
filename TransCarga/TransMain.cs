@@ -79,7 +79,8 @@ namespace TransCarga
         string imgpe3 = "";                                             // imagen 3 administ - egresos
         string imgpe4 = "";                                             // imagen 4 administ - ingresos varios
         string imgpe5 = "";                                             // imagen 5 administ - reportes
-        string imgvc1 = "";                                             // imagen 1 ventas - contratos
+        string imgvpg1 = "";                                            // imagen 1 operaciones - pre guías
+        string imgvc1 = "";                                             // imagen 1 operaciones 
         string imgvpc1 = "";                                            // imagen 1 operaciones 
         string imgvic1 = "";                                            // imagen 1 operaciones - 
         string imgvsc1 = "";                                            // imagen 1 operaciones - 
@@ -264,7 +265,8 @@ namespace TransCarga
                         if (row["param"].ToString() == "imgpe3") imgpe3 = row["valor"].ToString().Trim();         // imagen3 de administ - egresos
                         if (row["param"].ToString() == "imgpe4") imgpe4 = row["valor"].ToString().Trim();         // imagen4 de administ - ingresos extraordinarios
                         if (row["param"].ToString() == "imgpe5") imgpe5 = row["valor"].ToString().Trim();         // imagen5 de administ - reportes
-                        if (row["param"].ToString() == "imgvc1") imgvc1 = row["valor"].ToString().Trim();         // imagen1 de ventas contratos
+                        if (row["param"].ToString() == "imgvpg1") imgvpg1 = row["valor"].ToString().Trim();         // imagen1 operaciones - Pre Guías
+                        if (row["param"].ToString() == "imgvc1") imgvc1 = row["valor"].ToString().Trim();           // imagen1 operaciones
                         if (row["param"].ToString() == "imgvpc1") imgvpc1 = row["valor"].ToString().Trim();         // imagen1 de ventas contratos pedidos clientes
                         if (row["param"].ToString() == "imgvic1") imgvic1 = row["valor"].ToString().Trim();         // imagen1 de ventas ingreso pedidos clientes
                         if (row["param"].ToString() == "imgvsc1") imgvsc1 = row["valor"].ToString().Trim();         // imagen1 de ventas salidas pedidos clientes
@@ -478,16 +480,18 @@ namespace TransCarga
         //
         private void bt_ventas_Click(object sender, EventArgs e)        // Operaciones
         {
-            Image img_v_c = Image.FromFile(imgvc1);
-            Image img_v_pc = Image.FromFile(imgvpc1);
-            Image img_v_i = Image.FromFile(imgvic1);
-            Image img_v_s = Image.FromFile(imgvsc1);
-            Image img_v_t = Image.FromFile(imgvtc1);
-            Image img_v_r = Image.FromFile(imgvre1);
-            Image img_v_b = Image.FromFile(imgvbc1);
+            Image img_v_pg = Image.FromFile(imgvpg1);   // Pre Guías
+            Image img_v_c = Image.FromFile(imgvc1);     // GRE Transportista
+            Image img_v_pc = Image.FromFile(imgvpc1);   // GR Transportista Mecanizada (normal)
+            Image img_v_i = Image.FromFile(imgvic1);    // GRE Remitente
+            Image img_v_s = Image.FromFile(imgvsc1);    // Planilla de Carga
+            Image img_v_t = Image.FromFile(imgvtc1);    // Transbordo
+            Image img_v_r = Image.FromFile(imgvre1);    // Reportes
+            Image img_v_b = Image.FromFile(imgvbc1);    // Correciones 
             //
             pic_icon_menu.Image = TransCarga.Properties.Resources.etiq_venta32;
             menuStrip1.Items.Clear();
+            menuStrip1.Items.Add("Pre Guías", img_v_pg, vpg_registro_Click);
             menuStrip1.Items.Add("GRE Transp.", img_v_c, vc_registro_Click);
             menuStrip1.Items.Add("GR-T Mecánica", img_v_pc, vpc_registro_Click);
             menuStrip1.Items.Add("GR Remitente",img_v_i, vic_registro_Click);
@@ -496,6 +500,17 @@ namespace TransCarga
             menuStrip1.Items.Add("Reportes",img_v_r, vc_reportes_Click);
             menuStrip1.Items.Add("Corrección",img_v_b, vbc_registro_Click);
             menuStrip1.Visible = true;
+        }
+        private void vpg_registro_Click(object sender, EventArgs e)
+        {
+            preguiat fpg = new preguiat();
+            fpg.TopLevel = false;
+            fpg.Parent = this;
+            pn_centro.Controls.Add(fpg);
+            fpg.Location = new Point((pn_centro.Width - fpg.Width) / 2, (pn_centro.Height - fpg.Height) / 2);
+            fpg.Anchor = AnchorStyles.None;
+            fpg.Show();
+            fpg.BringToFront();
         }
         private void vc_registro_Click(object sender, EventArgs e)          // Guías remisión ELECTRONICA transportista
         {

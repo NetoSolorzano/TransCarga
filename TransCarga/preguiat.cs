@@ -59,6 +59,7 @@ namespace TransCarga
         string v_impTK = "";            // nombre de la ticketera
         string v_clte_rem = "";         // variable para marcar si el remitente es cliente nuevo "N" o para actualizar sus datos "E"
         string v_clte_des = "";         // variable para marcar si el destinatario es cliente nuevo "N" o para actualizar sus datos "E"
+        string usoPGm = "";             // variable para indicar si el numerador es "automatico" o "manual"
         #endregion
 
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
@@ -110,9 +111,8 @@ namespace TransCarga
         }
         private void init()
         {
-            this.BackColor = Color.FromName(colback);
-            toolStrip1.BackColor = Color.FromName(colstrp);
-            dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            //this.BackColor = Color.FromName(colback);
+            //toolStrip1.BackColor = Color.FromName(colstrp);
             //dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
             //dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
             //dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
@@ -154,20 +154,24 @@ namespace TransCarga
             // longitudes maximas de campos
             tx_serie.MaxLength = 4;         // serie pre guia
             tx_numero.MaxLength = 8;        // numero pre guia
+            tx_numDocRem.MaxLength = 11;
+            tx_nomRem.MaxLength = 100;           // nombre remitente
             tx_dirRem.MaxLength = 100;
             tx_distRtt.MaxLength = 25;
             tx_provRtt.MaxLength = 25;
             tx_dptoRtt.MaxLength = 25;
+            tx_numDocDes.MaxLength = 11;
+            tx_nomDrio.MaxLength = 100;           // nombre destinatario
             tx_dirDrio.MaxLength = 100;
             tx_disDrio.MaxLength = 25;
             tx_proDrio.MaxLength = 25;
             tx_dptoDrio.MaxLength = 25;
             tx_docsOr.MaxLength = 100;          // documentos origen del traslado
-            tx_nomRem.MaxLength = 100;           // nombre remitente
-            tx_nomDrio.MaxLength = 100;           // nombre destinatario
-            // grilla
-            dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            tx_obser1.MaxLength = 100;
+            tx_consig.MaxLength = 100;
+            // detalle
+            tx_det_umed.MaxLength = 15;
+            tx_det_desc.MaxLength = 50;
             // todo desabilidado
             sololee(this);
         }
@@ -178,14 +182,20 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             claveSeg = "";
-            dataGridView1.Rows.Clear();
             tx_flete.Text = "";
             tx_numero.Text = "";
             tx_totcant.Text = "";
             tx_totpes.Text = "";
             tx_serie.Text = v_slu;
             tx_dat_tdi.Text = codDInt;
-            tx_numero.ReadOnly = true;
+
+            if (usoPGm == "manual")
+            {
+                tx_numero.Enabled = true;
+                tx_numero.ReadOnly = ("NUEVO,EDITAR".Contains(Tx_modo.Text)) ? false : true;
+                tx_numero.Text = "";
+            }
+
             tx_dat_locori.Text = v_clu;
             cmb_origen.SelectedValue = tx_dat_locori.Text;
             cmb_origen_SelectionChangeCommitted(null, null);
@@ -251,6 +261,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "c_int") codDInt = row["valor"].ToString().Trim();           // codigo interno pre guias
+                            if (row["param"].ToString() == "usoPGm") usoPGm = row["valor"].ToString().Trim();           // numeración "automatico" ó "manual"
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -392,19 +403,13 @@ namespace TransCarga
                     {
                         DataTable dt = new DataTable();
                         da.Fill(dt);
-                        //DataGridViewRow fg = (DataGridViewRow)dataGridView1.Rows[0].Clone();
                         foreach (DataRow row in dt.Rows)
                         {
-                            //fg.Cells[0].Value = row[3].ToString();
-                            //fg.Cells[1].Value = row[4].ToString();
-                            //fg.Cells[2].Value = row[6].ToString();
-                            //fg.Cells[3].Value = row[7].ToString();
-                            //dataGridView1.Rows.Add(fg);
-                            dataGridView1.Rows.Add(
-                                row[3].ToString(),
-                                row[4].ToString(),
-                                row[6].ToString(),
-                                row[7].ToString());
+                            tx_det_cant.Text = row.ItemArray[3].ToString();
+                            tx_det_umed.Text = row.ItemArray[4].ToString();
+                            tx_det_desc.Text = row.ItemArray[6].ToString();
+                            rb_kg.Checked = true;   // en carrion son kilos, si o si
+                            tx_det_peso.Text = row.ItemArray[7].ToString();
                         }
                         dt.Dispose();
                     }
@@ -471,36 +476,6 @@ namespace TransCarga
             cdu.Dispose();
             dacu.Dispose();
             conn.Close();
-        }
-        private bool valiGri()                  // valida filas completas en la grilla
-        {
-            bool retorna = false;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                if (dataGridView1.Rows[i].Cells[0].Value == null &&
-                    dataGridView1.Rows[i].Cells[1].Value == null &&
-                    dataGridView1.Rows[i].Cells[2].Value == null &&
-                    dataGridView1.Rows[i].Cells[3].Value == null)
-                {
-                    // no hay problema
-                }
-                else
-                {
-                    if (dataGridView1.Rows[i].Cells[0].Value == null ||
-                        dataGridView1.Rows[i].Cells[1].Value == null ||
-                        dataGridView1.Rows[i].Cells[2].Value == null ||
-                        dataGridView1.Rows[i].Cells[3].Value == null)
-                    {
-                        //MessageBox.Show("Complete las filas del detalle", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        retorna = false;
-                    }
-                    else
-                    {
-                        retorna = true;
-                    }
-                }
-            }
-            return retorna;
         }
 
         #region autocompletados
@@ -584,7 +559,7 @@ namespace TransCarga
                 }
             }
         }
-        public void escribe(Form efrm)
+        public void escribe(Form efrm)  // me quede aca 24/08/2023
         {
             foreach (Control oControls in efrm.Controls)
             {
@@ -709,13 +684,13 @@ namespace TransCarga
             if (tx_totcant.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el detalle del envío", " Falta cantidad ");
-                dataGridView1.Focus();
+                //dataGridView1.Focus();
                 return;
             }
             if (tx_totpes.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el detalle del envío", " Falta peso ");
-                dataGridView1.Focus();
+                //dataGridView1.Focus();
                 return;
             }
             if (tx_dirRem.Text.Trim() != "" && (tx_dptoRtt.Text.Trim() == "" || tx_provRtt.Text.Trim() == "" || tx_distRtt.Text.Trim() == ""))
@@ -767,13 +742,6 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
-                // valida que las filas de la grilla esten completas
-                if (valiGri() != true)
-                {
-                    MessageBox.Show("Complete las filas del detalle", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    dataGridView1.Focus();
-                    return;
-                }
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear la Pre Guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -781,12 +749,12 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            var bb = MessageBox.Show("Desea imprimir la Pre Guía?" + Environment.NewLine +
+                            /* var bb = MessageBox.Show("Desea imprimir la Pre Guía?" + Environment.NewLine +
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
                                 Bt_print.PerformClick();
-                            }
+                            } */
                         }
                     }
                     else
@@ -1014,20 +982,18 @@ namespace TransCarga
                             "where idc=@idr";
                         micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@can", dataGridView1.Rows[0].Cells[0].Value.ToString());
-                        micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[0].Cells[1].Value.ToString());
+                        micon.Parameters.AddWithValue("@can", "");      // dataGridView1.Rows[0].Cells[0].Value.ToString()
+                        micon.Parameters.AddWithValue("@uni", "");      // dataGridView1.Rows[0].Cells[1].Value.ToString()
                         micon.Parameters.AddWithValue("@cod", "");
-                        micon.Parameters.AddWithValue("@des", dataGridView1.Rows[0].Cells[2].Value.ToString());
-                        micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[0].Cells[3].Value.ToString());
+                        micon.Parameters.AddWithValue("@des", "");      // dataGridView1.Rows[0].Cells[2].Value.ToString()
+                        micon.Parameters.AddWithValue("@pes", "");      // dataGridView1.Rows[0].Cells[3].Value.ToString()
                         micon.Parameters.AddWithValue("@preu", "0");
                         micon.Parameters.AddWithValue("@pret", "0");
                         micon.ExecuteNonQuery();
                         //
-                        if (dataGridView1.Rows.Count > 2)
                         {
-                            for(int i = 1; i < dataGridView1.Rows.Count - 1; i++)
-                            {
-                                if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
+                            {   // dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != ""
+                                if (true)
                                 {
                                     string inserd2 = "insert into detpregr (idc,serpregui,numpregui," +
                                         "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
@@ -1039,11 +1005,11 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                                     micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
                                     micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
-                                    micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                    micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                                    micon.Parameters.AddWithValue("@can", "");  // dataGridView1.Rows[i].Cells[0].Value.ToString()
+                                    micon.Parameters.AddWithValue("@uni", "");  // dataGridView1.Rows[i].Cells[1].Value.ToString()
                                     micon.Parameters.AddWithValue("@cod", "");
-                                    micon.Parameters.AddWithValue("@des", gloDeta + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
-                                    micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                    micon.Parameters.AddWithValue("@des", gloDeta + "");    // dataGridView1.Rows[i].Cells[2].Value.ToString().Trim()
+                                    micon.Parameters.AddWithValue("@pes", "");  // dataGridView1.Rows[i].Cells[3].Value.ToString()
                                     micon.Parameters.AddWithValue("@preu", "0");
                                     micon.Parameters.AddWithValue("@pret", "0");
                                     micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
@@ -1147,9 +1113,8 @@ namespace TransCarga
                         micon = new MySqlCommand("delete from detpregr where idc=@idr", conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.ExecuteNonQuery();
-                        for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
-                        {
-                            if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
+                        {   // dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != ""
+                            if (true)
                             {
                                 string inserd2 = "insert into detpregr (idc,serpregui,numpregui," +
                                     "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
@@ -1161,11 +1126,11 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                                 micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
                                 micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
-                                micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                                micon.Parameters.AddWithValue("@can", "");  // dataGridView1.Rows[i].Cells[0].Value.ToString()
+                                micon.Parameters.AddWithValue("@uni", "");  // dataGridView1.Rows[i].Cells[1].Value.ToString()
                                 micon.Parameters.AddWithValue("@cod", "");
-                                micon.Parameters.AddWithValue("@des", dataGridView1.Rows[i].Cells[2].Value.ToString());
-                                micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                micon.Parameters.AddWithValue("@des", "");  // dataGridView1.Rows[i].Cells[2].Value.ToString()
+                                micon.Parameters.AddWithValue("@pes", "");  // dataGridView1.Rows[i].Cells[3].Value.ToString()
                                 micon.Parameters.AddWithValue("@preu", "0");
                                 micon.Parameters.AddWithValue("@pret", "0");
                                 micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
@@ -1236,7 +1201,6 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
-                dataGridView1.Rows.Clear();
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
                 chk_seguridad_CheckStateChanged(null,null);
@@ -1510,7 +1474,6 @@ namespace TransCarga
                 tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
                 tx_idr.Text = tx_numero.Text;
                 jalaoc("tx_idr");
-                dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
                 chk_seguridad_CheckStateChanged(null, null);
                 if ((tx_sergr.Text.Trim() == "" && tx_numgr.Text.Trim() == "") && tx_impreso.Text == "N")
@@ -1822,60 +1785,7 @@ namespace TransCarga
         #endregion comboboxes
 
         #region datagridview
-        private void dataGridView1_RowLeave(object sender, DataGridViewCellEventArgs e)
-        {
-            int totcant = 0;
-            decimal totpes = 0;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                if (dataGridView1.Rows[i].Cells[0].Value != null)
-                {
-                    totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[0].Value.ToString());
-                }
-                if (dataGridView1.Rows[i].Cells[3].Value != null)
-                {
-                    totpes = totpes + decimal.Parse(dataGridView1.Rows[i].Cells[3].Value.ToString());
-                }
-            }
-            tx_totcant.Text = totcant.ToString();
-            tx_totpes.Text = totpes.ToString();
-        }
-        private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        {
-            e.Control.KeyPress -= new KeyPressEventHandler(Column_KeyPress);
-            if (dataGridView1.CurrentCell.ColumnIndex == 0 || dataGridView1.CurrentCell.ColumnIndex == 3)
-            {
-                TextBox tb = e.Control as TextBox;
-                if (tb != null)
-                {
-                    tb.KeyPress += new KeyPressEventHandler(Column_KeyPress);
-                }
-            }
-            if (dataGridView1.CurrentCell.ColumnIndex == 1 || dataGridView1.CurrentCell.ColumnIndex == 2)
-            {
-                if (e.Control is TextBox)
-                {
-                    ((TextBox)(e.Control)).CharacterCasing = CharacterCasing.Upper;
-                }
-            }
-        }
-        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            /*
-            if (dataGridView1.Rows.Count > 1 && ("NUEVO,EDITAR").Contains(Tx_modo.Text))
-            {
-                if (e.RowIndex > -1) dataGridView1.CurrentRow.Cells[2].Value = gloDeta + " ";
-            }
-            */
-            // cambie de idea. Al momento de grabar y si es NUEVO se agrega la glosa a cada fila 
-        }
-        private void Column_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
+        // nada
         #endregion
 
         #region impresion
@@ -1968,16 +1878,15 @@ namespace TransCarga
             posi = 330.0F;             // avance de fila
             */
             // detalle de la pre guia
-            for (int fila = 0; fila < dataGridView1.Rows.Count - 1; fila++)
             {
                 ptoimp = new PointF(coli + 20.0F, posi);
-                e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[0].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("", lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 ptoimp = new PointF(cold, posi);
-                e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[1].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("", lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 ptoimp = new PointF(cold + 80.0F, posi);
-                e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[2].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("", lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 ptoimp = new PointF(cold + 400.0F, posi);
-                e.Graphics.DrawString("KGs." + dataGridView1.Rows[fila].Cells[3].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("KGs." + "", lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 posi = posi + alfi;             // avance de fila
             }
             // guias del cliente
@@ -2087,17 +1996,16 @@ namespace TransCarga
                 StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                 SizeF siz = new SizeF(70, 15);
                 RectangleF recto = new RectangleF(puntoF, siz);
-                for (int x=0; x < dataGridView1.Rows.Count - 1; x++)
                 {
                     puntoF = new PointF(coli + 20.0F, posi);
-                    e.Graphics.DrawString(dataGridView1.Rows[x].Cells[0].Value.ToString() 
-                        + " " + dataGridView1.Rows[x].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString("" 
+                        + " " + "", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20.0F, posi);
-                    e.Graphics.DrawString(dataGridView1.Rows[x].Cells[2].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString("", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20.0F, posi);
-                    e.Graphics.DrawString("KGs. " + dataGridView1.Rows[x].Cells[3].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString("KGs. " + "", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 90, posi);
                     posi = posi + alfi;
                 }

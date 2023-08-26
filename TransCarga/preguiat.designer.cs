@@ -93,6 +93,8 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.gbox_serie = new System.Windows.Forms.GroupBox();
             this.tx_dat_tdi = new System.Windows.Forms.TextBox();
+            this.tx_numero = new TransCarga.NumericTextBox();
+            this.tx_serie = new TransCarga.NumericTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
@@ -126,6 +128,7 @@
             this.tx_consig = new System.Windows.Forms.TextBox();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
+            this.tx_flete = new TransCarga.NumericTextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.tx_dat_locori = new System.Windows.Forms.TextBox();
@@ -145,21 +148,18 @@
             this.chk_seguridad = new System.Windows.Forms.CheckBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
-            this.tx_flete = new TransCarga.NumericTextBox();
-            this.tx_numero = new TransCarga.NumericTextBox();
-            this.tx_serie = new TransCarga.NumericTextBox();
             this.gb_detalle = new System.Windows.Forms.GroupBox();
+            this.groupBox49 = new System.Windows.Forms.GroupBox();
+            this.groupBox50 = new System.Windows.Forms.GroupBox();
+            this.groupBox45 = new System.Windows.Forms.GroupBox();
+            this.groupBox48 = new System.Windows.Forms.GroupBox();
             this.groupBox51 = new System.Windows.Forms.GroupBox();
             this.groupBox52 = new System.Windows.Forms.GroupBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.rb_tn = new System.Windows.Forms.RadioButton();
             this.rb_kg = new System.Windows.Forms.RadioButton();
             this.lb_glodeta = new System.Windows.Forms.Label();
-            this.groupBox49 = new System.Windows.Forms.GroupBox();
-            this.groupBox50 = new System.Windows.Forms.GroupBox();
             this.tx_det_desc = new System.Windows.Forms.TextBox();
-            this.groupBox45 = new System.Windows.Forms.GroupBox();
-            this.groupBox48 = new System.Windows.Forms.GroupBox();
             this.tx_det_umed = new System.Windows.Forms.TextBox();
             this.tx_det_peso = new TransCarga.NumericTextBox();
             this.groupBox46 = new System.Windows.Forms.GroupBox();
@@ -186,10 +186,10 @@
             this.gbox_flete.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.gb_detalle.SuspendLayout();
-            this.groupBox51.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.groupBox49.SuspendLayout();
             this.groupBox45.SuspendLayout();
+            this.groupBox51.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.groupBox46.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -473,7 +473,7 @@
             this.tx_ubigO.MaxLength = 6;
             this.tx_ubigO.Name = "tx_ubigO";
             this.tx_ubigO.Size = new System.Drawing.Size(33, 18);
-            this.tx_ubigO.TabIndex = 9;
+            this.tx_ubigO.TabIndex = 999;
             this.tx_ubigO.Visible = false;
             // 
             // tx_distRtt
@@ -631,7 +631,7 @@
             this.button1.Location = new System.Drawing.Point(663, 335);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 26;
+            this.button1.TabIndex = 22;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -827,7 +827,7 @@
             this.gbox_serie.Location = new System.Drawing.Point(12, 24);
             this.gbox_serie.Name = "gbox_serie";
             this.gbox_serie.Size = new System.Drawing.Size(133, 69);
-            this.gbox_serie.TabIndex = 289;
+            this.gbox_serie.TabIndex = 1;
             this.gbox_serie.TabStop = false;
             // 
             // tx_dat_tdi
@@ -839,6 +839,28 @@
             this.tx_dat_tdi.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_tdi.TabIndex = 325;
             this.tx_dat_tdi.Visible = false;
+            // 
+            // tx_numero
+            // 
+            this.tx_numero.AllowSpace = false;
+            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numero.Location = new System.Drawing.Point(54, 42);
+            this.tx_numero.Name = "tx_numero";
+            this.tx_numero.Size = new System.Drawing.Size(73, 20);
+            this.tx_numero.TabIndex = 2;
+            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
+            // 
+            // tx_serie
+            // 
+            this.tx_serie.AllowSpace = false;
+            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_serie.Location = new System.Drawing.Point(55, 14);
+            this.tx_serie.Name = "tx_serie";
+            this.tx_serie.Size = new System.Drawing.Size(44, 20);
+            this.tx_serie.TabIndex = 1;
+            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // label8
             // 
@@ -1170,8 +1192,19 @@
             this.cmb_mon.Location = new System.Drawing.Point(10, 39);
             this.cmb_mon.Name = "cmb_mon";
             this.cmb_mon.Size = new System.Drawing.Size(40, 21);
-            this.cmb_mon.TabIndex = 22;
+            this.cmb_mon.TabIndex = 222;
             this.cmb_mon.SelectedIndexChanged += new System.EventHandler(this.cmb_mon_SelectedIndexChanged);
+            // 
+            // tx_flete
+            // 
+            this.tx_flete.AllowSpace = false;
+            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_flete.Location = new System.Drawing.Point(54, 39);
+            this.tx_flete.Name = "tx_flete";
+            this.tx_flete.Size = new System.Drawing.Size(73, 20);
+            this.tx_flete.TabIndex = 21;
+            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
             // 
             // label15
             // 
@@ -1360,7 +1393,7 @@
             this.tx_totpes.Name = "tx_totpes";
             this.tx_totpes.ReadOnly = true;
             this.tx_totpes.Size = new System.Drawing.Size(41, 20);
-            this.tx_totpes.TabIndex = 26;
+            this.tx_totpes.TabIndex = 261;
             this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_totcant
@@ -1371,41 +1404,8 @@
             this.tx_totcant.Name = "tx_totcant";
             this.tx_totcant.ReadOnly = true;
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
-            this.tx_totcant.TabIndex = 25;
+            this.tx_totcant.TabIndex = 251;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_flete
-            // 
-            this.tx_flete.AllowSpace = false;
-            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_flete.Location = new System.Drawing.Point(54, 39);
-            this.tx_flete.Name = "tx_flete";
-            this.tx_flete.Size = new System.Drawing.Size(73, 20);
-            this.tx_flete.TabIndex = 25;
-            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
-            // 
-            // tx_numero
-            // 
-            this.tx_numero.AllowSpace = false;
-            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numero.Location = new System.Drawing.Point(54, 42);
-            this.tx_numero.Name = "tx_numero";
-            this.tx_numero.Size = new System.Drawing.Size(73, 20);
-            this.tx_numero.TabIndex = 2;
-            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
-            // 
-            // tx_serie
-            // 
-            this.tx_serie.AllowSpace = false;
-            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serie.Location = new System.Drawing.Point(55, 14);
-            this.tx_serie.Name = "tx_serie";
-            this.tx_serie.Size = new System.Drawing.Size(44, 20);
-            this.tx_serie.TabIndex = 1;
-            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // gb_detalle
             // 
@@ -1428,9 +1428,45 @@
             this.gb_detalle.Location = new System.Drawing.Point(12, 243);
             this.gb_detalle.Name = "gb_detalle";
             this.gb_detalle.Size = new System.Drawing.Size(601, 122);
-            this.gb_detalle.TabIndex = 222;
+            this.gb_detalle.TabIndex = 20;
             this.gb_detalle.TabStop = false;
             this.gb_detalle.Text = " Detalle ";
+            // 
+            // groupBox49
+            // 
+            this.groupBox49.BackColor = System.Drawing.Color.White;
+            this.groupBox49.Controls.Add(this.groupBox50);
+            this.groupBox49.Location = new System.Drawing.Point(18, 71);
+            this.groupBox49.Name = "groupBox49";
+            this.groupBox49.Size = new System.Drawing.Size(550, 1);
+            this.groupBox49.TabIndex = 340;
+            this.groupBox49.TabStop = false;
+            // 
+            // groupBox50
+            // 
+            this.groupBox50.Location = new System.Drawing.Point(0, -26);
+            this.groupBox50.Name = "groupBox50";
+            this.groupBox50.Size = new System.Drawing.Size(164, 1);
+            this.groupBox50.TabIndex = 113;
+            this.groupBox50.TabStop = false;
+            // 
+            // groupBox45
+            // 
+            this.groupBox45.BackColor = System.Drawing.Color.White;
+            this.groupBox45.Controls.Add(this.groupBox48);
+            this.groupBox45.Location = new System.Drawing.Point(194, 39);
+            this.groupBox45.Name = "groupBox45";
+            this.groupBox45.Size = new System.Drawing.Size(189, 1);
+            this.groupBox45.TabIndex = 338;
+            this.groupBox45.TabStop = false;
+            // 
+            // groupBox48
+            // 
+            this.groupBox48.Location = new System.Drawing.Point(0, -26);
+            this.groupBox48.Name = "groupBox48";
+            this.groupBox48.Size = new System.Drawing.Size(164, 1);
+            this.groupBox48.TabIndex = 113;
+            this.groupBox48.TabStop = false;
             // 
             // groupBox51
             // 
@@ -1457,7 +1493,7 @@
             this.panel3.Location = new System.Drawing.Point(107, 80);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(103, 23);
-            this.panel3.TabIndex = 23;
+            this.panel3.TabIndex = 233;
             // 
             // rb_tn
             // 
@@ -1495,24 +1531,6 @@
             this.lb_glodeta.Size = new System.Drawing.Size(2, 15);
             this.lb_glodeta.TabIndex = 347;
             // 
-            // groupBox49
-            // 
-            this.groupBox49.BackColor = System.Drawing.Color.White;
-            this.groupBox49.Controls.Add(this.groupBox50);
-            this.groupBox49.Location = new System.Drawing.Point(18, 71);
-            this.groupBox49.Name = "groupBox49";
-            this.groupBox49.Size = new System.Drawing.Size(550, 1);
-            this.groupBox49.TabIndex = 340;
-            this.groupBox49.TabStop = false;
-            // 
-            // groupBox50
-            // 
-            this.groupBox50.Location = new System.Drawing.Point(0, -26);
-            this.groupBox50.Name = "groupBox50";
-            this.groupBox50.Size = new System.Drawing.Size(164, 1);
-            this.groupBox50.TabIndex = 113;
-            this.groupBox50.TabStop = false;
-            // 
             // tx_det_desc
             // 
             this.tx_det_desc.BackColor = System.Drawing.SystemColors.Window;
@@ -1521,25 +1539,7 @@
             this.tx_det_desc.MaxLength = 0;
             this.tx_det_desc.Name = "tx_det_desc";
             this.tx_det_desc.Size = new System.Drawing.Size(283, 18);
-            this.tx_det_desc.TabIndex = 22;
-            // 
-            // groupBox45
-            // 
-            this.groupBox45.BackColor = System.Drawing.Color.White;
-            this.groupBox45.Controls.Add(this.groupBox48);
-            this.groupBox45.Location = new System.Drawing.Point(194, 39);
-            this.groupBox45.Name = "groupBox45";
-            this.groupBox45.Size = new System.Drawing.Size(189, 1);
-            this.groupBox45.TabIndex = 338;
-            this.groupBox45.TabStop = false;
-            // 
-            // groupBox48
-            // 
-            this.groupBox48.Location = new System.Drawing.Point(0, -26);
-            this.groupBox48.Name = "groupBox48";
-            this.groupBox48.Size = new System.Drawing.Size(164, 1);
-            this.groupBox48.TabIndex = 113;
-            this.groupBox48.TabStop = false;
+            this.tx_det_desc.TabIndex = 3;
             // 
             // tx_det_umed
             // 
@@ -1549,7 +1549,7 @@
             this.tx_det_umed.MaxLength = 0;
             this.tx_det_umed.Name = "tx_det_umed";
             this.tx_det_umed.Size = new System.Drawing.Size(100, 18);
-            this.tx_det_umed.TabIndex = 21;
+            this.tx_det_umed.TabIndex = 2;
             // 
             // tx_det_peso
             // 
@@ -1557,7 +1557,8 @@
             this.tx_det_peso.Location = new System.Drawing.Point(211, 83);
             this.tx_det_peso.Name = "tx_det_peso";
             this.tx_det_peso.Size = new System.Drawing.Size(61, 20);
-            this.tx_det_peso.TabIndex = 24;
+            this.tx_det_peso.TabIndex = 4;
+            this.tx_det_peso.Leave += new System.EventHandler(this.tx_det_peso_Leave);
             // 
             // groupBox46
             // 
@@ -1595,7 +1596,8 @@
             this.tx_det_cant.Location = new System.Drawing.Point(106, 22);
             this.tx_det_cant.Name = "tx_det_cant";
             this.tx_det_cant.Size = new System.Drawing.Size(61, 20);
-            this.tx_det_cant.TabIndex = 20;
+            this.tx_det_cant.TabIndex = 1;
+            this.tx_det_cant.Leave += new System.EventHandler(this.tx_det_cant_Leave);
             // 
             // label40
             // 
@@ -1768,11 +1770,11 @@
             this.groupBox17.ResumeLayout(false);
             this.gb_detalle.ResumeLayout(false);
             this.gb_detalle.PerformLayout();
+            this.groupBox49.ResumeLayout(false);
+            this.groupBox45.ResumeLayout(false);
             this.groupBox51.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            this.groupBox49.ResumeLayout(false);
-            this.groupBox45.ResumeLayout(false);
             this.groupBox46.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Windows.Forms;
 
 namespace TransCarga
@@ -51,6 +52,10 @@ namespace TransCarga
         public static bool vg_conSol = false;   // usa conector solorsoft para ruc y dni
         //
         public static string regmtc = "";       // registro MTC de la empresa de transportes
+        //
+        public static DataTable dt_ubigeos = new DataTable();   // 25/08/2023 para los dptos, provin y distritos
+        public static DataTable dt_enlaces = new DataTable();   // 25/08/2023 para todos los enlaces de datos
+        public static DataTable dt_definic = new DataTable();   // 25/08/2023 para todas las definiciones
         [STAThread]
         static void Main()
         {

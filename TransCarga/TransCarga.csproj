@@ -279,12 +279,6 @@
     <Compile Include="movimas.designer.cs">
       <DependentUpon>movimas.cs</DependentUpon>
     </Compile>
-    <Compile Include="nlogin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="nlogin.Designer.cs">
-      <DependentUpon>nlogin.cs</DependentUpon>
-    </Compile>
     <Compile Include="notcredclts.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -519,9 +513,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="movimas.resx">
       <DependentUpon>movimas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="nlogin.resx">
-      <DependentUpon>nlogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="notcredclts.resx">
       <DependentUpon>notcredclts.cs</DependentUpon>

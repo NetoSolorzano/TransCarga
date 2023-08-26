@@ -328,10 +328,16 @@ planicarga, adecuaciones al formulario para los nuevos campos relacionados a cho
 vehiculos, adecuaciones al formulario para los nuevos campos ........................................ OK 22/08/2023
 defs, adecuaciones de nuevos tipos DTM por ejemplo .................................................. ok 22/08/2023
 guiati_e, adecuar el registro de pre-guías manualmente .............................................. ok 22/08/2023
+preguiat, revisar y adecuar el form y menus para su uso en Carrión .................................. ok 25/08/2023	 reunión con Ember 24/08/2023
+preguiat, mejorar la rapides usando sqlite y demás .................................................. 
+guiati, habilitar todas las funcionalidades de pre guias, adecuar la "manuales" .....................
 guiati_e, habilitar todas las funcionalidades de pre guias, adecuar la "manuales" ...................	 reunión con Ember 24/08/2023
-preguiat, revisar y adecuar el form y menus para su uso en Carrión .................................. 	 reunión con Ember 24/08/2023
 *****************************************************************************************************
 form guiari_e, arreglo en toolboton para mostrar visualización y demas .............................. ok 19/08/2023
 guiati_e, adecuación para permitir grabar sin documento relacionado ................................. ok 21/08/2023
 recshum, no funciona bien el boton de genero, arreglar .............................................. ok 21/08/2023
 form facelect, permitir que ciertos usuarios puedan cambiar la fecha emisión modos NUEVO EDICION .... ok 23/08/2023	requerimiento de Magaly
+Program, login, se agrego las tablas públicas y se llenó con datos en login:
+	dt_ubigeos ...................................................................................... ok 25/08/2023
+	dt_enlaces ...................................................................................... ok 25/08/2023
+

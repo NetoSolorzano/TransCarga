@@ -500,7 +500,7 @@ namespace TransCarga
                 }
             }
         }
-        public void escribe(Form efrm)  // me quede aca 24/08/2023
+        public void escribe(Form efrm) 
         {
             foreach (Control oControls in efrm.Controls)
             {
@@ -1394,7 +1394,7 @@ namespace TransCarga
                         tx_disDrio.ReadOnly = false;
                     }
                 }
-                tx_obser1.Focus();
+                tx_docsOr.Focus();
             }
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() == "")
             {

@@ -64,6 +64,7 @@ namespace TransCarga
         string v_idoco = "";            // letras iniciales del campo docs.origen
         string webdni = "";             // ruta web del buscador de DNI
         string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
+        string usoPGm = "";             // variable de uso de pre-guias y si estas son manuales o automáticas
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -229,7 +230,11 @@ namespace TransCarga
             Array.Clear(dl, 0, dl.Length);
             claveSeg = "";
             dataGridView1.Rows.Clear();
-            if (Tx_modo.Text == "NUEVO") dataGridView1.ReadOnly = false;
+            if (Tx_modo.Text == "NUEVO")
+            {
+                if (usoPGm != "") { tx_pregr_num.ReadOnly = false; }
+                dataGridView1.ReadOnly = false;
+            }
             else dataGridView1.ReadOnly = true;
             tx_flete.Text = "";
             tx_pagado.Text = "";
@@ -327,6 +332,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                             if (row["param"].ToString() == "inidocor") v_idoco = row["valor"].ToString().Trim();            // iniciales de documento origen
+                            if (row["param"].ToString() == "usoPGm") usoPGm = row["valor"].ToString().Trim();               // uso de pre-guias manuales para el marcado de bultos = "manual"
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -531,62 +537,109 @@ namespace TransCarga
                     MySqlDataReader dr = micon.ExecuteReader();
                     if (dr.Read())
                     {
-                        tx_dat_estad.Text = dr.GetString("estadoser");
-                        tx_dat_locori.Text = dr.GetString("locorigen");
-                        tx_dat_locdes.Text = dr.GetString("locdestin");
-                        tx_ubigO.Text = dr.GetString("ubiorigen");
-                        tx_ubigD.Text = dr.GetString("ubidestin");
-                        tx_dat_tdRem.Text = dr.GetString("tidorepre");
-                        tx_numDocRem.Text = dr.GetString("nudorepre");
-                        tx_nomRem.Text = dr.GetString("nombrepre");
-                        tx_dirRem.Text = dr.GetString("direrepre");
-                        tx_ubigRtt.Text = dr.GetString("ubigrepre");
-                        tx_dat_tDdest.Text = dr.GetString("tidodepre");
-                        tx_numDocDes.Text = dr.GetString("nudodepre");
-                        tx_nomDrio.Text = dr.GetString("nombdepre");
-                        tx_dirDrio.Text = dr.GetString("diredepre");
-                        tx_ubigDtt.Text = dr.GetString("ubigdepre");
-                        tx_docsOr.Text = dr.GetString("docsremit");
-                        tx_obser1.Text = dr.GetString("obspregui");
-                        tx_consig.Text = dr.GetString("clifinpre");
-                        tx_dat_mone.Text = dr.GetString("tipmonpre");
-                        tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
-                        claveSeg = dr.GetString("seguroE");
+                        if (dr.GetString("estadoser") == codAnul)
+                        {
+                            MessageBox.Show("La Pre Guía esta ANULADA", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            tx_pregr_num.Text = "";
+                            initIngreso();
+                            tx_pregr_num.Focus();
+                            return;
+                        }
+                        else
+                        {
+                            tx_dat_estad.Text = dr.GetString("estadoser");
+                            tx_dat_locori.Text = dr.GetString("locorigen");
+                            tx_dat_locdes.Text = dr.GetString("locdestin");
+                            tx_ubigO.Text = dr.GetString("ubiorigen");
+                            tx_ubigD.Text = dr.GetString("ubidestin");
+                            tx_dat_tdRem.Text = dr.GetString("tidorepre");
+                            tx_numDocRem.Text = dr.GetString("nudorepre");
+                            tx_nomRem.Text = dr.GetString("nombrepre");
+                            tx_dirRem.Text = dr.GetString("direrepre");
+                            tx_ubigRtt.Text = dr.GetString("ubigrepre");
+                            tx_dat_tDdest.Text = dr.GetString("tidodepre");
+                            tx_numDocDes.Text = dr.GetString("nudodepre");
+                            tx_nomDrio.Text = dr.GetString("nombdepre");
+                            tx_dirDrio.Text = dr.GetString("diredepre");
+                            tx_ubigDtt.Text = dr.GetString("ubigdepre");
+                            tx_docsOr.Text = dr.GetString("docsremit");
+                            tx_obser1.Text = dr.GetString("obspregui");
+                            tx_consig.Text = dr.GetString("clifinpre");
+                            tx_dat_mone.Text = dr.GetString("tipmonpre");
+                            tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
+                            claveSeg = dr.GetString("seguroE");
+                        }
                     }
                     dr.Dispose();
                 }
-                string jalad = "select cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
-                    "from detpregr where numpregui = @num";
-                using (MySqlCommand micon = new MySqlCommand(jalad, conn))
+                if (tx_dat_estad.Text != "")
                 {
-                    micon.Parameters.AddWithValue("@num", numpre);
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    while (dr.Read())
+                    string jalad = "select cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
+                        "from detpregr where numpregui = @num";
+                    using (MySqlCommand micon = new MySqlCommand(jalad, conn))
                     {
-                        dataGridView1.Rows.Add(
-                            dr.GetString(0),
-                            dr.GetString(1),
-                            dr.GetString(3),
-                            dr.GetString(4)
-                            );
+                        micon.Parameters.AddWithValue("@num", numpre);
+                        MySqlDataReader dr = micon.ExecuteReader();
+                        while (dr.Read())
+                        {
+                            dataGridView1.Rows.Add(
+                                dr.GetString(0),
+                                dr.GetString(1),
+                                dr.GetString(3),
+                                dr.GetString(4)
+                                );
+                        }
+                        dr.Dispose();
                     }
-                    dr.Dispose();
+
+                    cmb_origen.SelectedValue = tx_dat_locori.Text;
+                    cmb_origen_SelectionChangeCommitted(null, null);
+                    cmb_destino.SelectedValue = tx_dat_locdes.Text;
+                    cmb_destino_SelectionChangeCommitted(null, null);
+                    cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+                    string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
+                    tx_dptoRtt.Text = du_remit[0];
+                    tx_provRtt.Text = du_remit[1];
+                    tx_distRtt.Text = du_remit[2];
+                    cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
+                    string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
+                    tx_dptoDrio.Text = du_desti[0];
+                    tx_proDrio.Text = du_desti[1];
+                    tx_disDrio.Text = du_desti[2];
+                    cmb_mon.SelectedValue = tx_dat_mone.Text;
+
+                    if (tx_numDocRem.Text.Trim() == "")
+                    {
+                        cmb_docRem.Enabled = true;
+                        tx_numDocRem.Enabled = true;
+                        tx_dirRem.Enabled = true;
+                        tx_dptoRtt.Enabled = true;
+                        tx_provRtt.Enabled = true;
+                        tx_distRtt.Enabled = true;
+                        tx_ubigRtt.Enabled = true;
+                    }
+                    if (tx_numDocDes.Text.Trim() == "")
+                    {
+                        cmb_docDes.Enabled = true;
+                        tx_numDocDes.Enabled = true;
+                        tx_dirDrio.Enabled = true;
+                        tx_dptoDrio.Enabled = true;
+                        tx_proDrio.Enabled = true;
+                        tx_disDrio.Enabled = true;
+                        tx_ubigDtt.Enabled = true;
+                    }
+                    if (claveSeg == "") chk_seguridad.Enabled = true;
+                    else
+                    {
+                        chk_seguridad.Checked = true;
+                    }
+                    tx_docsOr.Enabled = true;
+                    tx_consig.Enabled = true;
+                    tx_obser1.Enabled = true;
+                    dataGridView1_RowLeave(null, null);
+                    dataGridView1.ReadOnly = true;
+
                 }
-                cmb_origen.SelectedValue = tx_dat_locori.Text;
-                cmb_origen_SelectionChangeCommitted(null, null);
-                cmb_destino.SelectedValue = tx_dat_locdes.Text;
-                cmb_destino_SelectionChangeCommitted(null, null);
-                cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
-                string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
-                tx_dptoRtt.Text = du_remit[0];
-                tx_provRtt.Text = du_remit[1];
-                tx_distRtt.Text = du_remit[2];
-                cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
-                string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
-                tx_dptoDrio.Text = du_desti[0];
-                tx_proDrio.Text = du_desti[1];
-                tx_disDrio.Text = du_desti[2];
-                cmb_mon.SelectedValue = tx_dat_mone.Text;
             }
         }
         private void jaladet(string idr)         // jala el detalle
@@ -2295,47 +2348,9 @@ namespace TransCarga
         {
             if (Tx_modo.Text == "NUEVO" && tx_pregr_num.Text.Trim() != "" && tx_pregr_num.ReadOnly == false)
             {
-                tx_pregr_num.Text = lib.Right("00000000" + tx_pregr_num.Text, 8);
+                if (usoPGm != "" && usoPGm == "automatico") tx_pregr_num.Text = lib.Right("00000000" + tx_pregr_num.Text, 8);
+                if (usoPGm != "" && usoPGm == "manual") tx_pregr_num.Text = tx_pregr_num.Text.Trim();
                 jalapg(tx_pregr_num.Text);
-                if (tx_dat_estad.Text == codAnul)
-                {
-                    MessageBox.Show("La Pre Guía esta ANULADA", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    initIngreso();
-                    tx_pregr_num.Focus();
-                }
-                else
-                {
-                    if (tx_numDocRem.Text.Trim() == "")
-                    {
-                        cmb_docRem.Enabled = true;
-                        tx_numDocRem.Enabled = true;
-                        tx_dirRem.Enabled = true;
-                        tx_dptoRtt.Enabled = true;
-                        tx_provRtt.Enabled = true;
-                        tx_distRtt.Enabled = true;
-                        tx_ubigRtt.Enabled = true;
-                    }
-                    if (tx_numDocDes.Text.Trim() == "")
-                    {
-                        cmb_docDes.Enabled = true;
-                        tx_numDocDes.Enabled = true;
-                        tx_dirDrio.Enabled = true;
-                        tx_dptoDrio.Enabled = true;
-                        tx_proDrio.Enabled = true;
-                        tx_disDrio.Enabled = true;
-                        tx_ubigDtt.Enabled = true;
-                    }
-                    if (claveSeg == "") chk_seguridad.Enabled = true;
-                    else
-                    {
-                        chk_seguridad.Checked = true;
-                    }
-                    tx_docsOr.Enabled = true;
-                    tx_consig.Enabled = true;
-                    tx_obser1.Enabled = true;
-                    dataGridView1_RowLeave(null, null);
-                    dataGridView1.ReadOnly = true;
-                }
             }
         }
         private void tx_flete_Leave(object sender, EventArgs e)

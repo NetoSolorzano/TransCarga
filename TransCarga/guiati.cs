@@ -521,7 +521,7 @@ namespace TransCarga
             //    return;
             //}
         }
-        private void jalapg(string numpre)      // jala datos de la pre guia
+        private void jalapg(string numpre, string serpre)      // jala datos de la pre guia
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -530,115 +530,129 @@ namespace TransCarga
                     "a.tidodepre,a.nudodepre,a.nombdepre,a.diredepre,a.ubigdepre," +
                     "a.tidorepre,a.nudorepre,a.nombrepre,a.direrepre,a.ubigrepre," +
                     "a.docsremit,a.obspregui,a.clifinpre,a.tipmonpre,a.seguroE,a.totpregui " +
-                    "from cabpregr a where a.numpregui=@num";
+                    "from cabpregr a where a.serpregui=@ser and a.numpregui=@num";
                 using (MySqlCommand micon = new MySqlCommand(jala, conn))
                 {
                     micon.Parameters.AddWithValue("@num", numpre);
+                    micon.Parameters.AddWithValue("@ser", serpre);
                     MySqlDataReader dr = micon.ExecuteReader();
                     if (dr.Read())
                     {
-                        if (dr.GetString("estadoser") == codAnul)
+                        if (dr.HasRows)
                         {
-                            MessageBox.Show("La Pre Guía esta ANULADA", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            tx_pregr_num.Text = "";
-                            initIngreso();
-                            tx_pregr_num.Focus();
-                            return;
+                            if (dr.GetString("estadoser") == codAnul)
+                            {
+                                MessageBox.Show("La Pre Guía esta ANULADA", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                tx_pregr_num.Text = "";
+                                initIngreso();
+                                tx_pregr_num.Focus();
+                                return;
+                            }
+                            else
+                            {
+                                tx_dat_estad.Text = dr.GetString("estadoser");
+                                tx_dat_locori.Text = dr.GetString("locorigen");
+                                tx_dat_locdes.Text = dr.GetString("locdestin");
+                                tx_ubigO.Text = dr.GetString("ubiorigen");
+                                tx_ubigD.Text = dr.GetString("ubidestin");
+                                tx_dat_tdRem.Text = dr.GetString("tidorepre");
+                                tx_numDocRem.Text = dr.GetString("nudorepre");
+                                tx_nomRem.Text = dr.GetString("nombrepre");
+                                tx_dirRem.Text = dr.GetString("direrepre");
+                                tx_ubigRtt.Text = dr.GetString("ubigrepre");
+                                tx_dat_tDdest.Text = dr.GetString("tidodepre");
+                                tx_numDocDes.Text = dr.GetString("nudodepre");
+                                tx_nomDrio.Text = dr.GetString("nombdepre");
+                                tx_dirDrio.Text = dr.GetString("diredepre");
+                                tx_ubigDtt.Text = dr.GetString("ubigdepre");
+                                tx_docsOr.Text = dr.GetString("docsremit");
+                                tx_obser1.Text = dr.GetString("obspregui");
+                                tx_consig.Text = dr.GetString("clifinpre");
+                                tx_dat_mone.Text = dr.GetString("tipmonpre");
+                                tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
+                                claveSeg = dr.GetString("seguroE");
+                                dr.Dispose();
+                                string jalad = "select cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
+                                    "from detpregr where serpregui=@ser and numpregui=@num";
+                                using (MySqlCommand midet = new MySqlCommand(jalad, conn))
+                                {
+                                    midet.Parameters.AddWithValue("@num", numpre);
+                                    midet.Parameters.AddWithValue("@ser", serpre);
+                                    MySqlDataReader drdt = midet.ExecuteReader();
+                                    while (drdt.Read())
+                                    {
+                                        dataGridView1.Rows.Add(
+                                            drdt.GetString(0),
+                                            drdt.GetString(1),
+                                            drdt.GetString(3),
+                                            drdt.GetString(4)
+                                            );
+                                    }
+                                    drdt.Dispose();
+                                }
+                                cmb_origen.SelectedValue = tx_dat_locori.Text;
+                                cmb_origen_SelectionChangeCommitted(null, null);
+                                cmb_destino.SelectedValue = tx_dat_locdes.Text;
+                                cmb_destino_SelectionChangeCommitted(null, null);
+                                cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+                                string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
+                                tx_dptoRtt.Text = du_remit[0];
+                                tx_provRtt.Text = du_remit[1];
+                                tx_distRtt.Text = du_remit[2];
+                                cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
+                                string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
+                                tx_dptoDrio.Text = du_desti[0];
+                                tx_proDrio.Text = du_desti[1];
+                                tx_disDrio.Text = du_desti[2];
+                                cmb_mon.SelectedValue = tx_dat_mone.Text;
+
+                                if (tx_numDocRem.Text.Trim() == "")
+                                {
+                                    cmb_docRem.Enabled = true;
+                                    tx_numDocRem.Enabled = true;
+                                    tx_dirRem.Enabled = true;
+                                    tx_dptoRtt.Enabled = true;
+                                    tx_provRtt.Enabled = true;
+                                    tx_distRtt.Enabled = true;
+                                    tx_ubigRtt.Enabled = true;
+                                }
+                                if (tx_numDocDes.Text.Trim() == "")
+                                {
+                                    cmb_docDes.Enabled = true;
+                                    tx_numDocDes.Enabled = true;
+                                    tx_dirDrio.Enabled = true;
+                                    tx_dptoDrio.Enabled = true;
+                                    tx_proDrio.Enabled = true;
+                                    tx_disDrio.Enabled = true;
+                                    tx_ubigDtt.Enabled = true;
+                                }
+                                if (claveSeg == "") chk_seguridad.Enabled = true;
+                                else
+                                {
+                                    chk_seguridad.Checked = true;
+                                }
+                                tx_docsOr.Enabled = true;
+                                tx_consig.Enabled = true;
+                                tx_obser1.Enabled = true;
+                                dataGridView1_RowLeave(null, null);
+                                dataGridView1.ReadOnly = true;
+                            }
                         }
                         else
                         {
-                            tx_dat_estad.Text = dr.GetString("estadoser");
-                            tx_dat_locori.Text = dr.GetString("locorigen");
-                            tx_dat_locdes.Text = dr.GetString("locdestin");
-                            tx_ubigO.Text = dr.GetString("ubiorigen");
-                            tx_ubigD.Text = dr.GetString("ubidestin");
-                            tx_dat_tdRem.Text = dr.GetString("tidorepre");
-                            tx_numDocRem.Text = dr.GetString("nudorepre");
-                            tx_nomRem.Text = dr.GetString("nombrepre");
-                            tx_dirRem.Text = dr.GetString("direrepre");
-                            tx_ubigRtt.Text = dr.GetString("ubigrepre");
-                            tx_dat_tDdest.Text = dr.GetString("tidodepre");
-                            tx_numDocDes.Text = dr.GetString("nudodepre");
-                            tx_nomDrio.Text = dr.GetString("nombdepre");
-                            tx_dirDrio.Text = dr.GetString("diredepre");
-                            tx_ubigDtt.Text = dr.GetString("ubigdepre");
-                            tx_docsOr.Text = dr.GetString("docsremit");
-                            tx_obser1.Text = dr.GetString("obspregui");
-                            tx_consig.Text = dr.GetString("clifinpre");
-                            tx_dat_mone.Text = dr.GetString("tipmonpre");
-                            tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
-                            claveSeg = dr.GetString("seguroE");
+                            MessageBox.Show("No existe la pre-guía ingresada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_pregr_num.Text = "";
+                            tx_pregr_num.Focus();
+                            return;
                         }
                     }
-                    dr.Dispose();
-                }
-                if (tx_dat_estad.Text != "")
-                {
-                    string jalad = "select cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
-                        "from detpregr where numpregui = @num";
-                    using (MySqlCommand micon = new MySqlCommand(jalad, conn))
-                    {
-                        micon.Parameters.AddWithValue("@num", numpre);
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        while (dr.Read())
-                        {
-                            dataGridView1.Rows.Add(
-                                dr.GetString(0),
-                                dr.GetString(1),
-                                dr.GetString(3),
-                                dr.GetString(4)
-                                );
-                        }
-                        dr.Dispose();
-                    }
-
-                    cmb_origen.SelectedValue = tx_dat_locori.Text;
-                    cmb_origen_SelectionChangeCommitted(null, null);
-                    cmb_destino.SelectedValue = tx_dat_locdes.Text;
-                    cmb_destino_SelectionChangeCommitted(null, null);
-                    cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
-                    string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
-                    tx_dptoRtt.Text = du_remit[0];
-                    tx_provRtt.Text = du_remit[1];
-                    tx_distRtt.Text = du_remit[2];
-                    cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
-                    string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
-                    tx_dptoDrio.Text = du_desti[0];
-                    tx_proDrio.Text = du_desti[1];
-                    tx_disDrio.Text = du_desti[2];
-                    cmb_mon.SelectedValue = tx_dat_mone.Text;
-
-                    if (tx_numDocRem.Text.Trim() == "")
-                    {
-                        cmb_docRem.Enabled = true;
-                        tx_numDocRem.Enabled = true;
-                        tx_dirRem.Enabled = true;
-                        tx_dptoRtt.Enabled = true;
-                        tx_provRtt.Enabled = true;
-                        tx_distRtt.Enabled = true;
-                        tx_ubigRtt.Enabled = true;
-                    }
-                    if (tx_numDocDes.Text.Trim() == "")
-                    {
-                        cmb_docDes.Enabled = true;
-                        tx_numDocDes.Enabled = true;
-                        tx_dirDrio.Enabled = true;
-                        tx_dptoDrio.Enabled = true;
-                        tx_proDrio.Enabled = true;
-                        tx_disDrio.Enabled = true;
-                        tx_ubigDtt.Enabled = true;
-                    }
-                    if (claveSeg == "") chk_seguridad.Enabled = true;
                     else
                     {
-                        chk_seguridad.Checked = true;
+                        dr.Dispose();
+                        MessageBox.Show("No existe la pre-guía ingresada", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        tx_pregr_num.Text = "";
+                        tx_pregr_num.Focus();
                     }
-                    tx_docsOr.Enabled = true;
-                    tx_consig.Enabled = true;
-                    tx_obser1.Enabled = true;
-                    dataGridView1_RowLeave(null, null);
-                    dataGridView1.ReadOnly = true;
-
                 }
             }
         }
@@ -2350,7 +2364,7 @@ namespace TransCarga
             {
                 if (usoPGm != "" && usoPGm == "automatico") tx_pregr_num.Text = lib.Right("00000000" + tx_pregr_num.Text, 8);
                 if (usoPGm != "" && usoPGm == "manual") tx_pregr_num.Text = tx_pregr_num.Text.Trim();
-                jalapg(tx_pregr_num.Text);
+                jalapg(tx_pregr_num.Text, tx_serie.Text);
             }
         }
         private void tx_flete_Leave(object sender, EventArgs e)
@@ -2873,6 +2887,7 @@ namespace TransCarga
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
                         conn.Open();
+                        /*
                         using (MySqlCommand micon = new MySqlCommand(consul, conn))
                         {
                             micon.Parameters.AddWithValue("@ean", codAnul);
@@ -2888,7 +2903,7 @@ namespace TransCarga
                                     // direccion del pto de emision [tipdoc=preguia][est_anulado][origen][destino]
                                 }
                             }
-                        }
+                        } */
                         // validamos que exista planilla abierta hacia el mismo destino
                         consul = "SELECT a.id,a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
                             "a.nomayuda,a.rucpropie,b.razonsocial,c.marca,c.modelo " +
@@ -2976,8 +2991,11 @@ namespace TransCarga
                             }
                         }
                     }
-                    cmb_docRem.Focus();
-                    cmb_docRem.DroppedDown = true;
+                    if (tx_pregr_num.Text == "")
+                    {
+                        cmb_docRem.Focus();
+                        cmb_docRem.DroppedDown = true;
+                    }
                 }
                 /*
                 if (lib.valientabla("cabguiai", "concat(sergui,numgui)", tx_serie.Text + tx_numero.Text) == "1")

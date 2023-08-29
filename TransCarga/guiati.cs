@@ -636,6 +636,17 @@ namespace TransCarga
                                 tx_obser1.Enabled = true;
                                 dataGridView1_RowLeave(null, null);
                                 dataGridView1.ReadOnly = true;
+
+                                DataRow[] fila = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");
+                                foreach (DataRow row in fila)
+                                {
+                                    tx_mld.Text = row[2].ToString();
+                                }
+                                fila = dttd1.Select("idcodice='" + tx_dat_tDdest.Text + "'");
+                                foreach (DataRow row in fila)
+                                {
+                                    tx_mldD.Text = row[2].ToString();
+                                }
                             }
                         }
                         else

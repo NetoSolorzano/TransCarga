@@ -585,7 +585,7 @@ namespace TransCarga
                             tx_clteDV.Text = dr.GetString("clifact");
                             //DataRow[] row = dtm.Select("idcodice='" + dr.GetString("codmonvta") + "'");
                             DataRow[] row = Program.dt_definic.Select("idcodice='" + dr.GetString("codmonvta") + "'");
-                            lb_impDV.Text = lb_impDV.Text + ((row.Length > 0)? row[0][1].ToString() : "");
+                            lb_impDV.Text = lb_impDV.Text + ((row.Length > 0)? row[0]["DescrizioneRid"].ToString() : "");
                             tx_impDV.Text = dr.GetDecimal("totdocvta").ToString("#.##");
                             // "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT " +
                             tx_dat_docOr.Text = dr.GetString("tidocor");
@@ -633,12 +633,12 @@ namespace TransCarga
                             //
                             //DataRow[] rows = dttd2.Select("idcodice='" + dr.GetString("tipdocpri") + "'");
                             DataRow[] rows = Program.dt_definic.Select("idcodice='" + dr.GetString("tipdocpri") + "'");
-                            tx_pla_chofS.Text = rows[0][3].ToString();           // tipo de doc chofer principal 
+                            tx_pla_chofS.Text = rows[0]["codsunat"].ToString();           // tipo de doc chofer principal 
                             if (dr.GetString("tipdocayu").Trim() != "")
                             {
                                 //rows = dttd2.Select("idcodice='" + dr.GetString("tipdocayu") + "'");
                                 rows = Program.dt_definic.Select("idcodice='" + dr.GetString("tipdocayu") + "'");
-                                tx_dat_dniC2s.Text = rows[0][3].ToString();      // tipo de doc ayudante 
+                                tx_dat_dniC2s.Text = rows[0]["codsunat"].ToString();      // tipo de doc ayudante 
                             }
                         }
                         else
@@ -1704,15 +1704,15 @@ namespace TransCarga
             string retorna = "";
 
             DataRow[] row = dttdv.Select("idcodice='" + v_cid + "'");             // tipo de documento guia remision transportista
-            tipdo = row[0][3].ToString();
-            string serie = row[0][4].ToString().Substring(0, 1) + lib.Right(tx_serie.Text, 3);
+            tipdo = row[0]["codsunat"].ToString();
+            string serie = row[0]["deta1"].ToString().Substring(0, 1) + lib.Right(tx_serie.Text, 3);
             string corre = tx_numero.Text;
             //DataRow[] rowd = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");          // tipo de documento del remitente
             DataRow[] rowd = Program.dt_definic.Select("idcodice='" + tx_dat_tdRem.Text + "'");
-            tipoDocRem = rowd[0][3].ToString().Trim();
+            tipoDocRem = rowd[0]["codsunat"].ToString().Trim();
             //rowd = dttd0.Select("idcodice='" + tx_dat_tDdest.Text + "'");          // tipo de documento destinatario
             rowd = Program.dt_definic.Select("idcodice='" + tx_dat_tDdest.Text + "'");          // tipo de documento destinatario
-            tipoDocDes = rowd[0][3].ToString().Trim();
+            tipoDocDes = rowd[0]["codsunat"].ToString().Trim();
 
             string ruta = rutatxt;
             string archi = "";
@@ -3668,11 +3668,11 @@ namespace TransCarga
                     // idcodice,descrizionerid,ubidir,marca1,marca2,deta1,deta2,deta3,deta4
                     //DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                     DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_locdes.Text + "'");
-                    tx_ubigDtt.Text = fila[0][2].ToString();
-                    tx_dirDrio.Text = fila[0][5].ToString();
-                    tx_dptoDrio.Text = fila[0][6].ToString();
-                    tx_proDrio.Text = fila[0][7].ToString();
-                    tx_disDrio.Text = fila[0][8].ToString();
+                    tx_ubigDtt.Text = fila[0]["ubiDir"].ToString();
+                    tx_dirDrio.Text = fila[0]["deta1"].ToString();
+                    tx_dptoDrio.Text = fila[0]["deta2"].ToString();
+                    tx_proDrio.Text = fila[0]["deta3"].ToString();
+                    tx_disDrio.Text = fila[0]["deta4"].ToString();
                     tx_ubigDtt.ReadOnly = true;
                     tx_dirDrio.ReadOnly = true;
                     tx_dptoDrio.ReadOnly = true;
@@ -3709,11 +3709,11 @@ namespace TransCarga
             {
                 //DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
                 DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_locori.Text + "'");
-                tx_ubigRtt.Text = fila[0][2].ToString();
-                tx_dirRem.Text = fila[0][5].ToString();
-                tx_dptoRtt.Text = fila[0][6].ToString();
-                tx_provRtt.Text = fila[0][7].ToString();
-                tx_distRtt.Text = fila[0][8].ToString();
+                tx_ubigRtt.Text = fila[0]["ubiDir"].ToString();
+                tx_dirRem.Text = fila[0]["deta1"].ToString();
+                tx_dptoRtt.Text = fila[0]["deta2"].ToString();
+                tx_provRtt.Text = fila[0]["deta3"].ToString();
+                tx_distRtt.Text = fila[0]["deta4"].ToString();
                 tx_ubigRtt.ReadOnly = true;
                 tx_dirRem.ReadOnly = true;
                 tx_dptoRtt.ReadOnly = true;
@@ -4149,9 +4149,9 @@ namespace TransCarga
                 DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_tdRem.Text + "'");
                 foreach (DataRow row in fila)
                 {
-                    tx_mld.Text = row[2].ToString();
-                    tx_dat_csrem.Text = row[3].ToString();
-                    tx_dat_nomcsr.Text = row[4].ToString();
+                    tx_mld.Text = row["codigo"].ToString();
+                    tx_dat_csrem.Text = row["codsunat"].ToString();
+                    tx_dat_nomcsr.Text = row["deta1"].ToString();
                 }
             }
         }
@@ -4164,9 +4164,9 @@ namespace TransCarga
                 DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_tDdest.Text + "'");
                 foreach (DataRow row in fila)
                 {
-                    tx_mldD.Text = row[2].ToString();
-                    tx_dat_codsu.Text = row[3].ToString();
-                    tx_dat_nomcsd.Text = row[4].ToString();
+                    tx_mldD.Text = row["codigo"].ToString();
+                    tx_dat_codsu.Text = row["codsunat"].ToString();
+                    tx_dat_nomcsd.Text = row["deta1"].ToString();
                 }
             }
         }
@@ -4207,7 +4207,7 @@ namespace TransCarga
                 tx_dirOrigen.Text = lib.dirloca(lib.codloc(asd));
                 //DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
                 DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_locori.Text + "'");
-                tx_ubigO.Text = fila[0][2].ToString();
+                tx_ubigO.Text = fila[0]["ubiDir"].ToString();
             }
             // lo de arriba viene del selectedindexhcnaged
             if (tx_dat_locori.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
@@ -4322,11 +4322,11 @@ namespace TransCarga
                                     {
                                         //DataRow[] fla = dttd2.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
                                         DataRow[] fla = Program.dt_definic.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
-                                        tx_pla_chofS.Text = fla[0][3].ToString();
+                                        tx_pla_chofS.Text = fla[0]["codsunat"].ToString();
                                         if (row["tipdocayu"] != null && row["tipdocayu"].ToString() != "")
                                         {
                                             fla = Program.dt_definic.Select("idcodice='" + row["tipdocayu"].ToString() + "'");
-                                            tx_dat_dniC2s.Text = fla[0][3].ToString();
+                                            tx_dat_dniC2s.Text = fla[0]["codsunat"].ToString();
                                         }
                                     }
                                 }
@@ -4380,7 +4380,7 @@ namespace TransCarga
             {
                 //DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                 DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_locdes.Text + "'");
-                tx_ubigD.Text = fila[0][2].ToString();
+                tx_ubigD.Text = fila[0]["ubiDir"].ToString();
             }
             if(Tx_modo.Text == "NUEVO") rb_ent_clte.PerformClick();
         }
@@ -4393,8 +4393,8 @@ namespace TransCarga
                 {
                     //DataRow[] fila = dtdor.Select("idcodice='" + tx_dat_docOr.Text + "'");
                     DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_docOr.Text + "'");
-                    tx_dat_dorigS.Text = fila[0][8].ToString();     // codsunat
-                    if (fila[0][14].ToString() == "1")              // sunat permite 2 documntos relacionados 
+                    tx_dat_dorigS.Text = fila[0]["codsunat"].ToString();     // codsunat
+                    if (fila[0]["marca1"].ToString() == "1")              // sunat permite 2 documntos relacionados 
                     {
                         cmb_docorig2.Enabled = true;
                     }
@@ -4437,7 +4437,7 @@ namespace TransCarga
                 {
                     //DataRow[] fila = dtdor2.Select("idcodice='" + tx_dat_docOr2.Text + "'");
                     DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_docOr2.Text + "'");
-                    tx_dat_dorigS2.Text = fila[0][8].ToString();     // codsunat
+                    tx_dat_dorigS2.Text = fila[0]["codsunat"].ToString();     // codsunat
                 }
             }
             else

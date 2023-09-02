@@ -41,6 +41,7 @@ namespace TransCarga
         string img_btq = "";
         string nfCRgr = "";             // nombre formato CR para visualizacion de guias
         string vcestper = "";           // nombres de estados que si se permite el arreglo o modificacion
+        string v_marGRET = "";          // marca de guía de remisión electrónica
         #endregion
 
         public busyarreg()
@@ -108,6 +109,10 @@ namespace TransCarga
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRir_cr") nfCRgr = row["valor"].ToString().Trim();         // campo de codigo de estado almacen reparto
                         //if (row["campo"].ToString() == "estAlmacen" && row["param"].ToString() == "recepcion") vcead = row["valor"].ToString().Trim();       // estado almacen recepcionado
                     }
+                    if (row["formulario"].ToString() == "guiati_e" && row["campo"].ToString() == "documento" && row["param"].ToString() == "marca")
+                    {
+                        v_marGRET = row["valor"].ToString().Trim();             // marca de guía transportista electrónica
+                    }
                 }
                 da.Dispose();
                 dt.Dispose();
@@ -126,7 +131,10 @@ namespace TransCarga
             cn.Open();
             try
             {
-                string sqlCmd = "select a.id AS ID,a.fechopegr as FECHA,lo.descrizionerid as SEDE,ld.descrizionerid as DESTINO,a.sergui as SERIE,a.numgui as GUIA,dr.descrizionerid as DR,a.nudoregri as NUMDOCR," +
+                string sqlCmd = "";
+                if (rb_guias.Checked == true)
+                {
+                    sqlCmd = "select a.id AS ID,a.fechopegr as FECHA,lo.descrizionerid as SEDE,ld.descrizionerid as DESTINO,a.sergui as SERIE,a.numgui as GUIA,dr.descrizionerid as DR,a.nudoregri as NUMDOCR," +
                     "a.nombregri as REMITENTE,dd.descrizionerid as DD,a.nudodegri as NUMDOCD,a.nombdegri as DESTINATARIO,a.docsremit as DOCSREMIT,mo.descrizionerid as MON,a.totgri as FLETE," +
                     "es.descrizionerid as ESTADO,concat(a.serplagri, '-', a.numplagri) AS MANIFIESTO, ifnull(concat(dv.descrizionerid, '-', a.serdocvta, '-', a.numdocvta), '') as DOC_VTA," +
                     "a.estadoser " +
@@ -138,9 +146,26 @@ namespace TransCarga
                     "left join desc_mon mo on mo.idcodice = a.tipmongri " +
                     "left join desc_est es on es.idcodice = a.estadoser " +
                     "left join desc_tdv dv on dv.idcodice = a.tipdocvta " +
-                    "where a.fechopegr between @fini and @ffin and a.sergui = @ser " +
+                    "where a.marca_gre=@mgre and a.fechopegr between @fini and @ffin and a.sergui = @ser " +
                     "order by a.sergui,a.numgui";
+                }
+                else
+                {
+                    sqlCmd = "select a.id AS ID,a.fechpregr as FECHA,lo.descrizionerid as SEDE,ld.descrizionerid as DESTINO,a.serpregui as SERIE,a.numpregui as PRE_G,dr.descrizionerid as DR," + 
+                        "a.nudorepre as NUMDOCR,a.nombrepre as REMITENTE,dd.descrizionerid as DD,a.nudodepre as NUMDOCD,a.nombdepre as DESTINATARIO,a.docsremit as DOCSREMIT," +
+                        "mo.descrizionerid as MON,a.totpregui as FLETE,es.descrizionerid as ESTADO,space(1) as MANIFIESTO,if(a.numguitra<>'',CONCAT('GR', a.serguitra, '-', a.numguitra), '') as GUIA,a.estadoser " +
+                        "from cabpregr a " +
+                        "left join desc_loc lo on lo.idcodice = a.locorigen " +
+                        "left join desc_loc ld on ld.idcodice = a.locdestin " +
+                        "left join desc_doc dr on dr.idcodice = a.tidorepre " +
+                        "left join desc_doc dd on dd.idcodice = a.tidodepre " +
+                        "left join desc_mon mo on mo.idcodice = a.tipmonpre " +
+                        "left join desc_est es on es.idcodice = a.estadoser " +
+                        "where a.fechpregr between @fini and @ffin and a.serpregui = @ser " +
+                        "order by a.serpregui,a.numpregui";
+                }
                 MySqlCommand micon = new MySqlCommand(sqlCmd, cn);
+                micon.Parameters.AddWithValue("@mgre", v_marGRET);
                 micon.Parameters.AddWithValue("@ser", tx_ser.Text);
                 micon.Parameters.AddWithValue("@fini", dtp_fini.Value.ToString("yyyy-MM-dd"));
                 micon.Parameters.AddWithValue("@ffin", dtp_ffin.Value.ToString("yyyy-MM-dd"));
@@ -238,8 +263,8 @@ namespace TransCarga
             advancedDataGridView1.Columns[16].HeaderText = "MANIFIESTO";
             advancedDataGridView1.Columns[17].Width = 100;          // doc.venta
             advancedDataGridView1.Columns[17].ReadOnly = true;
-            advancedDataGridView1.Columns[17].Name = "DOC_VTA";
-            advancedDataGridView1.Columns[17].HeaderText = "DOC_VTA";
+            advancedDataGridView1.Columns[17].Name = "DOC_REL";
+            advancedDataGridView1.Columns[17].HeaderText = "DOC_REL";
             advancedDataGridView1.Columns[18].Name = "codEst";
             advancedDataGridView1.Columns[18].Visible = false;
             // ID,FECHA,SEDE,DESTINO,SERIE,GUIA,DR,NUMDOCR,REMITENTE,DD,NUMDOCD,DESTINATARIO,DOCSREMIT,MON,FLETE,ESTADO,MANIFIESTO,DOC_VTA,codEst 
@@ -315,7 +340,9 @@ namespace TransCarga
                     {
                         if (lib.procConn(cn0) == true)
                         {
-                            string sqlCmd = "arreglaGR";
+                            string sqlCmd = "";
+                            if (rb_guias.Checked == true) sqlCmd = "arreglaGR";
+                            else sqlCmd = "arreglaPGR";
                             using (MySqlCommand micon = new MySqlCommand(sqlCmd, cn0))
                             {
                                 micon.CommandType = CommandType.StoredProcedure;
@@ -438,6 +465,7 @@ namespace TransCarga
             dtp_fini.Enabled = true;
             dtp_ffin.Enabled = true;
             bt_caja.Enabled = true;
+            rb_guias.Checked = true;
             tx_ser.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
@@ -448,6 +476,7 @@ namespace TransCarga
             dtp_fini.Enabled = true;
             dtp_ffin.Enabled = true;
             bt_caja.Enabled = true;
+            rb_guias.Checked = true;
             tx_ser.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
@@ -501,7 +530,7 @@ namespace TransCarga
             {
                 // solo campos SERIE Y GUIA se pueden cambiar
                 if (vcestper.Contains(advancedDataGridView1.Rows[e.RowIndex].Cells["codEst"].Value.ToString()) &&
-                    advancedDataGridView1.Rows[e.RowIndex].Cells["DOC_VTA"].Value.ToString().Trim() == "")
+                    advancedDataGridView1.Rows[e.RowIndex].Cells["DOC_REL"].Value.ToString().Trim() == "")
                 {
                     valnue = advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
                     var ao = MessageBox.Show("Modifica el dato " + advancedDataGridView1.Columns[e.ColumnIndex].Name + " ?", "Confirme por favor",

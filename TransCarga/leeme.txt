@@ -333,7 +333,8 @@ preguiat, mejorar la rapides usando sqlite y demás ............................
 guiati, habilitar todas las funcionalidades de pre guias, adecuar la "manuales" ..................... ok 28/08/2023
 ayuda3, copia del form trabajado reemplazando este de Carrión ....................................... ok 29/08/2023
 recshum, copia del form trabajado reemplazando este de Carrión ...................................... ok 29/08/2023
-guiati_e, habilitar todas las funcionalidades de pre guias, adecuar la "manuales" ...................	 reunión con Ember 24/08/2023
+guiati_e, habilitar todas las funcionalidades de pre guias, adecuar la "manuales" ................... ok 	 reunión con Ember 24/08/2023
+TRIGERS cabguiai after insert, no inserta detalle cuando se jala de una pre-guia .................... ok 02/09/2023 
 *****************************************************************************************************
 form guiari_e, arreglo en toolboton para mostrar visualización y demas .............................. ok 19/08/2023
 guiati_e, adecuación para permitir grabar sin documento relacionado ................................. ok 21/08/2023
@@ -342,4 +343,5 @@ form facelect, permitir que ciertos usuarios puedan cambiar la fecha emisión mo
 Program, login, se agrego las tablas públicas y se llenó con datos en login:
 	dt_ubigeos ...................................................................................... ok 25/08/2023
 	dt_enlaces ...................................................................................... ok 25/08/2023
-
+form busyarreg, agregar opcion de pre-guias y solo mostrar guías mecanizadas, no electrónicas ....... ok 02/09/2023
+P.A. arreglaPGR, creación del procedimiento para corregir serie y numero de pre guia ................ ok 02/09/2023

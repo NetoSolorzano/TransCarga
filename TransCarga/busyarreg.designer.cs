@@ -69,8 +69,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tx_ser = new TransCarga.NumericTextBox();
+            this.pan_tipo = new System.Windows.Forms.Panel();
+            this.rb_guias = new System.Windows.Forms.RadioButton();
+            this.rb_preg = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).BeginInit();
+            this.pan_tipo.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -484,12 +488,44 @@
             this.tx_ser.TabIndex = 0;
             this.tx_ser.Leave += new System.EventHandler(this.tx_ser_Leave);
             // 
+            // pan_tipo
+            // 
+            this.pan_tipo.Controls.Add(this.rb_preg);
+            this.pan_tipo.Controls.Add(this.rb_guias);
+            this.pan_tipo.Location = new System.Drawing.Point(3, 1);
+            this.pan_tipo.Name = "pan_tipo";
+            this.pan_tipo.Size = new System.Drawing.Size(132, 46);
+            this.pan_tipo.TabIndex = 380;
+            // 
+            // rb_guias
+            // 
+            this.rb_guias.AutoSize = true;
+            this.rb_guias.Location = new System.Drawing.Point(3, 3);
+            this.rb_guias.Name = "rb_guias";
+            this.rb_guias.Size = new System.Drawing.Size(119, 17);
+            this.rb_guias.TabIndex = 0;
+            this.rb_guias.TabStop = true;
+            this.rb_guias.Text = "Guías mecanizadas";
+            this.rb_guias.UseVisualStyleBackColor = true;
+            // 
+            // rb_preg
+            // 
+            this.rb_preg.AutoSize = true;
+            this.rb_preg.Location = new System.Drawing.Point(3, 25);
+            this.rb_preg.Name = "rb_preg";
+            this.rb_preg.Size = new System.Drawing.Size(71, 17);
+            this.rb_preg.TabIndex = 1;
+            this.rb_preg.TabStop = true;
+            this.rb_preg.Text = "Pre guías";
+            this.rb_preg.UseVisualStyleBackColor = true;
+            // 
             // busyarreg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(973, 558);
+            this.Controls.Add(this.pan_tipo);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
@@ -509,6 +545,8 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).EndInit();
+            this.pan_tipo.ResumeLayout(false);
+            this.pan_tipo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -556,5 +594,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Panel pan_tipo;
+        private System.Windows.Forms.RadioButton rb_preg;
+        private System.Windows.Forms.RadioButton rb_guias;
     }
 }

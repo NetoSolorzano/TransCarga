@@ -134,7 +134,7 @@ namespace TransCarga
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
         AutoCompleteStringCollection desdet = new AutoCompleteStringCollection();       // autompletatado descripcion detalle
         //AutoCompleteStringCollection bultos = new AutoCompleteStringCollection();       // autompletatado bultos del detalle
-        DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
+        //DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
 
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
@@ -1121,7 +1121,7 @@ namespace TransCarga
         #region autocompletados
         private void autodepa()                             // departamentos
         {
-            if (dataUbig == null)
+            if (Program.dt_ubigeos == null)   // dataUbig == null
             {
                 MessageBox.Show("Problema de comunicación de datos" + Environment.NewLine +
                     "Debe reiniciar el sistema","Error interno",MessageBoxButtons.OK,MessageBoxIcon.Warning);
@@ -1130,7 +1130,7 @@ namespace TransCarga
                 //DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
                 // aca deberiamos volver a hacer un AddItem de CacheManager
             }
-            DataRow[] depar = dataUbig.Select("depart<>'00' and provin='00' and distri='00'");
+            DataRow[] depar = Program.dt_ubigeos.Select("depart<>'00' and provin='00' and distri='00'");
             departamentos.Clear();
             foreach (DataRow row in depar)
             {
@@ -1144,19 +1144,19 @@ namespace TransCarga
                 DataRow[] provi = null;
                 if (marca == "tx_ubigO")
                 {
-                    provi = dataUbig.Select("depart='" + tx_ubigO.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                    provi = Program.dt_ubigeos.Select("depart='" + tx_ubigO.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
                 }
                 if (marca == "tx_ubigD")
                 {
-                    provi = dataUbig.Select("depart='" + tx_ubigD.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                    provi = Program.dt_ubigeos.Select("depart='" + tx_ubigD.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
                 }
                 if (marca == "tx_ubigRtt")
                 {
-                    provi = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                    provi = Program.dt_ubigeos.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
                 }
                 if (marca == "tx_ubigDtt")
                 {
-                    provi = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                    provi = Program.dt_ubigeos.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
                 }
                 provincias.Clear();
                 foreach (DataRow row in provi)
@@ -1206,19 +1206,19 @@ namespace TransCarga
                 DataRow[] distr = null;
                 if (marca == "tx_ubigO")
                 {
-                    distr = dataUbig.Select("depart='" + tx_ubigO.Text.Substring(0, 2) + "' and provin='" + tx_ubigO.Text.Substring(2, 2) + "' and distri<>'00'");
+                    distr = Program.dt_ubigeos.Select("depart='" + tx_ubigO.Text.Substring(0, 2) + "' and provin='" + tx_ubigO.Text.Substring(2, 2) + "' and distri<>'00'");
                 }
                 if (marca == "tx_ubigD")
                 {
-                    distr = dataUbig.Select("depart='" + tx_ubigD.Text.Substring(0, 2) + "' and provin='" + tx_ubigD.Text.Substring(2, 2) + "' and distri<>'00'");
+                    distr = Program.dt_ubigeos.Select("depart='" + tx_ubigD.Text.Substring(0, 2) + "' and provin='" + tx_ubigD.Text.Substring(2, 2) + "' and distri<>'00'");
                 }
                 if (marca == "tx_ubigRtt")
                 {
-                    distr = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and distri<>'00'");
+                    distr = Program.dt_ubigeos.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and distri<>'00'");
                 }
                 if (marca == "tx_ubigDtt")
                 {
-                    distr = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigDtt.Text.Substring(2, 2) + "' and distri<>'00'");
+                    distr = Program.dt_ubigeos.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigDtt.Text.Substring(2, 2) + "' and distri<>'00'");
                 }
                 distritos.Clear();
                 foreach (DataRow row in distr)
@@ -3150,7 +3150,7 @@ namespace TransCarga
         {
             if(tx_dptoRtt.Text.Trim() != "")    //  && TransCarga.Program.vg_conSol == false
             {
-                DataRow[] row = dataUbig.Select("nombre='" + tx_dptoRtt.Text.Trim() + "' and provin='00' and distri='00'");
+                DataRow[] row = Program.dt_ubigeos.Select("nombre='" + tx_dptoRtt.Text.Trim() + "' and provin='00' and distri='00'");
                 if (row.Length > 0)
                 {
                     tx_ubigRtt.Text = row[0].ItemArray[1].ToString(); // lib.retCodubigeo(tx_dptoRtt.Text.Trim(),"","");
@@ -3163,7 +3163,7 @@ namespace TransCarga
         {
             if(tx_provRtt.Text != "" && tx_dptoRtt.Text.Trim() != "")   //  && TransCarga.Program.vg_conSol == false
             {
-                DataRow[] row = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and nombre='" + tx_provRtt.Text.Trim() + "' and provin<>'00' and distri='00'");
+                DataRow[] row = Program.dt_ubigeos.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and nombre='" + tx_provRtt.Text.Trim() + "' and provin<>'00' and distri='00'");
                 if (row.Length > 0)
                 {
                     tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0,2) + row[0].ItemArray[2].ToString();
@@ -3176,7 +3176,7 @@ namespace TransCarga
         {
             if(tx_distRtt.Text.Trim() != "" && tx_provRtt.Text.Trim() != "" && tx_dptoRtt.Text.Trim() != "") //  && TransCarga.Program.vg_conSol == false
             {
-                DataRow[] row = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and nombre='" + tx_distRtt.Text.Trim() + "'");
+                DataRow[] row = Program.dt_ubigeos.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and nombre='" + tx_distRtt.Text.Trim() + "'");
                 if (row.Length > 0)
                 {
                     tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0,4) + row[row.Length-1].ItemArray[3].ToString(); // lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());
@@ -3198,7 +3198,7 @@ namespace TransCarga
         {
             if (tx_dptoDrio.Text.Trim() != "")  //  && TransCarga.Program.vg_conSol == false
             {
-                DataRow[] row = dataUbig.Select("nombre='" + tx_dptoDrio.Text.Trim() + "' and provin='00' and distri='00'");
+                DataRow[] row = Program.dt_ubigeos.Select("nombre='" + tx_dptoDrio.Text.Trim() + "' and provin='00' and distri='00'");
                 if (row.Length > 0)
                 {
                     tx_ubigDtt.Text = row[0].ItemArray[1].ToString(); // lib.retCodubigeo(tx_dptoRtt.Text.Trim(),"","");
@@ -3211,7 +3211,7 @@ namespace TransCarga
         {
             if (tx_proDrio.Text.Trim() != "" && tx_dptoDrio.Text.Trim() != "")  //  && TransCarga.Program.vg_conSol == false
             {
-                DataRow[] row = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and nombre='" + tx_proDrio.Text.Trim() + "' and provin<>'00' and distri='00'");
+                DataRow[] row = Program.dt_ubigeos.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and nombre='" + tx_proDrio.Text.Trim() + "' and provin<>'00' and distri='00'");
                 if (row.Length > 0)
                 {
                     tx_ubigDtt.Text = tx_ubigDtt.Text.Trim().Substring(0, 2) + row[0].ItemArray[2].ToString();
@@ -3224,7 +3224,7 @@ namespace TransCarga
         {
             if (tx_proDrio.Text.Trim() != "" && tx_dptoDrio.Text.Trim() != "" && tx_disDrio.Text.Trim() != "")
             {
-                DataRow[] row = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigDtt.Text.Substring(2, 2) + "' and nombre='" + tx_disDrio.Text.Trim() + "'");
+                DataRow[] row = Program.dt_ubigeos.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigDtt.Text.Substring(2, 2) + "' and nombre='" + tx_disDrio.Text.Trim() + "'");
                 if (row.Length > 0)
                 {
                     tx_ubigDtt.Text = tx_ubigDtt.Text.Trim().Substring(0, 4) + row[row.Length-1].ItemArray[3].ToString(); // lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());

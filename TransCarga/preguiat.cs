@@ -60,11 +60,17 @@ namespace TransCarga
         string v_clte_rem = "";         // variable para marcar si el remitente es cliente nuevo "N" o para actualizar sus datos "E"
         string v_clte_des = "";         // variable para marcar si el destinatario es cliente nuevo "N" o para actualizar sus datos "E"
         string usoPGm = "";             // variable para indicar si el numerador es "automatico" o "manual"
+        string caractNo = "";           // caracter prohibido en campos texto, caracter delimitador para los TXT de fact. electronica
+        string det3dtm = "";            // palabra nombre descriptivo de las guias de remision electronicas de transportista
+        string tccmr = "";              // tipos de comprobante sunat con el mismo ruc que del remitente de la guia
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
+        string[] datosR = { "" };                   // datos del remitente si existe en la B.D.
+        string[] datosD = { "" };                   // datos del destinatario si existe en la B.D.
+        string[] rl = { "" };                       // datos del NUEVO remitente
 
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
@@ -250,6 +256,18 @@ namespace TransCarga
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
                         if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
                     }
+                    if (row["formulario"].ToString() == "facelect")
+                    {
+                        if (row["campo"].ToString() == "factelect")
+                        {
+                            if (row["param"].ToString() == "caracterNo") caractNo = row["valor"].ToString().Trim();
+                        }
+                    }
+                    if (row["formulario"].ToString() == "guiati_e")
+                    {
+                        if (row["campo"].ToString() == "glosas" && row["param"].ToString() == "nomGRET") det3dtm = row["valor"].ToString().Trim();         // nombre detalle DTM de las GRE-Transportista 
+                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "tccmr") tccmr = row["valor"].ToString().Trim();         // tipos de doc sunat donde el ruc del doc relacionado = remitente de la GR
+                    }
                 }
                 // jalamos datos del usuario y local
                 v_clu = lib.codloc(asd);                // codigo local usuario
@@ -282,8 +300,10 @@ namespace TransCarga
                 {
                     string consulta = "select id,fechpregr,serpregui,numpregui,tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
                         "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
-                        "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre,seguroE," +
-                        "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,impreso,serguitra,numguitra,userc,userm,usera " +
+                        "dirdestin,ubidestin,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre,seguroE," +
+                        "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,impreso,serguitra,numguitra," +
+                        "tidocor,rucDorig,docsremit,tidocor2,rucDorig2,docsremit2," +
+                        "userc,userm,usera " +
                         "from cabpregr " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -317,7 +337,6 @@ namespace TransCarga
                             tx_nomDrio.Text = dr.GetString("nombdepre");
                             tx_dirDrio.Text = dr.GetString("diredepre");
                             tx_ubigDtt.Text = dr.GetString("ubigdepre");
-                            tx_docsOr.Text = dr.GetString("docsremit");
                             tx_consig.Text = dr.GetString("clifinpre");
                             tx_dat_mone.Text = dr.GetString("tipmonpre");
                             tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
@@ -327,6 +346,13 @@ namespace TransCarga
                             tx_sergr.Text = dr.GetString("serguitra");
                             tx_numgr.Text = dr.GetString("numguitra");
                             claveSeg = dr.GetString("seguroE");
+                            //
+                            tx_docsOr.Text = dr.GetString("docsremit");
+                            tx_docsOr2.Text = dr.GetString("docsremit2");
+                            tx_rucEorig.Text = dr.GetString("rucDorig");
+                            tx_rucEorig2.Text = dr.GetString("rucDorig2");
+                            tx_dat_docOr.Text = dr.GetString("tidocor");
+                            tx_dat_docOr2.Text = dr.GetString("tidocor2");
                         }
                         tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
                         cmb_origen.SelectedValue = tx_dat_locori.Text;
@@ -334,6 +360,12 @@ namespace TransCarga
                         cmb_destino.SelectedValue = tx_dat_locdes.Text;
                         cmb_destino_SelectionChangeCommitted(null, null);
                         cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+
+                        cmb_docorig.SelectedValue = tx_dat_docOr.Text;
+                        cmb_docorig_SelectionChangeCommitted(null, null);
+                        cmb_docorig2.SelectedValue = tx_dat_docOr2.Text;
+                        cmb_docorig2_SelectionChangeCommitted(null, null);
+
                         string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
                         tx_dptoRtt.Text = du_remit[0];
                         tx_provRtt.Text = du_remit[1];
@@ -417,6 +449,42 @@ namespace TransCarga
             cmb_mon.DataSource = Program.dt_definic.Select("idtabella='MON'").CopyToDataTable(); // dtm;
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
+            // datos del documento origen 1
+            cmb_docorig.DataSource = Program.dt_definic.Select("idtabella='DTM' and numero=1 and deta3='" + det3dtm + "' or deta4='" + det3dtm + "'").CopyToDataTable(); // dtdor;
+            cmb_docorig.DisplayMember = "descrizione";
+            cmb_docorig.ValueMember = "idcodice";
+            // datos del documento origen 2
+            cmb_docorig2.DataSource = Program.dt_definic.Select("idtabella='DTM' and numero=1 and deta3='" + det3dtm + "' or deta4='" + det3dtm + "'").CopyToDataTable(); // dtdor2;
+            cmb_docorig2.DisplayMember = "descrizione";
+            cmb_docorig2.ValueMember = "idcodice";
+        }
+        private void valiruc(object sender)     // valida los ruc del documento origen
+        {
+            TextBox campo = (TextBox)sender;
+
+            if (campo.Text.Trim() != "" && (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR"))
+            {
+                if (lib.valiruc(campo.Text, vtc_ruc) == false)
+                {
+                    MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    campo.Text = "";
+                    campo.Focus();
+                    return;
+                }
+                else
+                {
+                    datosR = lib.datossn("CLI", vtc_ruc, campo.Text.Trim());
+                    if (datosR[0] != "")
+                    {
+                        MessageBox.Show("Razón Social: " + datosR[0], "Ruc encontrado en B.D.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        rl = lib.conectorSolorsoft("RUC", campo.Text);
+                        MessageBox.Show("Razón Social: " + rl[0], "Ruc encontrado en conector", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
         }
 
         #region autocompletados
@@ -571,6 +639,8 @@ namespace TransCarga
             cmb_docRem.SelectedIndex = -1;
             cmb_docDes.SelectedIndex = -1;
             cmb_mon.SelectedIndex = -1;
+            cmb_docorig.SelectedIndex = -1;
+            cmb_docorig2.SelectedIndex = -1;
         }
         public void limpiapag(TabPage pag)
         {
@@ -595,7 +665,6 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
-
             if (tx_serie.Text.Trim() == "")
             {
                 tx_serie.Focus();
@@ -647,38 +716,9 @@ namespace TransCarga
                 tx_dirDrio.Focus();
                 return;
             }
-            /*
-            if (tx_dat_tdRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Seleccione el tipo de documento", " Error! ");
-                tx_dat_tdRem.Focus();
-                return;
-            }
-            if (tx_numDocRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el número de documento", " Error! ");
-                tx_numDocRem.Focus();
-                return;
-            }
-            if (tx_nomRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el nombre o razón social", " Error! ");
-                tx_nomRem.Focus();
-                return;
-            }
-            if (tx_dirRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese la dirección", " Error! ");
-                tx_dirRem.Focus();
-                return;
-            }
-            if (tx_ubigO.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese ubigeo correcto", " Error! ");
-                tx_ubigO.Focus();
-                return;
-            }
-            */
+
+            // NO HACEMOS VARIAS VALIDACIONES PORQUE VARIOS DATOS EN ESTE FORMULARIO SON OPCIONALES
+
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
             string iserror = "no";
@@ -874,11 +914,13 @@ namespace TransCarga
                         "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
                         "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
                         "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,seguroE,m1cliente,m2cliente," +
+                        "tidocor,rucDorig,docsremit,tidocor2,rucDorig2,docsremit2," +
                         "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                         "values (@fechop,@serpgr," + yuca1 + "@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                         "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr,@ldcpgr," +
-                        "@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr,@monppr,@tcprgr," +
+                        "@didegr,@ubdegr,@obsprg,@conprg,@totcpr,@totppr,@monppr,@tcprgr," +
                         "@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@clavse,@m1clte,@m2clte," +
+                        "@tdocor,@rucDor,@dooprg,@tidoc2,@rucDo2,@docsr2," +
                         "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                     MySqlCommand micon = new MySqlCommand(inserta, conn);
                     micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6,4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -900,7 +942,6 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@ldcpgr", tx_dat_locdes.Text);
                     micon.Parameters.AddWithValue("@didegr", tx_dirDestino.Text);
                     micon.Parameters.AddWithValue("@ubdegr", tx_ubigD.Text);
-                    micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
                     micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);  // observaciones de la pre guia ... no hay
                     micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
@@ -917,6 +958,12 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@clavse", claveSeg);
                     micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
                     micon.Parameters.AddWithValue("@m2clte", v_clte_des);
+                    micon.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);                            // tipo del documento origen
+                    micon.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);                             // ruc del emisor del doc origen
+                    micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
+                    micon.Parameters.AddWithValue("@tidoc2", tx_dat_docOr2.Text);
+                    micon.Parameters.AddWithValue("@rucDo2", tx_rucEorig2.Text);
+                    micon.Parameters.AddWithValue("@docsr2", tx_docsOr2.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -978,7 +1025,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (tx_impreso.Text == "N")     // EDICION DE CABECERA Y CONTROL
+                    if (tx_impreso.Text == "N")     // EDICION DE CABECERA Y CONTROL 
                     {
                         string actua = "update cabpregr a, controlg b set " +
                             "a.fechpregr=@fechop,a.tidodepre=@tdcdes,a.nudodepre=@ndcdes," +
@@ -988,6 +1035,7 @@ namespace TransCarga
                             "a.obspregui=@obsprg,a.clifinpre=@conprg,a.cantotpre=@totcpr,a.pestotpre=@totppr,a.tipmonpre=@monppr," +
                             "a.tipcampre=@tcprgr,a.subtotpre=@subpgr,a.igvpregui=@igvpgr,a.totpregui=@totpgr,a.totpagpre=@pagpgr," +
                             "a.salpregui=@totpgr,a.estadoser=@estpgr,a.seguroE=@clavse,m1cliente=@m1clte,m2cliente=@m2clte," +
+                            "a.tidocor=@tdocor,a.rucDorig=@rucDor,a.docsremit=@dooprg,a.tidocor2=@tidoc2,a.rucDorig2=@rucDo2,a.docsremit2=@docsr2," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam," +
                             "b.tidodepre=@tdcdes,b.nudodepre=@ndcdes,b.tidorepre=@tdcrem,b.nudorepre=@ndcrem," +
                             "b.codmonpre=@monppr,b.totpregui=@totpgr,b.saldofina=@totpgr-b.totpagado " +
@@ -1011,7 +1059,6 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@ldcpgr", tx_dat_locdes.Text);
                         micon.Parameters.AddWithValue("@didegr", tx_dirDestino.Text);
                         micon.Parameters.AddWithValue("@ubdegr", tx_ubigD.Text);
-                        micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
                         micon.Parameters.AddWithValue("@obsprg", "");  // observaciones de la pre guia ... no hay
                         micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
                         micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
@@ -1026,6 +1073,12 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@clavse", claveSeg);
                         micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
                         micon.Parameters.AddWithValue("@m2clte", v_clte_des);
+                        micon.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);                            // tipo del documento origen
+                        micon.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);                             // ruc del emisor del doc origen
+                        micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
+                        micon.Parameters.AddWithValue("@tidoc2", tx_dat_docOr2.Text);
+                        micon.Parameters.AddWithValue("@rucDo2", tx_rucEorig2.Text);
+                        micon.Parameters.AddWithValue("@docsr2", tx_docsOr2.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1485,6 +1538,35 @@ namespace TransCarga
                 }
             }
         }
+        private void tx_docsOr_Leave(object sender, EventArgs e)
+        {
+            val_NoCaracteres(tx_docsOr);
+        }
+        private void tx_docsOr2_Leave(object sender, EventArgs e)
+        {
+            val_NoCaracteres(tx_docsOr2);
+        }
+        private void val_NoCaracteres(TextBox textBox)
+        {
+            if (caractNo != "")
+            {
+                int index = textBox.Text.IndexOf(caractNo);
+                if (index > -1)
+                {
+                    char cno = caractNo.ToCharArray()[0];
+                    textBox.Text = textBox.Text.Replace(cno, ' ');
+                }
+            }
+        }
+        private void tx_rucEorig_Leave(object sender, EventArgs e)              // validamos el ruc del emisor documento origen 1
+        {
+            valiruc(tx_rucEorig);
+        }
+        private void tx_rucEorig2_Leave(object sender, EventArgs e)              // validamos el ruc del emisor documento origen 2
+        {
+            valiruc(tx_rucEorig2);
+        }
+
         #endregion
 
         #region botones_de_comando
@@ -1746,6 +1828,101 @@ namespace TransCarga
                 tx_ubigD.Text = fila[0]["ubiDir"].ToString();     // fila[0][2].ToString();
             }
         }
+        private void cmb_docorig_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_docorig.SelectedIndex > -1)
+            {
+                tx_dat_docOr.Text = cmb_docorig.SelectedValue.ToString();
+                if (tx_dat_docOr.Text.Trim() != "")
+                {
+                    DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_docOr.Text + "'");
+                    if (fila[0]["marca1"].ToString() == "1")              // sunat permite 2 documntos relacionados 
+                    {
+                        cmb_docorig2.Enabled = true;
+                        if (tccmr.Contains(fila[0]["codsunat"].ToString()) && tx_dat_tdRem.Text == vtc_ruc) tx_rucEorig.Text = tx_numDocRem.Text;
+                        else tx_rucEorig.Text = "";
+                        tx_rucEorig2.Enabled = true;
+                        tx_rucEorig2.ReadOnly = false;
+                    }
+                    else
+                    {
+                        cmb_docorig2.SelectedIndex = -1;
+                        cmb_docorig2.Enabled = false;
+                        tx_docsOr2.Text = "";
+                        tx_dat_docOr2.Text = "";
+                        tx_rucEorig2.Text = "";
+                    }
+                }
+                tx_docsOr.ReadOnly = false;
+                tx_rucEorig.ReadOnly = false;
+            }
+            else
+            {
+                tx_docsOr.Text = "";
+                tx_docsOr.ReadOnly = true;
+                tx_rucEorig.Text = "";
+                tx_rucEorig.ReadOnly = true;
+                // debe ir en orden, no puede haber un segundo documento si el primero esta vacío
+                cmb_docorig2.SelectedIndex = -1;
+                tx_dat_docOr2.Text = "";
+                tx_docsOr2.Text = "";
+                tx_docsOr.ReadOnly = true;
+                tx_rucEorig2.Text = "";
+                tx_rucEorig2.ReadOnly = true;
+            }
+        }
+        private void cmb_docorig2_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_docorig2.SelectedIndex > -1)
+            {
+                tx_dat_docOr2.Text = cmb_docorig2.SelectedValue.ToString();
+                if (tx_dat_docOr2.Text.Trim() != "")
+                {
+                    DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_docOr2.Text + "'");
+                    if (fila[0]["marca1"].ToString() == "1")              // sunat permite 2 documntos relacionados 
+                    {
+                        cmb_docorig2.Enabled = true;
+                        if (tccmr.Contains(fila[0]["codsunat"].ToString()) && tx_dat_tdRem.Text == vtc_ruc) tx_rucEorig2.Text = tx_numDocRem.Text;
+                        else tx_rucEorig2.Text = "";
+                    }
+                }
+            }
+            else
+            {
+                //
+            }
+        }
+        private void cmb_docorig2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                if (e.KeyCode == Keys.Delete)
+                {
+                    cmb_docorig2.SelectedIndex = -1;
+                    tx_dat_docOr2.Text = "";
+                    tx_docsOr2.Text = "";
+                    tx_docsOr2.ReadOnly = true;
+                    tx_rucEorig2.Text = "";
+                    tx_rucEorig2.ReadOnly = true;
+                }
+            }
+        }
+        private void cmb_docorig_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                if (e.KeyCode == Keys.Delete)
+                {
+                    cmb_docorig.SelectedIndex = -1;
+                    tx_dat_docOr.Text = "";
+                    tx_docsOr.Text = "";
+                    tx_docsOr.ReadOnly = true;
+                    tx_rucEorig.Text = "";
+                    tx_rucEorig.ReadOnly = true;
+                }
+            }
+        }
+
         #endregion comboboxes
 
         #region datagridview

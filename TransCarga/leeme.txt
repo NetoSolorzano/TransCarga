@@ -336,7 +336,7 @@ recshum, copia del form trabajado reemplazando este de Carrión ................
 guiati_e, habilitar todas las funcionalidades de pre guias, adecuar la "manuales" ................... ok 02/04/2023	 reunión con Ember 24/08/2023
 TRIGERS cabguiai after insert, no inserta detalle cuando se jala de una pre-guia .................... ok 02/09/2023 
 preguiat, agregar opciones de documentos relacionados de GRE ........................................ ok 04/09/2023
-guiati_e, jalar correctamente la pre-guia ........................................................... 
+guiati_e, jalar correctamente la pre-guia ........................................................... ok 06/09/2023
 *****************************************************************************************************
 form guiari_e, arreglo en toolboton para mostrar visualización y demas .............................. ok 19/08/2023
 guiati_e, adecuación para permitir grabar sin documento relacionado ................................. ok 21/08/2023

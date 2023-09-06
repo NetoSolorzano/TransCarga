@@ -3115,6 +3115,7 @@ namespace TransCarga
         public bool procConn(MySqlConnection con)
         {
             bool retorna = false;
+            if (con.State == ConnectionState.Open) retorna = true;
             while (con.State != ConnectionState.Open)
             {
                 try
@@ -3196,7 +3197,6 @@ namespace TransCarga
 
             return retorna;
         }
-
     }
 
     public class ComboItem

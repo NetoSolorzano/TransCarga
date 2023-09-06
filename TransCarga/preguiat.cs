@@ -630,7 +630,11 @@ namespace TransCarga
         }
         public void limpia_otros()
         {
-            //this.checkBox1.Checked = false;
+            //GROUPBOX
+            tx_det_cant.Text = "";
+            tx_det_desc.Text = "";
+            tx_det_peso.Text = "";
+            tx_det_umed.Text = "";
         }
         public void limpia_combos()
         {
@@ -912,7 +916,7 @@ namespace TransCarga
                     string inserta = "insert into cabpregr (" +
                         "fechpregr,serpregui," + yuca0 + "tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
                         "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
-                        "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
+                        "dirdestin,ubidestin,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
                         "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,seguroE,m1cliente,m2cliente," +
                         "tidocor,rucDorig,docsremit,tidocor2,rucDorig2,docsremit2," +
                         "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
@@ -1004,7 +1008,7 @@ namespace TransCarga
                 {
                     MessageBox.Show(ex.Message, "Error en insertar pre guía");
                     conn.Close();
-                    Application.Exit();
+                    //Application.Exit();
                     return retorna;
                 }
             }
@@ -1447,7 +1451,7 @@ namespace TransCarga
                         tx_disDrio.ReadOnly = false;
                     }
                 }
-                tx_docsOr.Focus();
+                cmb_docorig.Focus();     // tx_docsOr.Focus();
             }
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() == "")
             {
@@ -1838,11 +1842,11 @@ namespace TransCarga
                     DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_docOr.Text + "'");
                     if (fila[0]["marca1"].ToString() == "1")              // sunat permite 2 documntos relacionados 
                     {
-                        cmb_docorig2.Enabled = true;
+                        //cmb_docorig2.Enabled = true;
                         if (tccmr.Contains(fila[0]["codsunat"].ToString()) && tx_dat_tdRem.Text == vtc_ruc) tx_rucEorig.Text = tx_numDocRem.Text;
                         else tx_rucEorig.Text = "";
-                        tx_rucEorig2.Enabled = true;
-                        tx_rucEorig2.ReadOnly = false;
+                        //tx_rucEorig2.Enabled = true;
+                        //tx_rucEorig2.ReadOnly = false;
                     }
                     else
                     {
@@ -1853,8 +1857,11 @@ namespace TransCarga
                         tx_rucEorig2.Text = "";
                     }
                 }
-                tx_docsOr.ReadOnly = false;
-                tx_rucEorig.ReadOnly = false;
+                if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+                {
+                    tx_docsOr.ReadOnly = false;
+                    tx_rucEorig.ReadOnly = false;
+                }
             }
             else
             {

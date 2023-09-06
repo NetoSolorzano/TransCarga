@@ -92,13 +92,14 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.gbox_serie = new System.Windows.Forms.GroupBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.bt_preg = new System.Windows.Forms.Button();
             this.tx_n_auto = new System.Windows.Forms.TextBox();
             this.groupBox25 = new System.Windows.Forms.GroupBox();
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
             this.tx_pregr_num = new System.Windows.Forms.TextBox();
             this.tx_numero = new TransCarga.NumericTextBox();
@@ -139,8 +140,6 @@
             this.rb_pOri = new System.Windows.Forms.RadioButton();
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.groupBox38 = new System.Windows.Forms.GroupBox();
-            this.groupBox39 = new System.Windows.Forms.GroupBox();
-            this.groupBox40 = new System.Windows.Forms.GroupBox();
             this.label24 = new System.Windows.Forms.Label();
             this.tx_salxcob = new TransCarga.NumericTextBox();
             this.label32 = new System.Windows.Forms.Label();
@@ -167,13 +166,17 @@
             this.chk_flete = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.gbox_planilla = new System.Windows.Forms.GroupBox();
+            this.label48 = new System.Windows.Forms.Label();
+            this.groupBox61 = new System.Windows.Forms.GroupBox();
+            this.groupBox62 = new System.Windows.Forms.GroupBox();
+            this.groupBox65 = new System.Windows.Forms.GroupBox();
+            this.groupBox66 = new System.Windows.Forms.GroupBox();
             this.tx_dat_dniC2s = new System.Windows.Forms.TextBox();
             this.tx_dat_carrNreg = new System.Windows.Forms.TextBox();
             this.tx_dat_plaNreg = new System.Windows.Forms.TextBox();
             this.tx_dat_dniC2 = new System.Windows.Forms.TextBox();
             this.tx_pla_chofer2 = new System.Windows.Forms.TextBox();
             this.tx_pla_brev2 = new System.Windows.Forms.TextBox();
-            this.label45 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.groupBox54 = new System.Windows.Forms.GroupBox();
@@ -205,8 +208,10 @@
             this.label22 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.tx_pla_dniChof = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
+            this.tx_marCpropio = new System.Windows.Forms.TextBox();
             this.label27 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.gbox_docvta = new System.Windows.Forms.GroupBox();
@@ -260,8 +265,6 @@
             this.label38 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
             this.chk_man = new System.Windows.Forms.CheckBox();
-            this.tx_marCpropio = new System.Windows.Forms.TextBox();
-            this.tx_pla_dniChof = new System.Windows.Forms.TextBox();
             this.cmb_docorig = new System.Windows.Forms.ComboBox();
             this.label41 = new System.Windows.Forms.Label();
             this.tx_dat_docOr = new System.Windows.Forms.TextBox();
@@ -303,19 +306,20 @@
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.gbox_serie.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.groupBox25.SuspendLayout();
             this.groupBox23.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox21.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.gbox_flete.SuspendLayout();
             this.groupBox37.SuspendLayout();
-            this.groupBox39.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox27.SuspendLayout();
             this.gbox_planilla.SuspendLayout();
+            this.groupBox61.SuspendLayout();
+            this.groupBox62.SuspendLayout();
             this.groupBox16.SuspendLayout();
             this.groupBox54.SuspendLayout();
             this.groupBox33.SuspendLayout();
@@ -626,7 +630,7 @@
             // 
             this.tx_distRtt.BackColor = System.Drawing.SystemColors.Window;
             this.tx_distRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_distRtt.Location = new System.Drawing.Point(666, 132);
+            this.tx_distRtt.Location = new System.Drawing.Point(666, 130);
             this.tx_distRtt.MaxLength = 0;
             this.tx_distRtt.Name = "tx_distRtt";
             this.tx_distRtt.Size = new System.Drawing.Size(86, 18);
@@ -637,7 +641,7 @@
             // 
             this.tx_provRtt.BackColor = System.Drawing.SystemColors.Window;
             this.tx_provRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_provRtt.Location = new System.Drawing.Point(579, 132);
+            this.tx_provRtt.Location = new System.Drawing.Point(579, 130);
             this.tx_provRtt.MaxLength = 0;
             this.tx_provRtt.Name = "tx_provRtt";
             this.tx_provRtt.Size = new System.Drawing.Size(86, 18);
@@ -648,7 +652,7 @@
             // 
             this.tx_dptoRtt.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dptoRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dptoRtt.Location = new System.Drawing.Point(491, 132);
+            this.tx_dptoRtt.Location = new System.Drawing.Point(491, 130);
             this.tx_dptoRtt.MaxLength = 0;
             this.tx_dptoRtt.Name = "tx_dptoRtt";
             this.tx_dptoRtt.Size = new System.Drawing.Size(87, 18);
@@ -659,7 +663,7 @@
             // 
             this.groupBox11.BackColor = System.Drawing.Color.White;
             this.groupBox11.Controls.Add(this.groupBox12);
-            this.groupBox11.Location = new System.Drawing.Point(12, 149);
+            this.groupBox11.Location = new System.Drawing.Point(12, 147);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(740, 1);
             this.groupBox11.TabIndex = 262;
@@ -677,7 +681,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label5.Location = new System.Drawing.Point(12, 133);
+            this.label5.Location = new System.Drawing.Point(12, 131);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(71, 13);
             this.label5.TabIndex = 261;
@@ -687,7 +691,7 @@
             // 
             this.tx_dirRem.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dirRem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dirRem.Location = new System.Drawing.Point(92, 132);
+            this.tx_dirRem.Location = new System.Drawing.Point(92, 130);
             this.tx_dirRem.MaxLength = 0;
             this.tx_dirRem.Name = "tx_dirRem";
             this.tx_dirRem.Size = new System.Drawing.Size(398, 18);
@@ -775,9 +779,9 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(672, 388);
+            this.button1.Location = new System.Drawing.Point(669, 362);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(62, 56);
+            this.button1.Size = new System.Drawing.Size(62, 52);
             this.button1.TabIndex = 28;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -965,10 +969,11 @@
             // gbox_serie
             // 
             this.gbox_serie.BackColor = System.Drawing.Color.Transparent;
+            this.gbox_serie.Controls.Add(this.groupBox9);
+            this.gbox_serie.Controls.Add(this.bt_preg);
             this.gbox_serie.Controls.Add(this.tx_n_auto);
             this.gbox_serie.Controls.Add(this.groupBox25);
             this.gbox_serie.Controls.Add(this.groupBox23);
-            this.gbox_serie.Controls.Add(this.groupBox9);
             this.gbox_serie.Controls.Add(this.label17);
             this.gbox_serie.Controls.Add(this.tx_pregr_num);
             this.gbox_serie.Controls.Add(this.tx_numero);
@@ -981,6 +986,35 @@
             this.gbox_serie.Size = new System.Drawing.Size(133, 80);
             this.gbox_serie.TabIndex = 289;
             this.gbox_serie.TabStop = false;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.BackColor = System.Drawing.Color.White;
+            this.groupBox9.Controls.Add(this.groupBox15);
+            this.groupBox9.Location = new System.Drawing.Point(7, 28);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(120, 1);
+            this.groupBox9.TabIndex = 334;
+            this.groupBox9.TabStop = false;
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Location = new System.Drawing.Point(0, -26);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(164, 1);
+            this.groupBox15.TabIndex = 113;
+            this.groupBox15.TabStop = false;
+            // 
+            // bt_preg
+            // 
+            this.bt_preg.Image = global::TransCarga.Properties.Resources.permiso_16;
+            this.bt_preg.Location = new System.Drawing.Point(109, 10);
+            this.bt_preg.Name = "bt_preg";
+            this.bt_preg.Size = new System.Drawing.Size(20, 20);
+            this.bt_preg.TabIndex = 501;
+            this.bt_preg.Text = "button2";
+            this.bt_preg.UseVisualStyleBackColor = true;
+            this.bt_preg.Click += new System.EventHandler(this.bt_preg_Click);
             // 
             // tx_n_auto
             // 
@@ -1028,33 +1062,15 @@
             this.groupBox24.TabIndex = 113;
             this.groupBox24.TabStop = false;
             // 
-            // groupBox9
-            // 
-            this.groupBox9.BackColor = System.Drawing.Color.White;
-            this.groupBox9.Controls.Add(this.groupBox15);
-            this.groupBox9.Location = new System.Drawing.Point(7, 28);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(120, 1);
-            this.groupBox9.TabIndex = 334;
-            this.groupBox9.TabStop = false;
-            // 
-            // groupBox15
-            // 
-            this.groupBox15.Location = new System.Drawing.Point(0, -26);
-            this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(164, 1);
-            this.groupBox15.TabIndex = 113;
-            this.groupBox15.TabStop = false;
-            // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label17.Location = new System.Drawing.Point(6, 13);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(50, 13);
+            this.label17.Size = new System.Drawing.Size(37, 13);
             this.label17.TabIndex = 329;
-            this.label17.Text = "Pre Guía";
+            this.label17.Text = "Pre_G";
             this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_pregr_num
@@ -1064,7 +1080,7 @@
             this.tx_pregr_num.Location = new System.Drawing.Point(55, 11);
             this.tx_pregr_num.Name = "tx_pregr_num";
             this.tx_pregr_num.ReadOnly = true;
-            this.tx_pregr_num.Size = new System.Drawing.Size(73, 18);
+            this.tx_pregr_num.Size = new System.Drawing.Size(54, 18);
             this.tx_pregr_num.TabIndex = 500;
             this.tx_pregr_num.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_pregr_num.Leave += new System.EventHandler(this.tx_pregr_num_Leave);
@@ -1183,7 +1199,7 @@
             // 
             this.tx_ubigDtt.BackColor = System.Drawing.SystemColors.Window;
             this.tx_ubigDtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ubigDtt.Location = new System.Drawing.Point(719, 172);
+            this.tx_ubigDtt.Location = new System.Drawing.Point(719, 166);
             this.tx_ubigDtt.MaxLength = 6;
             this.tx_ubigDtt.Name = "tx_ubigDtt";
             this.tx_ubigDtt.Size = new System.Drawing.Size(45, 18);
@@ -1205,7 +1221,7 @@
             // 
             this.tx_disDrio.BackColor = System.Drawing.SystemColors.Window;
             this.tx_disDrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_disDrio.Location = new System.Drawing.Point(666, 184);
+            this.tx_disDrio.Location = new System.Drawing.Point(666, 176);
             this.tx_disDrio.MaxLength = 0;
             this.tx_disDrio.Name = "tx_disDrio";
             this.tx_disDrio.Size = new System.Drawing.Size(86, 18);
@@ -1216,7 +1232,7 @@
             // 
             this.tx_proDrio.BackColor = System.Drawing.SystemColors.Window;
             this.tx_proDrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_proDrio.Location = new System.Drawing.Point(579, 184);
+            this.tx_proDrio.Location = new System.Drawing.Point(579, 176);
             this.tx_proDrio.MaxLength = 0;
             this.tx_proDrio.Name = "tx_proDrio";
             this.tx_proDrio.Size = new System.Drawing.Size(86, 18);
@@ -1227,7 +1243,7 @@
             // 
             this.tx_dptoDrio.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dptoDrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dptoDrio.Location = new System.Drawing.Point(491, 184);
+            this.tx_dptoDrio.Location = new System.Drawing.Point(491, 176);
             this.tx_dptoDrio.MaxLength = 0;
             this.tx_dptoDrio.Name = "tx_dptoDrio";
             this.tx_dptoDrio.Size = new System.Drawing.Size(87, 18);
@@ -1237,7 +1253,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(12, 201);
+            this.groupBox1.Location = new System.Drawing.Point(12, 193);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(740, 1);
             this.groupBox1.TabIndex = 306;
@@ -1247,7 +1263,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(12, 185);
+            this.label1.Location = new System.Drawing.Point(12, 177);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 305;
@@ -1257,7 +1273,7 @@
             // 
             this.tx_dirDrio.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dirDrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dirDrio.Location = new System.Drawing.Point(91, 184);
+            this.tx_dirDrio.Location = new System.Drawing.Point(91, 176);
             this.tx_dirDrio.MaxLength = 0;
             this.tx_dirDrio.Name = "tx_dirDrio";
             this.tx_dirDrio.Size = new System.Drawing.Size(399, 18);
@@ -1269,7 +1285,7 @@
             this.groupBox3.BackColor = System.Drawing.Color.White;
             this.groupBox3.Controls.Add(this.tx_dat_codsu);
             this.groupBox3.Controls.Add(this.groupBox4);
-            this.groupBox3.Location = new System.Drawing.Point(12, 176);
+            this.groupBox3.Location = new System.Drawing.Point(12, 170);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(740, 1);
             this.groupBox3.TabIndex = 304;
@@ -1296,7 +1312,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(12, 160);
+            this.label2.Location = new System.Drawing.Point(12, 154);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 13);
             this.label2.TabIndex = 303;
@@ -1306,7 +1322,7 @@
             // 
             this.tx_nomDrio.BackColor = System.Drawing.SystemColors.Window;
             this.tx_nomDrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_nomDrio.Location = new System.Drawing.Point(242, 159);
+            this.tx_nomDrio.Location = new System.Drawing.Point(242, 153);
             this.tx_nomDrio.MaxLength = 0;
             this.tx_nomDrio.Name = "tx_nomDrio";
             this.tx_nomDrio.Size = new System.Drawing.Size(409, 18);
@@ -1316,7 +1332,7 @@
             // 
             this.cmb_docDes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_docDes.FormattingEnabled = true;
-            this.cmb_docDes.Location = new System.Drawing.Point(92, 156);
+            this.cmb_docDes.Location = new System.Drawing.Point(92, 150);
             this.cmb_docDes.Name = "cmb_docDes";
             this.cmb_docDes.Size = new System.Drawing.Size(48, 21);
             this.cmb_docDes.TabIndex = 12;
@@ -1326,7 +1342,7 @@
             // 
             this.tx_numDocDes.BackColor = System.Drawing.SystemColors.Window;
             this.tx_numDocDes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numDocDes.Location = new System.Drawing.Point(140, 159);
+            this.tx_numDocDes.Location = new System.Drawing.Point(140, 153);
             this.tx_numDocDes.MaxLength = 0;
             this.tx_numDocDes.Name = "tx_numDocDes";
             this.tx_numDocDes.Size = new System.Drawing.Size(101, 18);
@@ -1337,7 +1353,7 @@
             // 
             this.tx_dat_tDdest.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tDdest.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tDdest.Location = new System.Drawing.Point(50, 149);
+            this.tx_dat_tDdest.Location = new System.Drawing.Point(50, 146);
             this.tx_dat_tDdest.Name = "tx_dat_tDdest";
             this.tx_dat_tDdest.Size = new System.Drawing.Size(40, 18);
             this.tx_dat_tDdest.TabIndex = 302;
@@ -1347,7 +1363,7 @@
             // 
             this.groupBox13.BackColor = System.Drawing.Color.White;
             this.groupBox13.Controls.Add(this.groupBox14);
-            this.groupBox13.Location = new System.Drawing.Point(12, 228);
+            this.groupBox13.Location = new System.Drawing.Point(12, 217);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Size = new System.Drawing.Size(740, 1);
             this.groupBox13.TabIndex = 311;
@@ -1365,7 +1381,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label6.Location = new System.Drawing.Point(12, 212);
+            this.label6.Location = new System.Drawing.Point(12, 201);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(78, 13);
             this.label6.TabIndex = 310;
@@ -1375,7 +1391,7 @@
             // 
             this.tx_docsOr.BackColor = System.Drawing.SystemColors.Window;
             this.tx_docsOr.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_docsOr.Location = new System.Drawing.Point(184, 211);
+            this.tx_docsOr.Location = new System.Drawing.Point(184, 200);
             this.tx_docsOr.MaxLength = 0;
             this.tx_docsOr.Name = "tx_docsOr";
             this.tx_docsOr.Size = new System.Drawing.Size(232, 18);
@@ -1387,7 +1403,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label9.Location = new System.Drawing.Point(355, 264);
+            this.label9.Location = new System.Drawing.Point(355, 248);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(71, 13);
             this.label9.TabIndex = 312;
@@ -1397,7 +1413,7 @@
             // 
             this.tx_consig.BackColor = System.Drawing.SystemColors.Window;
             this.tx_consig.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_consig.Location = new System.Drawing.Point(427, 263);
+            this.tx_consig.Location = new System.Drawing.Point(427, 247);
             this.tx_consig.MaxLength = 0;
             this.tx_consig.Name = "tx_consig";
             this.tx_consig.Size = new System.Drawing.Size(184, 18);
@@ -1409,7 +1425,6 @@
             this.gbox_flete.Controls.Add(this.rb_pDes);
             this.gbox_flete.Controls.Add(this.rb_pOri);
             this.gbox_flete.Controls.Add(this.groupBox37);
-            this.gbox_flete.Controls.Add(this.groupBox39);
             this.gbox_flete.Controls.Add(this.label24);
             this.gbox_flete.Controls.Add(this.tx_salxcob);
             this.gbox_flete.Controls.Add(this.label32);
@@ -1418,16 +1433,16 @@
             this.gbox_flete.Controls.Add(this.cmb_mon);
             this.gbox_flete.Controls.Add(this.tx_flete);
             this.gbox_flete.Controls.Add(this.label15);
-            this.gbox_flete.Location = new System.Drawing.Point(625, 276);
+            this.gbox_flete.Location = new System.Drawing.Point(590, 282);
             this.gbox_flete.Name = "gbox_flete";
-            this.gbox_flete.Size = new System.Drawing.Size(133, 111);
+            this.gbox_flete.Size = new System.Drawing.Size(168, 79);
             this.gbox_flete.TabIndex = 26;
             this.gbox_flete.TabStop = false;
             // 
             // rb_pDes
             // 
             this.rb_pDes.AutoSize = true;
-            this.rb_pDes.Location = new System.Drawing.Point(101, 86);
+            this.rb_pDes.Location = new System.Drawing.Point(148, 60);
             this.rb_pDes.Name = "rb_pDes";
             this.rb_pDes.Size = new System.Drawing.Size(14, 13);
             this.rb_pDes.TabIndex = 27;
@@ -1437,7 +1452,7 @@
             // rb_pOri
             // 
             this.rb_pOri.AutoSize = true;
-            this.rb_pOri.Location = new System.Drawing.Point(101, 60);
+            this.rb_pOri.Location = new System.Drawing.Point(80, 60);
             this.rb_pOri.Name = "rb_pOri";
             this.rb_pOri.Size = new System.Drawing.Size(14, 13);
             this.rb_pOri.TabIndex = 407;
@@ -1450,7 +1465,7 @@
             this.groupBox37.Controls.Add(this.groupBox38);
             this.groupBox37.Location = new System.Drawing.Point(5, 76);
             this.groupBox37.Name = "groupBox37";
-            this.groupBox37.Size = new System.Drawing.Size(123, 1);
+            this.groupBox37.Size = new System.Drawing.Size(160, 1);
             this.groupBox37.TabIndex = 406;
             this.groupBox37.TabStop = false;
             // 
@@ -1462,43 +1477,25 @@
             this.groupBox38.TabIndex = 113;
             this.groupBox38.TabStop = false;
             // 
-            // groupBox39
-            // 
-            this.groupBox39.BackColor = System.Drawing.Color.White;
-            this.groupBox39.Controls.Add(this.groupBox40);
-            this.groupBox39.Location = new System.Drawing.Point(5, 102);
-            this.groupBox39.Name = "groupBox39";
-            this.groupBox39.Size = new System.Drawing.Size(123, 1);
-            this.groupBox39.TabIndex = 405;
-            this.groupBox39.TabStop = false;
-            // 
-            // groupBox40
-            // 
-            this.groupBox40.Location = new System.Drawing.Point(0, -26);
-            this.groupBox40.Name = "groupBox40";
-            this.groupBox40.Size = new System.Drawing.Size(164, 1);
-            this.groupBox40.TabIndex = 113;
-            this.groupBox40.TabStop = false;
-            // 
             // label24
             // 
             this.label24.AutoSize = true;
             this.label24.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label24.Location = new System.Drawing.Point(7, 86);
+            this.label24.Location = new System.Drawing.Point(103, 60);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(86, 13);
+            this.label24.Size = new System.Drawing.Size(43, 13);
             this.label24.TabIndex = 404;
-            this.label24.Text = "Paga en Destino";
+            this.label24.Text = "Destino";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_salxcob
             // 
             this.tx_salxcob.AllowSpace = false;
             this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_salxcob.Location = new System.Drawing.Point(54, 10);
+            this.tx_salxcob.Location = new System.Drawing.Point(129, 12);
             this.tx_salxcob.Name = "tx_salxcob";
             this.tx_salxcob.ReadOnly = true;
-            this.tx_salxcob.Size = new System.Drawing.Size(69, 20);
+            this.tx_salxcob.Size = new System.Drawing.Size(36, 20);
             this.tx_salxcob.TabIndex = 403;
             this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_salxcob.Visible = false;
@@ -1509,19 +1506,19 @@
             this.label32.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label32.Location = new System.Drawing.Point(7, 60);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(81, 13);
+            this.label32.Size = new System.Drawing.Size(69, 13);
             this.label32.TabIndex = 402;
-            this.label32.Text = "Paga en Origen";
+            this.label32.Text = "Paga: Origen";
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_pagado
             // 
             this.tx_pagado.AllowSpace = false;
             this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagado.Location = new System.Drawing.Point(59, 11);
+            this.tx_pagado.Location = new System.Drawing.Point(5, 10);
             this.tx_pagado.Name = "tx_pagado";
             this.tx_pagado.ReadOnly = true;
-            this.tx_pagado.Size = new System.Drawing.Size(69, 20);
+            this.tx_pagado.Size = new System.Drawing.Size(43, 20);
             this.tx_pagado.TabIndex = 401;
             this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_pagado.Visible = false;
@@ -1530,9 +1527,9 @@
             // 
             this.tx_dat_mone.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_mone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_mone.Location = new System.Drawing.Point(50, 18);
+            this.tx_dat_mone.Location = new System.Drawing.Point(2, 33);
             this.tx_dat_mone.Name = "tx_dat_mone";
-            this.tx_dat_mone.Size = new System.Drawing.Size(50, 18);
+            this.tx_dat_mone.Size = new System.Drawing.Size(19, 18);
             this.tx_dat_mone.TabIndex = 319;
             this.tx_dat_mone.Visible = false;
             // 
@@ -1540,7 +1537,7 @@
             // 
             this.cmb_mon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_mon.FormattingEnabled = true;
-            this.cmb_mon.Location = new System.Drawing.Point(10, 32);
+            this.cmb_mon.Location = new System.Drawing.Point(25, 32);
             this.cmb_mon.Name = "cmb_mon";
             this.cmb_mon.Size = new System.Drawing.Size(40, 21);
             this.cmb_mon.TabIndex = 299;
@@ -1550,7 +1547,7 @@
             // 
             this.tx_flete.AllowSpace = false;
             this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_flete.Location = new System.Drawing.Point(55, 32);
+            this.tx_flete.Location = new System.Drawing.Point(70, 32);
             this.tx_flete.Name = "tx_flete";
             this.tx_flete.Size = new System.Drawing.Size(73, 20);
             this.tx_flete.TabIndex = 26;
@@ -1561,7 +1558,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label15.Location = new System.Drawing.Point(15, 13);
+            this.label15.Location = new System.Drawing.Point(30, 13);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(103, 13);
             this.label15.TabIndex = 289;
@@ -1592,7 +1589,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label12.Location = new System.Drawing.Point(254, 420);
+            this.label12.Location = new System.Drawing.Point(254, 388);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(89, 13);
             this.label12.TabIndex = 319;
@@ -1603,7 +1600,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label16.Location = new System.Drawing.Point(419, 420);
+            this.label16.Location = new System.Drawing.Point(419, 388);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(61, 13);
             this.label16.TabIndex = 321;
@@ -1626,7 +1623,7 @@
             // 
             this.tx_impreso.BackColor = System.Drawing.SystemColors.Window;
             this.tx_impreso.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_impreso.Location = new System.Drawing.Point(86, 418);
+            this.tx_impreso.Location = new System.Drawing.Point(86, 386);
             this.tx_impreso.Name = "tx_impreso";
             this.tx_impreso.ReadOnly = true;
             this.tx_impreso.Size = new System.Drawing.Size(26, 18);
@@ -1647,7 +1644,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label18.Location = new System.Drawing.Point(34, 420);
+            this.label18.Location = new System.Drawing.Point(34, 388);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(50, 13);
             this.label18.TabIndex = 329;
@@ -1658,7 +1655,7 @@
             // 
             this.groupBox17.BackColor = System.Drawing.Color.White;
             this.groupBox17.Controls.Add(this.groupBox18);
-            this.groupBox17.Location = new System.Drawing.Point(27, 435);
+            this.groupBox17.Location = new System.Drawing.Point(27, 404);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Size = new System.Drawing.Size(497, 1);
             this.groupBox17.TabIndex = 330;
@@ -1676,7 +1673,7 @@
             // 
             this.chk_seguridad.AutoSize = true;
             this.chk_seguridad.ForeColor = System.Drawing.Color.Black;
-            this.chk_seguridad.Location = new System.Drawing.Point(635, 262);
+            this.chk_seguridad.Location = new System.Drawing.Point(635, 246);
             this.chk_seguridad.Name = "chk_seguridad";
             this.chk_seguridad.Size = new System.Drawing.Size(108, 17);
             this.chk_seguridad.TabIndex = 331;
@@ -1689,7 +1686,7 @@
             // 
             this.groupBox27.BackColor = System.Drawing.Color.White;
             this.groupBox27.Controls.Add(this.groupBox28);
-            this.groupBox27.Location = new System.Drawing.Point(12, 280);
+            this.groupBox27.Location = new System.Drawing.Point(12, 264);
             this.groupBox27.Name = "groupBox27";
             this.groupBox27.Size = new System.Drawing.Size(599, 1);
             this.groupBox27.TabIndex = 334;
@@ -1707,7 +1704,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label19.Location = new System.Drawing.Point(12, 264);
+            this.label19.Location = new System.Drawing.Point(12, 248);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(78, 13);
             this.label19.TabIndex = 333;
@@ -1717,7 +1714,7 @@
             // 
             this.tx_obser1.BackColor = System.Drawing.SystemColors.Window;
             this.tx_obser1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_obser1.Location = new System.Drawing.Point(91, 263);
+            this.tx_obser1.Location = new System.Drawing.Point(91, 247);
             this.tx_obser1.MaxLength = 0;
             this.tx_obser1.Name = "tx_obser1";
             this.tx_obser1.Size = new System.Drawing.Size(252, 18);
@@ -1727,7 +1724,7 @@
             // 
             this.chk_flete.AutoSize = true;
             this.chk_flete.ForeColor = System.Drawing.Color.Black;
-            this.chk_flete.Location = new System.Drawing.Point(566, 419);
+            this.chk_flete.Location = new System.Drawing.Point(566, 387);
             this.chk_flete.Name = "chk_flete";
             this.chk_flete.Size = new System.Drawing.Size(85, 17);
             this.chk_flete.TabIndex = 335;
@@ -1739,7 +1736,7 @@
             // 
             this.label28.AutoSize = true;
             this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label28.Location = new System.Drawing.Point(133, 420);
+            this.label28.Location = new System.Drawing.Point(133, 388);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(55, 13);
             this.label28.TabIndex = 344;
@@ -1748,13 +1745,14 @@
             // 
             // gbox_planilla
             // 
+            this.gbox_planilla.Controls.Add(this.label48);
+            this.gbox_planilla.Controls.Add(this.groupBox61);
             this.gbox_planilla.Controls.Add(this.tx_dat_dniC2s);
             this.gbox_planilla.Controls.Add(this.tx_dat_carrNreg);
             this.gbox_planilla.Controls.Add(this.tx_dat_plaNreg);
             this.gbox_planilla.Controls.Add(this.tx_dat_dniC2);
             this.gbox_planilla.Controls.Add(this.tx_pla_chofer2);
             this.gbox_planilla.Controls.Add(this.tx_pla_brev2);
-            this.gbox_planilla.Controls.Add(this.label45);
             this.gbox_planilla.Controls.Add(this.label44);
             this.gbox_planilla.Controls.Add(this.groupBox16);
             this.gbox_planilla.Controls.Add(this.tx_marCarret);
@@ -1777,21 +1775,71 @@
             this.gbox_planilla.Controls.Add(this.label22);
             this.gbox_planilla.Controls.Add(this.label20);
             this.gbox_planilla.Controls.Add(this.label23);
+            this.gbox_planilla.Controls.Add(this.tx_pla_dniChof);
             this.gbox_planilla.Controls.Add(this.label21);
             this.gbox_planilla.Controls.Add(this.label25);
+            this.gbox_planilla.Controls.Add(this.tx_marCpropio);
             this.gbox_planilla.Controls.Add(this.label27);
             this.gbox_planilla.Controls.Add(this.label26);
-            this.gbox_planilla.Location = new System.Drawing.Point(21, 438);
+            this.gbox_planilla.Location = new System.Drawing.Point(21, 409);
             this.gbox_planilla.Name = "gbox_planilla";
-            this.gbox_planilla.Size = new System.Drawing.Size(737, 74);
+            this.gbox_planilla.Size = new System.Drawing.Size(737, 103);
             this.gbox_planilla.TabIndex = 345;
             this.gbox_planilla.TabStop = false;
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label48.Location = new System.Drawing.Point(9, 60);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(47, 13);
+            this.label48.TabIndex = 380;
+            this.label48.Text = "Chofer 2";
+            this.label48.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // groupBox61
+            // 
+            this.groupBox61.BackColor = System.Drawing.Color.White;
+            this.groupBox61.Controls.Add(this.groupBox62);
+            this.groupBox61.Controls.Add(this.groupBox66);
+            this.groupBox61.Location = new System.Drawing.Point(6, 75);
+            this.groupBox61.Name = "groupBox61";
+            this.groupBox61.Size = new System.Drawing.Size(725, 1);
+            this.groupBox61.TabIndex = 377;
+            this.groupBox61.TabStop = false;
+            // 
+            // groupBox62
+            // 
+            this.groupBox62.BackColor = System.Drawing.Color.White;
+            this.groupBox62.Controls.Add(this.groupBox65);
+            this.groupBox62.Location = new System.Drawing.Point(0, 19);
+            this.groupBox62.Name = "groupBox62";
+            this.groupBox62.Size = new System.Drawing.Size(731, 1);
+            this.groupBox62.TabIndex = 362;
+            this.groupBox62.TabStop = false;
+            // 
+            // groupBox65
+            // 
+            this.groupBox65.Location = new System.Drawing.Point(0, -26);
+            this.groupBox65.Name = "groupBox65";
+            this.groupBox65.Size = new System.Drawing.Size(164, 1);
+            this.groupBox65.TabIndex = 113;
+            this.groupBox65.TabStop = false;
+            // 
+            // groupBox66
+            // 
+            this.groupBox66.Location = new System.Drawing.Point(0, -26);
+            this.groupBox66.Name = "groupBox66";
+            this.groupBox66.Size = new System.Drawing.Size(164, 1);
+            this.groupBox66.TabIndex = 113;
+            this.groupBox66.TabStop = false;
             // 
             // tx_dat_dniC2s
             // 
             this.tx_dat_dniC2s.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_dniC2s.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_dniC2s.Location = new System.Drawing.Point(360, 28);
+            this.tx_dat_dniC2s.Location = new System.Drawing.Point(3, 53);
             this.tx_dat_dniC2s.Name = "tx_dat_dniC2s";
             this.tx_dat_dniC2s.Size = new System.Drawing.Size(20, 18);
             this.tx_dat_dniC2s.TabIndex = 376;
@@ -1802,7 +1850,7 @@
             // 
             this.tx_dat_carrNreg.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_carrNreg.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_carrNreg.Location = new System.Drawing.Point(486, 7);
+            this.tx_dat_carrNreg.Location = new System.Drawing.Point(486, 8);
             this.tx_dat_carrNreg.Name = "tx_dat_carrNreg";
             this.tx_dat_carrNreg.Size = new System.Drawing.Size(17, 18);
             this.tx_dat_carrNreg.TabIndex = 375;
@@ -1813,7 +1861,7 @@
             // 
             this.tx_dat_plaNreg.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_plaNreg.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_plaNreg.Location = new System.Drawing.Point(221, 7);
+            this.tx_dat_plaNreg.Location = new System.Drawing.Point(221, 8);
             this.tx_dat_plaNreg.Name = "tx_dat_plaNreg";
             this.tx_dat_plaNreg.Size = new System.Drawing.Size(31, 18);
             this.tx_dat_plaNreg.TabIndex = 374;
@@ -1823,47 +1871,35 @@
             // 
             this.tx_dat_dniC2.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_dniC2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_dniC2.Location = new System.Drawing.Point(378, 30);
+            this.tx_dat_dniC2.Location = new System.Drawing.Point(57, 58);
             this.tx_dat_dniC2.Name = "tx_dat_dniC2";
-            this.tx_dat_dniC2.Size = new System.Drawing.Size(17, 18);
+            this.tx_dat_dniC2.Size = new System.Drawing.Size(93, 18);
             this.tx_dat_dniC2.TabIndex = 372;
             this.tx_dat_dniC2.Tag = "doc del chofer 2";
-            this.tx_dat_dniC2.Visible = false;
             // 
             // tx_pla_chofer2
             // 
-            this.tx_pla_chofer2.Location = new System.Drawing.Point(533, 32);
+            this.tx_pla_chofer2.Location = new System.Drawing.Point(245, 56);
             this.tx_pla_chofer2.Name = "tx_pla_chofer2";
             this.tx_pla_chofer2.ReadOnly = true;
-            this.tx_pla_chofer2.Size = new System.Drawing.Size(200, 20);
+            this.tx_pla_chofer2.Size = new System.Drawing.Size(488, 20);
             this.tx_pla_chofer2.TabIndex = 370;
             this.tx_pla_chofer2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_pla_brev2
             // 
-            this.tx_pla_brev2.Location = new System.Drawing.Point(440, 32);
+            this.tx_pla_brev2.Location = new System.Drawing.Point(151, 56);
             this.tx_pla_brev2.Name = "tx_pla_brev2";
             this.tx_pla_brev2.ReadOnly = true;
             this.tx_pla_brev2.Size = new System.Drawing.Size(93, 20);
             this.tx_pla_brev2.TabIndex = 369;
             this.tx_pla_brev2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label45.Location = new System.Drawing.Point(392, 36);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(47, 13);
-            this.label45.TabIndex = 371;
-            this.label45.Text = "Chofer 2";
-            this.label45.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // label44
             // 
             this.label44.AutoSize = true;
             this.label44.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label44.Location = new System.Drawing.Point(438, 14);
+            this.label44.Location = new System.Drawing.Point(438, 15);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(64, 13);
             this.label44.TabIndex = 368;
@@ -1875,7 +1911,7 @@
             this.groupBox16.BackColor = System.Drawing.Color.White;
             this.groupBox16.Controls.Add(this.groupBox54);
             this.groupBox16.Controls.Add(this.groupBox56);
-            this.groupBox16.Location = new System.Drawing.Point(8, 73);
+            this.groupBox16.Location = new System.Drawing.Point(8, 99);
             this.groupBox16.Name = "groupBox16";
             this.groupBox16.Size = new System.Drawing.Size(725, 1);
             this.groupBox16.TabIndex = 367;
@@ -1911,7 +1947,7 @@
             // 
             this.tx_marCarret.BackColor = System.Drawing.SystemColors.Window;
             this.tx_marCarret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marCarret.Location = new System.Drawing.Point(146, 7);
+            this.tx_marCarret.Location = new System.Drawing.Point(146, 8);
             this.tx_marCarret.Name = "tx_marCarret";
             this.tx_marCarret.Size = new System.Drawing.Size(17, 18);
             this.tx_marCarret.TabIndex = 366;
@@ -1921,7 +1957,7 @@
             // 
             this.tx_aut_carret.BackColor = System.Drawing.SystemColors.Window;
             this.tx_aut_carret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_aut_carret.Location = new System.Drawing.Point(503, 11);
+            this.tx_aut_carret.Location = new System.Drawing.Point(503, 12);
             this.tx_aut_carret.Name = "tx_aut_carret";
             this.tx_aut_carret.Size = new System.Drawing.Size(99, 18);
             this.tx_aut_carret.TabIndex = 365;
@@ -1930,7 +1966,7 @@
             // 
             this.tx_marcamion.BackColor = System.Drawing.SystemColors.Window;
             this.tx_marcamion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marcamion.Location = new System.Drawing.Point(417, 4);
+            this.tx_marcamion.Location = new System.Drawing.Point(417, 5);
             this.tx_marcamion.Name = "tx_marcamion";
             this.tx_marcamion.Size = new System.Drawing.Size(17, 18);
             this.tx_marcamion.TabIndex = 364;
@@ -1940,7 +1976,7 @@
             // 
             this.tx_idplan.BackColor = System.Drawing.SystemColors.Window;
             this.tx_idplan.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_idplan.Location = new System.Drawing.Point(274, 55);
+            this.tx_idplan.Location = new System.Drawing.Point(137, 81);
             this.tx_idplan.Name = "tx_idplan";
             this.tx_idplan.Size = new System.Drawing.Size(24, 18);
             this.tx_idplan.TabIndex = 363;
@@ -1951,7 +1987,7 @@
             this.groupBox33.BackColor = System.Drawing.Color.White;
             this.groupBox33.Controls.Add(this.groupBox34);
             this.groupBox33.Controls.Add(this.groupBox36);
-            this.groupBox33.Location = new System.Drawing.Point(7, 50);
+            this.groupBox33.Location = new System.Drawing.Point(7, 52);
             this.groupBox33.Name = "groupBox33";
             this.groupBox33.Size = new System.Drawing.Size(725, 1);
             this.groupBox33.TabIndex = 362;
@@ -1988,7 +2024,7 @@
             this.groupBox29.BackColor = System.Drawing.Color.White;
             this.groupBox29.Controls.Add(this.groupBox31);
             this.groupBox29.Controls.Add(this.groupBox30);
-            this.groupBox29.Location = new System.Drawing.Point(7, 28);
+            this.groupBox29.Location = new System.Drawing.Point(7, 29);
             this.groupBox29.Name = "groupBox29";
             this.groupBox29.Size = new System.Drawing.Size(725, 1);
             this.groupBox29.TabIndex = 361;
@@ -2022,34 +2058,34 @@
             // 
             // tx_pla_propiet
             // 
-            this.tx_pla_propiet.Location = new System.Drawing.Point(590, 54);
+            this.tx_pla_propiet.Location = new System.Drawing.Point(484, 80);
             this.tx_pla_propiet.Name = "tx_pla_propiet";
             this.tx_pla_propiet.ReadOnly = true;
-            this.tx_pla_propiet.Size = new System.Drawing.Size(143, 20);
+            this.tx_pla_propiet.Size = new System.Drawing.Size(248, 20);
             this.tx_pla_propiet.TabIndex = 9;
             this.tx_pla_propiet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_pla_ruc
             // 
-            this.tx_pla_ruc.Location = new System.Drawing.Point(503, 54);
+            this.tx_pla_ruc.Location = new System.Drawing.Point(366, 80);
             this.tx_pla_ruc.Name = "tx_pla_ruc";
             this.tx_pla_ruc.ReadOnly = true;
-            this.tx_pla_ruc.Size = new System.Drawing.Size(87, 20);
+            this.tx_pla_ruc.Size = new System.Drawing.Size(117, 20);
             this.tx_pla_ruc.TabIndex = 8;
             this.tx_pla_ruc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_pla_nomcho
             // 
-            this.tx_pla_nomcho.Location = new System.Drawing.Point(150, 31);
+            this.tx_pla_nomcho.Location = new System.Drawing.Point(243, 33);
             this.tx_pla_nomcho.Name = "tx_pla_nomcho";
             this.tx_pla_nomcho.ReadOnly = true;
-            this.tx_pla_nomcho.Size = new System.Drawing.Size(200, 20);
+            this.tx_pla_nomcho.Size = new System.Drawing.Size(489, 20);
             this.tx_pla_nomcho.TabIndex = 7;
             this.tx_pla_nomcho.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_pla_brevet
             // 
-            this.tx_pla_brevet.Location = new System.Drawing.Point(57, 31);
+            this.tx_pla_brevet.Location = new System.Drawing.Point(150, 33);
             this.tx_pla_brevet.Name = "tx_pla_brevet";
             this.tx_pla_brevet.ReadOnly = true;
             this.tx_pla_brevet.Size = new System.Drawing.Size(93, 20);
@@ -2058,16 +2094,16 @@
             // 
             // tx_pla_plani
             // 
-            this.tx_pla_plani.Location = new System.Drawing.Point(352, 54);
+            this.tx_pla_plani.Location = new System.Drawing.Point(205, 80);
             this.tx_pla_plani.Name = "tx_pla_plani";
             this.tx_pla_plani.ReadOnly = true;
-            this.tx_pla_plani.Size = new System.Drawing.Size(79, 20);
+            this.tx_pla_plani.Size = new System.Drawing.Size(95, 20);
             this.tx_pla_plani.TabIndex = 5;
             this.tx_pla_plani.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // tx_pla_fech
             // 
-            this.tx_pla_fech.Location = new System.Drawing.Point(49, 54);
+            this.tx_pla_fech.Location = new System.Drawing.Point(49, 80);
             this.tx_pla_fech.Name = "tx_pla_fech";
             this.tx_pla_fech.ReadOnly = true;
             this.tx_pla_fech.Size = new System.Drawing.Size(79, 20);
@@ -2076,7 +2112,7 @@
             // 
             // tx_pla_confv
             // 
-            this.tx_pla_confv.Location = new System.Drawing.Point(687, 9);
+            this.tx_pla_confv.Location = new System.Drawing.Point(687, 10);
             this.tx_pla_confv.Name = "tx_pla_confv";
             this.tx_pla_confv.ReadOnly = true;
             this.tx_pla_confv.Size = new System.Drawing.Size(46, 20);
@@ -2085,7 +2121,7 @@
             // 
             // tx_pla_autor
             // 
-            this.tx_pla_autor.Location = new System.Drawing.Point(235, 9);
+            this.tx_pla_autor.Location = new System.Drawing.Point(235, 10);
             this.tx_pla_autor.Name = "tx_pla_autor";
             this.tx_pla_autor.ReadOnly = true;
             this.tx_pla_autor.Size = new System.Drawing.Size(69, 20);
@@ -2094,7 +2130,7 @@
             // 
             // tx_pla_carret
             // 
-            this.tx_pla_carret.Location = new System.Drawing.Point(353, 9);
+            this.tx_pla_carret.Location = new System.Drawing.Point(353, 10);
             this.tx_pla_carret.Name = "tx_pla_carret";
             this.tx_pla_carret.ReadOnly = true;
             this.tx_pla_carret.Size = new System.Drawing.Size(69, 20);
@@ -2103,7 +2139,7 @@
             // 
             // tx_pla_placa
             // 
-            this.tx_pla_placa.Location = new System.Drawing.Point(81, 9);
+            this.tx_pla_placa.Location = new System.Drawing.Point(81, 10);
             this.tx_pla_placa.Name = "tx_pla_placa";
             this.tx_pla_placa.ReadOnly = true;
             this.tx_pla_placa.Size = new System.Drawing.Size(69, 20);
@@ -2114,7 +2150,7 @@
             // 
             this.label30.AutoSize = true;
             this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label30.Location = new System.Drawing.Point(8, 58);
+            this.label30.Location = new System.Drawing.Point(8, 84);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(37, 13);
             this.label30.TabIndex = 360;
@@ -2125,7 +2161,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label22.Location = new System.Drawing.Point(310, 58);
+            this.label22.Location = new System.Drawing.Point(163, 84);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(40, 13);
             this.label22.TabIndex = 359;
@@ -2136,7 +2172,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label20.Location = new System.Drawing.Point(8, 13);
+            this.label20.Location = new System.Drawing.Point(8, 14);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(71, 13);
             this.label20.TabIndex = 358;
@@ -2147,18 +2183,28 @@
             // 
             this.label23.AutoSize = true;
             this.label23.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label23.Location = new System.Drawing.Point(9, 35);
+            this.label23.Location = new System.Drawing.Point(9, 37);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(38, 13);
             this.label23.TabIndex = 357;
             this.label23.Text = "Chofer";
             this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // tx_pla_dniChof
+            // 
+            this.tx_pla_dniChof.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_pla_dniChof.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_pla_dniChof.Location = new System.Drawing.Point(57, 35);
+            this.tx_pla_dniChof.Name = "tx_pla_dniChof";
+            this.tx_pla_dniChof.Size = new System.Drawing.Size(93, 18);
+            this.tx_pla_dniChof.TabIndex = 368;
+            this.tx_pla_dniChof.Tag = "doc identidad del chofer";
+            // 
             // label21
             // 
             this.label21.AutoSize = true;
             this.label21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label21.Location = new System.Drawing.Point(310, 13);
+            this.label21.Location = new System.Drawing.Point(310, 14);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(41, 13);
             this.label21.TabIndex = 356;
@@ -2169,18 +2215,29 @@
             // 
             this.label25.AutoSize = true;
             this.label25.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label25.Location = new System.Drawing.Point(169, 13);
+            this.label25.Location = new System.Drawing.Point(169, 14);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(64, 13);
             this.label25.TabIndex = 355;
             this.label25.Text = "Cert.Autoriz.";
             this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // tx_marCpropio
+            // 
+            this.tx_marCpropio.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_marCpropio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_marCpropio.Location = new System.Drawing.Point(602, 11);
+            this.tx_marCpropio.Name = "tx_marCpropio";
+            this.tx_marCpropio.Size = new System.Drawing.Size(24, 18);
+            this.tx_marCpropio.TabIndex = 367;
+            this.tx_marCpropio.Tag = "0=camion propio, 1=subcontratado";
+            this.tx_marCpropio.Visible = false;
+            // 
             // label27
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label27.Location = new System.Drawing.Point(613, 13);
+            this.label27.Location = new System.Drawing.Point(613, 14);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(73, 13);
             this.label27.TabIndex = 353;
@@ -2191,7 +2248,7 @@
             // 
             this.label26.AutoSize = true;
             this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label26.Location = new System.Drawing.Point(444, 58);
+            this.label26.Location = new System.Drawing.Point(307, 84);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(57, 13);
             this.label26.TabIndex = 352;
@@ -2333,7 +2390,7 @@
             // 
             this.tx_dat_tcd.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tcd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tcd.Location = new System.Drawing.Point(4, 154);
+            this.tx_dat_tcd.Location = new System.Drawing.Point(4, 148);
             this.tx_dat_tcd.Name = "tx_dat_tcd";
             this.tx_dat_tcd.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_tcd.TabIndex = 349;
@@ -2353,7 +2410,7 @@
             // 
             this.tx_tipcam.BackColor = System.Drawing.SystemColors.Window;
             this.tx_tipcam.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tipcam.Location = new System.Drawing.Point(619, 417);
+            this.tx_tipcam.Location = new System.Drawing.Point(623, 372);
             this.tx_tipcam.Name = "tx_tipcam";
             this.tx_tipcam.Size = new System.Drawing.Size(44, 18);
             this.tx_tipcam.TabIndex = 351;
@@ -2430,7 +2487,7 @@
             // 
             this.tx_telD.BackColor = System.Drawing.SystemColors.Window;
             this.tx_telD.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_telD.Location = new System.Drawing.Point(679, 159);
+            this.tx_telD.Location = new System.Drawing.Point(679, 153);
             this.tx_telD.MaxLength = 0;
             this.tx_telD.Name = "tx_telD";
             this.tx_telD.Size = new System.Drawing.Size(73, 18);
@@ -2440,7 +2497,7 @@
             // 
             this.label35.AutoSize = true;
             this.label35.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label35.Location = new System.Drawing.Point(654, 161);
+            this.label35.Location = new System.Drawing.Point(654, 155);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(25, 13);
             this.label35.TabIndex = 362;
@@ -2511,9 +2568,9 @@
             this.gb_detalle.Controls.Add(this.label39);
             this.gb_detalle.Controls.Add(this.label38);
             this.gb_detalle.Controls.Add(this.label37);
-            this.gb_detalle.Location = new System.Drawing.Point(12, 289);
+            this.gb_detalle.Location = new System.Drawing.Point(12, 284);
             this.gb_detalle.Name = "gb_detalle";
-            this.gb_detalle.Size = new System.Drawing.Size(601, 122);
+            this.gb_detalle.Size = new System.Drawing.Size(572, 95);
             this.gb_detalle.TabIndex = 25;
             this.gb_detalle.TabStop = false;
             this.gb_detalle.Text = " Detalle ";
@@ -2522,7 +2579,7 @@
             // 
             this.groupBox51.BackColor = System.Drawing.Color.White;
             this.groupBox51.Controls.Add(this.groupBox52);
-            this.groupBox51.Location = new System.Drawing.Point(18, 102);
+            this.groupBox51.Location = new System.Drawing.Point(9, 82);
             this.groupBox51.Name = "groupBox51";
             this.groupBox51.Size = new System.Drawing.Size(253, 1);
             this.groupBox51.TabIndex = 342;
@@ -2540,7 +2597,7 @@
             // 
             this.panel3.Controls.Add(this.rb_tn);
             this.panel3.Controls.Add(this.rb_kg);
-            this.panel3.Location = new System.Drawing.Point(107, 80);
+            this.panel3.Location = new System.Drawing.Point(98, 60);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(103, 23);
             this.panel3.TabIndex = 254;
@@ -2576,7 +2633,7 @@
             this.lb_glodeta.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lb_glodeta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_glodeta.ForeColor = System.Drawing.Color.Black;
-            this.lb_glodeta.Location = new System.Drawing.Point(106, 55);
+            this.lb_glodeta.Location = new System.Drawing.Point(97, 38);
             this.lb_glodeta.Name = "lb_glodeta";
             this.lb_glodeta.Size = new System.Drawing.Size(2, 15);
             this.lb_glodeta.TabIndex = 347;
@@ -2585,7 +2642,7 @@
             // 
             this.groupBox49.BackColor = System.Drawing.Color.White;
             this.groupBox49.Controls.Add(this.groupBox50);
-            this.groupBox49.Location = new System.Drawing.Point(18, 71);
+            this.groupBox49.Location = new System.Drawing.Point(9, 54);
             this.groupBox49.Name = "groupBox49";
             this.groupBox49.Size = new System.Drawing.Size(550, 1);
             this.groupBox49.TabIndex = 340;
@@ -2603,7 +2660,7 @@
             // 
             this.tx_det_desc.BackColor = System.Drawing.SystemColors.Window;
             this.tx_det_desc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_det_desc.Location = new System.Drawing.Point(284, 54);
+            this.tx_det_desc.Location = new System.Drawing.Point(275, 37);
             this.tx_det_desc.MaxLength = 0;
             this.tx_det_desc.Name = "tx_det_desc";
             this.tx_det_desc.Size = new System.Drawing.Size(283, 18);
@@ -2614,7 +2671,7 @@
             // 
             this.groupBox45.BackColor = System.Drawing.Color.White;
             this.groupBox45.Controls.Add(this.groupBox48);
-            this.groupBox45.Location = new System.Drawing.Point(194, 39);
+            this.groupBox45.Location = new System.Drawing.Point(185, 30);
             this.groupBox45.Name = "groupBox45";
             this.groupBox45.Size = new System.Drawing.Size(189, 1);
             this.groupBox45.TabIndex = 338;
@@ -2632,7 +2689,7 @@
             // 
             this.tx_det_umed.BackColor = System.Drawing.SystemColors.Window;
             this.tx_det_umed.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_det_umed.Location = new System.Drawing.Point(283, 22);
+            this.tx_det_umed.Location = new System.Drawing.Point(274, 13);
             this.tx_det_umed.MaxLength = 0;
             this.tx_det_umed.Name = "tx_det_umed";
             this.tx_det_umed.Size = new System.Drawing.Size(100, 18);
@@ -2641,7 +2698,7 @@
             // tx_det_peso
             // 
             this.tx_det_peso.AllowSpace = false;
-            this.tx_det_peso.Location = new System.Drawing.Point(211, 83);
+            this.tx_det_peso.Location = new System.Drawing.Point(202, 63);
             this.tx_det_peso.Name = "tx_det_peso";
             this.tx_det_peso.Size = new System.Drawing.Size(61, 20);
             this.tx_det_peso.TabIndex = 255;
@@ -2651,7 +2708,7 @@
             // 
             this.groupBox46.BackColor = System.Drawing.Color.White;
             this.groupBox46.Controls.Add(this.groupBox47);
-            this.groupBox46.Location = new System.Drawing.Point(21, 40);
+            this.groupBox46.Location = new System.Drawing.Point(12, 31);
             this.groupBox46.Name = "groupBox46";
             this.groupBox46.Size = new System.Drawing.Size(146, 1);
             this.groupBox46.TabIndex = 336;
@@ -2669,7 +2726,7 @@
             // 
             this.chk_cunica.AutoSize = true;
             this.chk_cunica.ForeColor = System.Drawing.Color.Black;
-            this.chk_cunica.Location = new System.Drawing.Point(285, 80);
+            this.chk_cunica.Location = new System.Drawing.Point(276, 60);
             this.chk_cunica.Name = "chk_cunica";
             this.chk_cunica.Size = new System.Drawing.Size(83, 30);
             this.chk_cunica.TabIndex = 256;
@@ -2679,7 +2736,7 @@
             // tx_det_cant
             // 
             this.tx_det_cant.AllowSpace = false;
-            this.tx_det_cant.Location = new System.Drawing.Point(106, 22);
+            this.tx_det_cant.Location = new System.Drawing.Point(97, 12);
             this.tx_det_cant.Name = "tx_det_cant";
             this.tx_det_cant.Size = new System.Drawing.Size(61, 20);
             this.tx_det_cant.TabIndex = 251;
@@ -2689,7 +2746,7 @@
             // 
             this.label40.AutoSize = true;
             this.label40.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label40.Location = new System.Drawing.Point(20, 87);
+            this.label40.Location = new System.Drawing.Point(11, 67);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(36, 13);
             this.label40.TabIndex = 341;
@@ -2699,7 +2756,7 @@
             // 
             this.label39.AutoSize = true;
             this.label39.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label39.Location = new System.Drawing.Point(20, 56);
+            this.label39.Location = new System.Drawing.Point(11, 39);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(80, 13);
             this.label39.TabIndex = 339;
@@ -2709,7 +2766,7 @@
             // 
             this.label38.AutoSize = true;
             this.label38.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label38.Location = new System.Drawing.Point(196, 24);
+            this.label38.Location = new System.Drawing.Point(187, 15);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(63, 13);
             this.label38.TabIndex = 337;
@@ -2719,7 +2776,7 @@
             // 
             this.label37.AutoSize = true;
             this.label37.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label37.Location = new System.Drawing.Point(19, 25);
+            this.label37.Location = new System.Drawing.Point(10, 16);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(62, 13);
             this.label37.TabIndex = 335;
@@ -2736,34 +2793,12 @@
             this.chk_man.UseVisualStyleBackColor = true;
             this.chk_man.CheckedChanged += new System.EventHandler(this.chk_man_CheckedChanged);
             // 
-            // tx_marCpropio
-            // 
-            this.tx_marCpropio.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_marCpropio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marCpropio.Location = new System.Drawing.Point(739, 434);
-            this.tx_marCpropio.Name = "tx_marCpropio";
-            this.tx_marCpropio.Size = new System.Drawing.Size(24, 18);
-            this.tx_marCpropio.TabIndex = 367;
-            this.tx_marCpropio.Tag = "0=camion propio, 1=subcontratado";
-            this.tx_marCpropio.Visible = false;
-            // 
-            // tx_pla_dniChof
-            // 
-            this.tx_pla_dniChof.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_pla_dniChof.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pla_dniChof.Location = new System.Drawing.Point(29, 414);
-            this.tx_pla_dniChof.Name = "tx_pla_dniChof";
-            this.tx_pla_dniChof.Size = new System.Drawing.Size(27, 18);
-            this.tx_pla_dniChof.TabIndex = 368;
-            this.tx_pla_dniChof.Tag = "doc identidad del chofer";
-            this.tx_pla_dniChof.Visible = false;
-            // 
             // cmb_docorig
             // 
             this.cmb_docorig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_docorig.DropDownWidth = 300;
             this.cmb_docorig.FormattingEnabled = true;
-            this.cmb_docorig.Location = new System.Drawing.Point(92, 208);
+            this.cmb_docorig.Location = new System.Drawing.Point(92, 197);
             this.cmb_docorig.Name = "cmb_docorig";
             this.cmb_docorig.Size = new System.Drawing.Size(92, 21);
             this.cmb_docorig.TabIndex = 20;
@@ -2774,7 +2809,7 @@
             // 
             this.label41.AutoSize = true;
             this.label41.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label41.Location = new System.Drawing.Point(510, 212);
+            this.label41.Location = new System.Drawing.Point(510, 201);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(143, 13);
             this.label41.TabIndex = 370;
@@ -2784,7 +2819,7 @@
             // 
             this.tx_dat_docOr.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_docOr.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_docOr.Location = new System.Drawing.Point(423, 209);
+            this.tx_dat_docOr.Location = new System.Drawing.Point(423, 198);
             this.tx_dat_docOr.Name = "tx_dat_docOr";
             this.tx_dat_docOr.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_docOr.TabIndex = 372;
@@ -2794,7 +2829,7 @@
             // 
             this.tx_dat_dorigS.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_dorigS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_dorigS.Location = new System.Drawing.Point(451, 209);
+            this.tx_dat_dorigS.Location = new System.Drawing.Point(451, 198);
             this.tx_dat_dorigS.Name = "tx_dat_dorigS";
             this.tx_dat_dorigS.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_dorigS.TabIndex = 373;
@@ -2809,7 +2844,7 @@
             // 
             this.groupBox2.BackColor = System.Drawing.Color.White;
             this.groupBox2.Controls.Add(this.groupBox53);
-            this.groupBox2.Location = new System.Drawing.Point(12, 255);
+            this.groupBox2.Location = new System.Drawing.Point(12, 241);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(740, 1);
             this.groupBox2.TabIndex = 378;
@@ -2827,7 +2862,7 @@
             // 
             this.tx_dat_dorigS2.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_dorigS2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_dorigS2.Location = new System.Drawing.Point(451, 236);
+            this.tx_dat_dorigS2.Location = new System.Drawing.Point(451, 222);
             this.tx_dat_dorigS2.Name = "tx_dat_dorigS2";
             this.tx_dat_dorigS2.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_dorigS2.TabIndex = 381;
@@ -2838,7 +2873,7 @@
             // 
             this.tx_dat_docOr2.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_docOr2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_docOr2.Location = new System.Drawing.Point(423, 236);
+            this.tx_dat_docOr2.Location = new System.Drawing.Point(423, 222);
             this.tx_dat_docOr2.Name = "tx_dat_docOr2";
             this.tx_dat_docOr2.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_docOr2.TabIndex = 380;
@@ -2848,7 +2883,7 @@
             // 
             this.label42.AutoSize = true;
             this.label42.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label42.Location = new System.Drawing.Point(510, 239);
+            this.label42.Location = new System.Drawing.Point(510, 225);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(143, 13);
             this.label42.TabIndex = 379;
@@ -2859,7 +2894,7 @@
             this.cmb_docorig2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_docorig2.DropDownWidth = 300;
             this.cmb_docorig2.FormattingEnabled = true;
-            this.cmb_docorig2.Location = new System.Drawing.Point(92, 235);
+            this.cmb_docorig2.Location = new System.Drawing.Point(92, 221);
             this.cmb_docorig2.Name = "cmb_docorig2";
             this.cmb_docorig2.Size = new System.Drawing.Size(92, 21);
             this.cmb_docorig2.TabIndex = 374;
@@ -2870,7 +2905,7 @@
             // 
             this.label43.AutoSize = true;
             this.label43.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label43.Location = new System.Drawing.Point(12, 239);
+            this.label43.Location = new System.Drawing.Point(12, 225);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(78, 13);
             this.label43.TabIndex = 377;
@@ -2880,7 +2915,7 @@
             // 
             this.tx_docsOr2.BackColor = System.Drawing.SystemColors.Window;
             this.tx_docsOr2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_docsOr2.Location = new System.Drawing.Point(184, 238);
+            this.tx_docsOr2.Location = new System.Drawing.Point(184, 224);
             this.tx_docsOr2.MaxLength = 0;
             this.tx_docsOr2.Name = "tx_docsOr2";
             this.tx_docsOr2.Size = new System.Drawing.Size(232, 18);
@@ -2890,7 +2925,7 @@
             // 
             this.tx_dat_nomcsd.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_nomcsd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_nomcsd.Location = new System.Drawing.Point(146, 152);
+            this.tx_dat_nomcsd.Location = new System.Drawing.Point(146, 146);
             this.tx_dat_nomcsd.Name = "tx_dat_nomcsd";
             this.tx_dat_nomcsd.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_nomcsd.TabIndex = 382;
@@ -3055,7 +3090,7 @@
             // 
             this.tx_pla_chofS.BackColor = System.Drawing.SystemColors.Window;
             this.tx_pla_chofS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pla_chofS.Location = new System.Drawing.Point(1, 420);
+            this.tx_pla_chofS.Location = new System.Drawing.Point(1, 388);
             this.tx_pla_chofS.Name = "tx_pla_chofS";
             this.tx_pla_chofS.Size = new System.Drawing.Size(27, 18);
             this.tx_pla_chofS.TabIndex = 420;
@@ -3065,7 +3100,7 @@
             // tx_rucEorig2
             // 
             this.tx_rucEorig2.AllowSpace = false;
-            this.tx_rucEorig2.Location = new System.Drawing.Point(652, 236);
+            this.tx_rucEorig2.Location = new System.Drawing.Point(652, 222);
             this.tx_rucEorig2.Name = "tx_rucEorig2";
             this.tx_rucEorig2.Size = new System.Drawing.Size(100, 20);
             this.tx_rucEorig2.TabIndex = 376;
@@ -3075,7 +3110,7 @@
             // tx_rucEorig
             // 
             this.tx_rucEorig.AllowSpace = false;
-            this.tx_rucEorig.Location = new System.Drawing.Point(652, 209);
+            this.tx_rucEorig.Location = new System.Drawing.Point(652, 198);
             this.tx_rucEorig.Name = "tx_rucEorig";
             this.tx_rucEorig.Size = new System.Drawing.Size(100, 20);
             this.tx_rucEorig.TabIndex = 22;
@@ -3086,7 +3121,7 @@
             // 
             this.tx_tfil.AllowSpace = false;
             this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfil.Location = new System.Drawing.Point(190, 416);
+            this.tx_tfil.Location = new System.Drawing.Point(190, 385);
             this.tx_tfil.Name = "tx_tfil";
             this.tx_tfil.ReadOnly = true;
             this.tx_tfil.Size = new System.Drawing.Size(41, 20);
@@ -3097,7 +3132,7 @@
             // 
             this.tx_totpes.AllowSpace = false;
             this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totpes.Location = new System.Drawing.Point(483, 416);
+            this.tx_totpes.Location = new System.Drawing.Point(483, 385);
             this.tx_totpes.Name = "tx_totpes";
             this.tx_totpes.ReadOnly = true;
             this.tx_totpes.Size = new System.Drawing.Size(41, 20);
@@ -3108,7 +3143,7 @@
             // 
             this.tx_totcant.AllowSpace = false;
             this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(344, 416);
+            this.tx_totcant.Location = new System.Drawing.Point(344, 385);
             this.tx_totcant.Name = "tx_totcant";
             this.tx_totcant.ReadOnly = true;
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
@@ -3155,8 +3190,6 @@
             this.Controls.Add(this.tx_rucEorig);
             this.Controls.Add(this.label41);
             this.Controls.Add(this.cmb_docorig);
-            this.Controls.Add(this.tx_pla_dniChof);
-            this.Controls.Add(this.tx_marCpropio);
             this.Controls.Add(this.chk_man);
             this.Controls.Add(this.gb_detalle);
             this.Controls.Add(this.panel2);
@@ -3258,9 +3291,9 @@
             this.groupBox5.ResumeLayout(false);
             this.gbox_serie.ResumeLayout(false);
             this.gbox_serie.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
             this.groupBox25.ResumeLayout(false);
             this.groupBox23.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
             this.groupBox19.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -3269,11 +3302,12 @@
             this.gbox_flete.ResumeLayout(false);
             this.gbox_flete.PerformLayout();
             this.groupBox37.ResumeLayout(false);
-            this.groupBox39.ResumeLayout(false);
             this.groupBox17.ResumeLayout(false);
             this.groupBox27.ResumeLayout(false);
             this.gbox_planilla.ResumeLayout(false);
             this.gbox_planilla.PerformLayout();
+            this.groupBox61.ResumeLayout(false);
+            this.groupBox62.ResumeLayout(false);
             this.groupBox16.ResumeLayout(false);
             this.groupBox54.ResumeLayout(false);
             this.groupBox33.ResumeLayout(false);
@@ -3469,8 +3503,6 @@
         private System.Windows.Forms.GroupBox groupBox30;
         private System.Windows.Forms.GroupBox groupBox37;
         private System.Windows.Forms.GroupBox groupBox38;
-        private System.Windows.Forms.GroupBox groupBox39;
-        private System.Windows.Forms.GroupBox groupBox40;
         private System.Windows.Forms.Label label24;
         private NumericTextBox tx_salxcob;
         private System.Windows.Forms.Label label32;
@@ -3555,7 +3587,6 @@
         private System.Windows.Forms.Label label44;
         private System.Windows.Forms.TextBox tx_pla_chofer2;
         private System.Windows.Forms.TextBox tx_pla_brev2;
-        private System.Windows.Forms.Label label45;
         private System.Windows.Forms.TextBox tx_dat_dniC2;
         private System.Windows.Forms.TextBox tx_dat_carrNreg;
         private System.Windows.Forms.TextBox tx_dat_plaNreg;
@@ -3574,5 +3605,11 @@
         private System.Windows.Forms.TextBox tx_fticket;
         private System.Windows.Forms.TextBox tx_pla_chofS;
         private System.Windows.Forms.TextBox tx_dat_dniC2s;
+        private System.Windows.Forms.Label label48;
+        private System.Windows.Forms.GroupBox groupBox61;
+        private System.Windows.Forms.GroupBox groupBox62;
+        private System.Windows.Forms.GroupBox groupBox65;
+        private System.Windows.Forms.GroupBox groupBox66;
+        private System.Windows.Forms.Button bt_preg;
     }
 }

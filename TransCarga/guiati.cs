@@ -1456,7 +1456,7 @@ namespace TransCarga
                                         conn.Open();
                                         if (lib.procConn(conn) == true)
                                         {
-                                            using (MySqlCommand micon = new MySqlCommand("update cabguiai set impreso='S' where id=@idr"))
+                                            using (MySqlCommand micon = new MySqlCommand("update cabguiai set impreso='S' where id=@idr", conn))
                                             {
                                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                                                 micon.ExecuteNonQuery();
@@ -3022,7 +3022,7 @@ namespace TransCarga
                 DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                 tx_ubigD.Text = fila[0][2].ToString();
             }
-            if(Tx_modo.Text == "NUEVO") rb_ent_clte.PerformClick();
+            if(Tx_modo.Text == "NUEVO" && tx_pregr_num.Text == "") rb_ent_clte.PerformClick();
         }
         #endregion comboboxes
 

@@ -347,3 +347,7 @@ Program, login, se agrego las tablas públicas y se llenó con datos en login:
 	dt_enlaces ...................................................................................... ok 25/08/2023
 form busyarreg, agregar opcion de pre-guias y solo mostrar guías mecanizadas, no electrónicas ....... ok 02/09/2023
 P.A. arreglaPGR, creación del procedimiento para corregir serie y numero de pre guia ................ ok 02/09/2023
+form planicarga, esta validando reg mct en fila de carreta que esta en blanco ....................... ok 10/09/2023
+form guiati, daba error al actualizar marca de impreso despues de grabar, arreglado ................. ok 10/09/2023
+form guiati, arreglar problema de borrado de direc destinatario cuando se jala de pre-guia .......... ok 10/09/2023
+

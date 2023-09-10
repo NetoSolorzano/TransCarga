@@ -1177,7 +1177,7 @@ namespace TransCarga
                 tx_nregP.Focus();
                 return;
             }
-            if (tx_nregC.Text.Trim() == "")
+            if (tx_pla_carret.Text != "" && tx_nregC.Text.Trim() == "")
             {
                 MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tx_nregC.Focus();
@@ -1200,7 +1200,7 @@ namespace TransCarga
                     tx_pla_autor.Focus();
                     return;
                 }
-                if (tx_carret_autoriz.Text.Trim().Length < 9 || tx_carret_autoriz.Text.Trim().Length > 16)
+                if (tx_pla_carret.Text != "" && (tx_carret_autoriz.Text.Trim().Length < 9 || tx_carret_autoriz.Text.Trim().Length > 16))
                 {
                     MessageBox.Show("Las autorizaciones de circulación deben" + Environment.NewLine +
                     "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1215,7 +1215,7 @@ namespace TransCarga
                     tx_nregP.Focus();
                     return;
                 }
-                if (tx_nregC.Text.Trim().Length < 9 || tx_nregC.Text.Trim().Length > 12)
+                if (tx_pla_carret.Text != "" && (tx_nregC.Text.Trim().Length < 9 || tx_nregC.Text.Trim().Length > 12))
                 {
                     MessageBox.Show("El registro MTC del vehículo debe" + Environment.NewLine +
                     "tener entre 9 y 12 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);

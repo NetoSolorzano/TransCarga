@@ -236,6 +236,7 @@ namespace TransCarga
                 dataGridView1.ReadOnly = false;
             }
             else dataGridView1.ReadOnly = true;
+            tx_pregr_num.Text = "";
             tx_flete.Text = "";
             tx_pagado.Text = "";
             tx_salxcob.Text = "";

@@ -350,4 +350,4 @@ P.A. arreglaPGR, creación del procedimiento para corregir serie y numero de pre
 form planicarga, esta validando reg mct en fila de carreta que esta en blanco ....................... ok 10/09/2023
 form guiati, daba error al actualizar marca de impreso despues de grabar, arreglado ................. ok 10/09/2023
 form guiati, arreglar problema de borrado de direc destinatario cuando se jala de pre-guia .......... ok 10/09/2023
-
+guiati_e, corregir jalaoc() y anulación sin que valide datos ........................................ ok 12/09/2023

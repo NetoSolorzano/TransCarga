@@ -4427,7 +4427,7 @@ namespace TransCarga
 
                 if (Tx_modo.Text == "NUEVO")
                 {   // si es nuevo, se imprimen 2 copias
-                    impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc);
+                    impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, "");
                     /*
                     for (int i = 1; i <= int.Parse(vi_copias); i++)
                     {
@@ -4439,7 +4439,7 @@ namespace TransCarga
                 {   // si NO es nuevo, se imprime 1 copia
                     //printDocument1.PrinterSettings.PrinterName = v_impTK;
                     //printDocument1.Print();
-                    impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc);
+                    impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, "");
                 }
                 retorna = true;
             }

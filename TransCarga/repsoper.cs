@@ -2553,7 +2553,7 @@ namespace TransCarga
 
                     }
                     // llamamos a la clase que imprime
-                    impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc);
+                    impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc, "TK", "");  // acá debería ser variable de formato y nombre del crystal
                 }
             }
         }

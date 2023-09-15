@@ -3792,99 +3792,14 @@ namespace TransCarga
         }
         private bool imprimeA5()
         {
-            bool retorna = true;
+            bool retorna = false;
+            datosImpresion();
             return retorna;
         }
         private bool imprimeTK()
         {
             bool retorna = false;
-            try
-            {
-                string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", ""};    // 10
-                string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-                string[] va = { "", "", "", "", "", "" };       // 6
-                string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
-
-                vs[0] = tx_serie.Text;                          // dr.GetString("sergui");
-                vs[1] = tx_numero.Text;                         // dr.GetString("numgui")
-                vs[2] = tx_fechope.Text;                        // dr.GetString("fechopegr").Substring(0, 10)
-                vs[3] = tx_dirOrigen.Text;                      // dr.GetString("dirorigen")
-                vs[4] = cmb_docorig.Text;                      // dr.GetString("NomTidor1")
-                vs[5] = tx_docsOr.Text;                         // dr.GetString("docsremit")
-                vs[6] = tx_rucEorig.Text;                       // dr.GetString("rucDorig")
-                vs[7] = cmb_docorig2.Text;                      // dr.GetString("NomTidor2")
-                vs[8] = tx_docsOr2.Text;                        // dr.GetString("docsremit2")
-                vs[9] = tx_rucEorig2.Text;                      // dr.GetString("rucDorig2")
-                vs[10] = cmb_docRem.Text;                       // dr.GetString("NomDocRem")
-                vs[11] = tx_numDocRem.Text;                     // dr.GetString("nudoregri")
-                vs[12] = tx_nomRem.Text;                        // dr.GetString("nombregri")
-                vs[13] = cmb_docDes.Text;                     // dr.GetString("NomDocDes")
-                vs[14] = tx_numDocDes.Text;                     // dr.GetString("nudodegri")
-                vs[15] = tx_nomDrio.Text;                     // dr.GetString("nombdegri")
-                vs[16] = tx_pla_fech.Text.Substring(8, 2) + "/" + tx_pla_fech.Text.Substring(5, 2) + "/" + tx_pla_fech.Text.Substring(0, 4);      // dr.GetString("fechplani")
-                //vs[16] = tx_pla_fech.Text;
-                vs[17] = tx_totpes.Text;                     // dr.GetString("pestotgri")
-                vs[18] = (rb_kg.Checked == true) ? "K" : "T";                        // dr.GetString("pesoKT")
-                vs[19] = tx_dirRem.Text;                     //  dr.GetString("direregri")
-                vs[20] = tx_dptoRtt.Text;                      // dr.GetString("Dpto_Rem")
-                vs[21] = tx_provRtt.Text;                      // dr.GetString("Prov_Rem")
-                vs[22] = tx_distRtt.Text;                      // dr.GetString("Dist_Rem")
-                vs[23] = tx_dirDrio.Text;                     // dr.GetString("diredegri")
-                vs[24] = tx_dptoDrio.Text;                      // dr.GetString("Dpto_Des")
-                vs[25] = tx_proDrio.Text;                      // dr.GetString("Prov_Des")
-                vs[26] = tx_disDrio.Text;                      // dr.GetString("Dist_Des")
-                vs[27] = (Tx_modo.Text == "NUEVO") ? asd : tx_digit.Text;   // dr.GetString("userc")
-                vs[28] = cmb_origen.Text;                     // dr.GetString("locorigen")
-                vs[29] = "";            // hora de emision
-                                               
-                vc[0] = tx_pla_placa.Text;                   // dr.GetString("plaplagri")
-                vc[1] = tx_pla_autor.Text;                   // dr.GetString("autplagri")
-                vc[2] = (Tx_modo.Text == "NUEVO" && tx_pla_ruc.Text == Program.ruc) ? Program.regmtc : "";      // Num Registro MTC del transportista
-                vc[3] = tx_pla_confv.Text;                   // dr.GetString("confvegri")
-                vc[4] = tx_pla_carret.Text;                   // Placa carreta
-                vc[5] = tx_aut_carret.Text;                   // Autoriz. vehicular
-                vc[6] = (Tx_modo.Text == "NUEVO" && tx_pla_ruc.Text == Program.ruc) ? Program.regmtc : "";      // Num Registro MTC de la carreta
-                vc[7] = "";                                   // Conf. vehicular de la carreta, ya esta incluido en  tx_pla_confv.Text
-                
-                vc[8] = tx_pla_dniChof.Text;                   // Choferes - Dni chofer principal
-                vc[9] = tx_pla_brevet.Text;                   // Choferes - dr.GetString("breplagri")
-                vc[10] = tx_pla_nomcho.Text;                  // Choferes - dr.GetString("chocamcar")
-                vc[11] = "";                                  // Choferes - Apellidos (ya esta incluido en tx_pla_nomcho.Text)
-                vc[12] = tx_dat_dniC2.Text;                   // Choferes - Dni chofer secundario
-                vc[13] = tx_pla_brev2.Text;                   // Choferes - Brevete chofer secundario
-                vc[14] = tx_pla_chofer2.Text;                 // Choferes - Nombres
-                vc[15] = "";                                  // Choferes - Apellidos (ya esta incluido en el nombre)
-                                                              
-                va[0] = tx_dat_textoqr.Text;                 // Varios: texto del código QR ->tx_dat_textoqr.Text
-                va[1] = "";
-                va[2] = despedida;
-                va[3] = "";                                  // Varios: segunda linea de despedida
-                va[4] = glosa1;
-                va[5] = glosa2;
-
-                int y = 0;
-                dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila
-                dt[y, 1] = tx_det_cant.Text;                // detalle: Cant.
-                dt[y, 2] = tx_det_umed.Text;                // detalle: Unidad de medida
-                dt[y, 3] = tx_det_desc.Text;                // detalle: Descripción
-                dt[y, 4] = tx_det_peso.Text;                // detalle: peso
-
-                if (Tx_modo.Text == "NUEVO")
-                {   // si es nuevo, se imprimen 2 copias
-                    impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
-                }
-                else
-                {   // si NO es nuevo, se imprime 1 copia
-                    impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
-                }
-                retorna = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message,"Error en imprimir TK");
-                retorna = false;
-            }
+            datosImpresion();
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -3941,6 +3856,91 @@ namespace TransCarga
                     micon.ExecuteNonQuery();
                 }
             }
+        }
+        private bool datosImpresion()
+        {
+            bool retorna = false;
+
+                string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", "", ""};    // 10
+                string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
+                string[] va = { "", "", "", "", "", "" };       // 6
+                string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+
+                vs[0] = tx_serie.Text;                          // dr.GetString("sergui");
+                vs[1] = tx_numero.Text;                         // dr.GetString("numgui")
+                vs[2] = tx_fechope.Text;                        // dr.GetString("fechopegr").Substring(0, 10)
+                vs[3] = tx_dirOrigen.Text;                      // dr.GetString("dirorigen")
+                vs[4] = cmb_docorig.Text;                      // dr.GetString("NomTidor1")
+                vs[5] = tx_docsOr.Text;                         // dr.GetString("docsremit")
+                vs[6] = tx_rucEorig.Text;                       // dr.GetString("rucDorig")
+                vs[7] = cmb_docorig2.Text;                      // dr.GetString("NomTidor2")
+                vs[8] = tx_docsOr2.Text;                        // dr.GetString("docsremit2")
+                vs[9] = tx_rucEorig2.Text;                      // dr.GetString("rucDorig2")
+                vs[10] = cmb_docRem.Text;                       // dr.GetString("NomDocRem")
+                vs[11] = tx_numDocRem.Text;                     // dr.GetString("nudoregri")
+                vs[12] = tx_nomRem.Text;                        // dr.GetString("nombregri")
+                vs[13] = cmb_docDes.Text;                     // dr.GetString("NomDocDes")
+                vs[14] = tx_numDocDes.Text;                     // dr.GetString("nudodegri")
+                vs[15] = tx_nomDrio.Text;                     // dr.GetString("nombdegri")
+                if (tx_pla_fech.Text != "") vs[16] = tx_pla_fech.Text.Substring(8, 2) + "/" + tx_pla_fech.Text.Substring(5, 2) + "/" + tx_pla_fech.Text.Substring(0, 4);      // dr.GetString("fechplani")
+                else vs[16] = "";
+                vs[17] = tx_totpes.Text;                     // dr.GetString("pestotgri")
+                vs[18] = (rb_kg.Checked == true) ? "K" : "T";                        // dr.GetString("pesoKT")
+                vs[19] = tx_dirRem.Text;                     //  dr.GetString("direregri")
+                vs[20] = tx_dptoRtt.Text;                      // dr.GetString("Dpto_Rem")
+                vs[21] = tx_provRtt.Text;                      // dr.GetString("Prov_Rem")
+                vs[22] = tx_distRtt.Text;                      // dr.GetString("Dist_Rem")
+                vs[23] = tx_dirDrio.Text;                     // dr.GetString("diredegri")
+                vs[24] = tx_dptoDrio.Text;                      // dr.GetString("Dpto_Des")
+                vs[25] = tx_proDrio.Text;                      // dr.GetString("Prov_Des")
+                vs[26] = tx_disDrio.Text;                      // dr.GetString("Dist_Des")
+                vs[27] = (Tx_modo.Text == "NUEVO") ? asd : tx_digit.Text;   // dr.GetString("userc")
+                vs[28] = cmb_origen.Text;                     // dr.GetString("locorigen")
+                vs[29] = "";            // hora de emision
+
+                vc[0] = tx_pla_placa.Text;                   // dr.GetString("plaplagri")
+                vc[1] = tx_pla_autor.Text;                   // dr.GetString("autplagri")
+                vc[2] = (Tx_modo.Text == "NUEVO" && tx_pla_ruc.Text == Program.ruc) ? Program.regmtc : "";      // Num Registro MTC del transportista
+                vc[3] = tx_pla_confv.Text;                   // dr.GetString("confvegri")
+                vc[4] = tx_pla_carret.Text;                   // Placa carreta
+                vc[5] = tx_aut_carret.Text;                   // Autoriz. vehicular
+                vc[6] = (Tx_modo.Text == "NUEVO" && tx_pla_ruc.Text == Program.ruc) ? Program.regmtc : "";      // Num Registro MTC de la carreta
+                vc[7] = "";                                   // Conf. vehicular de la carreta, ya esta incluido en  tx_pla_confv.Text
+
+                vc[8] = tx_pla_dniChof.Text;                   // Choferes - Dni chofer principal
+                vc[9] = tx_pla_brevet.Text;                   // Choferes - dr.GetString("breplagri")
+                vc[10] = tx_pla_nomcho.Text;                  // Choferes - dr.GetString("chocamcar")
+                vc[11] = "";                                  // Choferes - Apellidos (ya esta incluido en tx_pla_nomcho.Text)
+                vc[12] = tx_dat_dniC2.Text;                   // Choferes - Dni chofer secundario
+                vc[13] = tx_pla_brev2.Text;                   // Choferes - Brevete chofer secundario
+                vc[14] = tx_pla_chofer2.Text;                 // Choferes - Nombres
+                vc[15] = "";                                  // Choferes - Apellidos (ya esta incluido en el nombre)
+
+                va[0] = tx_dat_textoqr.Text;                 // Varios: texto del código QR ->tx_dat_textoqr.Text
+                va[1] = "";
+                va[2] = despedida;
+                va[3] = "";                                  // Varios: segunda linea de despedida
+                va[4] = glosa1;
+                va[5] = glosa2;
+
+                int y = 0;
+                dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila
+                dt[y, 1] = tx_det_cant.Text;                // detalle: Cant.
+                dt[y, 2] = tx_det_umed.Text;                // detalle: Unidad de medida
+                dt[y, 3] = gloDeta + " " + tx_det_desc.Text;                // detalle: Descripción
+                dt[y, 4] = tx_det_peso.Text;                // detalle: peso
+                retorna = true;
+
+            if (Tx_modo.Text == "NUEVO")
+            {   // si es nuevo, se imprimen 2 copias
+                impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+            }
+            else
+            {   // si NO es nuevo, se imprime 1 copia
+                impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+            }
+            return retorna;
         }
         #endregion
 

@@ -126,7 +126,6 @@ namespace TransCarga
             }
         }
 
-
         public void imprime_TK(object sender, PrintPageEventArgs e)     // TK
         {
             {
@@ -484,19 +483,19 @@ namespace TransCarga
             rowcabeza.docRemit = cab[10];
             rowcabeza.numRemit = cab[11];
             rowcabeza.nomRemit = cab[12];
-            rowcabeza.direRemit = "";       // no tenemos este dato en la clase
-            rowcabeza.dptoRemit = "";       // no tenemos este dato en la clase
-            rowcabeza.provRemit = "";       // no tenemos este dato en la clase
-            rowcabeza.distRemit = "";       // no tenemos este dato en la clase
+            rowcabeza.direRemit = cab[19];       // no tenemos este dato en la clase
+            rowcabeza.dptoRemit = cab[20];       // no tenemos este dato en la clase
+            rowcabeza.provRemit = cab[21];       // no tenemos este dato en la clase
+            rowcabeza.distRemit = cab[22];       // no tenemos este dato en la clase
             rowcabeza.telremit = "";        // no tenemos este dato en la clase
             // destinatario
             rowcabeza.docDestinat = cab[13];
             rowcabeza.numDestinat = cab[14];
             rowcabeza.nomDestinat = cab[15];
-            rowcabeza.direDestinat = "";       // no tenemos este dato en la clase
-            rowcabeza.distDestinat = "";       // no tenemos este dato en la clase
-            rowcabeza.provDestinat = "";       // no tenemos este dato en la clase
-            rowcabeza.dptoDestinat = "";       // no tenemos este dato en la clase
+            rowcabeza.direDestinat = cab[23];       // no tenemos este dato en la clase
+            rowcabeza.distDestinat = cab[26];       // no tenemos este dato en la clase
+            rowcabeza.provDestinat = cab[25];       // no tenemos este dato en la clase
+            rowcabeza.dptoDestinat = cab[24];       // no tenemos este dato en la clase
             rowcabeza.teldesti = "";           // no tenemos este dato en la clase
             // importes
             rowcabeza.pesTotCar = cab[17];
@@ -548,7 +547,7 @@ namespace TransCarga
             guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
             //
             // DETALLE  
-            for (int y=0; y<=3; y++)
+            for (int y=0; y<3; y++)
             {
                 if (det[y, 0] != "")
                 {

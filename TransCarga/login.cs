@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Data;
 using MySql.Data.MySqlClient;
-using System.Configuration;
+//using System.Configuration;
 using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,20 +12,21 @@ namespace TransCarga
     public partial class login : Form
     {
 
-        /* conexion a la base de datos
-        public static string serv = Decrypt(ConfigurationManager.AppSettings["serv"].ToString(), true);     // "solorsoft.com";
-        public static string port = ConfigurationManager.AppSettings["port"].ToString();
-        public static string usua = ConfigurationManager.AppSettings["user"].ToString();                    // "solorsof_rei";
-        public static string cont = Decrypt(ConfigurationManager.AppSettings["pass"].ToString(), true);     // "190969Sorol";
-        public static string data = ConfigurationManager.AppSettings["data"].ToString();
-        public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
-        */
+        // conexion a la base de datos
+        public static string serv = Decrypt(System.Configuration.ConfigurationManager.AppSettings.Get("serv").ToString(), true);   //["serv"].ToString(), true);     // "solorsoft.com";
+        public static string port = System.Configuration.ConfigurationManager.AppSettings.Get("port").ToString(); // ["port"].ToString();
+        public static string usua = System.Configuration.ConfigurationManager.AppSettings.Get("user").ToString(); // ["user"].ToString();                    // "solorsof_rei";
+        public static string cont = Decrypt(System.Configuration.ConfigurationManager.AppSettings["pass"].ToString(), true);     // "190969Sorol";
+        public static string data = System.Configuration.ConfigurationManager.AppSettings.Get("data").ToString(); // ["data"].ToString();
+        public static string ctl = ""; // System.Configuration.ConfigurationManager.AppSettings.Get("ConnectionLifeTime").ToString(); // ["ConnectionLifeTime"].ToString();
+        /*
         public static string serv = Decrypt("zORwZzvn6JifDLi2lP9llA==", true); // Decrypt(ConfigurationManager.AppSettings["serv"].ToString(), true);     // "solorsoft.com";
         public static string port = "3306";          // ConfigurationManager.AppSettings["port"].ToString();    // "3306"; 
         public static string usua = "solorsof_TCE_LP6";  // ConfigurationManager.AppSettings["user"].ToString();                    // "solorsof_rei";
         public static string cont = Decrypt("sXh045JtbXAqp4DtU1Excw==", true);   // Decrypt(ConfigurationManager.AppSettings["pass"].ToString(), true);     // "190969Sorol";
         public static string data = "solorsof_carrionExp"; //ConfigurationManager.AppSettings["data"].ToString();
         public static string ctl = "";               // ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
+        */
 
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
         //public DataTable dt_enlaces = new DataTable();
@@ -175,7 +175,7 @@ namespace TransCarga
             byte[] keyArray;
             //get the byte code of the string
             byte[] toEncryptArray = Convert.FromBase64String(cipherString);
-            System.Configuration.AppSettingsReader settingsReader = new AppSettingsReader();
+            System.Configuration.AppSettingsReader settingsReader = new System.Configuration.AppSettingsReader();
             //Get your key from config file to open the lock!
             //string key = (string)settingsReader.GetValue("pass",typeof(String));   // SecurityKey
             string key = "8312@Sorol";

@@ -80,7 +80,7 @@ namespace TransCarga
             }
 
             var[0] = varios[0];         // Varios: texto del código QR ->tx_dat_textoqr.Text
-            var[1] = varios[1];         // 
+            var[1] = "imgQR.png";         // varios[1]
             var[2] = varios[2];         // despedid1
             var[3] = varios[3];         // despedid2
             var[4] = varios[4];         // Glosa final comprobante 1 -> "Representación impresa sin valor legal de la"
@@ -113,6 +113,22 @@ namespace TransCarga
                     print.Print();
                     break;
                 case "A5":
+
+                    if (var[0] != "")
+                    {
+                        string codigo = var[0];                             // tx_dat_textoqr.Text
+                        //var rnd = Path.GetRandomFileName();
+                        //otro = Path.GetFileNameWithoutExtension(rnd);       // 
+                        if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
+                        otro = "formatos/imgQR.png";
+                        //
+                        var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
+                        var qrCode = qrEncoder.Encode(codigo);
+                        var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
+                        using (var stream = new FileStream(otro, FileMode.Create))
+                        renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
+                    }
+
                     conClie data = generaReporte();
                     ReportDocument repo = new ReportDocument();
                     repo.Load(nomforCR);

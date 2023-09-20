@@ -109,6 +109,8 @@ namespace TransCarga
         string det3dtm = "";            // palabra nombre descriptivo de las guias de remision electronicas de transportista
         // uso de pre-guias, tipo de uso registro manual del número, solo para marcar los bultos
         string usoPGm = "";             // en blanco -> no se usa preguias manuales, "manual" -> Si usa pre-guias (orden servicio) manuales solo numero para marcar bultos
+        string rutaQR = "";             // ruta donde se grabará el png del QR de la GRE
+        string nomImgQR = "";           // nombre del archivo imagen incluyendo la extensión del QR
 
         double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
@@ -389,6 +391,8 @@ namespace TransCarga
                         if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "nomGRE_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "rutaQR") rutaQR = row["valor"].ToString().Trim();      // "C:\temp\"
+                        if (row["param"].ToString() == "nomImgQR") nomImgQR = row["valor"].ToString().Trim();    // "imgQR.png"
                     }
                     if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
                     if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
@@ -3918,7 +3922,7 @@ namespace TransCarga
                 vc[15] = "";                                  // Choferes - Apellidos (ya esta incluido en el nombre)
 
                 va[0] = tx_dat_textoqr.Text;                 // Varios: texto del código QR ->tx_dat_textoqr.Text
-                va[1] = "";
+                va[1] = rutaQR + nomImgQR;                   // "C:\temp\"+"imgQR.png"
                 va[2] = despedida;
                 va[3] = "";                                  // Varios: segunda linea de despedida
                 va[4] = glosa1;

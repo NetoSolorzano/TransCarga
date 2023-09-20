@@ -80,7 +80,7 @@ namespace TransCarga
             }
 
             var[0] = varios[0];         // Varios: texto del código QR ->tx_dat_textoqr.Text
-            var[1] = "imgQR.png";         // varios[1]
+            var[1] = varios[1];         // Ruta y nombre de la imagen QR
             var[2] = varios[2];         // despedid1
             var[3] = varios[3];         // despedid2
             var[4] = varios[4];         // Glosa final comprobante 1 -> "Representación impresa sin valor legal de la"
@@ -119,16 +119,23 @@ namespace TransCarga
                         string codigo = var[0];                             // tx_dat_textoqr.Text
                         //var rnd = Path.GetRandomFileName();
                         //otro = Path.GetFileNameWithoutExtension(rnd);       // 
-                        if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
-                        otro = "formatos/imgQR.png";
+                        //if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
+                        if (File.Exists(@var[1])) File.Delete(@var[1]);
+                        //otro = @var[1];    // "formatos/imgQR.png";
                         //
                         var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
                         var qrCode = qrEncoder.Encode(codigo);
+                        //var[1] = @"C:\temp\"+"imgQR.png";   // qrCode.Matrix.ToString();
                         var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
-                        using (var stream = new FileStream(otro, FileMode.Create))
+                        using (var stream = new FileStream(@var[1], FileMode.Create))
                         renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
                     }
-
+                    else
+                    {
+                        //if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
+                        if (File.Exists(@var[1])) File.Delete(@var[1]);
+                        var[1] = "";
+                    }
                     conClie data = generaReporte();
                     ReportDocument repo = new ReportDocument();
                     repo.Load(nomforCR);
@@ -554,7 +561,7 @@ namespace TransCarga
             // rowcabeza.fecEmiCre = cab[]      // falta en la clase
             // varios
             rowcabeza.varTexoQR = var[0];
-            rowcabeza.varTexLibr = var[1];
+            rowcabeza.varTexLibr = @var[1];      // texto del QR en formato byte[]
             rowcabeza.varTexDes1 = var[2];
             rowcabeza.varTexDes2 = var[3];
             rowcabeza.varGloFin1 = var[4];

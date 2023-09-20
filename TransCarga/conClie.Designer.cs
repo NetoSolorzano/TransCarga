@@ -1420,6 +1420,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnnomAyuda;
             
+            private global::System.Data.DataColumn columncodQR;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public gr_ind_cabDataTable() {
@@ -2055,6 +2057,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn codQRColumn {
+                get {
+                    return this.columncodQR;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2165,7 +2175,8 @@ namespace TransCarga {
                         string autoriz2, 
                         string dniChoPrin, 
                         string dniChoSec, 
-                        string nomAyuda) {
+                        string nomAyuda, 
+                        byte[] codQR) {
                 gr_ind_cabRow rowgr_ind_cabRow = ((gr_ind_cabRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         formatoRPT,
@@ -2242,7 +2253,8 @@ namespace TransCarga {
                         autoriz2,
                         dniChoPrin,
                         dniChoSec,
-                        nomAyuda};
+                        nomAyuda,
+                        codQR};
                 rowgr_ind_cabRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowgr_ind_cabRow);
                 return rowgr_ind_cabRow;
@@ -2340,6 +2352,7 @@ namespace TransCarga {
                 this.columndniChoPrin = base.Columns["dniChoPrin"];
                 this.columndniChoSec = base.Columns["dniChoSec"];
                 this.columnnomAyuda = base.Columns["nomAyuda"];
+                this.columncodQR = base.Columns["codQR"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2495,6 +2508,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columndniChoSec);
                 this.columnnomAyuda = new global::System.Data.DataColumn("nomAyuda", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnnomAyuda);
+                this.columncodQR = new global::System.Data.DataColumn("codQR", typeof(byte[]), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columncodQR);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8946,6 +8961,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public byte[] codQR {
+                get {
+                    try {
+                        return ((byte[])(this[this.tablegr_ind_cab.codQRColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'codQR\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.codQRColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsformatoRPTNull() {
                 return this.IsNull(this.tablegr_ind_cab.formatoRPTColumn);
             }
@@ -9842,6 +9873,18 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetnomAyudaNull() {
                 this[this.tablegr_ind_cab.nomAyudaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IscodQRNull() {
+                return this.IsNull(this.tablegr_ind_cab.codQRColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetcodQRNull() {
+                this[this.tablegr_ind_cab.codQRColumn] = global::System.Convert.DBNull;
             }
         }
         

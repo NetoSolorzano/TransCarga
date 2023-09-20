@@ -351,5 +351,9 @@ form planicarga, esta validando reg mct en fila de carreta que esta en blanco ..
 form guiati, daba error al actualizar marca de impreso despues de grabar, arreglado ................. ok 10/09/2023
 form guiati, arreglar problema de borrado de direc destinatario cuando se jala de pre-guia .......... ok 10/09/2023
 guiati_e, corregir jalaoc() y anulación sin que valide datos ........................................ ok 12/09/2023
-impGRE_T, desarrollo del formato en A5 para la guía electrónica ..................................... OK 14/09/2023 falta generar el QR.png y grabarlo pa CR lo jale
-CR gre_t0, formato A5 para las guias de remision electrónicas transportista ......................... ok 14/09/2023 falta adecuar la impresion del QR
+impGRE_T, desarrollo del formato en A5 para la guía electrónica ..................................... OK 14/09/2023 
+CR gre_t0, formato A5 para las guias de remision electrónicas transportista ......................... ok 14/09/2023
+D.S. conclie, agregar campo byte[] a la tabla cabecera GR ........................................... ok 19/09/2023
+impGRE_T, generar el QR png y grabarlo para que el CR lo jale ....................................... ok 20/09/2023 
+CR gre_t0, pintar en el recuadro el QR leido del campo textolibre ................................... ok 20/09/2023
+repsoper, opción "Guías Transp", doble click sobre el #GR, si es electrónico debe jalar su formato .. 

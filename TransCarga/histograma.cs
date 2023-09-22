@@ -54,7 +54,7 @@ namespace TransCarga
             Panel algo = sender as Panel;
             string ser = algo.Tag.ToString().Substring(3, 4);
             string num = algo.Tag.ToString().Substring(8, 8);
-            if (algo.Tag.ToString().Substring(0, 2) == "GR") pub.muestra_gr(ser, num, fCR_gr);
+            if (algo.Tag.ToString().Substring(0, 2) == "GR") pub.muestra_gr(ser, num, fCR_gr, @"C:\temp\imgQR.png", "Dice Contener", "TKFE", "A5", "gre_t1.rpt");  // fCR_gr = formato CR según sea elect o mecanizado
             if (algo.Tag.ToString().Substring(0, 2) == "PC") pub.muestra_pl(ser, num, fCR_pl);
         }
         private void histograma_Load(object sender, EventArgs e)

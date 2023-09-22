@@ -356,4 +356,8 @@ CR gre_t0, formato A5 para las guias de remision electrónicas transportista ...
 D.S. conclie, agregar campo byte[] a la tabla cabecera GR ........................................... ok 19/09/2023
 impGRE_T, generar el QR png y grabarlo para que el CR lo jale ....................................... ok 20/09/2023 
 CR gre_t0, pintar en el recuadro el QR leido del campo textolibre ................................... ok 20/09/2023
-repsoper, opción "Guías Transp", doble click sobre el #GR, si es electrónico debe jalar su formato .. 
+repsoper, opción "Guías Transp", doble click sobre el #GR, si es electrónico debe jalar su formato .. ok 21/09/2023
+repsoper, doble click en todas las grillas debe llamar a la vista previa ............................ ok 21/09/2023
+repsoper, todas las grillas deben estar en READ ONLY ................................................ ok 21/09/2023
+repsoper, servicio por cliente, busqueda x nombre, click a [X] da error, arreglar ................... ok 21/09/2023
+repsoper, GRE Estados, agregar columna impresion A5 y seleccion para impresión grupal ............... 

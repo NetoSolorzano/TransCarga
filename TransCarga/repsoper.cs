@@ -74,6 +74,12 @@ namespace TransCarga
         string glosa1 = "";             // glosa comprobante final 1
         string glosa2 = "";             // 
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token
+        string vi_formato = "";
+        string v_impA5 = "";
+        string v_CR_gr_ind = "";
+        string rutaQR = "";      // "C:\temp\"
+        string nomImgQR = "";    // "imgQR.png"
+        string gloDeta = "";
         #endregion
 
         libreria lib = new libreria();
@@ -126,13 +132,15 @@ namespace TransCarga
                 var result = ayu3.ShowDialog();
                 if (result == DialogResult.Cancel)
                 {
-                    tx_dat_tido.Text = ayu3.ReturnValueA[3];       // codigo tipo doc
-                    tx_docu.Text = ayu3.ReturnValueA[3];       // codigo tipo doc
-                    cmb_tidoc.Enabled = true;
-                    cmb_tidoc.SelectedValue = ayu3.ReturnValue0;
-                    tx_codped.Text = ayu3.ReturnValue1;         // nume doc
-                    tx_cliente.Text = ayu3.ReturnValue2;       // nombre cliente
-                    //
+                    if (ayu3.ReturnValue0 != null && ayu3.ReturnValue0 != "")
+                    {
+                        tx_dat_tido.Text = ayu3.ReturnValueA[3];       // codigo tipo doc
+                        tx_docu.Text = ayu3.ReturnValueA[3];       // codigo tipo doc
+                        cmb_tidoc.Enabled = true;
+                        cmb_tidoc.SelectedValue = ayu3.ReturnValue0;
+                        tx_codped.Text = ayu3.ReturnValue1;         // nume doc
+                        tx_cliente.Text = ayu3.ReturnValue2;       // nombre cliente
+                    }
                     dtp_ser_fini.Focus();
                 }
                 return true;    // indicate that you handled this keystroke
@@ -294,7 +302,16 @@ namespace TransCarga
                             if (row["param"].ToString() == "desped2") despedid2 = row["valor"].ToString();
 
                         }
-                        //if (row["campo"].ToString() == "impTK") v_impTK = row["valor"].ToString();
+                        if (row["campo"].ToString() == "impresion")
+                        {
+                            if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString();
+                            if (row["param"].ToString() == "nomGRE_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "rutaQR") rutaQR = row["valor"].ToString().Trim();      // "C:\temp\"
+                            if (row["param"].ToString() == "nomImgQR") nomImgQR = row["valor"].ToString().Trim();    // "imgQR.png"
+                        }
+                        if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
                     }
 
                 }
@@ -421,6 +438,7 @@ namespace TransCarga
                     //dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_vtas.AllowUserToAddRows = false;
                     if (dgv_vtas.DataSource == null) dgv_vtas.ColumnCount = 11;
+                    dgv_vtas.ReadOnly = true;
                     /*
                     dgv_vtas.Width = this.Parent.Width - 50; // 1015;
                     if (dgv_vtas.Rows.Count > 0)
@@ -450,6 +468,7 @@ namespace TransCarga
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
+                    dgv_guias.ReadOnly = true;
                     /*
                     dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_guias.Rows.Count > 0)
@@ -480,6 +499,7 @@ namespace TransCarga
                     dgv_plan.RowTemplate.Height = 15;
                     dgv_plan.AllowUserToAddRows = false;
                     if (dgv_plan.DataSource == null) dgv_plan.ColumnCount = 11;
+                    dgv_plan.ReadOnly = true;
                     /*
                     dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_plan.Rows.Count > 0)
@@ -510,6 +530,7 @@ namespace TransCarga
                     dgv_reval.RowTemplate.Height = 15;
                     dgv_reval.AllowUserToAddRows = false;
                     if (dgv_reval.DataSource == null) dgv_reval.ColumnCount = 11;
+                    dgv_reval.ReadOnly = true;
                     /*
                     dgv_reval.Width = Parent.Width - 50; // 1015;
                     if (dgv_reval.Rows.Count > 0)
@@ -540,6 +561,7 @@ namespace TransCarga
                     dgv_histGR.RowTemplate.Height = 15;
                     dgv_histGR.AllowUserToAddRows = false;
                     if (dgv_histGR.DataSource == null) dgv_histGR.ColumnCount = 8;
+                    dgv_histGR.ReadOnly = true;
                     /*
                     dgv_histGR.Width = Parent.Width - 50; // 1015;
                     if (dgv_histGR.Rows.Count > 0)
@@ -590,6 +612,16 @@ namespace TransCarga
                     btnTk.DefaultCellStyle.Font = chiq;
                     btnTk.DefaultCellStyle.SelectionBackColor = Color.White;
 
+                    DataGridViewButtonColumn btnA5 = new DataGridViewButtonColumn();
+                    btnA5.HeaderText = "iA5";
+                    btnA5.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnA5.Name = "iA5";
+                    btnA5.Width = 60;
+                    btnA5.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnA5.DefaultCellStyle.Padding = padding;
+                    btnA5.DefaultCellStyle.Font = chiq;
+                    btnA5.DefaultCellStyle.SelectionBackColor = Color.White;
+
                     DataGridViewButtonColumn btnCDR = new DataGridViewButtonColumn();
                     btnCDR.HeaderText = "CDR";
                     btnCDR.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -619,61 +651,63 @@ namespace TransCarga
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
 
-                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror
-                    //     0        1       2      3       4     5      6     7 8 9 10    11      12         13        14        15        16
+                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,............,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror
+                    //     0        1       2      3       4     5      6     7 8 9 10 11   12      13         14        15         16       17
                     //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
                     dgv_GRE_est.CellClick += DataGridView1_CellClick;
                     dgv_GRE_est.Columns.Insert(7, btnTk);
-                    dgv_GRE_est.Columns.Insert(8, btnPDF);   // .Add(btnPDF);
-                    dgv_GRE_est.Columns.Insert(9, btnCDR);   // .Add(btnCDR);
-                    dgv_GRE_est.Columns.Insert(10, btnAct);   // .Add(btnAct);
-                    dgv_GRE_est.Columns[11].Visible = false;
+                    dgv_GRE_est.Columns.Insert(8, btnA5);
+                    dgv_GRE_est.Columns.Insert(9, btnPDF);   // .Add(btnPDF);
+                    dgv_GRE_est.Columns.Insert(10, btnCDR);   // .Add(btnCDR);
+                    dgv_GRE_est.Columns.Insert(11, btnAct);   // .Add(btnAct);
                     dgv_GRE_est.Columns[12].Visible = false;
                     dgv_GRE_est.Columns[13].Visible = false;
                     dgv_GRE_est.Columns[14].Visible = false;
                     dgv_GRE_est.Columns[15].Visible = false;
-                    dgv_GRE_est.Columns[16].Visible = true;
+                    dgv_GRE_est.Columns[16].Visible = false;
+                    dgv_GRE_est.Columns[17].Visible = true;
                     if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
                     {
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 10; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 11; i++)
                         {
                             dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_GRE_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                             if (vd != 0) dgv_GRE_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 10; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 11; i++)
                         {
                             int a = dgv_GRE_est.Columns[i].Width;
                             b += a;
                             dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_GRE_est.Columns[i].Width = a;
                         }
-                        if (b < dgv_GRE_est.Width) dgv_GRE_est.Width = dgv_GRE_est.Width - 10;
+                        if (b < dgv_GRE_est.Width) dgv_GRE_est.Width = dgv_GRE_est.Width - 11;
                         dgv_GRE_est.ReadOnly = true;
                     }
                     if (dgv_GRE_est.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
                         {
-                            dgv_GRE_est.Rows[i].Cells[7].Value = "TK";
-                            if (dgv_GRE_est.Rows[i].Cells[6].Value != null)
+                            dgv_GRE_est.Rows[i].Cells["iTK"].Value = "TK";      // 7
+                            dgv_GRE_est.Rows[i].Cells["iA5"].Value = "A5";
+                            if (dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value != null)     // 6
                             {
-                                if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "1")
+                                if (dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "1")   // 6
                                 {
-                                    dgv_GRE_est.Rows[i].Cells[8].ReadOnly = false;
-                                    dgv_GRE_est.Rows[i].Cells[8].Value = "PDF";
-                                    dgv_GRE_est.Rows[i].Cells[9].ReadOnly = false;
-                                    dgv_GRE_est.Rows[i].Cells[9].Value = "CDR";
-                                    dgv_GRE_est.Rows[i].Cells[10].ReadOnly = true;
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].ReadOnly = false;  // 8
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].Value = "PDF";     // 8
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].ReadOnly = false;  // 9
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].Value = "CDR";     // 9
+                                    dgv_GRE_est.Rows[i].Cells["consulta"].ReadOnly = true;  // 10
                                 }
                                 else
                                 {
-                                    dgv_GRE_est.Rows[i].Cells[8].ReadOnly = true;
-                                    dgv_GRE_est.Rows[i].Cells[8].Value = "";
-                                    dgv_GRE_est.Rows[i].Cells[9].ReadOnly = true;
-                                    dgv_GRE_est.Rows[i].Cells[9].Value = "";
-                                    dgv_GRE_est.Rows[i].Cells[10].ReadOnly = false;
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].ReadOnly = true;       // 8
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].Value = "";            // 8
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].ReadOnly = true;       // 9
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].Value = "";            // 9
+                                    dgv_GRE_est.Rows[i].Cells["consulta"].ReadOnly = false; // 10
                                 }
                             }
                         }
@@ -976,12 +1010,12 @@ namespace TransCarga
                     Application.Exit();
                     return;
                 }
+                sumaGrilla("grillares");
             }
             else
             {
                 tx_codped.Focus();
             }
-            sumaGrilla("grillares");
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte guias
         {
@@ -1057,7 +1091,7 @@ namespace TransCarga
                 }
             }
         }
-        private void bt_reval_Click(object sender, EventArgs e)
+        private void bt_reval_Click(object sender, EventArgs e)         // revalorizaciones
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -1102,9 +1136,17 @@ namespace TransCarga
                         da.Fill(dt);
                         dgv_histGR.DataSource = dt;
                         grilla("dgv_histGR");
-                        //
-                        histograma hg = new histograma(dt, rpt_grt, rpt_placarga);
-                        hg.Show();
+                        if (tx_ser.Text.Substring(0, 1) == "0")
+                        {
+                            histograma hg = new histograma(dt, rpt_grt, rpt_placarga);      // formato CR guía mecanizada
+                            hg.Show();  
+                        }
+                        else
+                        {
+                            histograma hg = new histograma(dt, v_CR_gr_ind, rpt_placarga);  // formaro CR guía electrónica
+                            hg.Show();
+                        }
+
                     }
                     string resulta = lib.ult_mov(nomform, nomtab, asd);
                     if (resulta != "OK")                                        // actualizamos la tabla usuarios
@@ -1114,7 +1156,7 @@ namespace TransCarga
                 }
             }
         }
-        private void muestra_gr(string ser, string cor)                 // muestra la grt 
+        /* private void muestra_gr(string ser, string cor)                 // muestra la grt 
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -1194,7 +1236,7 @@ namespace TransCarga
                     }
                 }
             }
-        }
+        } */
         private void bt_dale_Click(object sender, EventArgs e)          // impresion GRUPAL de guias
         {
             if (rb_imSimp.Checked == false && rb_imComp.Checked == false)
@@ -1320,6 +1362,46 @@ namespace TransCarga
                     {
                         dgv_GRE_est.Rows[i].Cells[0].Value = false;
                     }
+                }
+            }
+        }
+        private void button7_Click(object sender, EventArgs e)          // vista previa de guias completa en OPION HISTORICO
+        {
+            if (rb_complet.Checked == true)
+            {
+                if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
+                {
+                    if (tx_ser.Text.Substring(0, 1) == "0") pub.muestra_gr(tx_ser.Text, tx_num.Text, rpt_grt, "", gloDeta, "", "", "");     // guia mecanizada
+                    else pub.muestra_gr(tx_ser.Text, tx_num.Text, "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);    // guia electrónica, si no tiene impresora va en pantalla
+                }
+                else
+                {
+                    tx_ser.Focus();
+                    return;
+                }
+            }
+            else
+            {
+                if (rb_simple.Checked == true)
+                {
+                    if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
+                    {
+                        if (tx_ser.Text.Substring(0, 1) == "0") pub.muestra_gr(tx_ser.Text, tx_num.Text, rpt_grt, "", gloDeta, "", "", "");
+                        else
+                        {
+                            // para guías electrónicas no hay formato "simple" 21/09/2023
+                        }
+                    }
+                    else
+                    {
+                        tx_ser.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Seleccione un tipo de impresion de guía", "Atención - seleccione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
                 }
             }
         }
@@ -1697,7 +1779,10 @@ namespace TransCarga
         #region crystal
         private void button2_Click(object sender, EventArgs e)      // 
         {
-            setParaCrystal("resumen");
+            if (dgv_resumen.Rows.Count > 0 && tx_codped.Text != "")
+            {
+                setParaCrystal("resumen");
+            }
         }
         private void button4_Click(object sender, EventArgs e)      // 
         {
@@ -2097,8 +2182,8 @@ namespace TransCarga
                 {
                     string ser = dgv_resumen.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString().Substring(0, 4);
                     string num = dgv_resumen.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString().Substring(5, 8);
-                    //muestra_gr(ser,num);
-                    pub.muestra_gr(ser, num, rpt_grt);
+                    if (ser.Substring(0, 1) == "0") pub.muestra_gr(ser, num, rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
+                    else pub.muestra_gr(ser, num, "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);    // guia electrónica, si no tiene impresora va en pantalla
                 }
             }
             if (tabControl1.SelectedTab.Name == "tabvtas")
@@ -2111,20 +2196,36 @@ namespace TransCarga
                 {
                     if (e.ColumnIndex == 2)
                     {
-                        //muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(), dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                        pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
-                            dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
-                            rpt_grt);
+                        if (dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString().Substring(0, 1) == "0")
+                        {
+                            pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
+                                dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
+                                rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
+                        }
+                        else
+                        {
+                            pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
+                                dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
+                                "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                        }
                     }
                 }
                 else
                 {
                     if (e.ColumnIndex == 1)
                     {
-                        //muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(), dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                        pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
-                            dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
-                            rpt_grt);
+                        if (dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString().Substring(0, 1) == "0")
+                        {
+                            pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
+                                dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
+                                rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
+                        }
+                        else
+                        {
+                            pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
+                                dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
+                                "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                        }
                     }
                 }
             }
@@ -2139,7 +2240,13 @@ namespace TransCarga
             }
             if (tabControl1.SelectedTab.Name == "tabreval")
             {
-
+                if (dgv_reval.Columns[e.ColumnIndex].Name == "SERGR" || dgv_reval.Columns[e.ColumnIndex].Name == "NUMGR") 
+                {
+                    string ser = dgv_reval.Rows[e.RowIndex].Cells["SERGR"].Value.ToString();
+                    string num = dgv_reval.Rows[e.RowIndex].Cells["NUMGR"].Value.ToString();
+                    if (ser.Substring(0, 1) == "0") pub.muestra_gr(ser, num, rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
+                    else pub.muestra_gr(ser, num, "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);    // guia electrónica, si no tiene impresora va en pantalla
+                }
             }
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
@@ -2219,7 +2326,7 @@ namespace TransCarga
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
             {
                 imprime(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8), (rb_GRE_R.Checked == true) ? "R" : "T");
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8), (rb_GRE_R.Checked == true) ? "R" : "T", "TK");
             }
         }
         private void grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)      // no estamos usando porque no sirve
@@ -2378,13 +2485,13 @@ namespace TransCarga
                 if (dgv_GRE_est.Rows[i].Cells[0].Value != null && dgv_GRE_est.Rows[i].Cells[0].Value.ToString() == "True")
                 {
                     imprime(dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8), (rb_GRE_R.Checked == true) ? "R" : "T");
+                        dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8), (rb_GRE_R.Checked == true) ? "R" : "T", "TK");   // falta agregar tipo de impresora A5
                 }
             }
         }
-        private void imprime(string serie, string numero, string rt)
+        private void imprime(string serie, string numero, string rt, string formato)
         {
-            // Jalamos los datos que nos falta y los ponemos en sus arreglos
+            /* Jalamos los datos que nos falta y los ponemos en sus arreglos
             string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", ""};    // 10
             string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 17
@@ -2556,11 +2663,18 @@ namespace TransCarga
                     impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc, "TK", "");  // acá debería ser variable de formato y nombre del crystal
                 }
             }
+            */
+            if (rt == "T") 
+            { 
+                if (formato == "TK") pub.muestra_gr(serie, numero, "", (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, "");
+                if (formato == "A5") pub.muestra_gr(serie, numero, "", (rutaQR + nomImgQR), gloDeta, v_impA5, vi_formato, v_CR_gr_ind);
+            }
         }
         private void rb_GRE_rem_CheckedChanged(object sender, EventArgs e)
         {
 
         }
+
         int CentimeterToPixel(double Centimeter)
         {
             double pixel = -1;

@@ -1584,7 +1584,7 @@ namespace TransCarga
             {
                 string vser = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(0, 4);
                 string vnum = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(4, 8);
-                pub.muestra_gr(vser, vnum, nfCRgr);
+                pub.muestra_gr(vser, vnum, nfCRgr, "(rutaQR + nomImgQR)", "gloDeta", "v_impTK", "vi_formato", "v_CR_gr_ind");
             }
         }
         #endregion

@@ -136,12 +136,21 @@ namespace TransCarga
                         if (File.Exists(@var[1])) File.Delete(@var[1]);
                         var[1] = "";
                     }
-                    conClie data = generaReporte();
-                    ReportDocument repo = new ReportDocument();
-                    repo.Load(nomforCR);
-                    repo.SetDataSource(data);
-                    repo.PrintOptions.PrinterName = nomImp;
-                    repo.PrintToPrinter((short)nCopias, false, 1, 1);
+                    if (nomImp != "")
+                    {
+                        conClie data = generaReporte("nomforCR");
+                        ReportDocument repo = new ReportDocument();
+                        repo.Load(nomforCR);
+                        repo.SetDataSource(data);
+                        repo.PrintOptions.PrinterName = nomImp;
+                        repo.PrintToPrinter((short)nCopias, false, 1, 1);
+                    }
+                    else
+                    {
+                        conClie datos = generaReporte(nomforCR);
+                        frmvizoper visualizador = new frmvizoper(datos);
+                        visualizador.Show();
+                    }
                     break;
                 case "A4":
 
@@ -476,11 +485,12 @@ namespace TransCarga
             }
         }
 
-        private conClie generaReporte()                                 // formato A5
+        private conClie generaReporte(string cristalito)                                 // formato A5
         {
             conClie guiaT = new conClie();
             conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
             // CABECERA
+            rowcabeza.formatoRPT = cristalito;
             rowcabeza.id = "0";         // no tenemos este dato en la clase
             rowcabeza.estadoser = "";   // no tenemos este dato en la clase
             rowcabeza.sergui = cab[0];

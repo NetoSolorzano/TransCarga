@@ -2712,6 +2712,7 @@
             this.bt_consMas.TabIndex = 455;
             this.bt_consMas.Text = "Consulta masiva";
             this.bt_consMas.UseVisualStyleBackColor = true;
+            this.bt_consMas.Click += new System.EventHandler(this.bt_consMas_Click);
             // 
             // panel10
             // 

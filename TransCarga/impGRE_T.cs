@@ -136,7 +136,7 @@ namespace TransCarga
                         if (File.Exists(@var[1])) File.Delete(@var[1]);
                         var[1] = "";
                     }
-                    if (nomImp != "")
+                    if (nomImp != "" && nomforCR != "")
                     {
                         conClie data = generaReporte("nomforCR");
                         ReportDocument repo = new ReportDocument();
@@ -145,7 +145,11 @@ namespace TransCarga
                         repo.PrintOptions.PrinterName = nomImp;
                         repo.PrintToPrinter((short)nCopias, false, 1, 1);
                     }
-                    else
+                    if (nomImp != "" && nomforCR == "")
+                    {
+
+                    }
+                    if (nomImp == "" && nomforCR != "")
                     {
                         conClie datos = generaReporte(nomforCR);
                         frmvizoper visualizador = new frmvizoper(datos);

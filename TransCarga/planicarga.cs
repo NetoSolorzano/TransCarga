@@ -71,12 +71,6 @@ namespace TransCarga
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         public static string CadenaConexion = "Data Source=TransCarga.db";  // Data Source=TransCarga;Mode=Memory;Cache=Shared
-        DataTable dtu = new DataTable();
-        DataTable dtd = new DataTable();
-        DataTable dtm = new DataTable();
-        DataTable dtf = new DataTable();    // formatos de impresion CR
-        DataTable dtdoc = new DataTable();
-        DataTable dtdoca = new DataTable();
 
         public planicarga()
         {
@@ -192,6 +186,7 @@ namespace TransCarga
                         tx_pla_brevet.Text = ayu3.ReturnValueA[4];
                         tx_pla_nomcho.Text = ayu3.ReturnValueA[3];
                         cmb_doc.SelectedValue = tx_dat_tdchof.Text;
+                        tx_pla_brevet.Focus();
                     }
                 }
                 return true;
@@ -212,6 +207,7 @@ namespace TransCarga
                         tx_pla_ayud.Text = ayu3.ReturnValueA[4]; ;
                         tx_pla_nomayu.Text = ayu3.ReturnValueA[3];
                         cmb_doca.SelectedValue = tx_dat_tdayu.Text;
+                        tx_pla_ayud.Focus();
                     }
                 }
                 return true;
@@ -2014,7 +2010,7 @@ namespace TransCarga
                     }
                     else
                     {
-                        string[] vs = buschof(tx_dat_tdchof.Text, tx_dniC.Text);    // me quede acá
+                        string[] vs = buschof(tx_dat_tdchof.Text, tx_dniC.Text);
                         if (vs[0] == "" )
                         {
                             MessageBox.Show("No se encuentra el conductor en la B.D.","Atención",MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2035,7 +2031,7 @@ namespace TransCarga
             {
                 if (tx_dat_tdayu.Text != "")
                 {
-                    DataRow[] fila = dtdoc.Select("idcodice='" + tx_dat_tdayu.Text + "'");
+                    DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_tdayu.Text + "'"); // dtdoc.Select("idcodice='" + tx_dat_tdayu.Text + "'");
                     if (tx_dniA.Text.Trim().Length != int.Parse(fila[0]["codigo"].ToString()))
                     {
                         MessageBox.Show("Longitud del número erróneo", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2044,7 +2040,17 @@ namespace TransCarga
                     }
                     else
                     {
-
+                        string[] vs = buschof(tx_dat_tdayu.Text, tx_dniA.Text);
+                        if (vs[0] == "")
+                        {
+                            MessageBox.Show("No se encuentra el ayudante en la B.D.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                        else
+                        {
+                            tx_pla_ayud.Text = vs[0];
+                            tx_pla_nomayu.Text = vs[1];
+                        }
                     }
                 }
             }
@@ -2339,8 +2345,7 @@ namespace TransCarga
             }
             if (tx_dat_locori.Text.Trim() != "")
             {
-                DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
-                //tx_ubigO.Text = fila[0][2].ToString();
+                //
             }
         }
         private void cmb_destino_SelectionChangeCommitted(object sender, EventArgs e)

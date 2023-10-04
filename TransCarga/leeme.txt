@@ -363,3 +363,7 @@ repsoper, servicio por cliente, busqueda x nombre, click a [X] da error, arregla
 repsoper, GRE Estados, agregar columna impresion A5 y seleccion para impresión grupal ............... ok 27/09/2023
 form planicarga, evitar el ingreso manual de choferes y brevete ..................................... ok 29/09/2023
 form planicarga, agregar validacion dni por ingreso directo sin F1 .................................. ok 01/10/2023
+form guiati_e, arreglo de 2do doc. relacionado, no se activa ........................................ ok 02/10/2023
+trigger "cabguiai_after_insert" para que considere la preguia en la planilla de carga ............... ok 03/10/2023
+form planicarga, adecuar el dataset para que inserte la pre-guia .................................... ok 03/10/2023
+preguiat, adecuar el formato de impresion TK ........................................................ ok 03/10/2023

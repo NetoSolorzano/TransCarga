@@ -268,7 +268,10 @@ namespace TransCarga
         public string convierteCDR(string cg, string arCdr, string serie, string corre, string ruta)                                              // genera el cdr
         {
             string retorna = "";
-
+            if (!Directory.Exists(@ruta))
+            {
+                Directory.CreateDirectory(@ruta);
+            }
             if (File.Exists(ruta + "temporal.zip"))   // @"c:/temp/temporal.zip"
             {
                 File.Delete(ruta + "temporal.zip");   // @"c:/temp/temporal.zip"

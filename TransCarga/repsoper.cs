@@ -655,7 +655,7 @@ namespace TransCarga
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
 
-                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,............,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror
+                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,............,cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror
                     //     0        1       2      3       4     5      6     7 8 9 10 11   12      13         14        15         16       17
                     //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
                     dgv_GRE_est.CellClick += DataGridView1_CellClick;
@@ -1198,7 +1198,7 @@ namespace TransCarga
             if (rb_GRE_R.Checked == true)
             {
                 consulta = "SELECT g.fechopegr AS EMISION,concat(g.serguir,'-',g.numguir) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
                     "FROM cabguiar g LEFT JOIN adiguiar ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
@@ -1208,7 +1208,7 @@ namespace TransCarga
             if (rb_GRE_T.Checked == true)
             {
                 consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
                     "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
@@ -2236,7 +2236,7 @@ namespace TransCarga
             {
                 if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
                 {
-                    string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString();
+                    string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString();
                     System.Diagnostics.Process.Start(urlPdf);
                 }
             }
@@ -2244,12 +2244,20 @@ namespace TransCarga
             {
                 if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
                 {
-                    string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[11].Value.ToString();
-                    string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
-                    string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
-                    var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
-                    if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
-                        rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString() != "")
+                    {
+                        string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString();
+                        string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
+                        string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
+                        var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
+                        if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
+                            rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No existe el dato del CDR","Error interno",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                        return;
+                    }
                 }
             }
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")        // esta impresion debe ser en la pantalla

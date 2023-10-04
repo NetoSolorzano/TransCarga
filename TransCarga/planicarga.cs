@@ -601,9 +601,10 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
+            //"concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
             string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
                 "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin," +
-                "concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
+                "concat(left(d.descrizionerid,1),SUBSTRING(g.serdocvta,2,3),'-',g.numdocvta)," +
                 "g.nombregri " +
                 "from detplacar a " +
                 "left join desc_mon b on b.idcodice = a.codmone " +
@@ -2586,6 +2587,7 @@ namespace TransCarga
                     rowdetalle.nomremi = "";    // row.Cells[].Value.ToString();
                     rowdetalle.docvta = row.Cells[17].Value.ToString();
                     rowdetalle.nomremi = row.Cells[18].Value.ToString();
+                    rowdetalle.numpregr = row.Cells["numpreg"].Value.ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }

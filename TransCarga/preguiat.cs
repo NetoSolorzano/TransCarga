@@ -2053,7 +2053,7 @@ namespace TransCarga
         private void imprime_TK(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
-            Font lt_gra = new Font("Arial", 13);                // grande
+            Font lt_gra = new Font("Arial", 10);                // grande
             Font lt_med = new Font("Arial", 9);                 // normal textos
             Font lt_peq = new Font("Arial", 8);                 // pequeño
             //
@@ -2069,92 +2069,81 @@ namespace TransCarga
                 PointF puntoF = new PointF(coli, posi);
                 e.Graphics.DrawString(nomclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 //string tipdo = "PRE GUIA";
-                string serie = tx_serie.Text;
-                string corre = tx_numero.Text;
+                string serie = tx_serie.Text.Trim();
+                string corre = tx_numero.Text.Trim();
                 //string nota = tipdo + " " + serie + "-" + corre;
                 posi = posi + alfi + 8;
-                string titnum = "PRE-GUIA " + serie + " - " + corre;
+                string titnum = "PRE_GUIA " + serie + " - " + corre;
                 lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
                 puntoF = new PointF(lt, posi);
                 e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi + alfi;
                 puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("EMITIDO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("EMITIDO ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(coli + 65, posi);
                 e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(coli + 70, posi);
                 e.Graphics.DrawString(tx_fechope.Text.Substring(0,10), lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("PARTIDA: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString(tx_dirOrigen.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("DESTINO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString(tx_dirDestino.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi * 2;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("REMITENTE: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                if (tx_nomRem.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 2);
-                else cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 1);
+                e.Graphics.DrawString("PARTIDA ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 65, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 70, posi);
+                if (tx_dirOrigen.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik) - 80, alfi * 2);
+                else cuad = new SizeF(CentimeterToPixel(anchTik) - 80, alfi * 1);
                 RectangleF recdom = new RectangleF(puntoF, cuad);
+                e.Graphics.DrawString(tx_dirOrigen.Text, lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
+                if (tx_dirOrigen.Text.Trim().Length > 39) posi = posi + alfi + alfi;
+                else posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("DESTINO ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 65, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 70, posi);
+                if (tx_dirDestino.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik) - 80, alfi * 2);
+                else cuad = new SizeF(CentimeterToPixel(anchTik) - 80, alfi * 1);
+                recdom = new RectangleF(puntoF, cuad);
+                e.Graphics.DrawString(tx_dirDestino.Text, lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
+                if (tx_dirDestino.Text.Trim().Length > 39) posi = posi + alfi + alfi;
+                else posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+
+                e.Graphics.DrawString("REMITENTE ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 75, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 80, posi);
+                if (tx_nomRem.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik) - 90, alfi * 2);
+                else cuad = new SizeF(CentimeterToPixel(anchTik) - 90, alfi * 1);
+                recdom = new RectangleF(puntoF, cuad);
                 e.Graphics.DrawString(tx_nomRem.Text.Trim(), lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
                 if (tx_nomRem.Text.Trim().Length > 39) posi = posi + alfi + alfi;
                 else posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("DESTINATARIO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                if (tx_nomDrio.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 2);
-                else cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 1);
+                e.Graphics.DrawString("DESTINAT. ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 75, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(coli + 80, posi);
+                if (tx_nomDrio.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik) - 90, alfi * 2);
+                else cuad = new SizeF(CentimeterToPixel(anchTik) - 90, alfi * 1);
                 recdom = new RectangleF(puntoF, cuad);
                 e.Graphics.DrawString(tx_nomDrio.Text.Trim(), lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
-                if (tx_nomRem.Text.Trim().Length > 39) posi = posi + alfi + alfi;
+                if (tx_nomDrio.Text.Trim().Length > 39) posi = posi + alfi + alfi;
                 else posi = posi + alfi * 2;
+
                 puntoF = new PointF(coli, posi);
-                /*
-                e.Graphics.DrawString("Origen", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 65, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 70, posi);
-                string dipa = cmb_origen.Text;
-                if (dipa.Length < 60) cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
-                else cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 3);
-                RectangleF recdir = new RectangleF(puntoF, cuad);
-                e.Graphics.DrawString(dipa,lt_peq, Brushes.Black, recdir, StringFormat.GenericTypographic);
-                if (dipa.Length < 60) posi = posi + alfi + alfi;
-                else posi = posi + alfi + alfi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("Destino", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 65, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 70, posi);
-                e.Graphics.DrawString(cmb_destino.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic); 
-                posi = posi + alfi;
-                */
                 // **************** detalle del documento ****************//
-                e.Graphics.DrawString("DETALLE DEL ENVIO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("DETALLE DEL ENVIO", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                 SizeF siz = new SizeF(70, 15);
                 RectangleF recto = new RectangleF(puntoF, siz);
                 {
                     puntoF = new PointF(coli + 20.0F, posi);
-                    e.Graphics.DrawString("" 
-                        + " " + "", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(tx_det_cant.Text + " " + tx_det_umed.Text.Trim() + " " + tx_det_desc.Text.Trim(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20.0F, posi);
-                    e.Graphics.DrawString("", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    posi = posi + alfi;
-                    puntoF = new PointF(coli + 20.0F, posi);
-                    e.Graphics.DrawString("KGs. " + "", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    puntoF = new PointF(coli + 90, posi);
+                    e.Graphics.DrawString("PESO " + tx_det_peso.Text + " " + ((rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                 }
                 // pie del documento ;

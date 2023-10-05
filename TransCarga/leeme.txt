@@ -366,4 +366,6 @@ form planicarga, agregar validacion dni por ingreso directo sin F1 .............
 form guiati_e, arreglo de 2do doc. relacionado, no se activa ........................................ ok 02/10/2023
 trigger "cabguiai_after_insert" para que considere la preguia en la planilla de carga ............... ok 03/10/2023
 form planicarga, adecuar el dataset para que inserte la pre-guia .................................... ok 03/10/2023
-preguiat, adecuar el formato de impresion TK ........................................................ ok 03/10/2023
+form preguiat, adecuar el formato de impresion TK ................................................... ok 03/10/2023
+P.A. rep_vtas_regvtas1 hacer adecuaciones para el correcto uso de la col fVcmto ..................... ok 05/10/2023
+

@@ -188,8 +188,11 @@ namespace TransCarga
             {
                 tx_cajero.Text = tx_nomuser.Text;
                 tx_idcaja.Text = v_idcaj;
+                rb_PG.Checked = false;
                 rb_PG.Enabled = false;
+                rb_GR.Checked = false;
                 rb_GR.Enabled = false;
+                rb_DV.Checked = false;
                 rb_DV.Enabled = false;
                 if (tcobran == "GR") rb_GR.Enabled = true;
                 if (tcobran == "DV") rb_DV.Enabled = true;

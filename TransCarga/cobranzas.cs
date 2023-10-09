@@ -60,6 +60,7 @@ namespace TransCarga
         string codAbie = "";            // codigo caja abierta
         string codCier = "";            // codigo caja cerrada
         string v_idcaj = "";            // id de la caja actual
+        string tcobran = "";            // selección desde donde se puede cobrar: GR DV AMBOS
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -187,12 +188,19 @@ namespace TransCarga
             {
                 tx_cajero.Text = tx_nomuser.Text;
                 tx_idcaja.Text = v_idcaj;
+                rb_PG.Enabled = false;
+                rb_GR.Enabled = false;
+                rb_DV.Enabled = false;
+                if (tcobran == "GR") rb_GR.Enabled = true;
+                if (tcobran == "DV") rb_DV.Enabled = true;
+                if (tcobran == "AMBOS") rb_GR.Enabled = true; rb_DV.Enabled = true;
             }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
             try
             {
+                /*
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi)";
@@ -204,9 +212,10 @@ namespace TransCarga
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-                for (int t = 0; t < dt.Rows.Count; t++)
+                */
+                for (int t = 0; t < Program.dt_enlaces.Rows.Count; t++) // int t = 0; t < dt.Rows.Count; t++
                 {
-                    DataRow row = dt.Rows[t];
+                    DataRow row = Program.dt_enlaces.Rows[t];    // DataRow row = dt.Rows[t];
                     if (row["formulario"].ToString() == "main")
                     {
                         if (row["campo"].ToString() == "imagenes")
@@ -249,6 +258,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "tipo2") v_tip2 = row["valor"].ToString().Trim();               // cobranza desde guia transp.
                             if (row["param"].ToString() == "tipo3") v_tip3 = row["valor"].ToString().Trim();               // cobranza desde BOLETA
                             if (row["param"].ToString() == "tipo4") v_tip4 = row["valor"].ToString().Trim();               // cobranza desde FACTURA
+                            if (row["param"].ToString() == "tcobran") tcobran = row["valor"].ToString().Trim();            // selección desde donde se puede cobrar
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -265,13 +275,10 @@ namespace TransCarga
                         if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
                 }
-                da.Dispose();
-                dt.Dispose();
                 // jalamos datos del usuario y local
                 v_clu = TransCarga.Program.vg_luse;                // codigo local usuario
                 v_slu = lib.serlocs(v_clu);                        // serie local usuario
                 v_nbu = TransCarga.Program.vg_nuse;                // nombre del usuario
-                conn.Close();
             }
             catch (MySqlException ex)
             {
@@ -412,53 +419,18 @@ namespace TransCarga
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
-                while (true)
-                {
-                    try
-                    {
-                        conn.Open();
-                        break;
-                    }
-                    catch (MySqlException ex)
-                    {
-                        var aa = MessageBox.Show(ex.Message + Environment.NewLine + "No se pudo conectar con el servidor" + Environment.NewLine +
-                            "Desea volver a intentarlo?", "Error de conexión", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (aa == DialogResult.No)
-                        {
-                            Application.Exit();
-                            return;
-                        }
-                    }
-                }
                 // datos para el combo de moneda
                 cmb_mon.Items.Clear();
-                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn))
-                {
-                    cmo.Parameters.AddWithValue("@bloq", 1);
-                    using (MySqlDataAdapter dacu = new MySqlDataAdapter(cmo))
-                    {
-                        dtm.Clear();
-                        dacu.Fill(dtm);
-                        cmb_mon.DataSource = dtm;
-                        cmb_mon.DisplayMember = "descrizionerid";
-                        cmb_mon.ValueMember = "idcodice";
-                    }
-                }
+                cmb_mon.DataSource = Program.dt_definic.Select("idtabella='MON'").CopyToDataTable(); // dtm;
+                cmb_mon.DisplayMember = "descrizionerid";
+                cmb_mon.ValueMember = "idcodice";
                 // datos para el combo de medio de pago
                 cmb_mpago.Items.Clear();
-                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mpa where numero=@bloq", conn))
-                {
-                    cmo.Parameters.AddWithValue("@bloq", 1);
-                    using (MySqlDataAdapter dacu = new MySqlDataAdapter(cmo))
-                    {
-                        dtmpa.Clear();
-                        dacu.Fill(dtmpa);
-                        cmb_mpago.DataSource = dtmpa;
-                        cmb_mpago.DisplayMember = "descrizionerid";
-                        cmb_mpago.ValueMember = "idcodice";
-                    }
-                }
+                cmb_mpago.DataSource = Program.dt_definic.Select("idtabella='MPA'").CopyToDataTable(); // dtmpa;
+                cmb_mpago.DisplayMember = "descrizionerid";
+                cmb_mpago.ValueMember = "idcodice";
                 // jalamos la caja
+                conn.Open();
                 using (MySqlCommand micon = new MySqlCommand("select id,fechope,statusc from cabccaja where loccaja=@luc order by id desc limit 1" , conn))
                 {
                     micon.Parameters.AddWithValue("@luc", v_clu);

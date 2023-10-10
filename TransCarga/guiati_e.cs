@@ -276,6 +276,7 @@ namespace TransCarga
                 tx_pregr_num.ReadOnly = ("NUEVO".Contains(Tx_modo.Text)) ? false : true;
                 tx_pregr_num.Text = "";
             }
+            bt_preg.Tag = "";
             lb_glodeta.Text = gloDeta;
             tx_flete.Text = "";
             tx_pagado.Text = "";
@@ -657,9 +658,9 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@num", numpre);
                     micon.Parameters.AddWithValue("@ser", serpre);
                     MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.Read())
+                    if (dr.HasRows)
                     {
-                        if (dr.HasRows)
+                        if (dr.Read())
                         {
                             if (dr.GetString("estadoser") == codAnul)
                             {
@@ -779,12 +780,17 @@ namespace TransCarga
                                 {
                                     tx_mldD.Text = row[2].ToString();
                                 }
+
+                                bt_preg.Tag = "No";     // osea que no cree automáticamente porque si existe la PG y estan enlazadas
                                 retorna = true;
                             }
                         }
                         else
                         {
-                            MessageBox.Show("No existe la pre-guía ingresada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            dr.Dispose();
+                            MessageBox.Show("No se pudo generar la busqueda correctamente", "Error en busqueda de pre-guía", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            bt_preg.Tag = "";
                             tx_pregr_num.Text = "";
                             tx_pregr_num.Focus();
                             return retorna;
@@ -792,10 +798,19 @@ namespace TransCarga
                     }
                     else
                     {
-                        dr.Dispose();
-                        MessageBox.Show("No existe la pre-guía ingresada", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        tx_pregr_num.Text = "";
-                        tx_pregr_num.Focus();
+                        var aa = MessageBox.Show("Confirma que es correcto el número y" + Environment.NewLine +
+                            "desea enlazarlo automáticamente?", "No existe la pre-guía ingresada", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (aa == DialogResult.Yes)
+                        {
+                            retorna = true;
+                            bt_preg.Tag = "Crealo";
+                        }
+                        else
+                        {
+                            bt_preg.Tag = "";
+                            tx_pregr_num.Text = "";
+                            tx_pregr_num.Focus();
+                        }
                     }
                 }
             }
@@ -1771,6 +1786,12 @@ namespace TransCarga
             #endregion
             if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
+                // validaciones de pre-guia
+                if (bt_preg.Tag.ToString() == "")
+                {
+                    MessageBox.Show("Debe ingresar la Pre Guía","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    return;
+                }
                 #region validaciones GR electrónicas Sunat
                 if (tx_pla_dniChof.Text.Trim() == "")
                 {
@@ -2393,7 +2414,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pret", "0");
                     micon.ExecuteNonQuery();
                 }
-                //
+                // clientes 
                 string actua = "update anagrafiche set Direcc1=@ndir,ubigeo=@ubig,Localidad=@dist,Provincia=@prov,depart=@depa," +
                     "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,nbname=@nbnam " +
                     "where IDCategoria='CLI' AND tipdoc=@tdc1 AND RUC=@ndc1 AND id> 0";
@@ -2454,7 +2475,95 @@ namespace TransCarga
                         micon.ExecuteNonQuery();
                     }
                 }
-                //
+                // pre-guia, modo creación automática
+                if (bt_preg.Tag.ToString() == "Crealo")
+                {
+                    string insertaPG = "insert into cabpregr (" +
+                        "fechpregr,serpregui,numpregui,tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
+                        "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
+                        "dirdestin,ubidestin,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
+                        "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,seguroE,m1cliente,m2cliente," +
+                        "tidocor,rucDorig,docsremit,tidocor2,rucDorig2,docsremit2," +
+                        "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
+                        "values (@fechop,@serpgr,@npg,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
+                        "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr,@ldcpgr," +
+                        "@didegr,@ubdegr,@obsprg,@conprg,@totcpr,@totppr,@monppr,@tcprgr," +
+                        "@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@clavse,@m1clte,@m2clte," +
+                        "@tdocor,@rucDor,@dooprg,@tidoc2,@rucDo2,@docsr2," +
+                        "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                    using (MySqlCommand micpg = new MySqlCommand(insertaPG, conn))
+                    {
+                        micpg.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                        micpg.Parameters.AddWithValue("@serpgr", tx_serie.Text);
+                        micpg.Parameters.AddWithValue("@npg", tx_pregr_num.Text);
+                        micpg.Parameters.AddWithValue("@tdcdes", tx_dat_tDdest.Text);
+                        micpg.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text);
+                        micpg.Parameters.AddWithValue("@nomdes", tx_nomDrio.Text);
+                        micpg.Parameters.AddWithValue("@dircde", tx_dirDrio.Text);
+                        micpg.Parameters.AddWithValue("@ubicde", tx_ubigDtt.Text);
+                        micpg.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
+                        micpg.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
+                        micpg.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
+                        micpg.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
+                        micpg.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
+                        micpg.Parameters.AddWithValue("@locpgr", tx_dat_locori.Text);
+                        micpg.Parameters.AddWithValue("@dirpgr", tx_dirOrigen.Text);
+                        micpg.Parameters.AddWithValue("@ubopgr", tx_ubigO.Text);
+                        micpg.Parameters.AddWithValue("@ldcpgr", tx_dat_locdes.Text);
+                        micpg.Parameters.AddWithValue("@didegr", tx_dirDestino.Text);
+                        micpg.Parameters.AddWithValue("@ubdegr", tx_ubigD.Text);
+                        micpg.Parameters.AddWithValue("@obsprg", tx_obser1.Text);  // observaciones de la pre guia ... no hay
+                        micpg.Parameters.AddWithValue("@conprg", tx_consig.Text);
+                        micpg.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
+                        micpg.Parameters.AddWithValue("@totppr", tx_totpes.Text);
+                        micpg.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
+                        micpg.Parameters.AddWithValue("@tcprgr", "0.00");  // tipo de cambio ... falta leer de la tabla de cambios
+                        micpg.Parameters.AddWithValue("@subpgr", "0"); // sub total de la pre guía
+                        micpg.Parameters.AddWithValue("@igvpgr", "0"); // igv
+                        micpg.Parameters.AddWithValue("@totpgr", tx_flete.Text); // total inc. igv
+                        micpg.Parameters.AddWithValue("@pagpgr", "0");
+                        micpg.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
+                        micpg.Parameters.AddWithValue("@clavse", claveSeg);
+                        micpg.Parameters.AddWithValue("@m1clte", v_clte_rem);
+                        micpg.Parameters.AddWithValue("@m2clte", v_clte_des);
+                        micpg.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);                            // tipo del documento origen
+                        micpg.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);                             // ruc del emisor del doc origen
+                        micpg.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
+                        micpg.Parameters.AddWithValue("@tidoc2", tx_dat_docOr2.Text);
+                        micpg.Parameters.AddWithValue("@rucDo2", tx_rucEorig2.Text);
+                        micpg.Parameters.AddWithValue("@docsr2", tx_docsOr2.Text);
+                        micpg.Parameters.AddWithValue("@verApp", verapp);
+                        micpg.Parameters.AddWithValue("@asd", asd);
+                        micpg.Parameters.AddWithValue("@iplan", lib.iplan());
+                        micpg.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
+                        micpg.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                        micpg.ExecuteNonQuery();
+                    }
+                    string lectura = "select last_insert_id()";
+                    MySqlCommand mpg = new MySqlCommand(lectura, conn);
+                    MySqlDataReader dr = mpg.ExecuteReader();
+                    string idPG = "0";
+                    if (dr.Read())
+                    {
+                        idPG = dr.GetString(0);
+                    }
+                    dr.Close();
+                    // actualiza la tabla detalle,
+                    actua = "update detpregr set cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des," +
+                            "pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
+                            "where idc=@idr";
+                    mpg = new MySqlCommand(actua, conn);
+                    mpg.Parameters.AddWithValue("@idr", idPG);
+                    mpg.Parameters.AddWithValue("@can", tx_det_cant.Text);      // dataGridView1.Rows[0].Cells[0].Value.ToString()
+                    mpg.Parameters.AddWithValue("@uni", tx_det_umed.Text);      // dataGridView1.Rows[0].Cells[1].Value.ToString()
+                    mpg.Parameters.AddWithValue("@cod", "");
+                    mpg.Parameters.AddWithValue("@des", tx_det_desc.Text);      // dataGridView1.Rows[0].Cells[2].Value.ToString()
+                    mpg.Parameters.AddWithValue("@pes", tx_det_peso.Text);      // dataGridView1.Rows[0].Cells[3].Value.ToString()
+                    mpg.Parameters.AddWithValue("@preu", "0");
+                    mpg.Parameters.AddWithValue("@pret", "0");
+                    mpg.ExecuteNonQuery();
+                    mpg.Dispose();
+                }
                 retorna = true;         // no hubo errores!
             }
             else
@@ -2957,6 +3066,7 @@ namespace TransCarga
         private void tx_pregr_num_Leave(object sender, EventArgs e)     // numero pre guía
         {
             // esta parte lo pase al boton de jalar bt_pre
+            //bt_preg_Click(null, null);
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
@@ -3901,7 +4011,7 @@ namespace TransCarga
                 vs[26] = tx_disDrio.Text;                      // dr.GetString("Dist_Des")
                 vs[27] = (Tx_modo.Text == "NUEVO") ? asd : tx_digit.Text;   // dr.GetString("userc")
                 vs[28] = cmb_origen.Text;                     // dr.GetString("locorigen")
-                vs[29] = "";            // hora de emision
+                vs[29] = tx_pregr_num.Text;                 // número de pre-guia (orden de servicio)
 
                 vc[0] = tx_pla_placa.Text;                   // dr.GetString("plaplagri")
                 vc[1] = tx_pla_autor.Text;                   // dr.GetString("autplagri")
@@ -3948,14 +4058,9 @@ namespace TransCarga
         }
         #endregion
 
-        #region crystal
-
-        #endregion
-
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             //jalainfo();
         }
-
     }
 }

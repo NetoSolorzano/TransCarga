@@ -499,7 +499,7 @@ namespace TransCarga
             rowcabeza.estadoser = "";   // no tenemos este dato en la clase
             rowcabeza.sergui = cab[0];
             rowcabeza.numgui = cab[1];
-            rowcabeza.numpregui = "";   // no tenemos este dato en la clase
+            rowcabeza.numpregui = cab[29];   // numero de la pre-guia, obligatorio en GRE
             rowcabeza.fechope = cab[2];
             rowcabeza.fechTraslado = cab[16];
             // cab[3] = cabecera[3];   // dirección sede de la guía
@@ -571,7 +571,7 @@ namespace TransCarga
 
             rowcabeza.fechora_imp = DateTime.Now.ToString();
             rowcabeza.userc = cab[27];
-            rowcabeza.horEmiCre = cab[29];
+            rowcabeza.horEmiCre = "";           // hora de emisión ... para efectos de la impresion en TK y A5 no importa ... 10/10/2023
             // rowcabeza.fecEmiCre = cab[]      // falta en la clase
             // varios
             rowcabeza.varTexoQR = var[0];

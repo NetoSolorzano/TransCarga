@@ -62,7 +62,8 @@ namespace TransCarga
         string v_nbu = "";              // nombre del usuario
         string vi_formato = "";         // formato de impresion del documento
         string vi_copias = "";          // cant copias impresion
-        string v_impA5 = "";            // nombre de la impresora matricial
+        string v_impMat = "";           // nombre de la impresora matricial
+        string v_impA5 = "";            // nombre de la impresora de tinta o laser para las GRE
         string v_impTK = "";            // nombre de la ticketera
         string v_cid = "";              // codigo interno de tipo de documento
         string v_fra1 = "";             // frase de si va o no con clave
@@ -389,7 +390,8 @@ namespace TransCarga
                     {
                         if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "impMatris") v_impMat = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "impA5") v_impA5 = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "nomGRE_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "rutaQR") rutaQR = row["valor"].ToString().Trim();      // "C:\temp\"
@@ -3976,7 +3978,7 @@ namespace TransCarga
             bool retorna = false;
 
                 string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", ""};    // 10
+                               "", "", "", "", "", "", "", "", "", "", ""};    // 11
                 string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
                 string[] va = { "", "", "", "", "", "" };       // 6
                 string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
@@ -4012,6 +4014,7 @@ namespace TransCarga
                 vs[27] = (Tx_modo.Text == "NUEVO") ? asd : tx_digit.Text;   // dr.GetString("userc")
                 vs[28] = cmb_origen.Text;                     // dr.GetString("locorigen")
                 vs[29] = tx_pregr_num.Text;                 // número de pre-guia (orden de servicio)
+                vs[30] = tx_flete.Text;                     // flete del servicio, solo para impresion, no debe ir a sunat
 
                 vc[0] = tx_pla_placa.Text;                   // dr.GetString("plaplagri")
                 vc[1] = tx_pla_autor.Text;                   // dr.GetString("autplagri")
@@ -4048,11 +4051,13 @@ namespace TransCarga
 
             if (Tx_modo.Text == "NUEVO")
             {   // si es nuevo, se imprimen 2 copias
-                impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
             }
             else
             {   // si NO es nuevo, se imprime 1 copia
-                impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
             }
             return retorna;
         }

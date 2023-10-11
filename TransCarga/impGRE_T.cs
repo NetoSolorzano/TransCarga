@@ -17,7 +17,7 @@ namespace TransCarga
     {
         libreria lib = new libreria();
         string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
-                         "", "", "", "", "", "", "", "", "", "" };      // 10
+                         "", "", "", "", "", "", "", "", "", "", "" };      // 11
         string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
         string[] var = { "", "", "", "", "", ""};       // 6
         string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 17
@@ -55,7 +55,8 @@ namespace TransCarga
             cab[26] = cabecera[26];   // Direccion de llegada - distrito
             cab[27] = cabecera[27];     // usuario creador
             cab[28] = cabecera[28];     // local de emisión
-            cab[29] = cabecera[29];     // hora de emsión
+            cab[29] = cabecera[29];     // numero de pre guía (orden de servicio)
+            cab[30] = cabecera[30];     // flete de la guía
 
             det[0, 0] = detalle[0, 0];  // detalle fila 1
             det[0, 1] = detalle[0, 1];
@@ -280,15 +281,22 @@ namespace TransCarga
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
                     e.Graphics.DrawString(cab[2], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    /*
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Hora Emisión", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    //e.Graphics.DrawString(DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString(), lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString("", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    */
+                    posi = posi + alfi;
+                    puntoF = new PointF(coli + 20, posi);
+                    e.Graphics.DrawString("Pre guía (O/S)", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 135, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 140, posi);
                     e.Graphics.DrawString(cab[29], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-
                     // imprimimos los documentos relacionados
                     posi = posi + alfi * 2;
                     puntoF = new PointF(coli, posi);
@@ -457,19 +465,24 @@ namespace TransCarga
                             posi = posi + alfi;
                         }
                     }
-
                     // final del comprobante
                     string repre = var[4];      //  "Representación impresa sin valor legal de la";
                     lt = (ancho - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
                     posi = posi + alfi + 10.0F;
                     puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString(repre, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString("", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
-                    string previo = var[5];     // "Guía de Remisión Electrónica de Transportista";
-                    lt = (ancho - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
-                    puntoF = new PointF(lt, posi);
+                    string previo = " M.N. " + cab[30];     // var[5];
+                    //lt = (ancho - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
+                    puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString(previo, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + alfi * 3;
+                    puntoF = new PointF(coli + 20, posi);
+                    e.Graphics.DrawString("-------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + 10;
+                    puntoF = new PointF(coli + 20, posi);
+                    e.Graphics.DrawString(" Recibi Conforme", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi * 2;
                     string locyus = cab[28] + " - " + cab[27];
                     puntoF = new PointF(coli, posi);
@@ -540,7 +553,7 @@ namespace TransCarga
             rowcabeza.nomMoneda = "";           // no tenemos este dato en la clase - EN GRE no imprimimos valores 
             rowcabeza.igv = "";                 // no tenemos este dato en la clase - EN GRE no imprimimos valores 
             rowcabeza.subtotal = "";            // no tenemos este dato en la clase - EN GRE no imprimimos valores 
-            rowcabeza.total = "";               // no tenemos este dato en la clase - EN GRE no imprimimos valores 
+            rowcabeza.total = cab[30];          // Flete del servicio (solo para impresión, no va a sunat)
             // documentos origen
             rowcabeza.tipDocRel1 = cab[4];         // Datos relacionados 1: tipo doc origen -> cmb_docorig.Text
             rowcabeza.docscarga = cab[5];

@@ -372,5 +372,6 @@ form cobranzas, adecuar una config. con "enlaces" para evitar cobrar una GR
 	Magaly quiere que se cobré solo desde un docvta ................................................. ok 09/10/2023
 form guiati_e, ADECUACION DILMER, registrar directamente la GRE y escribir el # de P.G. en campo,
 	si la P.G. no existe pregunta si desea "enlazarla" si es SI, crea la PG junto con la GRE ........ falta probar
-CR gre_t1, ADECUACIONES: Orden PG, flete y "recibí conforme" con nombre y apellido .................. 
-impGRE_T, formato TK:  Orden PG, flete y "recibí conforme" con nombre y apellido ....................
+CR gre_t1, ADECUACIONES: Orden PG, flete y "recibí conforme" con nombre y apellido .................. ok 10/10/2023
+impGRE_T, formato TK:  Orden PG, flete y "recibí conforme" con nombre y apellido .................... ok 10/10/2023
+

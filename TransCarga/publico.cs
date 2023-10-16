@@ -216,7 +216,7 @@ namespace TransCarga
                     string consulta = "select a.id,a.fechopegr,a.sergui,a.numgui,a.numpregui,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri," +
                         "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,a.locorigen,a.dirorigen,a.ubiorigen,lo.descrizionerid as ORIGEN," +
                         "a.locdestin,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri,ld.descrizionerid as DESTINO," +
-                        "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,a.totgri,a.totpag,a.salgri,a.estadoser,a.impreso,s.descrizionerid as ESTADO," +
+                        "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,round(a.totgri,1) as totgri,a.totpag,a.salgri,a.estadoser,a.impreso,s.descrizionerid as ESTADO," +
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
                         "ifnull(p.nomchofe,'') as chocamcar,ifnull(p.nregtrackto,'') as nregtrackto,ifnull(p.nregcarreta,'') as nregcarreta," +
@@ -288,7 +288,7 @@ namespace TransCarga
                 else
                 {
                     string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", ""};    // 10
+                               "", "", "", "", "", "", "", "", "", "", ""};    // 11
                     string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
                     string[] va = { "", "", "", "", "", "" };       // 6
                     string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
@@ -324,6 +324,7 @@ namespace TransCarga
                     vs[27] = dtgrtcab.Rows[0]["userc"].ToString();
                     vs[28] = dtgrtcab.Rows[0]["locorigen"].ToString();
                     vs[29] = "";            // hora de emision
+                    vs[30] = dtgrtcab.Rows[0]["totgri"].ToString();
 
                     vc[0] = dtgrtcab.Rows[0]["plaplagri"].ToString();
                     vc[1] = dtgrtcab.Rows[0]["autplagri"].ToString();

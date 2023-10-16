@@ -371,7 +371,8 @@ P.A. rep_vtas_regvtas1 hacer adecuaciones para el correcto uso de la col fVcmto 
 form cobranzas, adecuar una config. con "enlaces" para evitar cobrar una GR 
 	Magaly quiere que se cobré solo desde un docvta ................................................. ok 09/10/2023
 form guiati_e, ADECUACION DILMER, registrar directamente la GRE y escribir el # de P.G. en campo,
-	si la P.G. no existe pregunta si desea "enlazarla" si es SI, crea la PG junto con la GRE ........ falta probar
+	si la P.G. no existe pregunta si desea "enlazarla" si es SI, crea la PG junto con la GRE ........ ok 11/01/2023
 CR gre_t1, ADECUACIONES: Orden PG, flete y "recibí conforme" con nombre y apellido .................. ok 10/10/2023
 impGRE_T, formato TK:  Orden PG, flete y "recibí conforme" con nombre y apellido .................... ok 10/10/2023
-
+form guiati_e, correcciones varias en edicion para regenerar xml .................................... ok 16/10/2023
+publico, redondeo de flete a 1 decimal en la consulta ............................................... ok 16/10/2023

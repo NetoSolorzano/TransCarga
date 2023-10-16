@@ -1788,12 +1788,6 @@ namespace TransCarga
             #endregion
             if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
-                // validaciones de pre-guia
-                if (bt_preg.Tag.ToString() == "")
-                {
-                    MessageBox.Show("Debe ingresar la Pre Guía","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                    return;
-                }
                 #region validaciones GR electrónicas Sunat
                 if (tx_pla_dniChof.Text.Trim() == "")
                 {
@@ -2065,6 +2059,13 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                // validaciones de pre-guia
+                if (bt_preg.Tag.ToString() == "")
+                {
+                    MessageBox.Show("Debe ingresar la Pre Guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 #region validaciones para nuevo
                 if ((tx_pla_carret.Text != "" && tx_dat_carrNreg.Text == "") || tx_dat_plaNreg.Text == "")
                 {
@@ -2171,7 +2172,7 @@ namespace TransCarga
                             }
                             if (v_urege.Contains(asd) == true)
                             {
-                                var bb = MessageBox.Show("Desea regenerar el txt?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                var bb = MessageBox.Show("Desea regenerar el XML ?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                                 if (bb == DialogResult.Yes)
                                 {
                                     apis();

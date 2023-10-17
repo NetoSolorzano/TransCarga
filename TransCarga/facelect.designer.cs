@@ -228,10 +228,10 @@
             this.tx_valdscto = new TransCarga.NumericTextBox();
             this.tx_idcaja = new TransCarga.NumericTextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
-            this.tx_serGR = new TransCarga.NumericTextBox();
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.label33 = new System.Windows.Forms.Label();
+            this.tx_serGR = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -2266,23 +2266,12 @@
             // 
             this.tx_numGR.AllowSpace = false;
             this.tx_numGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numGR.Location = new System.Drawing.Point(283, 35);
+            this.tx_numGR.Location = new System.Drawing.Point(282, 35);
             this.tx_numGR.Name = "tx_numGR";
-            this.tx_numGR.Size = new System.Drawing.Size(73, 20);
+            this.tx_numGR.Size = new System.Drawing.Size(74, 20);
             this.tx_numGR.TabIndex = 3;
             this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
-            // 
-            // tx_serGR
-            // 
-            this.tx_serGR.AllowSpace = false;
-            this.tx_serGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serGR.Location = new System.Drawing.Point(237, 35);
-            this.tx_serGR.Name = "tx_serGR";
-            this.tx_serGR.Size = new System.Drawing.Size(46, 20);
-            this.tx_serGR.TabIndex = 2;
-            this.tx_serGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serGR.Leave += new System.EventHandler(this.tx_serGR_Leave);
             // 
             // tx_tfil
             // 
@@ -2316,6 +2305,14 @@
             this.label33.TabIndex = 429;
             this.label33.Text = "Ubigeo";
             // 
+            // tx_serGR
+            // 
+            this.tx_serGR.Location = new System.Drawing.Point(238, 36);
+            this.tx_serGR.Name = "tx_serGR";
+            this.tx_serGR.Size = new System.Drawing.Size(43, 20);
+            this.tx_serGR.TabIndex = 2;
+            this.tx_serGR.Leave += new System.EventHandler(this.tx_serGR_Leave);
+            // 
             // facelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2323,6 +2320,8 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.tx_serGR);
             this.Controls.Add(this.label33);
             this.Controls.Add(this.tx_dat_porcDscto);
             this.Controls.Add(this.lin_dscto);
@@ -2362,9 +2361,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.bt_agr);
             this.Controls.Add(this.lb_GR);
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.tx_numGR);
-            this.Controls.Add(this.tx_serGR);
             this.Controls.Add(this.groupBox11);
             this.Controls.Add(this.groupBox17);
             this.Controls.Add(this.tx_dat_tcr);
@@ -2557,7 +2554,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cmb_tdv;
-        private NumericTextBox tx_serGR;
         private NumericTextBox tx_numGR;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
@@ -2661,5 +2657,6 @@
         private System.Windows.Forms.RadioButton rb_credito;
         private System.Windows.Forms.RadioButton rb_contado;
         private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.TextBox tx_serGR;
     }
 }

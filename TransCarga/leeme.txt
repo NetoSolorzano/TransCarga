@@ -376,3 +376,4 @@ CR gre_t1, ADECUACIONES: Orden PG, flete y "recibí conforme" con nombre y apell
 impGRE_T, formato TK:  Orden PG, flete y "recibí conforme" con nombre y apellido .................... ok 10/10/2023
 form guiati_e, correcciones varias en edicion para regenerar xml .................................... ok 16/10/2023
 publico, redondeo de flete a 1 decimal en la consulta ............................................... ok 16/10/2023
+form facelect, permitir letra en serie de la GR a facturar .......................................... ok 16/10/2023

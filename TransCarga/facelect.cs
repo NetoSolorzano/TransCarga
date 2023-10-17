@@ -211,6 +211,7 @@ namespace TransCarga
             tx_serie.MaxLength = 4;         // serie doc vta
             tx_numero.MaxLength = 8;        // numero doc vta
             tx_serGR.MaxLength = 4;         // serie guia
+            tx_serGR.CharacterCasing = CharacterCasing.Upper;
             tx_numGR.MaxLength = 8;         // numero guia
             tx_numDocRem.MaxLength = 11;    // ruc o dni cliente
             tx_dirRem.MaxLength = 100;
@@ -3433,7 +3434,7 @@ namespace TransCarga
         }
         private void tx_serGR_Leave(object sender, EventArgs e)
         {
-            tx_serGR.Text = lib.Right("0000" + tx_serGR.Text, 4);
+            if(tx_serGR.Text.Substring(0,1) != "V") tx_serGR.Text = lib.Right("0000" + tx_serGR.Text, 4);
         }
         private void tx_numGR_Leave(object sender, EventArgs e)
         {

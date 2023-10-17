@@ -1549,7 +1549,7 @@ namespace TransCarga
                 cnn.Open();
                 if (cnn.State == ConnectionState.Open)                 // lib.procConn(cnn) == true
                 {
-                    using (MySqlCommand micon = new MySqlCommand("select count(id) from cabguiai where sergui=@sgr and numpregui=@npg", cnn))
+                    using (MySqlCommand micon = new MySqlCommand("select count(id) from cabguiai where sergui=@sgr and numpregui=@npg and estintreg<>'A0'", cnn))
                     {
                         micon.Parameters.AddWithValue("@sgr", tx_serie.Text);
                         micon.Parameters.AddWithValue("@npg", tx_pregr_num.Text);

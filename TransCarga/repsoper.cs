@@ -655,21 +655,21 @@ namespace TransCarga
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
 
-                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,............,cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror
-                    //     0        1       2      3       4     5      6     7 8 9 10 11   12      13         14        15         16       17
+                    // EMISION,P_GUIA,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,............,cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror 
+                    //     0     1        2       3       4      5      6     7     8 9 10 11 12  13      14         15          16       17     18
                     //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
                     dgv_GRE_est.CellClick += DataGridView1_CellClick;
-                    dgv_GRE_est.Columns.Insert(7, btnTk);
-                    dgv_GRE_est.Columns.Insert(8, btnA5);
-                    dgv_GRE_est.Columns.Insert(9, btnPDF);   // .Add(btnPDF);
-                    dgv_GRE_est.Columns.Insert(10, btnCDR);   // .Add(btnCDR);
-                    dgv_GRE_est.Columns.Insert(11, btnAct);   // .Add(btnAct);
-                    dgv_GRE_est.Columns[12].Visible = false;
+                    dgv_GRE_est.Columns.Insert(8, btnTk);
+                    dgv_GRE_est.Columns.Insert(9, btnA5);
+                    dgv_GRE_est.Columns.Insert(10, btnPDF);   // .Add(btnPDF);
+                    dgv_GRE_est.Columns.Insert(11, btnCDR);   // .Add(btnCDR);
+                    dgv_GRE_est.Columns.Insert(12, btnAct);   // .Add(btnAct);
                     dgv_GRE_est.Columns[13].Visible = false;
                     dgv_GRE_est.Columns[14].Visible = false;
                     dgv_GRE_est.Columns[15].Visible = false;
                     dgv_GRE_est.Columns[16].Visible = false;
-                    dgv_GRE_est.Columns[17].Visible = true;
+                    dgv_GRE_est.Columns[17].Visible = false;
+                    dgv_GRE_est.Columns[18].Visible = true;
                     if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
                     {
                         for (int i = 0; i < dgv_GRE_est.Columns.Count - 11; i++)
@@ -871,7 +871,7 @@ namespace TransCarga
                     case "dgv_GRE_est":
                         for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
                         {
-                            if (dgv_GRE_est.Rows[i].Cells[4].Value.ToString() != etiq_anulado)
+                            if (dgv_GRE_est.Rows[i].Cells[5].Value.ToString() != etiq_anulado)
                             {
                                 cr = cr + 1;
                             }
@@ -1178,8 +1178,6 @@ namespace TransCarga
         private void bt_greEst_Click(object sender, EventArgs e)        // Guías de Remisión Electrónicas - Estados
         {
             chk_GRE_imp.Checked = false;
-            //dtsunatE.Rows.Clear();
-            //dtsunatE.Columns.Clear();
             DataTable dtsunatE = new DataTable();       // guías transp elec - estados
             // validaciones
             if (rb_GRE_R.Checked == false && rb_GRE_T.Checked == false)
@@ -1208,7 +1206,7 @@ namespace TransCarga
             }
             if (rb_GRE_T.Checked == true)
             {
-                consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
+                consulta = "SELECT g.fechopegr AS EMISION,g.numpregui as P_GUIA,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
                     "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
                     "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
@@ -2233,35 +2231,35 @@ namespace TransCarga
             {
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
                 {
-                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "Enviado" ||
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "En proceso")
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "Enviado" ||
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "En proceso")
                     {
-                        if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
-                            dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                        if (dgv_GRE_est.Rows[e.RowIndex].Cells[7].Value.ToString() == "0" ||
+                            dgv_GRE_est.Rows[e.RowIndex].Cells[7].Value.ToString().Trim() == "")
                         {
-                            dgv_GRE_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
-                            dgv_GRE_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
-                            consultaE(dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                            dgv_GRE_est.Rows[e.RowIndex].Cells[10].ReadOnly = true;
+                            dgv_GRE_est.Rows[e.RowIndex].Cells[11].ReadOnly = true;
+                            consultaE(dgv_GRE_est.Rows[e.RowIndex].Cells[15].Value.ToString(), e.RowIndex);
                         }
                     }
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
                 {
-                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[7].Value.ToString() == "1")
                     {
-                        string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString();
+                        string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[14].Value.ToString();
                         System.Diagnostics.Process.Start(urlPdf);
                     }
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
                 {
-                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[7].Value.ToString() == "1")
                     {
-                        if (dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString() != "")
+                        if (dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString() != "")
                         {
-                            string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString();
-                            string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
-                            string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
+                            string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString();
+                            string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4);
+                            string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8);
                             var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
                             if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
                                 rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2275,14 +2273,14 @@ namespace TransCarga
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")        // esta impresion debe ser en la pantalla
                 {
-                    pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8),
+                    pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8),
                         "", (rutaQR + nomImgQR), gloDeta, v_impPDF, "TK", "");
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iA5")        // esta impresion debe ser en la pantalla
                 {
-                    pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8),
+                    pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8),
                         "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
                 }
             }

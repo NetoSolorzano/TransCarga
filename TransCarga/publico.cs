@@ -388,16 +388,18 @@ namespace TransCarga
                         }
                     }
                     // detalle
+                    string final = " order by (g.numpregui*1),a.serguia,a.numguia";
                     consulta = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
                         "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit," +
-                        "u2.nombre as provin,concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta)) " +
+                        "u2.nombre as provin,concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
+                        "g.numpregui " +
                         "from detplacar a " +
                         "left join desc_mon b on b.idcodice = a.codmone " +
                         "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
                         "left join desc_tdv d on d.idcodice=g.tipdocvta " +
                         "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= g.ubigdegri " +
                         "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(g.ubigdegri, 2) AND u2.provin = concat(substr(g.ubigdegri, 3, 2)) " +
-                        "where a.serplacar=@ser and a.numplacar=@num";
+                        "where a.serplacar=@ser and a.numplacar=@num" + final;
                     using (MySqlCommand micon = new MySqlCommand(consulta, con))
                     {
                         micon.Parameters.AddWithValue("@ser", ser);
@@ -574,6 +576,7 @@ namespace TransCarga
                     rowdetalle.nombulto = row.ItemArray[20].ToString();
                     rowdetalle.nomremi = "";
                     rowdetalle.docvta = row.ItemArray[23].ToString();
+                    rowdetalle.numpregr = row.ItemArray[24].ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }

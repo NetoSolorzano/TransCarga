@@ -602,10 +602,11 @@ namespace TransCarga
         private void jaladet(string idr)         // jala el detalle
         {
             //"concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
-            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
+            // "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet,"
+            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,(g.numpregui*1) as numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
                 "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin," +
                 "concat(left(d.descrizionerid,1),SUBSTRING(g.serdocvta,2,3),'-',g.numdocvta)," +
-                "g.nombregri " +
+                "(g.numpregui*1) as numpregui " +
                 "from detplacar a " +
                 "left join desc_mon b on b.idcodice = a.codmone " +
                 "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
@@ -2559,6 +2560,7 @@ namespace TransCarga
             PlaniC.placar_cab.Addplacar_cabRow(rowcabeza);
             //
             // DETALLE  
+            if (rb_orden_pg.Checked == true) dataGridView1.Sort(dataGridView1.Columns["numpreg"], System.ComponentModel.ListSortDirection.Ascending);
             if (rb_orden_gr.Checked == true) dataGridView1.Sort(dataGridView1.Columns["numguia"], System.ComponentModel.ListSortDirection.Ascending);
             if (rb_orden_dir.Checked == true) dataGridView1.Sort(dataGridView1.Columns[14], System.ComponentModel.ListSortDirection.Ascending);
             if (rb_orden_des.Checked == true) dataGridView1.Sort(dataGridView1.Columns[13], System.ComponentModel.ListSortDirection.Ascending);

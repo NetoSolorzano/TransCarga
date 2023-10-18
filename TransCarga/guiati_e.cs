@@ -443,6 +443,10 @@ namespace TransCarga
                 {
                     parte = "where a.marca_gre=@marGR and a.sergui=@ser and a.numgui=@num";
                 }
+                if (campo == "preg")
+                {
+                    parte = "where a.marca_gre=@marGR and a.sergui=@ser and a.numpregui=@num and a.estadoser<>'" + codAnul + "'";  // 18/10/2023 Solo jalamos directamente desde la PG si la guía no esta anulada 
+                }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
@@ -484,6 +488,11 @@ namespace TransCarga
                     {
                         micon.Parameters.AddWithValue("@ser", tx_serie.Text);
                         micon.Parameters.AddWithValue("@num", tx_numero.Text);
+                    }
+                    if (campo == "preg")
+                    {
+                        micon.Parameters.AddWithValue("@ser", tx_serie.Text);
+                        micon.Parameters.AddWithValue("@num", tx_pregr_num.Text);
                     }
                     MySqlDataReader dr = micon.ExecuteReader();
                     if (dr != null)
@@ -613,8 +622,9 @@ namespace TransCarga
                         }
                         else
                         {
-                            MessageBox.Show("No existe el número de guía!", "Atención - dato incorrecto",
+                            MessageBox.Show("No existe el número buscado!", "Atención - dato incorrecto",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            tx_pregr_num.Text = "";
                             tx_numero.Text = "";
                             tx_numero.Focus();
                             return;
@@ -1612,6 +1622,14 @@ namespace TransCarga
                     //dataGridView1.ReadOnly = true;
                 }
                 cnn.Close();
+            }
+            if (!"NUEVO".Contains(Tx_modo.Text) && tx_pregr_num.Text.Trim() != "")
+            {
+                // jalamos la guía desde el numero de la pre-guia
+                jalaoc("preg");   // 18/10/2023 Solo jalamos directamente desde la PG si la guía no esta anulada, si la GRE esta anulada nos dice que no existe el numero 
+                jaladet(tx_idr.Text);
+                chk_seguridad_CheckStateChanged(null, null);
+                sololee();
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -3498,6 +3516,7 @@ namespace TransCarga
                 button1.Image = Image.FromFile(img_ver);
                 initIngreso();
                 gbox_serie.Enabled = true;
+                tx_pregr_num.ReadOnly = false;  // 18/10/2023
                 tx_serie.ReadOnly = false;
                 tx_numero.ReadOnly = false;
                 tx_serie.Focus();

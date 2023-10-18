@@ -377,3 +377,9 @@ impGRE_T, formato TK:  Orden PG, flete y "recibí conforme" con nombre y apellid
 form guiati_e, correcciones varias en edicion para regenerar xml .................................... ok 16/10/2023
 publico, redondeo de flete a 1 decimal en la consulta ............................................... ok 16/10/2023
 form facelect, permitir letra en serie de la GR a facturar .......................................... ok 16/10/2023
+form repsoper, "Estados Sunat" el formato A5 en visualizacion no esta poniendo la pre-guía .......... ok 17/10/2023
+form repsoper, "Estados Sunat" el filtro de la grilla no hace nada .................................. ok 17/10/2023
+form repsoper, "Estados Sunat" click en el borde izquierdo de la fila, da error ..................... ok 17/10/2023
+form repsoper, "Estados Sunat" el boton de la columna actualiza no hace nada ........................ 
+form repsoper, "Estados Sunat" el boton de la columna A5 esta repitiendo las visualizaciones ........ 
+form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ....................... 

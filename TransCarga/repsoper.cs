@@ -95,7 +95,7 @@ namespace TransCarga
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
                                                     //
         acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
-        DataTable dtsunatE = new DataTable();       // guías transp elec - estados
+        //DataTable dtsunatE = new DataTable();       // guías transp elec - estados
         string[] filaimp = { "", "", "", "", "", "", "", "", "", "", "", "", "" };
         DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
         {
@@ -1178,8 +1178,9 @@ namespace TransCarga
         private void bt_greEst_Click(object sender, EventArgs e)        // Guías de Remisión Electrónicas - Estados
         {
             chk_GRE_imp.Checked = false;
-            dtsunatE.Rows.Clear();
-            dtsunatE.Columns.Clear();
+            //dtsunatE.Rows.Clear();
+            //dtsunatE.Columns.Clear();
+            DataTable dtsunatE = new DataTable();       // guías transp elec - estados
             // validaciones
             if (rb_GRE_R.Checked == false && rb_GRE_T.Checked == false)
             {
@@ -2066,6 +2067,11 @@ namespace TransCarga
                 DataTable dtg = (DataTable)dgv_reval.DataSource;
                 dtg.DefaultView.Sort = dgv_reval.SortString;
             }
+            if (tabControl1.SelectedTab.Name == "tabGREstat")
+            {
+                DataTable dtg = (DataTable)dgv_GRE_est.DataSource;
+                dtg.DefaultView.Sort = dgv_GRE_est.SortString;
+            }
         }
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
@@ -2096,6 +2102,11 @@ namespace TransCarga
                 DataTable dtg = (DataTable)dgv_reval.DataSource;
                 dtg.DefaultView.RowFilter = dgv_reval.FilterString;
                 sumaGrilla("dgv_reval");
+            }
+            if (tabControl1.SelectedTab.Name == "tabGREstat")
+            {
+                DataTable dtg = (DataTable)dgv_GRE_est.DataSource;
+                dtg.DefaultView.RowFilter = dgv_GRE_est.FilterString;
             }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
@@ -2218,59 +2229,62 @@ namespace TransCarga
         }
         private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
         {
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+            if (e.ColumnIndex > -1)
             {
-                if (dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "Enviado" || 
-                    dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "En proceso")
+                if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
                 {
-                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "Enviado" ||
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "En proceso")
                     {
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
-                        consultaE(dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                        if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
+                            dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                        {
+                            dgv_GRE_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
+                            dgv_GRE_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
+                            consultaE(dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                        }
                     }
                 }
-            }
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
-            {
-                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
                 {
-                    string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString();
-                    System.Diagnostics.Process.Start(urlPdf);
-                }
-            }
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
-            {
-                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
-                {
-                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString() != "")
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
                     {
-                        string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString();
-                        string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
-                        string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
-                        var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
-                        if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
-                            rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("No existe el dato del CDR","Error interno",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                        return;
+                        string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString();
+                        System.Diagnostics.Process.Start(urlPdf);
                     }
                 }
-            }
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")        // esta impresion debe ser en la pantalla
-            {
-                pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
-                    dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8), 
-                    "", (rutaQR + nomImgQR), gloDeta, v_impPDF, "TK", "");
-            }
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iA5")        // esta impresion debe ser en la pantalla
-            {
-                pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
-                    dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8),
-                    "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
+                {
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                    {
+                        if (dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString() != "")
+                        {
+                            string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString();
+                            string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
+                            string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
+                            var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
+                            if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
+                                rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No existe el dato del CDR", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                }
+                if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")        // esta impresion debe ser en la pantalla
+                {
+                    pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8),
+                        "", (rutaQR + nomImgQR), gloDeta, v_impPDF, "TK", "");
+                }
+                if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iA5")        // esta impresion debe ser en la pantalla
+                {
+                    pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8),
+                        "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                }
             }
         }
         private void grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)      // no estamos usando porque no sirve

@@ -323,7 +323,7 @@ namespace TransCarga
                     vs[26] = dtgrtcab.Rows[0]["Dist_Des"].ToString(); 
                     vs[27] = dtgrtcab.Rows[0]["userc"].ToString();
                     vs[28] = dtgrtcab.Rows[0]["locorigen"].ToString();
-                    vs[29] = "";            // hora de emision
+                    vs[29] = dtgrtcab.Rows[0]["numpregui"].ToString();                 // número de pre-guia (orden de servicio)
                     vs[30] = dtgrtcab.Rows[0]["totgri"].ToString();
 
                     vc[0] = dtgrtcab.Rows[0]["plaplagri"].ToString();

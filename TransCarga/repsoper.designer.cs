@@ -3030,6 +3030,7 @@
             this.dgv_GRE_est.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
             this.dgv_GRE_est.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             this.dgv_GRE_est.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_GRE_est_CellDoubleClick);
+            this.dgv_GRE_est.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_GRE_est_CellLeave);
             // 
             // label36
             // 

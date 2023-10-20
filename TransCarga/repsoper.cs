@@ -95,7 +95,7 @@ namespace TransCarga
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
                                                     //
         acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
-        //DataTable dtsunatE = new DataTable();       // guías transp elec - estados
+        int cuenta = 0;     // contador de repeticiones de visualizacion en columnas de estados GRE
         string[] filaimp = { "", "", "", "", "", "", "", "", "", "", "", "", "" };
         DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
         {
@@ -353,9 +353,9 @@ namespace TransCarga
                 string parte = "";
                 if (("NIV002,NIV003").Contains(TransCarga.Program.vg_nius))
                 {
-                    parte = parte + "and idcodice='" + TransCarga.Program.vg_luse + "' ";
+                    //parte = parte + "and idcodice='" + TransCarga.Program.vg_luse + "' or enlace1='" + TransCarga.Program.vg_zouse + "' ";
+                    parte = parte + "and enlace1='" + TransCarga.Program.vg_zouse + "' ";
                 }
-
                 string contaller = "select descrizionerid,idcodice,codigo from desc_loc " +
                                        "where numero=1 " + parte + "order by idcodice";
                 MySqlCommand cmd = new MySqlCommand(contaller, conn);
@@ -1232,10 +1232,12 @@ namespace TransCarga
                         dgv_GRE_est.DataSource = null;
                         dgv_GRE_est.Columns.Clear();
                         dgv_GRE_est.Rows.Clear();
-                        //
+                        dgv_GRE_est.CellClick -= null;   // DataGridView1_CellClick;
+                        cuenta = 0;
                         da.Fill(dtsunatE);
                         dgv_GRE_est.DataSource = dtsunatE;
                         grilla("dgv_GRE_est");
+                        dtsunatE.Dispose();
                     }
                 }
             }
@@ -2227,15 +2229,16 @@ namespace TransCarga
         }
         private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
         {
-            if (e.ColumnIndex > -1)
+            if (e.ColumnIndex > -1 && cuenta != e.RowIndex)
             {
-                if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+                if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")   // consulta solo si estado sunat no es Aceptado o Rechazado
                 {
                     if (dgv_GRE_est.Rows[e.RowIndex].Cells["SUNAT"].Value.ToString() == "Enviado" ||
-                        dgv_GRE_est.Rows[e.RowIndex].Cells["SUNAT"].Value.ToString() == "En proceso")
+                        dgv_GRE_est.Rows[e.RowIndex].Cells["SUNAT"].Value.ToString() == "En proceso" ||
+                        dgv_GRE_est.Rows[e.RowIndex].Cells["SUNAT"].Value.ToString().Trim() == "")
                     {
                         if (dgv_GRE_est.Rows[e.RowIndex].Cells["CDR_GEN"].Value.ToString() == "0" ||
-                            dgv_GRE_est.Rows[e.RowIndex].Cells["CDR_GEN"].Value.ToString().Trim() == "")
+                            dgv_GRE_est.Rows[e.RowIndex].Cells["CDR_GEN"].Value.ToString().Trim() == "")    // y si el CDR está sin generar
                         {
                             dgv_GRE_est.Rows[e.RowIndex].Cells["pdf"].ReadOnly = true;
                             dgv_GRE_est.Rows[e.RowIndex].Cells["cdr"].ReadOnly = true;
@@ -2279,10 +2282,15 @@ namespace TransCarga
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iA5")        // esta impresion debe ser en la pantalla
                 {
-                    pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8),
-                        "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                    if (true)   // cuenta != e.RowIndex
+                    {
+                        pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),
+                            dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8),
+                            "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                        //cuenta = e.RowIndex;
+                    }
                 }
+                cuenta = e.RowIndex;
             }
         }
         private void grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)      // no estamos usando porque no sirve
@@ -2313,7 +2321,7 @@ namespace TransCarga
         {
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "ULT_ERROR")
             {
-                MessageBox.Show(dgv_GRE_est.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), "ULTIMO ERROR", MessageBoxButtons.OK);
+                //MessageBox.Show(dgv_GRE_est.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), "ULTIMO ERROR", MessageBoxButtons.OK);
             }
         }
         #endregion
@@ -2468,6 +2476,12 @@ namespace TransCarga
         {
 
         }
+
+        private void dgv_GRE_est_CellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            cuenta = 0;
+        }
+
         int CentimeterToPixel(double Centimeter)
         {
             double pixel = -1;

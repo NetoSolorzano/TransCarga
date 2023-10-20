@@ -257,6 +257,7 @@ namespace TransCarga
             tx_consig.CharacterCasing = CharacterCasing.Upper;
             tx_det_umed.CharacterCasing = CharacterCasing.Upper;
             tx_det_desc.CharacterCasing = CharacterCasing.Upper;
+            tx_serie.CharacterCasing = CharacterCasing.Upper;
             // todo desabilidado
             rb_ent_clte.Checked = true;
             rb_car_ofi.Checked = true;
@@ -3083,7 +3084,20 @@ namespace TransCarga
         }
         private void tx_serie_Leave(object sender, EventArgs e)
         {
-            tx_serie.Text = lib.Right("0000" + tx_serie.Text, 4);
+            string es = tx_serie.Text.Trim();
+            if (es.Substring(0, 1) == "V")
+            {
+                if (es.Length == 2) tx_serie.Text = es.Substring(0, 1) + "00" + es.Substring(1, 1);
+                if (es.Length == 3) tx_serie.Text = es.Substring(0, 1) + "0" + es.Substring(1, 2);
+            }
+            else
+            {
+                if (es.Substring(0, 1) == "0") tx_serie.Text = lib.Right("0000" + tx_serie.Text, 4);
+                else
+                {
+                    tx_serie.Text = "";
+                }
+            }
         }
         private void tx_pregr_num_Leave(object sender, EventArgs e)     // numero pre guía
         {

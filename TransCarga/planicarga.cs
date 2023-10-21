@@ -1107,66 +1107,6 @@ namespace TransCarga
                 if (rb_bus.Checked == true) tx_car3ro_ruc.Focus();
                 return;
             }
-            if (rb_propio.Checked == true)
-            {
-                // validacion se hace desde funcion en B.D.: ayudante 
-                if (tx_pla_autor.Text == "")        // autorizacion circulacion
-                {
-                    MessageBox.Show("Falta la autorización de circulación", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tx_pla_autor.Focus();
-                    return;
-                }
-                if (tx_pla_brevet.Text == "")       // brevete chofer
-                {
-                    MessageBox.Show("Falta el brevete del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tx_pla_brevet.Focus();
-                    return;
-                }
-                if (tx_pla_confv.Text == "")        // conf. vehicular
-                {
-                    MessageBox.Show("Falta la configuración vehicular", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tx_pla_confv.Focus();
-                    return;
-                }
-                if (tx_pla_nomcho.Text == "")       // nombre chofer
-                {
-                    MessageBox.Show("Falta el nombre del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tx_pla_nomcho.Focus();
-                    return;
-                }
-                if (tx_pla_placa.Text == "")        // placa trompa
-                {
-                    MessageBox.Show("Ingrese la placa del camión", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tx_pla_placa.Focus();
-                    return;
-                }
-            }
-            if (tx_dniA.Text.Trim() == "" && tx_pla_nomayu.Text.Trim() != "")
-            {
-                MessageBox.Show("Debe completar los datos de la fila" + Environment.NewLine + 
-                    "Falta tipo y número de documento de identidad", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_pla_nomayu.Focus();
-                return;
-            }
-            if (tx_dniA.Text.Trim() != "" && tx_pla_ayud.Text == "")
-            {
-                MessageBox.Show("Debe completar los datos de la fila" + Environment.NewLine +
-                    "Falta el brevete del ayudante", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_pla_ayud.Focus();
-                return;
-            }
-            if (tx_nregP.Text.Trim() == "")
-            {
-                MessageBox.Show("Debe ingresar el registro MTC","Falta información",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                tx_nregP.Focus();
-                return;
-            }
-            if (tx_pla_carret.Text != "" && tx_nregC.Text.Trim() == "")
-            {
-                MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_nregC.Focus();
-                return;
-            }
             #endregion
             // recalculamos totales 
             operaciones();
@@ -1175,6 +1115,68 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                #region validaciones generales para nuevos registros
+                if (rb_propio.Checked == true)
+                {
+                    // validacion se hace desde funcion en B.D.: ayudante 
+                    if (tx_pla_autor.Text == "")        // autorizacion circulacion
+                    {
+                        MessageBox.Show("Falta la autorización de circulación", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        tx_pla_autor.Focus();
+                        return;
+                    }
+                    if (tx_pla_brevet.Text == "")       // brevete chofer
+                    {
+                        MessageBox.Show("Falta el brevete del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        tx_pla_brevet.Focus();
+                        return;
+                    }
+                    if (tx_pla_confv.Text == "")        // conf. vehicular
+                    {
+                        MessageBox.Show("Falta la configuración vehicular", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        tx_pla_confv.Focus();
+                        return;
+                    }
+                    if (tx_pla_nomcho.Text == "")       // nombre chofer
+                    {
+                        MessageBox.Show("Falta el nombre del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        tx_pla_nomcho.Focus();
+                        return;
+                    }
+                    if (tx_pla_placa.Text == "")        // placa trompa
+                    {
+                        MessageBox.Show("Ingrese la placa del camión", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        tx_pla_placa.Focus();
+                        return;
+                    }
+                }
+                if (tx_dniA.Text.Trim() == "" && tx_pla_nomayu.Text.Trim() != "")
+                {
+                    MessageBox.Show("Debe completar los datos de la fila" + Environment.NewLine +
+                        "Falta tipo y número de documento de identidad", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_pla_nomayu.Focus();
+                    return;
+                }
+                if (tx_dniA.Text.Trim() != "" && tx_pla_ayud.Text == "")
+                {
+                    MessageBox.Show("Debe completar los datos de la fila" + Environment.NewLine +
+                        "Falta el brevete del ayudante", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_pla_ayud.Focus();
+                    return;
+                }
+                if (tx_nregP.Text.Trim() == "")
+                {
+                    MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_nregP.Focus();
+                    return;
+                }
+                if (tx_pla_carret.Text != "" && tx_nregC.Text.Trim() == "")
+                {
+                    MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_nregC.Focus();
+                    return;
+                }
+                #endregion
                 #region Validaciones Sunat
                 // autorizaciones de circulacion - longitud
                 if (tx_pla_autor.Text.Trim().Length < 9 || tx_pla_autor.Text.Trim().Length > 16)
@@ -1815,6 +1817,39 @@ namespace TransCarga
             {
                 tx_serie.Text = lib.Right("000" + tx_serie.Text.Trim(), 4);
             }
+        }
+        private void tx_numero_Leave(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
+            {
+                if (true)
+                {
+                    tx_numero.Text = lib.Right("0000000" + tx_numero.Text.Trim(), 8);
+                    jalaoc("sernum");
+                    jaladet(tx_idr.Text);
+                    dataGridView1.ReadOnly = true;
+                    int tfil = 0;
+                    int.TryParse(tx_tfil.Text, out tfil);
+                    if (int.Parse(tx_tfil.Text) > 0 && Tx_modo.Text == "EDITAR")
+                    {
+                        splitContainer1.Panel1.Enabled = false;
+                    }
+                    if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codCier)        // si es del local del usuario y de la fecha actual, permite re-abrir la planilla 08/06/2021
+                    {
+                        // tx_fechope.Text == tx_fechact.Text.Substring(0, 10) && tx_dat_locori.Text == v_clu
+                        if ((DateTime.Parse(tx_fechact.Text) - DateTime.Parse(tx_fechope.Text)).Days <= v_cdrp && tx_dat_locori.Text == v_clu)
+                        {
+                            chk_cierea.Text = "RE ABRE LA PLANILLA";
+                            chk_cierea.Enabled = true;
+                        }
+                    }
+                    if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codGene)
+                    {
+                        dataGridView1.ReadOnly = false;
+                    }
+                }
+            }
+
         }
         private void tx_numero_KeyPress(object sender, KeyPressEventArgs e)
         {

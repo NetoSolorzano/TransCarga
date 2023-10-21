@@ -182,6 +182,7 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.chk_cierea = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.rb_orden_pg = new System.Windows.Forms.RadioButton();
             this.rb_orden_des = new System.Windows.Forms.RadioButton();
             this.label31 = new System.Windows.Forms.Label();
             this.rb_orden_dir = new System.Windows.Forms.RadioButton();
@@ -195,7 +196,6 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
-            this.rb_orden_pg = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -752,7 +752,7 @@
             this.tx_numero.Size = new System.Drawing.Size(73, 20);
             this.tx_numero.TabIndex = 2;
             this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tx_numero_KeyPress);
+            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
             // 
             // tx_serie
             // 
@@ -1826,6 +1826,18 @@
             this.panel1.Size = new System.Drawing.Size(159, 79);
             this.panel1.TabIndex = 399;
             // 
+            // rb_orden_pg
+            // 
+            this.rb_orden_pg.AutoSize = true;
+            this.rb_orden_pg.ForeColor = System.Drawing.Color.Black;
+            this.rb_orden_pg.Location = new System.Drawing.Point(85, 59);
+            this.rb_orden_pg.Name = "rb_orden_pg";
+            this.rb_orden_pg.Size = new System.Drawing.Size(68, 17);
+            this.rb_orden_pg.TabIndex = 404;
+            this.rb_orden_pg.TabStop = true;
+            this.rb_orden_pg.Text = "Pre Guía";
+            this.rb_orden_pg.UseVisualStyleBackColor = true;
+            // 
             // rb_orden_des
             // 
             this.rb_orden_des.AutoSize = true;
@@ -1964,18 +1976,6 @@
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
             this.tx_totcant.TabIndex = 348;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // rb_orden_pg
-            // 
-            this.rb_orden_pg.AutoSize = true;
-            this.rb_orden_pg.ForeColor = System.Drawing.Color.Black;
-            this.rb_orden_pg.Location = new System.Drawing.Point(85, 59);
-            this.rb_orden_pg.Name = "rb_orden_pg";
-            this.rb_orden_pg.Size = new System.Drawing.Size(68, 17);
-            this.rb_orden_pg.TabIndex = 404;
-            this.rb_orden_pg.TabStop = true;
-            this.rb_orden_pg.Text = "Pre Guía";
-            this.rb_orden_pg.UseVisualStyleBackColor = true;
             // 
             // planicarga
             // 

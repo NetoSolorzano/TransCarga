@@ -4174,33 +4174,36 @@ namespace TransCarga
                                             // aca seleccionamos la fila que sea de la placa seleccionada
                                         }
                                     }
-                                    DataRow row = data.Rows[nfila];
-                                    tx_idplan.Text = row["id"].ToString();
-                                    tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
-                                    tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
-                                    tx_pla_placa.Text = row["platracto"].ToString();
-                                    tx_pla_carret.Text = row["placarret"].ToString();
-                                    tx_pla_autor.Text = row["autorizac"].ToString();
-                                    tx_dat_plaNreg.Text = row["nregtrackto"].ToString();    // numero reg mtc
-                                    tx_pla_confv.Text = row["confvehic"].ToString();
-                                    tx_pla_brevet.Text = row["brevchofe"].ToString();
-                                    tx_pla_nomcho.Text = row["nomchofe"].ToString();
-                                    tx_pla_brev2.Text = row["brevayuda"].ToString();
-                                    tx_pla_chofer2.Text = row["nomayuda"].ToString();
-                                    tx_marCpropio.Text = "";
-                                    if (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) tx_marCpropio.Text = "1";   // Indicador de transporte subcontratado = true
-                                    else tx_marCpropio.Text = "0";      // Indicador de transporte subcontratado = false
-                                    tx_pla_ruc.Text = row["rucpropie"].ToString();
-                                    tx_pla_propiet.Text = row["razonsocial"].ToString();
-                                    tx_marcamion.Text = row["marca"].ToString();
-                                    tx_aut_carret.Text = row["autorCarret"].ToString();
-                                    tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg. mtc
-                                    tx_marCarret.Text = row["marcaCarret"].ToString();
-                                    tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
-                                    tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
-                                    //
-                                    chk_man.Checked = false;
-                                    chk_man.Enabled = true;
+                                    if (nfila > -1)
+                                    {
+                                        DataRow row = data.Rows[nfila];
+                                        tx_idplan.Text = row["id"].ToString();
+                                        tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
+                                        tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
+                                        tx_pla_placa.Text = row["platracto"].ToString();
+                                        tx_pla_carret.Text = row["placarret"].ToString();
+                                        tx_pla_autor.Text = row["autorizac"].ToString();
+                                        tx_dat_plaNreg.Text = row["nregtrackto"].ToString();    // numero reg mtc
+                                        tx_pla_confv.Text = row["confvehic"].ToString();
+                                        tx_pla_brevet.Text = row["brevchofe"].ToString();
+                                        tx_pla_nomcho.Text = row["nomchofe"].ToString();
+                                        tx_pla_brev2.Text = row["brevayuda"].ToString();
+                                        tx_pla_chofer2.Text = row["nomayuda"].ToString();
+                                        tx_marCpropio.Text = "";
+                                        if (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) tx_marCpropio.Text = "1";   // Indicador de transporte subcontratado = true
+                                        else tx_marCpropio.Text = "0";      // Indicador de transporte subcontratado = false
+                                        tx_pla_ruc.Text = row["rucpropie"].ToString();
+                                        tx_pla_propiet.Text = row["razonsocial"].ToString();
+                                        tx_marcamion.Text = row["marca"].ToString();
+                                        tx_aut_carret.Text = row["autorCarret"].ToString();
+                                        tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg. mtc
+                                        tx_marCarret.Text = row["marcaCarret"].ToString();
+                                        tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
+                                        tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
+                                        //
+                                        chk_man.Checked = false;
+                                        chk_man.Enabled = true;
+                                    }
                                 }
                                 else
                                 {

@@ -95,7 +95,7 @@ namespace TransCarga
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
                                                     //
         acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
-        int cuenta = 0;     // contador de repeticiones de visualizacion en columnas de estados GRE
+        int cuenta = -1;     // contador de repeticiones de visualizacion en columnas de estados GRE
         string[] filaimp = { "", "", "", "", "", "", "", "", "", "", "", "", "" };
         DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
         {
@@ -728,8 +728,8 @@ namespace TransCarga
             if (ticket == "") return retorna;
 
             string token = _E.conex_token_(c_t);
-            var resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "adiguiar" : "adiguias", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
-                dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(0, 4), dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(5, 8), rutaxml);
+            var resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "adiguiar" : "adiguias", dgv_GRE_est.Rows[rowIndex].Cells["id"].Value.ToString(), ticket, token,
+                dgv_GRE_est.Rows[rowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4), dgv_GRE_est.Rows[rowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8), rutaxml);
             if (resCon == null)
             {
                 MessageBox.Show("La respuesta del ticket fue nulo", "Error en consultar ticket", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1233,7 +1233,7 @@ namespace TransCarga
                         dgv_GRE_est.Columns.Clear();
                         dgv_GRE_est.Rows.Clear();
                         dgv_GRE_est.CellClick -= null;   // DataGridView1_CellClick;
-                        cuenta = 0;
+                        cuenta = -1;    // 21/10/2023, antes 0, ahora -1 
                         da.Fill(dtsunatE);
                         dgv_GRE_est.DataSource = dtsunatE;
                         grilla("dgv_GRE_est");
@@ -1253,10 +1253,12 @@ namespace TransCarga
                 conn.Open();
                 for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
                 {
-                    if ((dgv_GRE_est.Rows[i].Cells[5].Value.ToString() == "Enviado" || dgv_GRE_est.Rows[i].Cells[5].Value.ToString() == "En proceso") &&
-                        (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "0" || dgv_GRE_est.Rows[i].Cells[6].Value.ToString().Trim() == ""))
+                    if ((dgv_GRE_est.Rows[i].Cells["SUNAT"].Value.ToString().Trim() == "" || 
+                        dgv_GRE_est.Rows[i].Cells["SUNAT"].Value.ToString() == "Enviado" ||
+                        dgv_GRE_est.Rows[i].Cells["SUNAT"].Value.ToString() == "En proceso") &&
+                        (dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "0" || dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value.ToString().Trim() == ""))
                     {
-                        consultaE(dgv_GRE_est.Rows[i].Cells[12].Value.ToString(), i);
+                        consultaE(dgv_GRE_est.Rows[i].Cells["nticket"].Value.ToString(), i);
                     }
                 }
             }
@@ -1272,7 +1274,7 @@ namespace TransCarga
             {
                 for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
                 {
-                    if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == etiqueta)
+                    if (dgv_GRE_est.Rows[i].Cells["SUNAT"].Value.ToString() == etiqueta)
                     {
                         dgv_GRE_est.Rows[i].Cells[0].Value = true;
                     }
@@ -1282,7 +1284,7 @@ namespace TransCarga
             {
                 for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
                 {
-                    if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == etiqueta)
+                    if (dgv_GRE_est.Rows[i].Cells["SUNAT"].Value.ToString() == etiqueta)
                     {
                         dgv_GRE_est.Rows[i].Cells[0].Value = false;
                     }
@@ -2479,7 +2481,7 @@ namespace TransCarga
 
         private void dgv_GRE_est_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
-            cuenta = 0;
+            cuenta = -1;
         }
 
         int CentimeterToPixel(double Centimeter)

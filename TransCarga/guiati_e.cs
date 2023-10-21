@@ -112,7 +112,7 @@ namespace TransCarga
         string usoPGm = "";             // en blanco -> no se usa preguias manuales, "manual" -> Si usa pre-guias (orden servicio) manuales solo numero para marcar bultos
         string rutaQR = "";             // ruta donde se grabará el png del QR de la GRE
         string nomImgQR = "";           // nombre del archivo imagen incluyendo la extensión del QR
-
+        string s_d_r = "";              // variable Sin Datos Relacionados 
         double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
         TimeSpan horaT;                 // Sunat Webservice - Hora de emisión del token
@@ -1635,6 +1635,7 @@ namespace TransCarga
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            s_d_r = "Con";      // por defecto las guías van con documento relacionado 20/10/2023
             #region validaciones generales del form
             if (tx_serie.Text.Trim() == "")
             {
@@ -1789,10 +1790,10 @@ namespace TransCarga
                     tx_fletMN.Text = tx_flete.Text;
                 }
             }
-            if (tx_dat_docOr.Text.Trim() == "")
+            if (tx_dat_tdRem.Text != vtc_ruc && tx_dat_docOr.Text.Trim() == "")     // tx_dat_docOr.Text.Trim() == ""
             {
                 var aa = MessageBox.Show("Debería registrar al menos un documento origen" + Environment.NewLine +
-                    "Confirma que desea continuar sin datos?", "Documento Relacionado",MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    "desea continuar sin datos relacionados?", "Confirme documento relacionado",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.No)
                 {
                     cmb_docorig.Focus();
@@ -1802,8 +1803,25 @@ namespace TransCarga
                 {
                     tx_rucEorig.Text = "";
                     tx_docsOr.Text = "";
+                    tx_dat_docOr.Text = "";
+                    tx_dat_dorigS.Text = "";
+                    //
+                    tx_rucEorig2.Text = "";
+                    tx_docsOr2.Text = "";
+                    tx_dat_docOr2.Text = "";
+                    tx_dat_dorigS2.Text = "";
+                    //
+                    s_d_r = "Sin";
                 }
-            }
+            }       // solo remitentes sin ruc se puede permitir sin docs relacionados
+            if (tx_dat_tdRem.Text == vtc_ruc && tx_dat_docOr.Text.Trim() == "")
+            {
+                var aa = MessageBox.Show("Debe registrar al menos un documento origen", "Error, remitente con RUC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                {
+                    cmb_docorig.Focus();
+                    return;
+                }
+            }       // remitente con RUC es ogligatorio al menos un doc relacionado
             #endregion
             if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
@@ -1819,207 +1837,212 @@ namespace TransCarga
                         "necesitan los datos del vehículo obligatoriamente", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                // documentos relacionados
-                if (tx_dat_docOr2.Text.Trim() == "" && tx_docsOr2.Text.Trim() != "")
+                if (s_d_r == "Con")     // validaciones SUNAT - Documentos relacionados
                 {
-                    MessageBox.Show("Seleccione el tipo de documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    cmb_docorig2.Focus();
-                    return;
+                    // documentos relacionados (doc relacionado 2, que esten completos si los hubiera)
+                    if (tx_dat_docOr2.Text.Trim() == "" && tx_docsOr2.Text.Trim() != "")
+                    {
+                        MessageBox.Show("Seleccione el tipo de documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        cmb_docorig2.Focus();
+                        return;
+                    }
+                    if (tx_dat_docOr2.Text.Trim() != "" && tx_docsOr2.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Ingrese el documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_docsOr2.Focus();
+                        return;
+                    }
+                    if (tx_dat_docOr2.Text.Trim() != "" && tx_rucEorig2.Text == "")
+                    {
+                        MessageBox.Show("Ingrese el ruc del documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_rucEorig2.Focus();
+                        return;
+                    }
+
+                    // validaciones SUNAT - formatos del número de documento origen
+                    if (tx_dat_dorigS.Text.Trim() != "" && "'01','03','04','09'".Contains(tx_dat_dorigS.Text))
+                    {
+                        if (tx_docsOr.Text.Length > 13 || tx_docsOr.Text.Length < 3 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
+                            lib.separador(tx_docsOr.Text, '-', 1).Length > 4 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 ||
+                            lib.separador(tx_docsOr.Text, '-', 2).Length > 8 || lib.separador(tx_docsOr.Text, '-', 2).Length < 1 ||
+                            lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false || int.Parse(lib.separador(tx_docsOr.Text, '-', 2)) <= 0)
+                        {
+                            MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                                "<serie(4 caracteres)>-<número(8 números)" + Environment.NewLine +
+                                "El campo <Numero> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }                                   // facturas,boletas,liq.de compras, guias de remision
+                    if (tx_dat_dorigS2.Text != "" && "'01','03','04','09','31'".Contains(tx_dat_dorigS2.Text))
+                    {
+                        if (tx_docsOr2.Text.Length > 13 || tx_docsOr2.Text.Length < 3 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
+                            lib.separador(tx_docsOr2.Text, '-', 1).Length > 4 || lib.separador(tx_docsOr2.Text, '-', 1).Length < 1 ||
+                            lib.separador(tx_docsOr2.Text, '-', 2).Length > 8 || lib.separador(tx_docsOr2.Text, '-', 2).Length < 1 ||
+                            lib.IsAllDigits(lib.separador(tx_docsOr2.Text, '-', 2)) == false || int.Parse(lib.separador(tx_docsOr2.Text, '-', 2)) <= 0)
+                        {
+                            MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                                "<serie(4 caracteres)>-<número(8 números)" + Environment.NewLine +
+                                "El campo <Numero> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }     // facturas,boletas,liq.de compras, guias de remision
+                    if (tx_dat_dorigS.Text.Trim() != "" && "'50','52'".Contains(tx_dat_dorigS.Text))
+                    {
+                        if (tx_docsOr.Text.Length > 18 || tx_docsOr.Text.Length < 8 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-10-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 10, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }                                             // Declaración de aduana DAM y de Mudanza
+                    if (tx_dat_dorigS2.Text != "" && "'50'.'52'".Contains(tx_dat_dorigS2.Text))
+                    {
+                        if (tx_docsOr2.Text.Length > 18 || tx_docsOr2.Text.Length < 8 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr2.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr2.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr2.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-10-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 10, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }               // Declaración de aduana DAM y de Mudanza
+                    if (tx_dat_dorigS.Text != "" && "80".Contains(tx_dat_dorigS.Text))
+                    {
+                        if (tx_docsOr.Text.Length > 15 || tx_docsOr.Text.Length < 3 || lib.IsAllDigits(tx_docsOr.Text) == false ||
+                            int.Parse(tx_docsOr.Text) <= 0)
+                        {
+                            MessageBox.Show("El formato de la constancia no es correcto, debe ser:" + Environment.NewLine +
+                                    "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }                                                    // Constancia de deposito
+                    if (tx_dat_dorigS2.Text != "" && "80".Contains(tx_dat_dorigS2.Text))
+                    {
+                        if (tx_docsOr2.Text.Length > 15 || tx_docsOr2.Text.Length < 3 || lib.IsAllDigits(tx_docsOr2.Text) == false ||
+                            int.Parse(tx_docsOr2.Text) <= 0)
+                        {
+                            MessageBox.Show("El formato de la constancia no es correcto, debe ser:" + Environment.NewLine +
+                                    "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }                      // Constancia de deposito
+                    if (tx_dat_dorigS.Text != "" && "12".Contains(tx_dat_dorigS.Text))
+                    {
+                        if (tx_docsOr.Text.Length < 3 || tx_docsOr.Text.Length > 41 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
+                            lib.separador(tx_docsOr.Text, '-', 1).Length > 20 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 ||
+                            lib.separador(tx_docsOr.Text, '-', 2).Length > 20 || lib.separador(tx_docsOr.Text, '-', 2).Length < 1)
+                        {
+                            MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
+                                    "<serie>-<número> con la siguiente estructura:" + Environment.NewLine +
+                                    "[a-zA-Z0-9]{1,20}-[a-zA-Z0-9]{1,20}", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }                                                    // Ticket, cintas de maquinas registradoras
+                    if (tx_dat_dorigS2.Text != "" && "12".Contains(tx_dat_dorigS2.Text))
+                    {
+                        if (tx_docsOr2.Text.Length < 3 || tx_docsOr2.Text.Length > 41 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
+                            lib.separador(tx_docsOr2.Text, '-', 1).Length > 20 || lib.separador(tx_docsOr2.Text, '-', 1).Length < 1 ||
+                            lib.separador(tx_docsOr2.Text, '-', 2).Length > 20 || lib.separador(tx_docsOr2.Text, '-', 2).Length < 1)
+                        {
+                            MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
+                                    "<serie>-<número> con la siguiente estructura:" + Environment.NewLine +
+                                    "[a-zA-Z0-9]{1,20}-[a-zA-Z0-9]{1,20}", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }                      // Ticket, cintas de maquinas registradoras
+                    if (tx_dat_dorigS.Text != "" && "48".Contains(tx_dat_dorigS.Text))
+                    {
+                        if (tx_docsOr.Text.Trim().Length < 3 || tx_docsOr.Text.Length > 12 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
+                            lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false || lib.separador(tx_docsOr.Text, '-', 2).Length > 7 ||
+                            int.Parse(lib.separador(tx_docsOr.Text, '-', 2)) <= 0)
+                        {
+                            MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                                    "<serie>-<número> con esta estructura [0-9]{1,4}-[0-9]{1,7}" + Environment.NewLine +
+                                    "El campo <número> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }                                                    // Comprobante de operaciones
+                    if (tx_dat_dorigS2.Text != "" && "48".Contains(tx_dat_dorigS2.Text))
+                    {
+                        if (tx_docsOr2.Text.Trim().Length < 3 || tx_docsOr2.Text.Length > 12 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
+                            lib.IsAllDigits(lib.separador(tx_docsOr2.Text, '-', 2)) == false || lib.separador(tx_docsOr2.Text, '-', 2).Length > 7 ||
+                            int.Parse(lib.separador(tx_docsOr2.Text, '-', 2)) <= 0)
+                        {
+                            MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                                    "<serie>-<número> con esta estructura [0-9]{1,4}-[0-9]{1,7}" + Environment.NewLine +
+                                    "El campo <número> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }                      // Comprobante de operaciones
+                    if ("'82','65','66','67','68','69'".Contains(tx_dat_dorigS.Text))
+                    {
+                        // acá se permite todo menos espacios en blanco, saltos de linea y demas comunes
+                    }
+                    if (tx_dat_dorigS2.Text != "" && "'82','65','66','67','68','69'".Contains(tx_dat_dorigS2.Text))
+                    {
+                        // acá se permite todo menos espacios en blanco, saltos de linea y demas comunes
+                    }
+                    if (tx_dat_dorigS.Text != "" && "09".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0, 1)) == false)
+                    {
+                        if (tx_numDocRem.Text != tx_rucEorig.Text)
+                        {
+                            MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                                    "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }    // RUC emisor doc. relacionado GUIA remitente debe ser igual al ruc del remitente
+                    if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
+                        lib.IsAllDigits(tx_docsOr2.Text.Substring(0, 1)) == false)
+                    {
+                        if (tx_numDocRem.Text != tx_rucEorig2.Text)
+                        {
+                            MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                                    "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }                                       // RUC emisor doc. relacionado GUIA remitente debe ser igual al ruc del remitente
+                    if (tx_dat_dorigS.Text != "" && "31".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0, 1)) == false)
+                    {
+                        if (tx_pla_ruc.Text != tx_rucEorig.Text)
+                        {
+                            MessageBox.Show("El número del documento del Transportista debe " + Environment.NewLine +
+                                    "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_pla_ruc.Focus();
+                            return;
+                        }
+                    }   // RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
+                    if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
+                        lib.IsAllDigits(tx_docsOr2.Text.Substring(0, 1)) == false)
+                    {
+                        if (tx_pla_ruc.Text != tx_rucEorig2.Text)
+                        {
+                            MessageBox.Show("El número del documento del Transportista debe " + Environment.NewLine +
+                                    "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_pla_ruc.Focus();
+                            return;
+                        }
+                    }                                       // RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
                 }
-                if (tx_dat_docOr2.Text.Trim() != "" && tx_docsOr2.Text.Trim() == "")
-                {
-                    MessageBox.Show("Ingrese el documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tx_docsOr2.Focus();
-                    return;
-                }
-                if (tx_dat_docOr2.Text.Trim() != "" && tx_rucEorig2.Text == "")
-                {
-                    MessageBox.Show("Ingrese el ruc del documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tx_rucEorig2.Focus();
-                    return;
-                }
-                // validaciones SUNAT - formatos del número de documento origen
-                if (tx_dat_dorigS.Text.Trim() != "" && "'01','03','04','09'".Contains(tx_dat_dorigS.Text))
-                {
-                    if (tx_docsOr.Text.Length > 13 || tx_docsOr.Text.Length < 3 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
-                        lib.separador(tx_docsOr.Text, '-', 1).Length > 4 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 ||
-                        lib.separador(tx_docsOr.Text, '-', 2).Length > 8 || lib.separador(tx_docsOr.Text, '-', 2).Length < 1 ||
-                        lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false || int.Parse(lib.separador(tx_docsOr.Text, '-', 2)) <= 0)
-                    {
-                        MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                            "<serie(4 caracteres)>-<número(8 números)" + Environment.NewLine +
-                            "El campo <Numero> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr.Focus();
-                        return;
-                    }
-                }                                   // facturas,boletas,liq.de compras, guias de remision
-                if (tx_dat_dorigS2.Text != "" && "'01','03','04','09','31'".Contains(tx_dat_dorigS2.Text))
-                {
-                    if (tx_docsOr2.Text.Length > 13 || tx_docsOr2.Text.Length < 3 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
-                        lib.separador(tx_docsOr2.Text, '-', 1).Length > 4 || lib.separador(tx_docsOr2.Text, '-', 1).Length < 1 ||
-                        lib.separador(tx_docsOr2.Text, '-', 2).Length > 8 || lib.separador(tx_docsOr2.Text, '-', 2).Length < 1 ||
-                        lib.IsAllDigits(lib.separador(tx_docsOr2.Text, '-', 2)) == false || int.Parse(lib.separador(tx_docsOr2.Text, '-', 2)) <= 0)
-                    {
-                        MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                            "<serie(4 caracteres)>-<número(8 números)" + Environment.NewLine +
-                            "El campo <Numero> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr2.Focus();
-                        return;
-                    }
-                }     // facturas,boletas,liq.de compras, guias de remision
-                if (tx_dat_dorigS.Text.Trim() != "" && "'50','52'".Contains(tx_dat_dorigS.Text))
-                {
-                    if (tx_docsOr.Text.Length > 18 || tx_docsOr.Text.Length < 8 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
-                    lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
-                    lib.separador(tx_docsOr.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr.Text, '-', 4)) == 0)
-                    {
-                        MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
-                            " {3}-{4}-10-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
-                            " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 10, [0-9]{1,6} Correlativo" + Environment.NewLine +
-                            "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr.Focus();
-                        return;
-                    }
-                }                                             // Declaración de aduana DAM y de Mudanza
-                if (tx_dat_dorigS2.Text != "" && "'50'.'52'".Contains(tx_dat_dorigS2.Text))
-                {
-                    if (tx_docsOr2.Text.Length > 18 || tx_docsOr2.Text.Length < 8 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
-                    lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
-                    lib.separador(tx_docsOr2.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr2.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr2.Text, '-', 4)) == 0)
-                    {
-                        MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
-                            " {3}-{4}-10-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
-                            " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 10, [0-9]{1,6} Correlativo" + Environment.NewLine +
-                            "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr2.Focus();
-                        return;
-                    }
-                }               // Declaración de aduana DAM y de Mudanza
-                if (tx_dat_dorigS.Text != "" && "80".Contains(tx_dat_dorigS.Text))
-                {
-                    if (tx_docsOr.Text.Length > 15 || tx_docsOr.Text.Length < 3 || lib.IsAllDigits(tx_docsOr.Text) == false ||
-                        int.Parse(tx_docsOr.Text) <= 0)
-                    {
-                        MessageBox.Show("El formato de la constancia no es correcto, debe ser:" + Environment.NewLine +
-                                "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr.Focus();
-                        return;
-                    }
-                }                                                    // Constancia de deposito
-                if (tx_dat_dorigS2.Text != "" && "80".Contains(tx_dat_dorigS2.Text))
-                {
-                    if (tx_docsOr2.Text.Length > 15 || tx_docsOr2.Text.Length < 3 || lib.IsAllDigits(tx_docsOr2.Text) == false ||
-                        int.Parse(tx_docsOr2.Text) <= 0)
-                    {
-                        MessageBox.Show("El formato de la constancia no es correcto, debe ser:" + Environment.NewLine +
-                                "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr2.Focus();
-                        return;
-                    }
-                }                      // Constancia de deposito
-                if (tx_dat_dorigS.Text != "" && "12".Contains(tx_dat_dorigS.Text))
-                {
-                    if (tx_docsOr.Text.Length < 3 || tx_docsOr.Text.Length > 41 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
-                        lib.separador(tx_docsOr.Text, '-', 1).Length > 20 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 ||
-                        lib.separador(tx_docsOr.Text, '-', 2).Length > 20 || lib.separador(tx_docsOr.Text, '-', 2).Length < 1)
-                    {
-                        MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
-                                "<serie>-<número> con la siguiente estructura:" + Environment.NewLine +
-                                "[a-zA-Z0-9]{1,20}-[a-zA-Z0-9]{1,20}", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr.Focus();
-                        return;
-                    }
-                }                                                    // Ticket, cintas de maquinas registradoras
-                if (tx_dat_dorigS2.Text != "" && "12".Contains(tx_dat_dorigS2.Text))
-                {
-                    if (tx_docsOr2.Text.Length < 3 || tx_docsOr2.Text.Length > 41 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
-                        lib.separador(tx_docsOr2.Text, '-', 1).Length > 20 || lib.separador(tx_docsOr2.Text, '-', 1).Length < 1 ||
-                        lib.separador(tx_docsOr2.Text, '-', 2).Length > 20 || lib.separador(tx_docsOr2.Text, '-', 2).Length < 1)
-                    {
-                        MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
-                                "<serie>-<número> con la siguiente estructura:" + Environment.NewLine +
-                                "[a-zA-Z0-9]{1,20}-[a-zA-Z0-9]{1,20}", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr2.Focus();
-                        return;
-                    }
-                }                      // Ticket, cintas de maquinas registradoras
-                if (tx_dat_dorigS.Text != "" && "48".Contains(tx_dat_dorigS.Text))
-                {
-                    if (tx_docsOr.Text.Trim().Length < 3 || tx_docsOr.Text.Length > 12 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
-                        lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false || lib.separador(tx_docsOr.Text, '-', 2).Length > 7 ||
-                        int.Parse(lib.separador(tx_docsOr.Text, '-', 2)) <= 0)
-                    {
-                        MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                                "<serie>-<número> con esta estructura [0-9]{1,4}-[0-9]{1,7}" + Environment.NewLine +
-                                "El campo <número> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr.Focus();
-                        return;
-                    }
-                }                                                    // Comprobante de operaciones
-                if (tx_dat_dorigS2.Text != "" && "48".Contains(tx_dat_dorigS2.Text))
-                {
-                    if (tx_docsOr2.Text.Trim().Length < 3 || tx_docsOr2.Text.Length > 12 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
-                        lib.IsAllDigits(lib.separador(tx_docsOr2.Text, '-', 2)) == false || lib.separador(tx_docsOr2.Text, '-', 2).Length > 7 ||
-                        int.Parse(lib.separador(tx_docsOr2.Text, '-', 2)) <= 0)
-                    {
-                        MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                                "<serie>-<número> con esta estructura [0-9]{1,4}-[0-9]{1,7}" + Environment.NewLine +
-                                "El campo <número> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr2.Focus();
-                        return;
-                    }
-                }                      // Comprobante de operaciones
-                if ("'82','65','66','67','68','69'".Contains(tx_dat_dorigS.Text))
-                {
-                    // acá se permite todo menos espacios en blanco, saltos de linea y demas comunes
-                }
-                if (tx_dat_dorigS2.Text != "" && "'82','65','66','67','68','69'".Contains(tx_dat_dorigS2.Text))
-                {
-                    // acá se permite todo menos espacios en blanco, saltos de linea y demas comunes
-                }
-                if (tx_dat_dorigS.Text != "" && "09".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0, 1)) == false)
-                {
-                    if (tx_numDocRem.Text != tx_rucEorig.Text)
-                    {
-                        MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
-                                "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr.Focus();
-                        return;
-                    }
-                }    // RUC emisor doc. relacionado GUIA remitente debe ser igual al ruc del remitente
-                if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
-                    lib.IsAllDigits(tx_docsOr2.Text.Substring(0, 1)) == false)
-                {
-                    if (tx_numDocRem.Text != tx_rucEorig2.Text)
-                    {
-                        MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
-                                "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_docsOr2.Focus();
-                        return;
-                    }
-                }                                       // RUC emisor doc. relacionado GUIA remitente debe ser igual al ruc del remitente
-                if (tx_dat_dorigS.Text != "" && "31".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0, 1)) == false)
-                {
-                    if (tx_pla_ruc.Text != tx_rucEorig.Text)
-                    {
-                        MessageBox.Show("El número del documento del Transportista debe " + Environment.NewLine +
-                                "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_pla_ruc.Focus();
-                        return;
-                    }
-                }   // RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
-                if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
-                    lib.IsAllDigits(tx_docsOr2.Text.Substring(0, 1)) == false)
-                {
-                    if (tx_pla_ruc.Text != tx_rucEorig2.Text)
-                    {
-                        MessageBox.Show("El número del documento del Transportista debe " + Environment.NewLine +
-                                "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        tx_pla_ruc.Focus();
-                        return;
-                    }
-                }                                       // RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
-                                                        // Validaciones SUNAT - Datos del remitente
+
+                // Validaciones SUNAT - Datos del remitente
                 if (tx_pla_ruc.Text == tx_numDocRem.Text)
                 {
                     MessageBox.Show("El número del documento del remitente NO" + Environment.NewLine +
@@ -2043,7 +2066,7 @@ namespace TransCarga
                         "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }               // Aut. Circulación carreta, alfanumérico de 10 a 15 caracteres
-                                // Validaciones SUNAT - Choferes
+                // Validaciones SUNAT - Choferes
                 if (tx_pla_dniChof.Text == "")
                 {
                     MessageBox.Show("El número de documento del" + Environment.NewLine +
@@ -2062,9 +2085,16 @@ namespace TransCarga
                 }
                 else
                 {
-                    MessageBox.Show("Los datos del chofer secundario" + Environment.NewLine +
-                        "no están completos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    if (tx_pla_brev2.Text != "" && tx_dat_dniC2.Text != "" && tx_pla_chofer2.Text != "")
+                    {
+                        // todo ok, datos completos
+                    }
+                    else
+                    {
+                        MessageBox.Show("Los datos del chofer secundario" + Environment.NewLine +
+                            "no están completos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
                 }            // Tipo de documento chofer secundario                                          // Número de documento de identidad chofer principal y secundario
                              // Validaciones SUNAT - Datos de Envío
                 if (chk_cunica.Checked == true)
@@ -2100,6 +2130,7 @@ namespace TransCarga
                     return;
                 }
                 #endregion
+
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -3739,42 +3770,45 @@ namespace TransCarga
                                             // aca seleccionamos la fila que sea de la placa seleccionada
                                         }
                                     }
-                                    DataRow row = data.Rows[nfila];
-                                    tx_idplan.Text = row["id"].ToString();
-                                    tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
-                                    tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
-                                    tx_pla_placa.Text = row["platracto"].ToString();
-                                    tx_pla_carret.Text = row["placarret"].ToString();
-                                    tx_pla_autor.Text = row["autorizac"].ToString();
-                                    tx_dat_plaNreg.Text = row["nregtrackto"].ToString();      // num reg mtc del transportista
-                                    tx_pla_confv.Text = row["confvehic"].ToString();
-                                    tx_pla_brevet.Text = row["brevchofe"].ToString();
-                                    tx_pla_nomcho.Text = row["nomchofe"].ToString();
-                                    tx_pla_brev2.Text = row["brevayuda"].ToString();
-                                    tx_pla_chofer2.Text = row["nomayuda"].ToString();
-                                    tx_marCpropio.Text = "";
-                                    if (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) tx_marCpropio.Text = "1";   // Indicador de transporte subcontratado = true
-                                    else tx_marCpropio.Text = "0";      // Indicador de transporte subcontratado = false
-                                    tx_pla_ruc.Text = row["rucpropie"].ToString();
-                                    tx_pla_propiet.Text = row["razonsocial"].ToString();
-                                    tx_marcamion.Text = row["marca"].ToString();
-                                    tx_aut_carret.Text = row["autorCarret"].ToString();
-                                    tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg MTC  a.nregtrackto,a.nregcarreta
-                                    tx_marCarret.Text = row["marcaCarret"].ToString();
-                                    tx_pla_dniChof.Text = row["dnichofer"].ToString();  //.Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
-                                    tx_dat_dniC2.Text = row["dniayudante"].ToString();  //.Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
-                                    //
-                                    chk_man.Checked = false;
-                                    chk_man.Enabled = true;
-                                    if (row["tipdocpri"].ToString() != "")
+                                    if (nfila > -1)
                                     {
-                                        //DataRow[] fla = dttd2.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
-                                        DataRow[] fla = Program.dt_definic.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
-                                        tx_pla_chofS.Text = fla[0]["codsunat"].ToString();
-                                        if (row["tipdocayu"] != null && row["tipdocayu"].ToString() != "")
+                                        DataRow row = data.Rows[nfila];
+                                        tx_idplan.Text = row["id"].ToString();
+                                        tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
+                                        tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
+                                        tx_pla_placa.Text = row["platracto"].ToString();
+                                        tx_pla_carret.Text = row["placarret"].ToString();
+                                        tx_pla_autor.Text = row["autorizac"].ToString();
+                                        tx_dat_plaNreg.Text = row["nregtrackto"].ToString();      // num reg mtc del transportista
+                                        tx_pla_confv.Text = row["confvehic"].ToString();
+                                        tx_pla_brevet.Text = row["brevchofe"].ToString();
+                                        tx_pla_nomcho.Text = row["nomchofe"].ToString();
+                                        tx_pla_brev2.Text = row["brevayuda"].ToString();
+                                        tx_pla_chofer2.Text = row["nomayuda"].ToString();
+                                        tx_marCpropio.Text = "";
+                                        if (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) tx_marCpropio.Text = "1";   // Indicador de transporte subcontratado = true
+                                        else tx_marCpropio.Text = "0";      // Indicador de transporte subcontratado = false
+                                        tx_pla_ruc.Text = row["rucpropie"].ToString();
+                                        tx_pla_propiet.Text = row["razonsocial"].ToString();
+                                        tx_marcamion.Text = row["marca"].ToString();
+                                        tx_aut_carret.Text = row["autorCarret"].ToString();
+                                        tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg MTC  a.nregtrackto,a.nregcarreta
+                                        tx_marCarret.Text = row["marcaCarret"].ToString();
+                                        tx_pla_dniChof.Text = row["dnichofer"].ToString();  //.Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
+                                        tx_dat_dniC2.Text = row["dniayudante"].ToString();  //.Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
+                                                                                            //
+                                        chk_man.Checked = false;
+                                        chk_man.Enabled = true;
+                                        if (row["tipdocpri"].ToString() != "")
                                         {
-                                            fla = Program.dt_definic.Select("idcodice='" + row["tipdocayu"].ToString() + "'");
-                                            tx_dat_dniC2s.Text = fla[0]["codsunat"].ToString();
+                                            //DataRow[] fla = dttd2.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
+                                            DataRow[] fla = Program.dt_definic.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
+                                            tx_pla_chofS.Text = fla[0]["codsunat"].ToString();
+                                            if (row["tipdocayu"] != null && row["tipdocayu"].ToString() != "")
+                                            {
+                                                fla = Program.dt_definic.Select("idcodice='" + row["tipdocayu"].ToString() + "'");
+                                                tx_dat_dniC2s.Text = fla[0]["codsunat"].ToString();
+                                            }
                                         }
                                     }
                                 }

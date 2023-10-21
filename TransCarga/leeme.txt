@@ -384,12 +384,18 @@ form repsoper, planilla de carga sin Pre guia ..................................
 form planicarga, en todos los formatos que salga ordenado por pre-guia .............................. +- 18/10/2023 falta mejorar
 form guiati_e, en modo visualizacion que permita buscar por pre-guia ................................ ok 18/10/2023
 form repsoper, "Estados Sunat" agregar columna de pre-guia antes de la electronica .................. ok 18/10/2023
-form repsoper, "Estados Sunat" el boton de la columna actualiza no hace nada ........................ falta probar 18/10/2023
 form guiati_e, no esta dejando colocar letras en la serie de la guía, arreglar! ..................... ok 19/10/2023
 form repsoper, permitir que Fiorella y Juliana "vean" las guías de la otra respectivamente .......... ok 19/10/2023
 APP Android, permitir serie alfanumerica, "V002" .................................................... ok 18/10/2023 se genero nueva version del APP para todos los cliente
 form repsoper, "Estados Sunat" el boton de la columna A5 esta repitiendo las visualizaciones ........ ok 19/10/2023
-form guiati_e, crear "SIN DOC RELACIONADO" validando que vayan en blanco, ambos docs relacionados ... 
-form guiati_e, validar que solo si el remitente NO tiene ruc permita sin docs relacionados .......... 
-xmlGRE, adecuar que se puedan crear guías sin docs relacionados ..................................... 
+form repsoper, "Estados Sunat" los checks de impresion grupal no estan funcionando .................. ok 20/10/2023
+form repsoper, "Estados Sunat" quitar el filtro y sort, no van bien con los botones agregados ....... +- 20/10/2023 falta mejorar, cambiar a datagridview estandar
+form planicarga, debe permitir EDITAR Y CERRAR un manifiesto sin datos de chofer u otra razón ....... ok 21/10/2023
+form repsoper, "Estados Sunat" el boton de la columna actualiza no hace nada ........................ ok 21/10/2023 lo que resta por probar es la consulta masiva
+form repsoper, "Estados Sunat" no funca los botones de columnas ..................................... 
+form guiati_e, Observación para "SIN DOC RELACIONADO"
+	- Si el tipo de doc del remitente es <> RUC permite GRABAR sin docs relacionados ................ ok 21/10/2023
+	- Debe pedir confirmación y si es SI, borrar todo en docs relacionados 1y2 ...................... ok 21/10/2023
+form guiati_e, validar que solo si el remitente NO tiene ruc permita sin docs relacionados .......... ok 21/10/2023
+xmlGRE, adecuar que se puedan crear guías sin docs relacionados ..................................... ok 21/10/2023
 form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ....................... 

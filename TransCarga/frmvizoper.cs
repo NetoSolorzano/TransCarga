@@ -20,44 +20,51 @@ namespace TransCarga
 
         private void frmvizoper_Load(object sender, EventArgs e)
         {
-            if (_datosReporte.cuadreCaja_cab.Rows.Count > 0)
+            try
             {
-                string nf = _datosReporte.cuadreCaja_cab.Rows[0].ItemArray[0].ToString();
-                ReportDocument rpt = new ReportDocument();
-                rpt.Load(nf);   // rpt.Load("formatos/cuadreCaja1.rpt");
-                rpt.SetDataSource(_datosReporte);
-                crystalReportViewer1.ReportSource = rpt;
+                if (_datosReporte.cuadreCaja_cab.Rows.Count > 0)
+                {
+                    string nf = _datosReporte.cuadreCaja_cab.Rows[0].ItemArray[0].ToString();
+                    ReportDocument rpt = new ReportDocument();
+                    rpt.Load(nf);   // rpt.Load("formatos/cuadreCaja1.rpt");
+                    rpt.SetDataSource(_datosReporte);
+                    crystalReportViewer1.ReportSource = rpt;
+                }
+                if (_datosReporte.pendCob.Rows.Count > 0)
+                {
+                    ReportDocument rpt = new ReportDocument();
+                    rpt.Load("formatos/pendCob1.rpt");
+                    rpt.SetDataSource(_datosReporte);
+                    crystalReportViewer1.ReportSource = rpt;
+                }
+                if (_datosReporte.placar_cab.Rows.Count > 0)
+                {
+                    string nf = _datosReporte.placar_cab.Rows[0].ItemArray[0].ToString();
+                    ReportDocument rpt = new ReportDocument();
+                    rpt.Load(nf);    // rpt.Load("formatos/plancarga2.rpt");
+                    rpt.SetDataSource(_datosReporte);
+                    crystalReportViewer1.ReportSource = rpt;
+                }
+                if (_datosReporte.gr_ind_cab.Rows.Count > 0)
+                {
+                    string nf = _datosReporte.gr_ind_cab.Rows[0].ItemArray[0].ToString();
+                    ReportDocument rpt = new ReportDocument();
+                    rpt.Load(nf);
+                    rpt.SetDataSource(_datosReporte);
+                    crystalReportViewer1.ReportSource = rpt;
+                }
+                if (_datosReporte.ctacteclte.Rows.Count > 0)
+                {
+                    string nf = _datosReporte.ctacteclte.Rows[0].ItemArray[7].ToString();
+                    ReportDocument rpt = new ReportDocument();
+                    rpt.Load(nf);
+                    rpt.SetDataSource(_datosReporte);
+                    crystalReportViewer1.ReportSource = rpt;
+                }
             }
-            if (_datosReporte.pendCob.Rows.Count > 0)
+            catch (Exception ex)
             {
-                ReportDocument rpt = new ReportDocument();
-                rpt.Load("formatos/pendCob1.rpt");
-                rpt.SetDataSource(_datosReporte);
-                crystalReportViewer1.ReportSource = rpt;
-            }
-            if (_datosReporte.placar_cab.Rows.Count > 0)
-            {
-                string nf = _datosReporte.placar_cab.Rows[0].ItemArray[0].ToString();
-                ReportDocument rpt = new ReportDocument();
-                rpt.Load(nf);    // rpt.Load("formatos/plancarga2.rpt");
-                rpt.SetDataSource(_datosReporte);
-                crystalReportViewer1.ReportSource = rpt;
-            }
-            if (_datosReporte.gr_ind_cab.Rows.Count > 0)
-            {
-                string nf = _datosReporte.gr_ind_cab.Rows[0].ItemArray[0].ToString();
-                ReportDocument rpt = new ReportDocument();
-                rpt.Load(nf);
-                rpt.SetDataSource(_datosReporte);
-                crystalReportViewer1.ReportSource = rpt;
-            }
-            if (_datosReporte.ctacteclte.Rows.Count > 0)
-            {
-                string nf = _datosReporte.ctacteclte.Rows[0].ItemArray[7].ToString();
-                ReportDocument rpt = new ReportDocument();
-                rpt.Load(nf);
-                rpt.SetDataSource(_datosReporte);
-                crystalReportViewer1.ReportSource = rpt;
+                MessageBox.Show(ex.Message,"Error interno",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
     }

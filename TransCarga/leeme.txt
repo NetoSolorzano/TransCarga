@@ -392,10 +392,11 @@ form repsoper, "Estados Sunat" los checks de impresion grupal no estan funcionan
 form repsoper, "Estados Sunat" quitar el filtro y sort, no van bien con los botones agregados ....... +- 20/10/2023 falta mejorar, cambiar a datagridview estandar
 form planicarga, debe permitir EDITAR Y CERRAR un manifiesto sin datos de chofer u otra razón ....... ok 21/10/2023
 form repsoper, "Estados Sunat" el boton de la columna actualiza no hace nada ........................ ok 21/10/2023 lo que resta por probar es la consulta masiva
-form repsoper, "Estados Sunat" no funca los botones de columnas ..................................... 
+form repsoper, "Estados Sunat" no funca los botones de columnas ..................................... ok 21/10/2023 ... sin funca!
 form guiati_e, Observación para "SIN DOC RELACIONADO"
 	- Si el tipo de doc del remitente es <> RUC permite GRABAR sin docs relacionados ................ ok 21/10/2023
 	- Debe pedir confirmación y si es SI, borrar todo en docs relacionados 1y2 ...................... ok 21/10/2023
 form guiati_e, validar que solo si el remitente NO tiene ruc permita sin docs relacionados .......... ok 21/10/2023
 xmlGRE, adecuar que se puedan crear guías sin docs relacionados ..................................... ok 21/10/2023
+Trigger insertar cabguiai, adecuación a actualización de tabla controlg ............................. ok 21/10/2023
 form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ....................... 

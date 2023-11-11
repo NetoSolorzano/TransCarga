@@ -1077,7 +1077,18 @@ namespace TransCarga
 
             return retorna;
         }
-
+        private void analizaEdicion()           // dependiendo de criterios permite la edicion total
+        {
+            if (Tx_modo.Text == "EDITAR" && tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.Contains(asd.ToLower()))
+            {
+                escribe();
+            }
+            else
+            {
+                sololee();
+            }
+        }
+        
         #region autocompletados
         private void autodepa()                             // departamentos
         {
@@ -2734,6 +2745,7 @@ namespace TransCarga
                 jaladet(tx_idr.Text);
                 //tx_numero_Leave(null,null);   // comentado el 08/08/2023
                 tx_obser1.Enabled = true;
+                analizaEdicion();
             }
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento del remitente, jala provincia
@@ -3110,7 +3122,8 @@ namespace TransCarga
                 //dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
                 chk_seguridad_CheckStateChanged(null, null);
-                sololee();
+                analizaEdicion();
+                //sololee();
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)

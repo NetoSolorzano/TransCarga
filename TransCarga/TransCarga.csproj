@@ -666,6 +666,8 @@
     <None Include="Resources\flecha100.png" />
     <None Include="Resources\flecha100T.png" />
     <None Include="Resources\abajo100T.png" />
+    <Content Include="Resources\Bitmap1.bmp" />
+    <Content Include="Resources\Telef_22.png" />
     <Content Include="solorsoft.ico" />
   </ItemGroup>
   <ItemGroup>

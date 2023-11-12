@@ -290,7 +290,7 @@ namespace TransCarga
                     string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", "", ""};    // 11
                     string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-                    string[] va = { "", "", "", "", "", "" };       // 6
+                    string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
                     string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
                     vs[0] = ser;
@@ -350,6 +350,9 @@ namespace TransCarga
                     va[3] = "";                                  // Varios: segunda linea de despedida
                     va[4] = "";                                 // glosa1;
                     va[5] = "";                                 // glosa2;
+                    va[6] = dtgrtcab.Rows[0]["clifingri"].ToString();    // Consignatario
+                    va[7] = dtgrtcab.Rows[0]["telrem"].ToString();    // telefono remitente
+                    va[8] = dtgrtcab.Rows[0]["teldes"].ToString();    // telefono destinatario
                     // id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi 
                     int y = 0;
                     dt[y, 0] = (y + 1).ToString();                           // detalle: Num de fila

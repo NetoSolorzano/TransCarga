@@ -400,9 +400,11 @@ form guiati_e, validar que solo si el remitente NO tiene ruc permita sin docs re
 xmlGRE, adecuar que se puedan crear guías sin docs relacionados ..................................... ok 21/10/2023
 Trigger insertar cabguiai, adecuación a actualización de tabla controlg ............................. ok 21/10/2023
 form guiati_e, si el estado sunat es rechazado, el modo es Edicion, y el usuario esta permitido 
-	que permita cambiar todo, grabar y regenerar el xml ............................................. falta que grabe 
+	que permita cambiar todo, grabar y regenerar el xml ............................................. ok 13/11/2023 
 CR gre_t1, agregar numero de telefono del remitente y destinatario .................................. ok 11/11/2023
 CR gre_t1, agregar consignatario debajo de destinatario o por algun lado ............................ ok 11/11/2023
 clase publico, adecuar los campos de consignatario y telefonos remit y destinat ..................... ok 11/11/2023
 clase impGRE_T, adecuar los campos de consignatario y telefonos remit y destinat .................... ok 11/11/2023
-form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ....................... 
+form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ....................... ok 13/11/2023
+xmlGRE, adecuaciones en los select de sqlite para jalar el ultimo registro si hubieran varias 
+	filas de la misma guia .......................................................................... ok 13/11/2023

@@ -4176,7 +4176,7 @@ namespace TransCarga
                 string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", "", ""};    // 11
                 string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-                string[] va = { "", "", "", "", "", "" };       // 6
+                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
                 string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
                 vs[0] = tx_serie.Text;                          // dr.GetString("sergui");
@@ -4236,6 +4236,9 @@ namespace TransCarga
                 va[3] = "";                                  // Varios: segunda linea de despedida
                 va[4] = glosa1;
                 va[5] = glosa2;
+                va[6] = tx_consig.Text.Trim();
+                va[7] = tx_telR.Text.Trim();
+                va[8] = tx_telD.Text.Trim();
 
                 int y = 0;
                 dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila

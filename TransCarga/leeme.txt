@@ -408,3 +408,4 @@ clase impGRE_T, adecuar los campos de consignatario y telefonos remit y destinat
 form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ....................... ok 13/11/2023
 xmlGRE, adecuaciones en los select de sqlite para jalar el ultimo registro si hubieran varias 
 	filas de la misma guia .......................................................................... ok 13/11/2023
+form guiati_e, corregir error en impresion por falta de parametros de telef y consignatario ......... ok 14/11/2023

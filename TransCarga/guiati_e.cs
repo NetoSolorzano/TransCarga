@@ -1084,6 +1084,7 @@ namespace TransCarga
             if (Tx_modo.Text == "EDITAR" && tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.Contains(asd.ToLower()))
             {
                 escribe();
+                gbox_serie.Enabled = false;
             }
             else
             {

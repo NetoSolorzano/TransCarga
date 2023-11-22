@@ -102,6 +102,11 @@ namespace TransCarga
         string NoRetGl = "";            // 
         string webdni = "";             // 
         //
+        string gloDeta = "";            // glosa detalle de las guias de remision
+        string rutaQR = "";             // ruta donde se trabajan los QR -> "C:\temp\"
+        string nomImgQR = "";           // nombre general de los QR -> "imgQR.png"
+        string v_iniGRET = "";          // sigla, inicicla, marca de las GRE-T
+        //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
@@ -120,7 +125,7 @@ namespace TransCarga
 
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
-
+        
         DataTable dttd0 = new DataTable();
         DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();        // moneda
@@ -273,6 +278,7 @@ namespace TransCarga
                 else chk_cunica.Enabled = false;
                 if (cusdscto.Contains(asd)) tx_flete.ReadOnly = false;
                 else tx_flete.ReadOnly = true;
+                chk_iGRE.Checked = false;
                 if (v_estcaj == codAbie)      // caja esta abierta?
                 {
                     if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy ..... me quede aca, este dato debe limpiarse al cerrar la caja
@@ -300,7 +306,7 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@noca,@noco)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@noca,@noco,@ngre)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
@@ -308,6 +314,7 @@ namespace TransCarga
                 micon.Parameters.AddWithValue("@noco", "cobranzas");
                 micon.Parameters.AddWithValue("@noca", "ayccaja");
                 micon.Parameters.AddWithValue("@nofa", nomform);
+                micon.Parameters.AddWithValue("@ngre", "guiati_e");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -410,6 +417,19 @@ namespace TransCarga
                         if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
                         if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
                         if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
+                    }
+                    if (row["formulario"].ToString() == "guiati_e")
+                    {
+                        if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
+                        if (row["campo"].ToString() == "impresion")
+                        {
+                            if (row["param"].ToString() == "rutaQR") rutaQR = row["valor"].ToString().Trim();           // "C:\temp\"
+                            if (row["param"].ToString() == "nomImgQR") nomImgQR = row["valor"].ToString().Trim();       // "imgQR.png"
+                        }
+                        if (row["campo"].ToString() == "documento")
+                        {
+                            if (row["param"].ToString() == "ini_GRET") v_iniGRET = row["valor"].ToString().Trim();          // inicial (sigla) de las GRE-T
+                        }
                     }
                 }
                 da.Dispose();
@@ -3434,7 +3454,10 @@ namespace TransCarga
         }
         private void tx_serGR_Leave(object sender, EventArgs e)
         {
-            if(tx_serGR.Text.Substring(0,1) != "V") tx_serGR.Text = lib.Right("0000" + tx_serGR.Text, 4);
+            if (tx_serGR.Text.Trim() != "")
+            {
+                if (tx_serGR.Text.Substring(0, 1) != "V") tx_serGR.Text = lib.Right("0000" + tx_serGR.Text, 4);
+            }
         }
         private void tx_numGR_Leave(object sender, EventArgs e)
         {
@@ -3776,7 +3799,8 @@ namespace TransCarga
             tx_salxcob.BackColor = Color.White;
             // validamos la fecha de la caja
             fshoy = lib.fechaServ("ansi");
-            //
+            chk_iGRE.Visible = true;
+            chk_iGRE.Checked = false;
             tx_flete.ReadOnly = true;
             initIngreso();
             tx_numero.ReadOnly = true;
@@ -3798,6 +3822,8 @@ namespace TransCarga
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
             //
+            chk_iGRE.Visible = false;
+            chk_iGRE.Checked = false;
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
@@ -3846,8 +3872,12 @@ namespace TransCarga
                     {
                         if (imprimeTK() == true) updateprint("S");
                     }
+                    // Impresión de GRE en formato TK si esta marcado el check chk_iGRE
+                    if (chk_iGRE.Checked == true && chk_iGRE.Visible == true)
+                    {
+                        imprimeGRE();
+                    }
                 }
-                // Cantidad de copias
             }
         }
         private void Bt_anul_Click(object sender, EventArgs e)
@@ -3863,6 +3893,8 @@ namespace TransCarga
             tx_obser1.ReadOnly = false;
             tx_serie.Focus();
             //
+            chk_iGRE.Visible = false;
+            chk_iGRE.Checked = false;
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
@@ -3879,6 +3911,8 @@ namespace TransCarga
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
             //
+            chk_iGRE.Visible = false;
+            chk_iGRE.Checked = false;
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
@@ -4028,6 +4062,17 @@ namespace TransCarga
         #endregion comboboxes
 
         #region impresion
+        private void imprimeGRE()       // imprime GRE-T del comprobante
+        {
+            for (int i = 0; i <= dataGridView1.Rows.Count -1; i++)
+            {
+                if (dataGridView1.Rows[i].Cells[0].Value != null && dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
+                {
+                    string[] grt = dataGridView1.Rows[i].Cells[0].Value.ToString().Split('-');
+                    if (grt[0].Substring(0,1) == v_iniGRET) lp.muestra_gr(grt[0], grt[1], "", (rutaQR + nomImgQR), gloDeta, v_impTK, "TK", "");
+                }
+            }
+        }
         private bool imprimeA4()
         {
             bool retorna = false;

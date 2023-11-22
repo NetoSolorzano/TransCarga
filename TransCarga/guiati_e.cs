@@ -89,7 +89,7 @@ namespace TransCarga
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI emisor
         string tipoDocRem = "";         // CODIGO SUNAT tipo de documento RUC/DNI remitente de la GRT
         string tipoDocDes = "";         // CODIGO SUNAT tipo de documento RUC/DNI destinatario de la GRT
-        string v_urege = "";            // usuarios que pueden regenerar txt
+        string v_urege = "";            // usuarios que pueden regenerar txt, editar y anular si el estado sunat es Rechazado
         string v_uagin = "";            // usuarios que pueden hacer anulaciones internas
         string webdni = "";             // ruta web del buscador de DNI
         string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
@@ -383,7 +383,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "usediDrem") v_uedo = row["valor"].ToString().Trim();            // usuarios que pueden modificar documentos del remitente
                         if (row["param"].ToString() == "marca") v_marGRET = row["valor"].ToString().Trim();             // marca de guía transportista electrónica
                         if (row["param"].ToString() == "ini_GRET") v_iniGRET = row["valor"].ToString().Trim();          // inicial (sigla) de las GRE-T
-                        if (row["param"].ToString() == "UsuRegen") v_urege = row["valor"].ToString().Trim();            // usuarios que pueden regenerar txt
+                        if (row["param"].ToString() == "UsuRegen") v_urege = row["valor"].ToString().Trim();            // usuarios que pueden regenerar txt, editar y anular si estado sunat es Rechazado
                         if (row["param"].ToString() == "UsuAnuInt") v_uagin = row["valor"].ToString().Trim();           // usuarios que pueden hacer anulaciones internas
                         if (row["param"].ToString() == "usoPGm") usoPGm = row["valor"].ToString().Trim();               // uso de pre-guias manuales para el marcado de bultos = "manual"
                     }
@@ -1090,6 +1090,9 @@ namespace TransCarga
             {
                 sololee();
             }
+        }
+        private void analizaAnulacion()     // dependiendo de criterios permite la anulación
+        {
         }
         
         #region autocompletados
@@ -2264,11 +2267,25 @@ namespace TransCarga
                     MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if (tx_DV.Text.Trim().Length < 6 && tx_pagado.Text.Trim() == "")   // tx_impreso.Text == "N"    tx_pla_plani.Text.Trim() == "" && 
+                if (tx_DV.Text.Trim().Length < 6 && tx_pagado.Text.Trim() == "")
                 {
-                    // no tiene planilla y no esta impreso => se puede modificar todo y SI anular
+                    // no tiene DV y no esta pagado, se puede anular
                     if (tx_idr.Text.Trim() != "")
                     {
+                        // no es usuario Todopoderoso?
+                        if (Program.vg_nius + Program.vg_tius != "NIV000TPU001")
+                        {
+                            if (tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.Contains(asd.ToLower()))
+                            {
+                                // si puede anular la guía porque no tiene cobranza, no tiene DV, fue rechazada por sunat y porque el usuario si esta permitido a anular y regenerar xml
+                                // 22/11/2023
+                            }
+                            else
+                            {
+                                MessageBox.Show("Usted no esta permitido a anular", "Error en configuración", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                return;
+                            }
+                        }
                         var aa = MessageBox.Show("Confirma que desea ANULAR la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {

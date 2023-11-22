@@ -299,7 +299,7 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(cab[29], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(lib.Right(cab[0],3) + "-" + cab[29], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     // imprimimos los documentos relacionados
                     posi = posi + alfi * 2;
                     puntoF = new PointF(coli, posi);

@@ -416,4 +416,4 @@ form guiati_e, permitir ANULAR si el estado sunat es "Rechazado" y usuario es pe
 CR gre_t1, agregar serie a la pre guía .............................................................. ok 22/11/2023
 clase imp_GRE_T, agregar serie a la pre guía en TK .................................................. ok 22/11/2023
 form facelect, modo NUEVO, agregar opción (check) para imprimir las GRE en formato TK ............... ok 22/11/2023 falta probar en condiciones reales
-
+form guiati_e, ordenar los tabs para que salten a sus posiciones optimas ............................ ok 27/11/2023	pedido de Dilmer

@@ -303,6 +303,7 @@ namespace TransCarga
             chk_man.Enabled = false;        // solo se habilita en modo NUEVO y cuando el destino de la GR tiene manifiesto
             rb_kg.Checked = true;
             cmb_docorig2.Enabled = false;   // solo se permite por defecto un solo documento origen relacionado
+            rb_pDes.Checked = true;         // por defecto que el pago es en el destino
             // solo 1 excepto hasta 2 si el primero tiene el código "31", "65", "66", "67", "68", "69", o "09"  ... OJO que si es 09 sunat permite muchos mas pero no lo implemente aun.
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
@@ -1061,6 +1062,7 @@ namespace TransCarga
                         rl = lib.conectorSolorsoft("RUC", campo.Text);
                         MessageBox.Show("Razón Social: " + rl[0], "Ruc encontrado en conector", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
+                    tx_det_cant.Focus();
                 }
             }
         }
@@ -1090,9 +1092,6 @@ namespace TransCarga
             {
                 sololee();
             }
-        }
-        private void analizaAnulacion()     // dependiendo de criterios permite la anulación
-        {
         }
         
         #region autocompletados
@@ -1603,7 +1602,7 @@ namespace TransCarga
                     return;
                 }
                 //
-                tx_obser1.Focus();
+                cmb_destino.Focus(); // tx_obser1.Focus();
                 // jalamos datos de la pre-guía
                 if (jalapg(tx_serie.Text, tx_pregr_num.Text, cnn) == true)
                 {
@@ -1635,9 +1634,11 @@ namespace TransCarga
                     tx_docsOr.Enabled = true;
                     tx_consig.Enabled = true;
                     tx_obser1.Enabled = true;
-                    tx_obser1.Focus();
-                    //dataGridView1_RowLeave(null, null);
-                    //dataGridView1.ReadOnly = true;
+                    if (tx_numDocDes.Text != "")
+                    {
+                        tx_obser1.Focus();
+                    }
+                    else { cmb_destino.Focus(); }
                 }
                 cnn.Close();
             }
@@ -3093,6 +3094,7 @@ namespace TransCarga
                         //v_clte_rem = "E";
                     }
                 }
+                cmb_docDes.Focus();
             }
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() == "")
             {
@@ -3224,6 +3226,7 @@ namespace TransCarga
                         //v_clte_des = "E";
                     }
                 }
+                cmb_docorig.Focus();
             }
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() == "")
             {
@@ -3454,6 +3457,7 @@ namespace TransCarga
             if ((Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") && tx_det_peso.Text.Trim() != "")
             {
                 tx_totpes.Text = tx_det_peso.Text;
+                tx_flete.Focus();
             }
         }
         private void tx_det_desc_Leave(object sender, EventArgs e)
@@ -3489,12 +3493,36 @@ namespace TransCarga
         }
         private void tx_rucEorig_Leave(object sender, EventArgs e)              // validamos el ruc del emisor documento origen 1
         {
-            valiruc(tx_rucEorig);
+           // mejor opción es Validating
+        }
+        private void tx_rucEorig_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tx_rucEorig.Text != "")
+            {
+                valiruc(tx_rucEorig);
+            }
+            else
+            {
+                tx_det_cant.Focus();
+            }
         }
         private void tx_rucEorig2_Leave(object sender, EventArgs e)              // validamos el ruc del emisor documento origen 2
         {
-            valiruc(tx_rucEorig2);
+            //valiruc(tx_rucEorig2);
+            // mejor opción es validating
         }
+        private void tx_rucEorig2_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tx_rucEorig2.Text != "")
+            {
+                valiruc(tx_rucEorig2);
+            }
+            else
+            {
+                tx_det_cant.Focus();
+            }
+        }
+
         #endregion
 
         #region botones_de_comando

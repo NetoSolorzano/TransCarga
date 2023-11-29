@@ -746,6 +746,8 @@ namespace TransCarga
                                 cmb_destino.SelectedValue = tx_dat_locdes.Text;
                                 cmb_destino_SelectionChangeCommitted(null, null);
                                 cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+                                cmb_docRem_SelectionChangeCommitted(null, null);
+
                                 string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
                                 tx_dptoRtt.Text = du_remit[0];
                                 tx_provRtt.Text = du_remit[1];

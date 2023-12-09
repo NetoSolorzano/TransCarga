@@ -166,7 +166,7 @@ namespace TransCarga
             tx_det_umed.MaxLength = 15;
             tx_det_desc.MaxLength = 50;
             // todo desabilidado
-            sololee(this);
+            //sololee(this);    // 08/12/2023 deshabilitado para poder cambiar datos
         }
         private void initIngreso()
         {
@@ -604,15 +604,15 @@ namespace TransCarga
             tx_dirOrigen.ReadOnly = true;
             tx_dirDestino.ReadOnly = true;
             tx_nomRem.ReadOnly = true;
-            tx_dirRem.ReadOnly = true;
-            tx_dptoRtt.ReadOnly = true;
-            tx_provRtt.ReadOnly = true;
-            tx_distRtt.ReadOnly = true;
+            //tx_dirRem.ReadOnly = true;
+            //tx_dptoRtt.ReadOnly = true;
+            //tx_provRtt.ReadOnly = true;
+            //tx_distRtt.ReadOnly = true;
             tx_nomDrio.ReadOnly = true;
-            tx_dirDrio.ReadOnly = true;
-            tx_dptoDrio.ReadOnly = true;
-            tx_proDrio.ReadOnly = true;
-            tx_disDrio.ReadOnly = true;
+            //tx_dirDrio.ReadOnly = true;
+            //tx_dptoDrio.ReadOnly = true;
+            //tx_proDrio.ReadOnly = true;
+            //tx_disDrio.ReadOnly = true;
         }
         public static void limpiar(Form ofrm)
         {
@@ -765,6 +765,10 @@ namespace TransCarga
             }
             if (modo == "EDITAR")
             {
+                // 08/12/2023
+                MessageBox.Show("No se permite editar pre-guias","Permiso no implementado",MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                return;
+
                 if (tx_numero.Text.Trim() == "")
                 {
                     tx_numero.Focus();
@@ -1652,11 +1656,13 @@ namespace TransCarga
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
-            escribe(this);
+            sololee(this);  // escribe(this);   08/12/2023 no se debe cambiar nada! se anula y se hace otro
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
+            gbox_serie.Enabled = true;
             tx_numero.Text = "";
+            tx_numero.Enabled = true;
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
         }

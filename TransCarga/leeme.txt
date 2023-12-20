@@ -420,4 +420,19 @@ form guiati_e, ordenar los tabs para que salten a sus posiciones optimas .......
 form guiati_e, corrección en jalar desde pre-guia, no actualizaba datos remitente y daba error ...... ok 29/11/2023 daba error en el xml
 form preguiat, falló creación clientes nuevos y dirección y que jale correctamente a guias .......... ok 08/12/2023 falta probar
 form guiati_e, si el remitente o el destinatario es nuevo, no lo esta creando en maestras ........... ok 08/12/2023 falta probar
+**** 18/12/2023 Pedido de Dilmer ***************************
+Generar una GRE sin datos de placa, que el sistema le deje grabar, que no se envíe a Sunat y él 
+pueda facturar, luego cuando la GRE ya tenga camión asignado, EDITAR para que jale los datos del
+camion y al grabarregenerar el xml para que se envíe a Sunat.
+ANALISIS:
+- Que pasa si cuando se envíe a sunat este la Rechace y no se pueda arreglar 
+	(en ese caso siempre pedir dni del remitente o destinatario)
+- Que Sunat valide al momento de generar el comprobante la existencia de la GRE y no exista! 
+- Dilmer se puede olvidar que generó la guía, o que se cargue en camión y Dilmer no la complete
+- Al grabar la GRE, notificar que faltan datos y que no se enviará a Sunat, HACER ESTE CAMBIO
+- No enviar a Sunat si no tiene datos completos, HCER EL CAMBIO
+- Revisar que en editar acualice datos de placa en la pantalla y se grabe en la B.D.
+DESARROLLO:
+form guiati_e, desarrollo para conseguir lo pedido por Dilmer ....................................... ok 20/12/2023
+
 

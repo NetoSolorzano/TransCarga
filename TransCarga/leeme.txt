@@ -420,7 +420,7 @@ form guiati_e, ordenar los tabs para que salten a sus posiciones optimas .......
 form guiati_e, corrección en jalar desde pre-guia, no actualizaba datos remitente y daba error ...... ok 29/11/2023 daba error en el xml
 form preguiat, falló creación clientes nuevos y dirección y que jale correctamente a guias .......... ok 08/12/2023 falta probar
 form guiati_e, si el remitente o el destinatario es nuevo, no lo esta creando en maestras ........... ok 08/12/2023 falta probar
-**** 18/12/2023 Pedido de Dilmer ***************************
+**** 18/12/2023 Pedido de Dilmer ********************************************************************
 Generar una GRE sin datos de placa, que el sistema le deje grabar, que no se envíe a Sunat y él 
 pueda facturar, luego cuando la GRE ya tenga camión asignado, EDITAR para que jale los datos del
 camion y al grabarregenerar el xml para que se envíe a Sunat.
@@ -433,6 +433,10 @@ ANALISIS:
 - No enviar a Sunat si no tiene datos completos, HCER EL CAMBIO
 - Revisar que en editar acualice datos de placa en la pantalla y se grabe en la B.D.
 DESARROLLO:
-form guiati_e, desarrollo para conseguir lo pedido por Dilmer ....................................... ok 20/12/2023
-
+form guiati_e, desarrollo para conseguir lo pedido por Dilmer ....................................... ok 20/12/2023 falta probar
+*****************************************************************************************************
+Problema ... no se estan grabando en la BD los DNI nuevos, revisar en pre-guias y guias
+Respuesta: Cuando se EDITA una GRE rechazada por sunat y se cambia el remitente a DNI y este dni no
+		existía en la BD no se insertaba porque el trigger after_update no lo hacía.
+Solución: Se agregó al trigger after_update de cabguiai la inserción si el dni no existe ............ ok 21/12/2023 falta probar
 

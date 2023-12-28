@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Data;
 using MySql.Data.MySqlClient;
+using System.IO;
 
 namespace TransCarga
 {
@@ -410,6 +411,11 @@ namespace TransCarga
             var aa = MessageBox.Show("Realmente desea salir del sistema?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if(aa == DialogResult.Yes)
             {
+                var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+                foreach (var file in dir.EnumerateFiles("*.png"))
+                {
+                    file.Delete();
+                }
                 Application.Exit();
                 return;
             }
@@ -898,7 +904,15 @@ namespace TransCarga
                 const string titulo = "Confirme por favor";
                 var result = MessageBox.Show(mensaje, titulo,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes) Application.Exit(); // Environment.Exit(0);
+                if (result == DialogResult.Yes)
+                {
+                    var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+                    foreach (var file in dir.EnumerateFiles("*.png"))
+                    {
+                        file.Delete();
+                    }
+                    Application.Exit();
+                }
                 else e.Cancel = true;
             }
             else

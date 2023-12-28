@@ -443,3 +443,4 @@ Solución: Se agregó al trigger after_update de cabguiai la inserción si el dn
 P.A. arreglaPGR, agregar código para corregir en todos las tablas el número de la pre-guia .......... ok 22/12/2023
 clase impGRE_t, agregar cantidad bultos y umedida en el formato TK de las GRE ....................... ok 28/12/2023
 form guiati_e, cuando destint recoje en oficina NO DEBE REEMPLAZAR LA DIRECCION DEL CLIENTE ......... OK 28/12/2023
+form TransMain, borrar los png creados por los QR ................................................... ok 28/12/2023

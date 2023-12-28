@@ -456,7 +456,7 @@ namespace TransCarga
                         if (det[z, 4] != "")
                         {
                             puntoF = new PointF(coli + 20, posi);
-                            e.Graphics.DrawString(det[z, 4] + " " + ((cab[18] == "K") ? "KGM" : "TNM"),
+                            e.Graphics.DrawString(det[z, 1] + " " + det[z, 2] + " - " + det[z, 4] + " " + ((cab[18] == "K") ? "KGM" : "TNM"),
                                 lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             string gDetalle = det[z, 3];
                             double xxx = (e.Graphics.MeasureString(gDetalle, lt_peq).Width / lib.CentimeterToPixel(anchTik)) + 1;

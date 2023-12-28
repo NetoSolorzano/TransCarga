@@ -2621,7 +2621,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pret", "0");
                     micon.ExecuteNonQuery();
                 }
-                // clientes 
+                /* clientes     28/12/2023 en Carrion NO VAMOS A ACTUALIZAR, SOLO EN MAESTRAS SE DEBE ACTUALIZAR NOMBRRES,DIRECC, ETC.
                 string actua = "update anagrafiche set Direcc1=@ndir,ubigeo=@ubig,Localidad=@dist,Provincia=@prov,depart=@depa," +
                     "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,nbname=@nbnam " +
                     "where IDCategoria='CLI' AND tipdoc=@tdc1 AND RUC=@ndc1 AND id> 0";
@@ -2682,6 +2682,7 @@ namespace TransCarga
                         micon.ExecuteNonQuery();
                     }
                 }
+                */
                 retorna = true;         // no hubo errores!
             }
             else

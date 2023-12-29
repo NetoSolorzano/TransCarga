@@ -1224,6 +1224,99 @@ namespace TransCarga
             //tdfe.Columns.Add("Isumigv");                    // Sumatoria de igv
             //tdfe.Columns.Add("Iindgra");                    // indicador de gratuito
         }
+        public void bt_jala_Click(object sender, EventArgs e)   // reconecta y jala datos de conectores
+        {
+            if (tx_dat_tdRem.Text != "" && tx_numDocRem.Text != "" && Tx_modo.Text == "NUEVO")
+            {
+                if (tx_dat_tdRem.Text == vtc_ruc)
+                {
+                    if (lib.valiruc(tx_numDocRem.Text, vtc_ruc) == false)
+                    {
+                        MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        tx_numDocRem.Focus();
+                        return;
+                    }
+                    if (TransCarga.Program.vg_conSol == true)
+                    {
+                        string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
+                        string myStr = rl[0].Replace("\r\n", "");
+                        if (rl[0] == "" || myStr == NoRetGl)
+                        {
+                            var aa = MessageBox.Show(" No encontramos el documento en ningún registro. " + Environment.NewLine +
+                                                    " Deberá ingresarlo manualmente si esta seguro(a) " + Environment.NewLine +
+                                                    " de la validez del número y documento. " + Environment.NewLine +
+                                                    "" + Environment.NewLine +
+                                                    "Confirma que desea ingresarlo manualmente?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (aa == DialogResult.No)
+                            {
+                                tx_numDocRem.Text = "";
+                                tx_nomRem.Text = "";      // razon social
+                                tx_ubigRtt.Text = "";     // ubigeo
+                                tx_dirRem.Text = "";      // direccion
+                                tx_dptoRtt.Text = "";      // departamento
+                                tx_provRtt.Text = "";      // provincia
+                                tx_distRtt.Text = "";      // distrito
+                                tx_telc1.Text = "";
+                                tx_email.Text = "";
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (rl[6] != "ACTIVO" || rl[7] != "HABIDO")
+                            {
+                                var aa = MessageBox.Show("No debería crear al cliente" + Environment.NewLine +
+                                    "el ruc tiene estado o condición no correcto" + Environment.NewLine + Environment.NewLine +
+                                    "Condición: " + rl[7] + Environment.NewLine +
+                                    "Estado: " + rl[6] + Environment.NewLine + Environment.NewLine +
+                                    "CONFIRMA QUE DESEA CONTINUAR?", "Alerta - no debería continuar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (aa == DialogResult.No)
+                                {
+                                    tx_numDocRem.Text = "";
+                                    tx_nomRem.Text = "";      // razon social
+                                    tx_ubigRtt.Text = "";     // ubigeo
+                                    tx_dirRem.Text = "";      // direccion
+                                    tx_dptoRtt.Text = "";      // departamento
+                                    tx_provRtt.Text = "";      // provincia
+                                    tx_distRtt.Text = "";      // distrito
+                                    tx_telc1.Text = "";
+                                    tx_email.Text = "";
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                tx_nomRem.Text = rl[0].Trim().Replace("\r\n", "");      // razon social
+                                tx_ubigRtt.Text = rl[1].Trim().Replace("\r\n", "");     // ubigeo
+                                tx_dirRem.Text = rl[2].Trim().Replace("\r\n", "");      // direccion
+                                tx_dptoRtt.Text = (rl[3].Trim().Replace("\r\n", "") == "PROV. CONST. DEL CALLAO") ? "CALLAO" : rl[3];      // departamento      
+                                tx_provRtt.Text = (rl[4].Trim().Replace("\r\n", "") == "PROV.CONST.DEL CALLAO") ? "CALLAO" : rl[4];      // provincia    
+                                tx_distRtt.Text = rl[5].Trim().Replace("\r\n", "");      // distrito
+                            }
+                        }
+                    }
+                }
+                if (tx_dat_tdRem.Text == vtc_dni)
+                {
+                    if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
+                    {
+                        string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
+                        string myStr = rl[0].Replace("\r\n", "");
+                        if (rl[0] == "" || myStr == NoRetGl)
+                        {
+                            MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                            "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            System.Diagnostics.Process.Start(webdni);    // "https://eldni.com/pe/buscar-por-dni"
+                        }
+                        else
+                        {
+                            tx_nomRem.Text = rl[0];      // nombre
+                            tx_numDocRem.Text = rl[1];     // num dni
+                        }
+                    }
+                }
+            }
+        }
 
         #region facturacion electronica
         private bool factElec(string provee, string tipo, string accion, int ctab)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json

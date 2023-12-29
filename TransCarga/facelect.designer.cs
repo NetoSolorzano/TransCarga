@@ -218,6 +218,7 @@
             this.label33 = new System.Windows.Forms.Label();
             this.tx_serGR = new System.Windows.Forms.TextBox();
             this.chk_iGRE = new System.Windows.Forms.CheckBox();
+            this.bt_jala = new System.Windows.Forms.Button();
             this.tx_valdscto = new TransCarga.NumericTextBox();
             this.tx_valref3 = new TransCarga.NumericTextBox();
             this.tx_valref2 = new TransCarga.NumericTextBox();
@@ -1647,7 +1648,7 @@
             this.tx_telc2.Location = new System.Drawing.Point(686, 54);
             this.tx_telc2.MaxLength = 0;
             this.tx_telc2.Name = "tx_telc2";
-            this.tx_telc2.Size = new System.Drawing.Size(80, 18);
+            this.tx_telc2.Size = new System.Drawing.Size(57, 18);
             this.tx_telc2.TabIndex = 15;
             this.tx_telc2.Visible = false;
             // 
@@ -2171,6 +2172,16 @@
             this.chk_iGRE.UseVisualStyleBackColor = true;
             this.chk_iGRE.Visible = false;
             // 
+            // bt_jala
+            // 
+            this.bt_jala.Image = global::TransCarga.Properties.Resources.reload30;
+            this.bt_jala.Location = new System.Drawing.Point(732, 38);
+            this.bt_jala.Name = "bt_jala";
+            this.bt_jala.Size = new System.Drawing.Size(32, 31);
+            this.bt_jala.TabIndex = 431;
+            this.bt_jala.UseVisualStyleBackColor = true;
+            this.bt_jala.Click += new System.EventHandler(this.bt_jala_Click);
+            // 
             // tx_valdscto
             // 
             this.tx_valdscto.AllowSpace = false;
@@ -2333,6 +2344,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.bt_jala);
             this.Controls.Add(this.chk_iGRE);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.tx_serGR);
@@ -2673,5 +2685,6 @@
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.TextBox tx_serGR;
         private System.Windows.Forms.CheckBox chk_iGRE;
+        private System.Windows.Forms.Button bt_jala;
     }
 }

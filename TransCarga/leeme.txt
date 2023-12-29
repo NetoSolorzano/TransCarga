@@ -444,3 +444,5 @@ P.A. arreglaPGR, agregar código para corregir en todos las tablas el número de
 clase impGRE_t, agregar cantidad bultos y umedida en el formato TK de las GRE ....................... ok 28/12/2023
 form guiati_e, cuando destint recoje en oficina NO DEBE REEMPLAZAR LA DIRECCION DEL CLIENTE ......... OK 28/12/2023
 form TransMain, borrar los png creados por los QR ................................................... ok 28/12/2023
+Triggers cabguiai,preguiai -> se comento todas los update de clientes, solo insert quedaron ......... ok 29/12/2023
+form facelect, agregar boton de jalar datos (del conector) del cliente del comprobante .............. ok 29/12/2023

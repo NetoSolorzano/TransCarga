@@ -141,6 +141,8 @@
     <Compile Include="busyarreg.designer.cs">
       <DependentUpon>busyarreg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CComprobante.cs" />
+    <Compile Include="CComprobanteDetalle.cs" />
     <Compile Include="clients.cs">
       <SubType>Form</SubType>
     </Compile>

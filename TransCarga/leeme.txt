@@ -446,3 +446,13 @@ form guiati_e, cuando destint recoje en oficina NO DEBE REEMPLAZAR LA DIRECCION 
 form TransMain, borrar los png creados por los QR ................................................... ok 28/12/2023
 Triggers cabguiai,preguiai -> se comento todas los update de clientes, solo insert quedaron ......... ok 29/12/2023
 form facelect, agregar boton de jalar datos (del conector) del cliente del comprobante .............. ok 29/12/2023
+Triggers cabguiai -> SI tipo_clte=N y direc_remitente == direc_origen ==> graba "" en direc cliente . (la maestra clientes debe tener direccs reales)
+Triggers preguiai -> SI tipo_clte=N y direc_remitente == direc_origen ==> graba "" en direc cliente . (la maestra clientes debe tener direccs reales)
+
+******************* PROYECTO SEENCORP, reemplazo de sistemas horizonte ******************************
+Facturación, anulaciones, notas de crédito y GUIAS DE REMISION ELECTRÓNICAS                23/01/2024
+facelect, adecuar entrada para seencorp .. provee == "seencorp" ..................................... ok 23/01/2024
+Clase CComprobanteDetalle ........................................................................... ok 23/01/2024
+Clase adquiriente ................................................................................... ok 23/01/2024
+Clase emisor ........................................................................................ me quede acá
+

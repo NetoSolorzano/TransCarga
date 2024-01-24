@@ -1354,13 +1354,15 @@ namespace TransCarga
                     if (bajaTXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
                 }
             }
-            if (provee == "secure")
+            if (provee == "seencorp") // secure
             {
                 string ruta = rutatxt;
                 string archi = "";
                 if (accion == "alta")
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                    json_venta(tipdo, tipoDocEmi);
+                    /*
                     if (datosTXT(tipdo, serie, corre, ruta + archi) == true)
                     {
                         if (datDetxt(tipdo, serie, corre) == true)
@@ -1371,9 +1373,11 @@ namespace TransCarga
                             }
                         }
                     }
+                    */
                 }
                 if (accion == "baja")
                 {
+                    /*
                     if (tipdocAnu.Contains(tipdo))  // este pse no permite hacer bajas de Boletas .... que monses !!
                     {
                         string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
@@ -1382,10 +1386,13 @@ namespace TransCarga
                         archi = rucclie + "-" + _codbaj + "-" + _secuen;
                         if (baja2TXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
                     }
+                    */
                 }
             }
             return retorna;
         }
+
+        #region horizonte
         private bool crearTXT(string tipdo, string serie, string corre, string file_path)
         {
             bool retorna;
@@ -2307,6 +2314,101 @@ namespace TransCarga
 
             return retorna;
         }
+        #endregion
+        
+        #region json_facturacion
+        private string json_venta(string tipdo, string tipoDocEmi)
+        {
+            string retorna = "";
+            int cta_ron = 1;
+            decimal v_totDscto = 0;
+            decimal v_preToti = 0;
+            //decimal v_dgloSin = decimal.Parse(tx_desGlob.Text) / (1 + (decimal.Parse(v_igv) / 100));
+            //decimal v_dgporc = Math.Round(decimal.Parse(tx_desGlob.Text) * 100 / decimal.Parse(tx_subtot.Text), 2);
+            decimal v_totpun = 0;           // totalizador de precios unitarios netos del detalle
+            List<CComprobanteDetalle> aaa = new List<CComprobanteDetalle>();
+            foreach (DataGridViewRow ron in dataGridView1.Rows)
+            {
+                if (ron.Cells[1].Value != null)
+                {
+
+                    CComprobanteDetalle det = new CComprobanteDetalle
+                    {
+                        nro_item = cta_ron,
+                        cod_prod = "",
+                        cod_und_med = "ZZ",
+                        descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
+                        cant = 1,
+                        val_unit_item = (double.Parse(ron.Cells["valor"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000"),
+                        dsc_item = 0,           // descuento x item
+                        val_vta_item = 0,       // valor venta x item
+                        igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
+                        isc_item = 0,           // Sistema de ISC por ítem
+                        prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
+                        tip_afec_igv = "10",    // Afectación al IGV por ítem
+                        tip_afec_isc = "",      // Sistema de ISC por ítem
+                        val_ref_unit_item = 0,  // Valor  referencial  unitario por  ítem  en  operaciones no onerosas
+                        cod_prod_sunat = "",    // Codigo del producto SUNAT
+                        cod_prod_gs1 = "",      // Codigo de producto GS1
+                        tip_prod_gtin = "",     // Tipo de producto GTIN
+                        vehi_placa = "",
+                        impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
+                        base_igv = 0,           // Monto Base IGV/IVAP
+                        tasa_igv = 18,          // Tasa del IGV/IVAP
+                        ind_grat = "",          // Afecta solo si codigo de afectacion es: 17 , 40 (IVAP o Exportacion)
+                        base_isc = 0,           // Monto Base ISC
+                        tasa_isc = "",          // Tasa del tributo ISC
+                        base_otr_trib = 0,      // Monto Base Otros Tributos
+                        otr_trib_item = 0,      // Monto del tributo de la línea Otros Tributos
+                        tasa_otr_trib = "",     // Tasa del tributo Otros Tributos
+                        cod_cargo_item = "",    // Código del cargo del ítem
+                        factor_cargo_item = 0,  // Factor del cargo del ítem
+                        cargo_item = 0,         // Monto del cargo del ítem
+                        base_cargo_item = 0,    // Monto de base del cargo del ítem
+                        cod_dsc_item = "",      // Código del descuento del ítem
+                        factor_dsc_item = 0,    // Factor del descuento del ítem
+                        base_dsc_item = 0,      // Monto de base del descuento del ítem
+                        nomconcept = "",        // GUIA DE REMISION - Nombre del concepto
+                        codconcept = "",        // GUIA DE REMISION - Código del concepto
+                        valorconcept = "",      // GUIA DE REMISION - Valor
+                        icbper_item = 0,        // Monto del tributo de la línea - Impuesto al consumo de bolsas de plástico por ítem
+                        cant_icbper = 0,        // Cantidad de bolsas de plástico
+                        monto_unit_icbper = 0   // Monto unitario
+                    };      // detalles
+
+                    aaa.Add(det);
+                    cta_ron += 1;
+                }
+            }
+            adquiriente adq = new adquiriente
+            {
+                tip_doc = int.Parse(tipoDocEmi),
+                num_doc = tx_numDocRem.Text,
+                raz_soc = tx_nomRem.Text.Trim(),
+                dir = tx_dirRem.Text.Trim(),
+                email = tx_email.Text.Trim(),
+                cod_ubi = tx_ubigRtt.Text,
+                urb = "-",
+                prov = tx_provRtt.Text.Trim(),
+                dep = tx_dptoRtt.Text.Trim(),
+                dist = tx_distRtt.Text.Trim(),
+                cod_pais = "PE",
+                //cod_sucur = 
+                telef = tx_telc1.Text
+                //website
+            };
+            CComprobante obj = new CComprobante
+            {
+                //tip_doc = int.Parse(tipdo),
+                //num_doc = 
+                //ListaDetalles = aaa,
+
+            };
+            retorna = JsonConvert.SerializeObject(obj);
+
+            return retorna;
+        }
+        #endregion
         #endregion
 
         #region autocompletados

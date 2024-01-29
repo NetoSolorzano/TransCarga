@@ -454,5 +454,5 @@ Facturación, anulaciones, notas de crédito y GUIAS DE REMISION ELECTRÓNICAS  
 facelect, adecuar entrada para seencorp .. provee == "seencorp" ..................................... ok 23/01/2024
 Clase CComprobanteDetalle ........................................................................... ok 23/01/2024
 Clase adquiriente ................................................................................... ok 23/01/2024
-Clase emisor ........................................................................................ me quede acá
-
+Clase emisor ........................................................................................ ok 28/01/2024
+Varias clases para comprobantes y guias ............................................................. ok 28/01/2024

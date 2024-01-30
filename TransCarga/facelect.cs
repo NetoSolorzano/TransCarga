@@ -1332,6 +1332,8 @@ namespace TransCarga
             DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
             tipoMoneda = rowm[0][2].ToString().Trim();
             //
+            provee = "seencorp";        // para pruebas 29/01/2024
+            //
             if (provee == "Horizont")
             {
                 string ruta = rutatxt + "TXT/";
@@ -1354,26 +1356,16 @@ namespace TransCarga
                     if (bajaTXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
                 }
             }
-            if (provee == "seencorp") // secure
+            if (provee == "seencorp")
             {
                 string ruta = rutatxt;
                 string archi = "";
                 if (accion == "alta")
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
-                    json_venta(tipdo, tipoDocEmi);
-                    /*
-                    if (datosTXT(tipdo, serie, corre, ruta + archi) == true)
-                    {
-                        if (datDetxt(tipdo, serie, corre) == true)
-                        {
-                            if (generaTxt(tipdo, serie, corre, ruta + archi) == true)
-                            {
-                                retorna = true;
-                            }
-                        }
-                    }
-                    */
+                    string ajson = json_venta(tipdo, tipoDocEmi);
+                    System.IO.File.WriteAllText(@"c:\temp\" + rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".json", ajson);
+                    retorna = true;
                 }
                 if (accion == "baja")
                 {
@@ -1536,7 +1528,7 @@ namespace TransCarga
                 tipOper = "1001";
                 glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
             }
-            if (tx_dat_mone.Text != MonDeft)
+            if (tx_dat_mone.Text != MonDeft) 
             {
                 _morefD = tx_dat_monsunat.Text;                                      // moneda de refencia para el tipo de cambio
                 _monobj = "PEN";        //tipoMoneda;                                // moneda objetivo del tipo de cambio
@@ -2317,21 +2309,33 @@ namespace TransCarga
         #endregion
         
         #region json_facturacion
-        private string json_venta(string tipdo, string tipoDocEmi)
+        private string json_venta(string tipdo, string tipoDocClte)
         {
-            string retorna = "";
-            int cta_ron = 1;
-            decimal v_totDscto = 0;
-            decimal v_preToti = 0;
-            //decimal v_dgloSin = decimal.Parse(tx_desGlob.Text) / (1 + (decimal.Parse(v_igv) / 100));
-            //decimal v_dgporc = Math.Round(decimal.Parse(tx_desGlob.Text) * 100 / decimal.Parse(tx_subtot.Text), 2);
-            decimal v_totpun = 0;           // totalizador de precios unitarios netos del detalle
+            string retorna;
+            int cta_ron = 1;            // contador filas de detalle
+            string d_medpa, d_monde, d_conpa, d_porde, d_valde, d_codse, d_ctade, codleyt, tipOper;
+            decimal totdet = 0, valcre = 0;
+            if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)
+            {
+                d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
+                d_monde = "PEN";                                    // moneda de la detraccion
+                d_conpa = "CONTADO";                                // condicion de pago
+                d_porde = Program.pordetra;                         // porcentaje de detraccion
+                d_valde = Program.valdetra;                         // valor de la detraccion
+                d_codse = Program.coddetra;                         // codigo de servicio
+                d_ctade = Program.ctadetra;                         // cuenta detraccion BN
+                codleyt = "1000";            // codigoLeyenda 1 - valor en letras
+                totdet = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                valcre = Math.Round((decimal.Parse(tx_flete.Text) - totdet), 2);               // cuota credito = valor - detraccion
+                tipOper = "1001";
+                glosdet = glosdet + " " + d_ctade;                  // leyenda de la detración
+            }
+
             List<CComprobanteDetalle> aaa = new List<CComprobanteDetalle>();
             foreach (DataGridViewRow ron in dataGridView1.Rows)
             {
                 if (ron.Cells[1].Value != null)
                 {
-
                     CComprobanteDetalle det = new CComprobanteDetalle
                     {
                         nro_item = cta_ron,
@@ -2339,72 +2343,120 @@ namespace TransCarga
                         cod_und_med = "ZZ",
                         descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
                         cant = 1,
-                        val_unit_item = (double.Parse(ron.Cells["valor"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000"),
-                        dsc_item = 0,           // descuento x item
-                        val_vta_item = 0,       // valor venta x item
+                        val_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),
+                        sub_tot = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),
+                        dsc_item = 0,
+                        val_vta_item = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),       // valor venta x item
                         igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
                         isc_item = 0,           // Sistema de ISC por ítem
                         prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
                         tip_afec_igv = "10",    // Afectación al IGV por ítem
-                        tip_afec_isc = "",      // Sistema de ISC por ítem
-                        val_ref_unit_item = 0,  // Valor  referencial  unitario por  ítem  en  operaciones no onerosas
-                        cod_prod_sunat = "",    // Codigo del producto SUNAT
-                        cod_prod_gs1 = "",      // Codigo de producto GS1
-                        tip_prod_gtin = "",     // Tipo de producto GTIN
-                        vehi_placa = "",
                         impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
-                        base_igv = 0,           // Monto Base IGV/IVAP
-                        tasa_igv = 18,          // Tasa del IGV/IVAP
-                        ind_grat = "",          // Afecta solo si codigo de afectacion es: 17 , 40 (IVAP o Exportacion)
-                        base_isc = 0,           // Monto Base ISC
-                        tasa_isc = "",          // Tasa del tributo ISC
-                        base_otr_trib = 0,      // Monto Base Otros Tributos
-                        otr_trib_item = 0,      // Monto del tributo de la línea Otros Tributos
-                        tasa_otr_trib = "",     // Tasa del tributo Otros Tributos
-                        cod_cargo_item = "",    // Código del cargo del ítem
-                        factor_cargo_item = 0,  // Factor del cargo del ítem
-                        cargo_item = 0,         // Monto del cargo del ítem
-                        base_cargo_item = 0,    // Monto de base del cargo del ítem
-                        cod_dsc_item = "",      // Código del descuento del ítem
-                        factor_dsc_item = 0,    // Factor del descuento del ítem
-                        base_dsc_item = 0,      // Monto de base del descuento del ítem
-                        nomconcept = "",        // GUIA DE REMISION - Nombre del concepto
-                        codconcept = "",        // GUIA DE REMISION - Código del concepto
-                        valorconcept = "",      // GUIA DE REMISION - Valor
-                        icbper_item = 0,        // Monto del tributo de la línea - Impuesto al consumo de bolsas de plástico por ítem
-                        cant_icbper = 0,        // Cantidad de bolsas de plástico
-                        monto_unit_icbper = 0   // Monto unitario
+                        base_igv = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),           // Monto Base IGV/IVAP
+                        tasa_igv = int.Parse(v_igv)          // Tasa del IGV/IVAP
                     };      // detalles
-
                     aaa.Add(det);
                     cta_ron += 1;
                 }
             }
-            adquiriente adq = new adquiriente
+            Cemisor cemisor = new Cemisor()
             {
-                tip_doc = int.Parse(tipoDocEmi),
-                num_doc = tx_numDocRem.Text,
-                raz_soc = tx_nomRem.Text.Trim(),
-                dir = tx_dirRem.Text.Trim(),
-                email = tx_email.Text.Trim(),
-                cod_ubi = tx_ubigRtt.Text,
-                urb = "-",
-                prov = tx_provRtt.Text.Trim(),
-                dep = tx_dptoRtt.Text.Trim(),
-                dist = tx_distRtt.Text.Trim(),
+                tip_doc = "6",
+                num_doc = Program.ruc,
+                raz_soc = Program.cliente,
+                nom_comer = "",
+                dir = Program.dirfisc,
+                cod_ubi = Program.ubidirfis,
+                dep = Program.depfisc,
+                prov = Program.provfis,
+                dist = Program.distfis,
                 cod_pais = "PE",
-                //cod_sucur = 
-                telef = tx_telc1.Text
-                //website
+                email = Program.mailclte,
+                telef = Program.telclte1,
+                website = "",
+                cod_sucur = Program.codlocsunat
             };
-            CComprobante obj = new CComprobante
+            Cadquiriente cadquiriente = new Cadquiriente()
             {
-                //tip_doc = int.Parse(tipdo),
-                //num_doc = 
-                //ListaDetalles = aaa,
-
+                tip_doc = tipoDocClte,
+                num_doc = tx_numDocRem.Text,
+                raz_soc = tx_nomRem.Text,
+                dir = tx_dirRem.Text,
+                cod_pais = "PE",
+                cod_sucur = "0000",
+                email = tx_email.Text,
+                nom_comer = "",
+                cod_ubi = tx_ubigRtt.Text,
+                dist = tx_distRtt.Text,
+                prov = tx_provRtt.Text,
+                dep = tx_dptoRtt.Text,
+                telef = tx_telc1.Text,
+                website = ""
             };
-            retorna = JsonConvert.SerializeObject(obj);
+            Ctot ctot = new Ctot()
+            {
+                grav = decimal.Parse(tx_subt.Text),
+                inaf = 0,
+                exo = 0,
+                grat = 0,
+                igv = decimal.Parse(tx_igv.Text),
+                imp_tot = decimal.Parse(tx_flete.Text),
+                impsto_tot = decimal.Parse(tx_igv.Text)
+            };
+            Cforma_pago formap = new Cforma_pago()
+            {
+                cod_mon = tx_dat_monsunat.Text,
+                monto_neto = decimal.Parse(tx_flete.Text),
+                descrip = (rb_contado.Checked == true) ? "Contado" : (rb_credito.Checked == true)? "Credito" : "Contado"
+            };
+            List<CCuota> ccc = new List<CCuota>();
+            // en Transcarga los créditos son solo de una cuota 29/01/2024
+            CCuota cuot = new CCuota()
+            {
+                descrip = "Cuota001",
+                monto_neto = valcre,
+                cod_mon = tx_dat_monsunat.Text,
+                fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd")
+            };
+            if (rb_credito.Checked == true)     // si es crédito, agregamos
+            {
+                ccc.Add(cuot);
+            }
+
+            Cleyen cleyen = new Cleyen()
+            {
+                leyen_cod = "1000",
+                leyen_descrip = tx_fletLetras.Text.Trim()
+            };
+            CComprobante comprobante = new CComprobante
+            {
+                tip_doc = tipdo,
+                serie = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3),
+                correl = tx_numero.Text,
+                fec_emi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
+                cod_mon = tipoMoneda,
+                tip_oper = "0101",      // esto no debe estar así!
+                fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd"),
+                hora_emi = DateTime.UtcNow.ToShortTimeString(),
+                cod_mon_ref = "PEN",            // tx_dat_monsunat.Text
+                cod_mon_obj = tipoMoneda,       // tx_dat_monsunat.Text
+                factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
+                fec_tipo_cambio = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
+                ubl_version = "2.1",
+                customizacion = "2.0",
+                emisor = cemisor,
+                adquiriente = cadquiriente,
+                tot = ctot,
+                forma_Pago = formap,
+                cuota = ccc,
+                det = aaa,
+                leyen = cleyen
+            };
+            Cinvoice cinvoice = new Cinvoice
+            {
+                invoice = comprobante
+            };
+            retorna = JsonConvert.SerializeObject(cinvoice);
 
             return retorna;
         }

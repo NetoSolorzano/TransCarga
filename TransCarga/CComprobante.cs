@@ -6,159 +6,43 @@ using System.Threading.Tasks;
 
 namespace TransCarga
 {
+    public class Cinvoice
+    {
+        public CComprobante invoice { get; set; }
+    }
     public class CComprobante
     {
-        public string cod_ubi { get; set; }     // 
-        public string urb { get; set; }     // 
-        public string prov { get; set; }     // 
-        public string dep { get; set; }     // 
-        public string dist { get; set; }     // 
-        public string cod_pais { get; set; }     // 
-        public string cod_sucur { get; set; }     // 
-        public string telef { get; set; }     // 
-        public string website { get; set; }     // 
-        public string nom_comer { get; set; }     // 
-        public string num_autorizacion { get; set; }     // 
-        public string cod_autorizacion { get; set; }     // 
-        public string apellidos { get; set; }     // 
-        public string nombres { get; set; }     // 
-        public string tip_conductor { get; set; }     // 
-        public string num_licencia { get; set; }     // 
-        public string num_content { get; set; }     // 
-        public string num_precint { get; set; }     // 
-        public string serie { get; set; }     // 
-        public string correl { get; set; }     // 
-        public string fec_emi { get; set; }     // 
-        public string cod_mon { get; set; }     // 
-        public string tip_oper { get; set; }     // 
-        public string vehi_placa { get; set; }     // 
-        public string fec_venc { get; set; }     // 
-        public string ord_compr { get; set; }     // 
-        public string cond_pago { get; set; }     // 
-        public string hora_emi { get; set; }     // 
-        public string cod_mon_ref { get; set; }     // 
-        public string cod_mon_obj { get; set; }     // 
-        public string factor { get; set; }     // 
-        public string fec_tipo_cambio { get; set; }     // 
-        public string ubl_version { get; set; }     // 
-        public string customizacion { get; set; }     // 
-        public string porcent { get; set; }     // 
-        public string cod { get; set; }     // 
-        public string monto { get; set; }     // 
-        public string cod_bn { get; set; }     // 
-        public string med_pago { get; set; }     // 
-        public string serie_correl { get; set; }     // 
-        public string cod_ref { get; set; }     // 
-        public string descrip_motiv { get; set; }     // 
-        public string cond { get; set; }     // 
-        public string cod_motiv_traslado { get; set; }     // 
-        public string ind_transb { get; set; }     // 
-        public string peso_bruto_total { get; set; }     // 
-        public string cod_und_med { get; set; }     // 
-        public string num_bultos { get; set; }     // 
-        public string cod_modal_traslado { get; set; }     // 
-        public string fec_ini_traslado { get; set; }     // 
-        public string fec_entrega { get; set; }     // 
-        public string sus_diff { get; set; }     // 
-        public string ind_trasla { get; set; }     // 
-        public string ind_transb_prog { get; set; }     // 
-        public string tip_event { get; set; }     // 
-        public string peso_bruto_total_item { get; set; }     // 
-        public string cod_und_med_item { get; set; }     // 
-        public string ind_traslado_totdam { get; set; }     // 
-        public string nro_contenedor_01 { get; set; }     // 
-        public string nro_precinto_01 { get; set; }     // 
-        public string nro_contenedor_02 { get; set; }     // 
-        public string nro_precinto_02 { get; set; }     // 
-        public string ind_traslado_tot { get; set; }     // 
-        public string ind_retorno_enva_vacio { get; set; }     // 
-        public string ind_retorno_vehi_vacio { get; set; }     // 
-        public string ind_transp_subcontra { get; set; }     // 
-        public string ind_paga_flete { get; set; }     // 
-        public string anotacion { get; set; }     // 
-        public string descrip { get; set; }     // 
-        public string monto_neto { get; set; }     // 
-        public string orig_dir { get; set; }     // 
-        public string orig_cod_ubi { get; set; }     // 
-        public string orig_dep { get; set; }     // 
-        public string orig_prov { get; set; }     // 
-        public string orig_dist { get; set; }     // 
-        public string orig_urb { get; set; }     // 
-        public string orig_cod_pais { get; set; }     // 
-        public string dest_dir { get; set; }     // 
-        public string dest_cod_ubi { get; set; }     // 
-        public string dest_dep { get; set; }     // 
-        public string dest_prov { get; set; }     // 
-        public string dest_dist { get; set; }     // 
-        public string dest_urb { get; set; }     // 
-        public string dest_cod_pais { get; set; }     // 
-        public string vehi_cons_insc { get; set; }     // 
-        public string vehi_marca { get; set; }     // 
-        public string licen_cond { get; set; }     // 
-        public string transpor_tip_doc { get; set; }     // 
-        public string transpor_num_doc { get; set; }     // 
-        public string transpor_raz_soc { get; set; }     // 
-        public string transpor_modal { get; set; }     // 
-        public string peso_tot { get; set; }     // 
-        public string peso_und_med { get; set; }     // 
-        public string cod_puerto { get; set; }     // 
-        public string cod_aeropuerto { get; set; }     // 
-        public string nom_puerto { get; set; }     // 
-        public string nom_aeropuerto { get; set; }     // 
-        public string incoterms { get; set; }     // 
-        public string incoterms_descrip { get; set; }     // 
-        public string longitid_geo { get; set; }     // 
-        public string latitud_geo { get; set; }     // 
-        public string imp_percep { get; set; }     // 
-        public string imp_cob { get; set; }     // 
-        public string base_impo { get; set; }     // 
-        public string cod_reten { get; set; }     // 
-        public string factor_reten { get; set; }     // 
-        public string imp_tot_reten { get; set; }     // 
-        public string imp_tot_pagado { get; set; }     // 
-        public string grav { get; set; }     // 
-        public string inaf { get; set; }     // 
-        public string exo { get; set; }     // 
-        public string grat { get; set; }     // 
-        public string sub_tot { get; set; }     // 
-        public string dsc_item { get; set; }     // 
-        public string val_vent { get; set; }     // 
-        public string igv { get; set; }     // 
-        public string isc { get; set; }     // 
-        public string imp_tot { get; set; }     // 
-        public string otr_carg { get; set; }     // 
-        public string otr_trib { get; set; }     // 
-        public string dsct_tot { get; set; }     // 
-        public string dsct_glob { get; set; }     // 
-        public string antic { get; set; }     // 
-        public string impsto_tot { get; set; }     // 
-        public string exp { get; set; }     // 
-        public string trib_exp { get; set; }     // 
-        public string trib_inaf { get; set; }     // 
-        public string trib_exo { get; set; }     // 
-        public string trib_grat { get; set; }     // 
-        public string grav_ivap { get; set; }     // 
-        public string ivap { get; set; }     // 
-        public string base_isc { get; set; }     // 
-        public string base_otr_trib { get; set; }     // 
-        public string prec_tot { get; set; }     // 
-        public string redondeo { get; set; }     // 
-        public string icbper { get; set; }     // 
-        public string base_ir { get; set; }     // 
-        public string trib_ir { get; set; }     // 
-        public string num_mtc { get; set; }     // 
-        public string cert_vehi { get; set; }     // 
+        public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
+        public string serie { get; set; }       // an(4)    Serie del comprobante
+        public string correl { get; set; }      // n(8)     Número de comprobante
+        public string fec_emi { get; set; }     // an(10)   Fecha emisión
+        public string cod_mon { get; set; }     // an(3)    Código de moneda internacional
+        public string tip_oper { get; set; }        // n(4)    Código tipo de operación sunat
+        public string fec_venc { get; set; }        // an(10)  Fecha vencimiento
+        public string hora_emi { get; set; }        // an(10)  Hora de emisión
+        public string cod_mon_ref { get; set; }     // an(3)    Moneda de referencia para el tipo de cambio
+        public string cod_mon_obj { get; set; }     // an(3)    Moneda objetivo para el tipo de cambio
+        public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
+        public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
+        public string ubl_version { get; set; }         // an(3)   Versión UBL
+        public string customizacion { get; set; }       // an(3)   Versión Sunat 
+        public Cemisor emisor { get; set; }
+        public Cadquiriente adquiriente { get; set; }
+        public Ctot tot { get; set; }
+        public Cforma_pago forma_Pago { get; set; }
+        public List<CComprobanteDetalle> det { get; set; }
+        public Cleyen leyen { get; set; }
+        public List<CCuota> cuota { get; set; }
     }
-    public class adquiriente
+    public class Cadquiriente
     {
-        public int tip_doc { get; set; }    // n 1
+        public string tip_doc { get; set; }    // n 1
         public string num_doc { get; set; } // an 15
         public string raz_soc { get; set; } // an 100
         public string dir { get; set; }     // an 100
         public string email { get; set; }     // 
         public string nom_comer { get; set; }   // 
         public string cod_ubi { get; set; }     // codigo de ubigeo
-        public string urb { get; set; }         // Urbanizacion
         public string prov { get; set; }        // Provincia
         public string dep { get; set; }         // Departamento
         public string dist { get; set; }        // Distrito
@@ -166,18 +50,21 @@ namespace TransCarga
         public string cod_sucur { get; set; }   // Codigo sucursal
         public string telef { get; set; }       // Telefono de contacto
         public string website { get; set; }     // Web Site de contacto 
-        // DATOS DEL ADQUIRIENTE – GUIA DE REMISION
+    }
+    public class CadquirienteGR     // DATOS DEL ADQUIRIENTE – GUIA DE REMISION
+    {
+        public Cadquiriente Cadquiriente { get; set; }
         public string num_autorizacion { get; set; }      // an(50)   Número de autorización especial emitido por la entidad – remitente
         public string cod_autorizacion { get; set; }      // an(2)    Código de entidad autorizadora
+
     }
-    public class emisor
+    public class Cemisor
     {
-        public int tip_doc { get; set; }        // n(1)     Tipo de documento del Emisor
+        public string tip_doc { get; set; }        // n(1)     Tipo de documento del Emisor
         public string num_doc { get; set; }     // an(11)   Número de RUC del Emisor
         public string raz_soc { get; set; }     // an(150)  Apellidos y nombres, denominación o razón social del Emisor
         public string nom_comer { get; set; }     // an(150)  Nombre Comercial o Nombre Corto del Emisor
         public string dir { get; set; }         // an(200)  Dirección completa y detallada del Emisor
-        public string urb { get; set; }         // an(25)   Urbanizacion
         public string cod_ubi { get; set; }     // an(6)    Código de ubigeo
         public string prov { get; set; }        // an(30)   Provincia
         public string dep { get; set; }         // an(30)   Departamento
@@ -186,12 +73,17 @@ namespace TransCarga
         public string cod_sucur { get; set; }   // an(4)    Codigo sucursal
         public string telef { get; set; }       // an(100)  Telefono de contacto del emisor
         public string website { get; set; }     // an(100)  Web Site de contacto del emisor
-        // DATOS DEL EMISOR – GUIA DE REMISION
+        public string email { get; set; }       // an(100)  E-mail del emisor
+    }
+    public class CemisorGR                      // DATOS DEL EMISOR – GUIA DE REMISION
+    {
+        public Cemisor cemisor { get; set; }
         public string num_autorizacion { get; set; }    // an(50)   Número de autorización especial emitido por la entidad – remitente
         public string cod_autorizacion { get; set; }    // an(2)    Código de entidad autorizadora
         public string num_mtc { get; set; }             // an(20)   Número de Registro MTC
+
     }
-    public class Conductor
+    public class Cconductor
     {
         public string num_doc { get; set; }     // n(11)    Numero de documento de identidad del conductor
         public string tip_doc { get; set; }     // an(2)    Tipo de documento de identidad del conductor
@@ -200,7 +92,7 @@ namespace TransCarga
         public string tip_conductor { get; set; }  // an(9)
         public string num_licencia { get; set; }  // an(10)
     }   // guía de remision
-    public class envio
+    public class Cenvio
     {
         public string cod_motiv_traslado { get; set; }  // an(2)    Motivo del traslado
         public string descrip_motiv { get; set; }       // an(100)  Descripción de motivo de traslado
@@ -228,13 +120,13 @@ namespace TransCarga
         public string ind_paga_flete { get; set; }          // an(50)   Indicador de pagador de flete
         public string anotacion { get; set; }           // an(500)  Anotación opcional sobre los bienes a transportar
     }       // guía de remision
-    public class proveedor
+    public class Cproveedor
     {
         public string num_doc { get; set; }     // an(11)   Numero de documento de identidad del proveedor
         public string tip_doc { get; set; }     // an(2)    Tipo de documento de identidad del proveedor
         public string raz_soc { get; set; }     // an(200)  Apellidos y nombres, denominacion o razon social del proveedor
     }   // DATOS PROVEEDOR - GUIA REMISION
-    public class detracc
+    public class Cdetracc
     {
         public decimal porcent { get; set; }    // n(15,2)  % de la Detracción
         public string cod { get; set; }         // an(3)    Código del Bien o Servicio sujeto a Detracion
@@ -243,7 +135,7 @@ namespace TransCarga
         public string med_pago { get; set; }    // an(3)    Medio de pago
         public string cod_mon { get; set; }     // an(3)    Moneda de la detraccion
     }
-    public class transportista
+    public class Ctransportista
     {
         public string num_doc { get; set; }     // an(11)   Numero de RUC transportista
         public string tip_doc { get; set; }     // an(2)    Tipo de documento del transportista
@@ -252,7 +144,7 @@ namespace TransCarga
         public string num_autorizacion { get; set; }     // an(50)   Número de autorización especial emitido por la entidad – transportista
         public string cod_autorizacion { get; set; }     // an(2)   Código de entidad autorizadora
     }
-    public class vehiculo
+    public class Cvehiculo
     {
         public string vehi_placa { get; set; }      // an(8)    Numero de placa del vehiculo
         public string cert_vehi { get; set; }       // an(15)   Tarjeta Única de Circulación Electrónica o Certificado de Habilitación vehicular
@@ -260,7 +152,7 @@ namespace TransCarga
         public string cod_autorizacion { get; set; }    // an(2)    Código de entidad emisora
         public string tip_vehiculo { get; set; }        // an(9)    Tipo de Vehiculo
     }
-    public class tot
+    public class Ctot
     {
         public decimal grav { get; set; }           // n(12,2)  (18).Total   valor   de   venta   - operaciones gravadas
         public decimal inaf { get; set; }           // n(12,2) "(19).Total   valor   de   venta   - operaciones inafectas"
@@ -289,15 +181,22 @@ namespace TransCarga
         public decimal redondeo { get; set; }       // n(12,2) Monto para Redondeo del Importe Total
         public decimal icbper { get; set; }         // n(12,2)   (48).Sumatoria ICBPER
     }        // Totales
-    public class forma_pago
+    public class Cforma_pago
     {
         public string descrip { get; set; }     // an(7) ("Contado"/"Credito") Forma de pago Contado/Credito, Solo en facturas/NC
         public decimal monto_neto { get; set; } // n(12,2)  Monto neto pendiente de pago
         public string cod_mon { get; set; }     // an(3)    Tipo de moneda del monto pendiente de pago
     }
-    public class leyen
+    public class CCuota
     {
-        public int leyen_cod { get; set; }  // n(4) Codigo Leyenda
+        public string descrip { get; set; }         // an(8)
+        public decimal monto_neto { get; set; }     // n(12,2)
+        public string cod_mon { get; set; }         // an(3)
+        public string fec_venc { get; set; }        // an(10)
+    }
+    public class Cleyen
+    {
+        public string leyen_cod { get; set; }  // n(4) Codigo Leyenda
         public string leyen_descrip { get; set; }   // an(250)  Descripcion de Leyenda
     }
 }

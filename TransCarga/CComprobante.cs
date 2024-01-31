@@ -6,11 +6,31 @@ using System.Threading.Tasks;
 
 namespace TransCarga
 {
-    public class Cinvoice
+    public class Cinvoice1
     {
-        public CComprobante invoice { get; set; }
+        public CComprobante1 invoice { get; set; }
     }
-    public class CComprobante
+    public class Cinvoice2
+    {
+        public CComprobante2 invoice { get; set; }
+    }
+    public class Cinvoice3
+    {
+        public CComprobante3 invoice { get; set; }
+    }
+    public class Cinvoice4
+    {
+        public CComprobante4 invoice { get; set; }
+    }
+    public class Cinvoice5
+    {
+        public CComprobante5 invoice { get; set; }
+    }
+    public class Cinvoice6
+    {
+        public CComprobante6 invoice { get; set; }
+    }
+    public class CComprobante1                  // contado sin detrac una leyenda
     {
         public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
         public string serie { get; set; }       // an(4)    Serie del comprobante
@@ -32,6 +52,125 @@ namespace TransCarga
         public Cforma_pago forma_Pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public Cleyen leyen { get; set; }
+    }
+    public class CComprobante2                  // contado sin detrac varias leyendas
+    {
+        public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
+        public string serie { get; set; }       // an(4)    Serie del comprobante
+        public string correl { get; set; }      // n(8)     Número de comprobante
+        public string fec_emi { get; set; }     // an(10)   Fecha emisión
+        public string cod_mon { get; set; }     // an(3)    Código de moneda internacional
+        public string tip_oper { get; set; }        // n(4)    Código tipo de operación sunat
+        public string fec_venc { get; set; }        // an(10)  Fecha vencimiento
+        public string hora_emi { get; set; }        // an(10)  Hora de emisión
+        public string cod_mon_ref { get; set; }     // an(3)    Moneda de referencia para el tipo de cambio
+        public string cod_mon_obj { get; set; }     // an(3)    Moneda objetivo para el tipo de cambio
+        public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
+        public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
+        public string ubl_version { get; set; }         // an(3)   Versión UBL
+        public string customizacion { get; set; }       // an(3)   Versión Sunat 
+        public Cemisor emisor { get; set; }
+        public Cadquiriente adquiriente { get; set; }
+        public Ctot tot { get; set; }
+        public Cforma_pago forma_Pago { get; set; }
+        public List<CComprobanteDetalle> det { get; set; }
+        public List<Cleyen> leyen { get; set; }
+    }
+    public class CComprobante3                  // contado c/detrac varias leyenda
+    {
+        public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
+        public string serie { get; set; }       // an(4)    Serie del comprobante
+        public string correl { get; set; }      // n(8)     Número de comprobante
+        public string fec_emi { get; set; }     // an(10)   Fecha emisión
+        public string cod_mon { get; set; }     // an(3)    Código de moneda internacional
+        public string tip_oper { get; set; }        // n(4)    Código tipo de operación sunat
+        public string fec_venc { get; set; }        // an(10)  Fecha vencimiento
+        public string hora_emi { get; set; }        // an(10)  Hora de emisión
+        public string cod_mon_ref { get; set; }     // an(3)    Moneda de referencia para el tipo de cambio
+        public string cod_mon_obj { get; set; }     // an(3)    Moneda objetivo para el tipo de cambio
+        public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
+        public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
+        public string ubl_version { get; set; }         // an(3)   Versión UBL
+        public string customizacion { get; set; }       // an(3)   Versión Sunat 
+        public Cemisor emisor { get; set; }
+        public Cadquiriente adquiriente { get; set; }
+        public Ctot tot { get; set; }
+        public Cdetracc detracc { get; set; }
+        public Cforma_pago forma_Pago { get; set; }
+        public List<CComprobanteDetalle> det { get; set; }
+        public List<Cleyen> leyen { get; set; }
+    }
+    public class CComprobante4                  // credito sin detrac una leyenda
+    {
+        public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
+        public string serie { get; set; }       // an(4)    Serie del comprobante
+        public string correl { get; set; }      // n(8)     Número de comprobante
+        public string fec_emi { get; set; }     // an(10)   Fecha emisión
+        public string cod_mon { get; set; }     // an(3)    Código de moneda internacional
+        public string tip_oper { get; set; }        // n(4)    Código tipo de operación sunat
+        public string fec_venc { get; set; }        // an(10)  Fecha vencimiento
+        public string hora_emi { get; set; }        // an(10)  Hora de emisión
+        public string cod_mon_ref { get; set; }     // an(3)    Moneda de referencia para el tipo de cambio
+        public string cod_mon_obj { get; set; }     // an(3)    Moneda objetivo para el tipo de cambio
+        public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
+        public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
+        public string ubl_version { get; set; }         // an(3)   Versión UBL
+        public string customizacion { get; set; }       // an(3)   Versión Sunat 
+        public Cemisor emisor { get; set; }
+        public Cadquiriente adquiriente { get; set; }
+        public Ctot tot { get; set; }
+        public Cforma_pago forma_Pago { get; set; }
+        public List<CComprobanteDetalle> det { get; set; }
+        public Cleyen leyen { get; set; }
+        public List<CCuota> cuota { get; set; }
+    }
+    public class CComprobante5                  // credito varias leyendas
+    {
+        public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
+        public string serie { get; set; }       // an(4)    Serie del comprobante
+        public string correl { get; set; }      // n(8)     Número de comprobante
+        public string fec_emi { get; set; }     // an(10)   Fecha emisión
+        public string cod_mon { get; set; }     // an(3)    Código de moneda internacional
+        public string tip_oper { get; set; }        // n(4)    Código tipo de operación sunat
+        public string fec_venc { get; set; }        // an(10)  Fecha vencimiento
+        public string hora_emi { get; set; }        // an(10)  Hora de emisión
+        public string cod_mon_ref { get; set; }     // an(3)    Moneda de referencia para el tipo de cambio
+        public string cod_mon_obj { get; set; }     // an(3)    Moneda objetivo para el tipo de cambio
+        public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
+        public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
+        public string ubl_version { get; set; }         // an(3)   Versión UBL
+        public string customizacion { get; set; }       // an(3)   Versión Sunat 
+        public Cemisor emisor { get; set; }
+        public Cadquiriente adquiriente { get; set; }
+        public Ctot tot { get; set; }
+        public Cforma_pago forma_Pago { get; set; }
+        public List<CComprobanteDetalle> det { get; set; }
+        public List<Cleyen> leyen { get; set; }
+        public List<CCuota> cuota { get; set; }
+    }
+    public class CComprobante6                  // credito c/detrac varias leyendas
+    {
+        public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
+        public string serie { get; set; }       // an(4)    Serie del comprobante
+        public string correl { get; set; }      // n(8)     Número de comprobante
+        public string fec_emi { get; set; }     // an(10)   Fecha emisión
+        public string cod_mon { get; set; }     // an(3)    Código de moneda internacional
+        public string tip_oper { get; set; }        // n(4)    Código tipo de operación sunat
+        public string fec_venc { get; set; }        // an(10)  Fecha vencimiento
+        public string hora_emi { get; set; }        // an(10)  Hora de emisión
+        public string cod_mon_ref { get; set; }     // an(3)    Moneda de referencia para el tipo de cambio
+        public string cod_mon_obj { get; set; }     // an(3)    Moneda objetivo para el tipo de cambio
+        public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
+        public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
+        public string ubl_version { get; set; }         // an(3)   Versión UBL
+        public string customizacion { get; set; }       // an(3)   Versión Sunat 
+        public Cemisor emisor { get; set; }
+        public Cadquiriente adquiriente { get; set; }
+        public Ctot tot { get; set; }
+        public Cdetracc detracc { get; set; }
+        public Cforma_pago forma_Pago { get; set; }
+        public List<CComprobanteDetalle> det { get; set; }
+        public List<Cleyen> leyen { get; set; }
         public List<CCuota> cuota { get; set; }
     }
     public class Cadquiriente
@@ -199,4 +338,5 @@ namespace TransCarga
         public string leyen_cod { get; set; }  // n(4) Codigo Leyenda
         public string leyen_descrip { get; set; }   // an(250)  Descripcion de Leyenda
     }
+
 }

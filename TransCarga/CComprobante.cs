@@ -30,7 +30,7 @@ namespace TransCarga
     {
         public CComprobante6 invoice { get; set; }
     }
-    public class CComprobante1                  // contado sin detrac una leyenda
+    public class CComprobante1                  // contado SOLES sin detrac varias leyendas
     {
         public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
         public string serie { get; set; }       // an(4)    Serie del comprobante
@@ -42,7 +42,7 @@ namespace TransCarga
         public string hora_emi { get; set; }        // an(10)  Hora de emisión
         public string cod_mon_ref { get; set; }     // an(3)    Moneda de referencia para el tipo de cambio
         public string cod_mon_obj { get; set; }     // an(3)    Moneda objetivo para el tipo de cambio
-        public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
+        //public string factor { get; set; }          // n(12,3)  Tipo de cambio Sunat
         public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
         public string ubl_version { get; set; }         // an(3)   Versión UBL
         public string customizacion { get; set; }       // an(3)   Versión Sunat 
@@ -51,9 +51,9 @@ namespace TransCarga
         public Ctot tot { get; set; }
         public Cforma_pago forma_Pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
-        public Cleyen leyen { get; set; }
+        public List<Cleyen> leyen { get; set; }
     }
-    public class CComprobante2                  // contado sin detrac varias leyendas
+    public class CComprobante2                  // sin definir 
     {
         public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
         public string serie { get; set; }       // an(4)    Serie del comprobante
@@ -76,7 +76,7 @@ namespace TransCarga
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
     }
-    public class CComprobante3                  // contado c/detrac varias leyenda
+    public class CComprobante3                  // contado c/detrac varias leyendas
     {
         public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
         public string serie { get; set; }       // an(4)    Serie del comprobante
@@ -100,7 +100,7 @@ namespace TransCarga
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
     }
-    public class CComprobante4                  // credito sin detrac una leyenda
+    public class CComprobante4                  // credito sin detrac varias leyendas
     {
         public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
         public string serie { get; set; }       // an(4)    Serie del comprobante
@@ -121,10 +121,10 @@ namespace TransCarga
         public Ctot tot { get; set; }
         public Cforma_pago forma_Pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
-        public Cleyen leyen { get; set; }
+        public List<Cleyen> leyen { get; set; }
         public List<CCuota> cuota { get; set; }
     }
-    public class CComprobante5                  // credito varias leyendas
+    public class CComprobante5                  // sin definir 
     {
         public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
         public string serie { get; set; }       // an(4)    Serie del comprobante
@@ -294,10 +294,10 @@ namespace TransCarga
     public class Ctot
     {
         public decimal grav { get; set; }           // n(12,2)  (18).Total   valor   de   venta   - operaciones gravadas
-        public decimal inaf { get; set; }           // n(12,2) "(19).Total   valor   de   venta   - operaciones inafectas"
-        public decimal exo { get; set; }            // n(12,2)  "(20).Total   valor   de   venta  - operaciones exoneradas"
-        public decimal grat { get; set; }           // n(15,2)  (49).Total Valor de Venta - Operaciones gratuitas
-        public decimal sub_tot { get; set; }        // n(12,2)  Son solo de referencia, no se toma en cuenta para el XML
+        //public decimal inaf { get; set; }           // n(12,2) "(19).Total   valor   de   venta   - operaciones inafectas"
+        //public decimal exo { get; set; }            // n(12,2)  "(20).Total   valor   de   venta  - operaciones exoneradas"
+        //public decimal grat { get; set; }           // n(15,2)  (49).Total Valor de Venta - Operaciones gratuitas
+        //public decimal sub_tot { get; set; }        // n(12,2)  Son solo de referencia, no se toma en cuenta para el XML
         public decimal dsc_item { get; set; }       // n(12,2) Son solo de referencia, no se toma en cuenta para el XML
         public decimal val_vent { get; set; }       // n(12,2) Son solo de referencia, no se toma en cuenta para el XML
         public decimal igv { get; set; }            // n(12,2)  (22).Sumatoria IGV
@@ -307,18 +307,18 @@ namespace TransCarga
         public decimal otr_trib { get; set; }       // n(12,2) (24).Sumatoria otros tributos
         public decimal dsct_tot { get; set; }       // n(12,2) (26).Total descuentos
         public decimal impsto_tot { get; set; }     // n(12,2)   sumatoria de impuestos (Códigos 1000+1016+2000+9999)
-        public decimal exp { get; set; }            // n(12,2)  Importe Operaciones Exportacion
-        public decimal trib_exp { get; set; }       // n(12,2) Tributos Operaciones de Exportacion
-        public decimal trib_inaf { get; set; }      // n(12,2)    Tributos Operaciones Inafectas
-        public decimal trib_exo { get; set; }       // n(12,2) Tributos Operaciones Exoneradas
-        public decimal trib_grat { get; set; }      // n(12,2)    Tributos Operaciones gratuitas
-        public decimal grav_ivap { get; set; }      // n(12,2)    Importe Operaciones Gravadas ivap
-        public decimal ivap { get; set; }           // n(12,2)  Tributos gravadas IVAP
-        public decimal base_isc { get; set; }       // n(12,2) Importe Operaciones ISC
-        public decimal base_otr_trib { get; set; }  // n(12,2)    Importe Operaciones Otros Tributos
+        //public decimal exp { get; set; }            // n(12,2)  Importe Operaciones Exportacion
+        //public decimal trib_exp { get; set; }       // n(12,2) Tributos Operaciones de Exportacion
+        //public decimal trib_inaf { get; set; }      // n(12,2)    Tributos Operaciones Inafectas
+        //public decimal trib_exo { get; set; }       // n(12,2) Tributos Operaciones Exoneradas
+        //public decimal trib_grat { get; set; }      // n(12,2)    Tributos Operaciones gratuitas
+        //public decimal grav_ivap { get; set; }      // n(12,2)    Importe Operaciones Gravadas ivap
+        //public decimal ivap { get; set; }           // n(12,2)  Tributos gravadas IVAP (impuesto 1ra venta arroz pilado)
+        //public decimal base_isc { get; set; }       // n(12,2) Importe Operaciones ISC
+        //public decimal base_otr_trib { get; set; }  // n(12,2)    Importe Operaciones Otros Tributos
         public decimal prec_tot { get; set; }       // n(12,2) Total Precio de Venta
         public decimal redondeo { get; set; }       // n(12,2) Monto para Redondeo del Importe Total
-        public decimal icbper { get; set; }         // n(12,2)   (48).Sumatoria ICBPER
+        //public decimal icbper { get; set; }         // n(12,2)   (48).Sumatoria ICBPER
     }        // Totales
     public class Cforma_pago
     {

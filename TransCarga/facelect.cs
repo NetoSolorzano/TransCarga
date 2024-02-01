@@ -1366,19 +1366,19 @@ namespace TransCarga
                 string ruta = rutatxt + "TXT/";
                 string rutaRpta = rutatxt + "RPTA/";
                 archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                string archiR = "R-" + rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".txt";
                 if (accion == "alta")
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".json";
                     string ajson = json_venta(tipdo, tipoDocEmi);
                     //System.IO.File.WriteAllText(@"c:\temp\" + archi, ajson);
                     System.IO.File.WriteAllText(ruta + archi, ajson);
-                    if (true)
+                    if (true == false)
                     {
                         IConectarWS cws = new ConectarWS();
-                        //String respuesta = cws.consultaEstado(txtNombreArchivo.Text, txtRutaRespuesta.Text, txtUsuario.Text, txtClave.Text);
                         String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
-                        System.IO.File.WriteAllText(rutaRpta + archi, respuesta);
-                        // me quede acá
+                        System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
+                        // 
                     }
                     retorna = true;
                 }
@@ -2332,12 +2332,13 @@ namespace TransCarga
             decimal totdet = 0, valcre = 0;
             string tipOper = "0101";    // operacion venta interna
             Cdetracc cdetracc = null;
-            List<Cleyen> lll = null;
+            List<Cleyen> lll = new List<Cleyen>();    // 01/02/2024  List<Cleyen> lll = null;
             Cleyen cleyen = new Cleyen()
             {
                 leyen_cod = "1000",
                 leyen_descrip = tx_fletLetras.Text.Trim()
             };
+            lll.Add(cleyen);     // lll.Insert(1, cleyen);        // 01/02/2024
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)
             {
                 d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
@@ -2374,22 +2375,26 @@ namespace TransCarga
                 {
                     CComprobanteDetalle det = new CComprobanteDetalle
                     {
-                        nro_item = cta_ron,
-                        cod_prod = "",
-                        cod_und_med = "ZZ",
+                        nro_item = cta_ron,         // solo val_unit_item, prec_unit_item y val_ref_unit_item puede tener hasta 10 decimales,
+                        //cod_prod = "",            //  val_ref_unit_item solo debe ir cuando es venta gratuita.
+                        cod_und_med = "ZZ",         // el resto solo hasta 2 decimales.
                         descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
                         cant = 1,
-                        val_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),
-                        sub_tot = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),
+                        val_unit_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),10),
+                        sub_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2),
                         dsc_item = 0,
-                        val_vta_item = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),       // valor venta x item
+                        val_vta_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2),       // valor venta x item
                         igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
-                        isc_item = 0,           // Sistema de ISC por ítem
+                        //isc_item = 0,           // Sistema de ISC por ítem
                         prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
                         tip_afec_igv = "10",    // Afectación al IGV por ítem
                         impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
-                        base_igv = double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),           // Monto Base IGV/IVAP
-                        tasa_igv = int.Parse(v_igv)          // Tasa del IGV/IVAP
+                        base_igv = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2),           // Monto Base IGV/IVAP
+                        tasa_igv = int.Parse(v_igv),          // Tasa del IGV/IVAP
+                        ind_grat = "N",
+                        cod_prod_sunat = null,      // no usamos codificación estandarizada
+                        cod_prod_gs1 = null,        // no usamos este codigo
+                        tip_prod_gtin = null,       // no usamos este codigo
                     };      // detalles
                     aaa.Add(det);
                     cta_ron += 1;
@@ -2400,7 +2405,7 @@ namespace TransCarga
                 tip_doc = "6",
                 num_doc = Program.ruc,
                 raz_soc = Program.cliente,
-                nom_comer = "",
+                //nom_comer = "",
                 dir = Program.dirfisc,
                 cod_ubi = Program.ubidirfis,
                 dep = Program.depfisc,
@@ -2416,25 +2421,25 @@ namespace TransCarga
             {
                 tip_doc = tipoDocClte,
                 num_doc = tx_numDocRem.Text,
-                raz_soc = tx_nomRem.Text,
-                dir = tx_dirRem.Text,
+                raz_soc = tx_nomRem.Text.Replace(Environment.NewLine,string.Empty),
+                dir = tx_dirRem.Text.Replace(Environment.NewLine, string.Empty),
                 cod_pais = "PE",
                 cod_sucur = "0000",
                 email = tx_email.Text,
-                nom_comer = "",
+                nom_comer = null,
                 cod_ubi = tx_ubigRtt.Text,
                 dist = tx_distRtt.Text,
                 prov = tx_provRtt.Text,
                 dep = tx_dptoRtt.Text,
-                telef = tx_telc1.Text,
-                website = ""
+                telef = (tx_telc1.Text.Trim() == "")? null : tx_telc1.Text,
+                website = null
             };
             Ctot ctot = new Ctot()
             {
                 grav = decimal.Parse(tx_subt.Text),
-                inaf = 0,
-                exo = 0,
-                grat = 0,
+                //inaf = 0,     // no hacemos
+                //exo = 0,      // operaciones exoneradas
+                //grat = 0,     // o gratuitas en TRANSPORTE DE CARGA
                 igv = decimal.Parse(tx_igv.Text),
                 imp_tot = decimal.Parse(tx_flete.Text),
                 impsto_tot = decimal.Parse(tx_igv.Text)
@@ -2463,6 +2468,10 @@ namespace TransCarga
 
             if (tx_dat_plazo.Text.Trim() == "" && cdetracc == null)        // rb_credito.Checked == false && cdetracc == null
             {
+                if (lll.Count == 1)
+                {
+                    //lll.Insert(0, new Cleyen());
+                }
                 CComprobante1 comprobante = new CComprobante1
                 {
                     tip_doc = tipdo,
@@ -2472,10 +2481,10 @@ namespace TransCarga
                     cod_mon = tipoMoneda,
                     tip_oper = tipOper,
                     fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd"),
-                    hora_emi = DateTime.UtcNow.ToShortTimeString(),
+                    hora_emi = lib.Right(DateTime.UtcNow.ToLocalTime().ToString(), 8),             
                     cod_mon_ref = "PEN",            // tx_dat_monsunat.Text
                     cod_mon_obj = tipoMoneda,       // tx_dat_monsunat.Text
-                    factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
+                    //factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
                     fec_tipo_cambio = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
                     ubl_version = "2.1",
                     customizacion = "2.0",
@@ -2484,13 +2493,16 @@ namespace TransCarga
                     tot = ctot,
                     forma_Pago = formap,
                     det = aaa,
-                    leyen = cleyen
+                    leyen = lll
                 };
                 Cinvoice1 cinvoice = new Cinvoice1
                 {
                     invoice = comprobante
                 };
-                retorna = JsonConvert.SerializeObject(cinvoice);
+                retorna = JsonConvert.SerializeObject(cinvoice, Formatting.Indented, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
             }        // comprobante clase 1
             if (tx_dat_plazo.Text.Trim() == "" && cdetracc != null)        // rb_credito.Checked == false && cdetracc != null
             {
@@ -2522,7 +2534,10 @@ namespace TransCarga
                 {
                     invoice = comprobante3
                 };
-                retorna = JsonConvert.SerializeObject(cinvoice);
+                retorna = JsonConvert.SerializeObject(cinvoice, Formatting.Indented, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
             }        // comprobante clase 3
             if (tx_dat_plazo.Text.Trim() != "" && cdetracc == null)      // rb_credito.Checked == true && cdetracc == null
             {
@@ -2548,13 +2563,16 @@ namespace TransCarga
                     forma_Pago = formap,
                     cuota = ccc,
                     det = aaa,
-                    leyen = cleyen
+                    leyen = lll
                 };
                 Cinvoice4 cinvoice = new Cinvoice4
                 {
                     invoice = comprobante
                 };
-                retorna = JsonConvert.SerializeObject(cinvoice);
+                retorna = JsonConvert.SerializeObject(cinvoice, Formatting.Indented, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
             }        // comprobante clase 4
             if (tx_dat_plazo.Text.Trim() != "" && cdetracc != null)         // rb_credito.Checked == true && cdetracc != null
             {
@@ -2587,7 +2605,10 @@ namespace TransCarga
                 {
                     invoice = comprobante6
                 };
-                retorna = JsonConvert.SerializeObject(cinvoice);
+                retorna = JsonConvert.SerializeObject(cinvoice, Formatting.Indented, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
             }        // comprobante clase 6
             return retorna;
         }

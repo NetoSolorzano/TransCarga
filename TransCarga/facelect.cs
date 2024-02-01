@@ -78,6 +78,8 @@ namespace TransCarga
         string codsuser_cu = "";        // usuarios autorizados a crear Ft de cargas unicas
         int v_cdpa = 0;                 // cantidad de días despues de emitida la fact. en que un usuario normal puede anular
         //
+        string usuaInteg = "";          // usuario de la integración con SeenCorp
+        string clavInteg = "";          // clave de la integración con SeenCorp
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI
@@ -406,6 +408,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "ose-pse") nipfe = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "motivoBaja") glosaAnul = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "tipsDocbaja") tipdocAnu = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "usuarioInteg") usuaInteg = row["valor"].ToString().Trim();     // usuario de la integración con Seencorp
+                            if (row["param"].ToString() == "claveInteg") clavInteg = row["valor"].ToString().Trim();        // clave del usuario de la integración con Seencorp
                         }
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
@@ -1333,8 +1337,8 @@ namespace TransCarga
             DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
             tipoMoneda = rowm[0][2].ToString().Trim();
             //
-            provee = "seencorp";        // para pruebas 29/01/2024
-                                        //
+            provee = "seencorp";        // para pruebas 31/01/2024
+            rutatxt = "c:/seencorp/";   // para pruebas 31/01/2024
             string archi = "";
             if (provee == "Horizont")
             {
@@ -1360,6 +1364,7 @@ namespace TransCarga
             if (provee == "seencorp")
             {
                 string ruta = rutatxt + "TXT/";
+                string rutaRpta = rutatxt + "RPTA/";
                 archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
                 if (accion == "alta")
                 {
@@ -1371,7 +1376,8 @@ namespace TransCarga
                     {
                         IConectarWS cws = new ConectarWS();
                         //String respuesta = cws.consultaEstado(txtNombreArchivo.Text, txtRutaRespuesta.Text, txtUsuario.Text, txtClave.Text);
-                        String respuesta = cws.leerArchivo(archi, ruta, );
+                        String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
+                        System.IO.File.WriteAllText(rutaRpta + archi, respuesta);
                         // me quede acá
                     }
                     retorna = true;

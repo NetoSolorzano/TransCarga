@@ -1373,12 +1373,15 @@ namespace TransCarga
                     string ajson = json_venta(tipdo, tipoDocEmi);
                     //System.IO.File.WriteAllText(@"c:\temp\" + archi, ajson);
                     System.IO.File.WriteAllText(ruta + archi, ajson);
-                    if (true == false)
+                    if (true == true)
                     {
                         IConectarWS cws = new ConectarWS();
                         String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
                         System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
-                        // 
+                        // falta leer ese archivo de respuesta y si no contiene el id: 4hJE+FO8jsATTLenYiYEarO13O4=
+                        // o una cosa parecida a esto entonces avisa que hubo un error
+                        // y debe proceder a anular el comprobante y regresar el contador de esa serie .... 01/02/2024
+
                     }
                     retorna = true;
                 }
@@ -2339,6 +2342,9 @@ namespace TransCarga
                 leyen_descrip = tx_fletLetras.Text.Trim()
             };
             lll.Add(cleyen);     // lll.Insert(1, cleyen);        // 01/02/2024
+            // Detracción - leyenda de detracción - transp. de carga y tramo en detalle
+            Ctramo ctramo = null;
+            Ctransp_carga ctransp_Carga = null;
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)
             {
                 d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
@@ -2367,36 +2373,72 @@ namespace TransCarga
                     leyen_descrip = glosdet
                 };
                 lll.Add(cleyen);
+                // tramo y transp de carga
+                ctramo = new Ctramo()
+                {
+
+                };
+                ctransp_Carga = new Ctransp_carga()
+                {
+
+                };
             }
             List<CComprobanteDetalle> aaa = new List<CComprobanteDetalle>();
+            List<CComprobDetDetrac> ddd = new List<CComprobDetDetrac>();
             foreach (DataGridViewRow ron in dataGridView1.Rows)
             {
                 if (ron.Cells[1].Value != null)
                 {
-                    CComprobanteDetalle det = new CComprobanteDetalle
+                    if (cdetracc == null)           // comprobante sin detracción
                     {
-                        nro_item = cta_ron,         // solo val_unit_item, prec_unit_item y val_ref_unit_item puede tener hasta 10 decimales,
-                        //cod_prod = "",            //  val_ref_unit_item solo debe ir cuando es venta gratuita.
-                        cod_und_med = "ZZ",         // el resto solo hasta 2 decimales.
-                        descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
-                        cant = 1,
-                        val_unit_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),10),
-                        sub_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2),
-                        dsc_item = 0,
-                        val_vta_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2),       // valor venta x item
-                        igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
-                        //isc_item = 0,           // Sistema de ISC por ítem
-                        prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
-                        tip_afec_igv = "10",    // Afectación al IGV por ítem
-                        impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
-                        base_igv = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2),           // Monto Base IGV/IVAP
-                        tasa_igv = int.Parse(v_igv),          // Tasa del IGV/IVAP
-                        ind_grat = "N",
-                        cod_prod_sunat = null,      // no usamos codificación estandarizada
-                        cod_prod_gs1 = null,        // no usamos este codigo
-                        tip_prod_gtin = null,       // no usamos este codigo
-                    };      // detalles
-                    aaa.Add(det);
+                        CComprobanteDetalle det = new CComprobanteDetalle
+                        {
+                            nro_item = cta_ron,         // solo val_unit_item, prec_unit_item y val_ref_unit_item puede tener hasta 10 decimales,
+                                                        //cod_prod = "",            //  val_ref_unit_item solo debe ir cuando es venta gratuita.
+                            cod_und_med = "ZZ",         // el resto solo hasta 2 decimales.
+                            descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
+                            cant = 1,
+                            val_unit_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 10),
+                            sub_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),
+                            dsc_item = 0,
+                            val_vta_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),       // valor venta x item
+                            igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
+                            //isc_item = 0,           // Sistema de ISC por ítem
+                            prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
+                            tip_afec_igv = "10",    // Afectación al IGV por ítem
+                            impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
+                            base_igv = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),           // Monto Base IGV/IVAP
+                            tasa_igv = int.Parse(v_igv),          // Tasa del IGV/IVAP
+                            ind_grat = "N",
+                            cod_prod_sunat = null,      // no usamos codificación estandarizada
+                            cod_prod_gs1 = null,        // no usamos este codigo
+                            tip_prod_gtin = null,       // no usamos este codigo
+                        };      // detalle del comprob sin detracción
+                        aaa.Add(det);
+                    }
+                    else
+                    {
+                        CComprobDetDetrac det = new CComprobDetDetrac()
+                        {
+                            nro_item = cta_ron,
+                            cod_und_med = "ZZ",
+                            descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
+                            cant = 1,
+                            val_unit_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 10),
+                            sub_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),
+                            dsc_item = 0,
+                            val_vta_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),
+                            igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
+                            prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
+                            tip_afec_igv = "10",
+                            impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
+                            base_igv = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),           // Monto Base IGV/IVAP
+                            tasa_igv = int.Parse(v_igv),
+                            ind_grat = "N",
+
+                        };                            // comprobante con detracción y por lo tanto tiene que tener detalle de transp. de carga
+                        ddd.Add(det);
+                    }
                     cta_ron += 1;
                 }
             }

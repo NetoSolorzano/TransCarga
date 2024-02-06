@@ -2506,12 +2506,15 @@ namespace TransCarga
             Ctot ctot = new Ctot()
             {
                 grav = decimal.Parse(tx_subt.Text),
+                val_vent = decimal.Parse(tx_subt.Text),
                 //inaf = 0,     // no hacemos
                 //exo = 0,      // operaciones exoneradas
                 //grat = 0,     // o gratuitas en TRANSPORTE DE CARGA
                 igv = decimal.Parse(tx_igv.Text),
                 imp_tot = decimal.Parse(tx_flete.Text),
-                impsto_tot = decimal.Parse(tx_igv.Text)
+                impsto_tot = decimal.Parse(tx_igv.Text),
+                prec_tot = decimal.Parse(tx_flete.Text),
+                redondeo = 0
             };
             Cforma_pago formap = new Cforma_pago()
             {

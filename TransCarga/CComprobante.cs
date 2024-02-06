@@ -30,6 +30,10 @@ namespace TransCarga
     {
         public CComprobante6 invoice { get; set; }
     }
+    public class CinvoiceA
+    { 
+        public Ccpe invoice { get; set; }
+    }
     public class CComprobante1                  // contado SOLES sin detrac varias leyendas
     {
         public string tip_doc { get; set; }        // n(1)     Tipo de comprobante
@@ -338,5 +342,12 @@ namespace TransCarga
         public string leyen_cod { get; set; }  // n(4) Codigo Leyenda
         public string leyen_descrip { get; set; }   // an(250)  Descripcion de Leyenda
     }
-
+    public class Ccpe           // baja de comprobante factura, boletas no hacen baja
+    { 
+        public string fec_ref { get; set; }
+        public string identificador { get; set; }
+        public string fec_gen { get; set; }
+        public Cemisor emisor { get; set; }
+        public CdetBaja det { get; set;}
+    }
 }

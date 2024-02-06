@@ -1363,6 +1363,7 @@ namespace TransCarga
             }
             if (provee == "seencorp")
             {
+                serie = "F001";                     // borrame en producción 05/02/2024
                 string ruta = rutatxt + "TXT/";
                 string rutaRpta = rutatxt + "RPTA/";
                 archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
@@ -1371,32 +1372,56 @@ namespace TransCarga
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".json";
                     string ajson = json_venta(tipdo, tipoDocEmi);
-                    //System.IO.File.WriteAllText(@"c:\temp\" + archi, ajson);
                     System.IO.File.WriteAllText(ruta + archi, ajson);
                     if (true == true)
                     {
                         IConectarWS cws = new ConectarWS();
                         String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
+                        if (respuesta.Substring(0, 7) == "Client.")
+                        {
+                            MessageBox.Show("No se pudo enviar el comprobante al servicio del proveedor: " + provee + Environment.NewLine +
+                                "El motivo fue el siguiente: " + Environment.NewLine + 
+                                respuesta, " ERROR ",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                        }
                         System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
-                        // falta leer ese archivo de respuesta y si no contiene el id: 4hJE+FO8jsATTLenYiYEarO13O4=
-                        // o una cosa parecida a esto entonces avisa que hubo un error
-                        // y debe proceder a anular el comprobante y regresar el contador de esa serie .... 01/02/2024
-
+                        // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
+                        retorna = true;
                     }
-                    retorna = true;
                 }
                 if (accion == "baja")
                 {
-                    /*
-                    if (tipdocAnu.Contains(tipdo))  // este pse no permite hacer bajas de Boletas .... que monses !!
+                    if (tx_dat_tdv.Text != codfact)
                     {
-                        string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+                        MessageBox.Show("Recuerde que las anulaciones de BOLETAS deben" + Environment.NewLine + 
+                            "hacerse manualmente su baja en el portal de " + provee,"Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                        retorna = true;
+                    }   // este pse seencorp no permite hacer bajas de Boletas .... que monses !! 05/02/2024
+                    else
+                    {
+                        archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".json";
+                        string _fecdoc = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   // fecha del comprobante
+                        string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision de la baja  yyyy-mm-dd
                         string _secuen = lib.Right("00" + ctab.ToString(), 3);
-                        string _codbaj = "RA" + "-" + tx_fechact.Text.Substring(6, 4) + tx_fechact.Text.Substring(3, 2) + tx_fechact.Text.Substring(0, 2);  // codigo comunicacion de baja
-                        archi = rucclie + "-" + _codbaj + "-" + _secuen;
-                        if (baja2TXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
+                        string _codbaj = "RA" + "-" + _fecemi;  // codigo comunicacion de baja
+                        archi = rucclie + "-" + _codbaj + "-" + _secuen + ".json";
+
+                        string ajson = json_baja(_fecdoc, _codbaj + "-" + _secuen, _fecemi);
+                        System.IO.File.WriteAllText(ruta + archi, ajson);
+                        if (true == true)
+                        {
+                            IConectarWS cws = new ConectarWS();
+                            String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
+                            if (respuesta.Substring(0, 7) == "Client.")
+                            {
+                                MessageBox.Show("No se pudo enviar el comprobante al servicio del proveedor: " + provee + Environment.NewLine +
+                                    "El motivo fue el siguiente: " + Environment.NewLine +
+                                    respuesta, " ERROR ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
+                            // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
+                            retorna = true;
+                        }
                     }
-                    */
                 }
             }
             return retorna;
@@ -2332,8 +2357,10 @@ namespace TransCarga
             string retorna = "";
             int cta_ron = 1;            // contador filas de detalle
             string d_medpa, d_conpa, d_valde, d_ctade;
-            decimal totdet = 0, valcre = 0;
+            decimal totdet = 0, valcre = decimal.Parse(tx_flete.Text);
             string tipOper = "0101";    // operacion venta interna
+            string v_hor_em = lib.Right(DateTime.UtcNow.ToLocalTime().ToString(), 8);
+            //
             Cdetracc cdetracc = null;
             List<Cleyen> lll = new List<Cleyen>();    // 01/02/2024  List<Cleyen> lll = null;
             Cleyen cleyen = new Cleyen()
@@ -2502,7 +2529,7 @@ namespace TransCarga
                 {
                     descrip = "Cuota001",
                     monto_neto = valcre,
-                    cod_mon = tx_dat_monsunat.Text,
+                    cod_mon = tipoMoneda,   // tx_dat_monsunat.Text,
                     fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd")
                 };
                 ccc.Add(cuot);
@@ -2523,7 +2550,7 @@ namespace TransCarga
                     cod_mon = tipoMoneda,
                     tip_oper = tipOper,
                     fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd"),
-                    hora_emi = lib.Right(DateTime.UtcNow.ToLocalTime().ToString(), 8),             
+                    hora_emi = v_hor_em,             
                     cod_mon_ref = "PEN",            // tx_dat_monsunat.Text
                     cod_mon_obj = tipoMoneda,       // tx_dat_monsunat.Text
                     //factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
@@ -2551,16 +2578,16 @@ namespace TransCarga
                 CComprobante3 comprobante3 = new CComprobante3
                 {
                     tip_doc = tipdo,
-                    serie = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3),
+                    serie = "F001", // cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3),
                     correl = tx_numero.Text,
                     fec_emi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
                     cod_mon = tipoMoneda,
                     tip_oper = tipOper,
                     fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd"),
-                    hora_emi = DateTime.UtcNow.ToShortTimeString(),
+                    hora_emi = v_hor_em,
                     cod_mon_ref = "PEN",            // tx_dat_monsunat.Text
                     cod_mon_obj = tipoMoneda,       // tx_dat_monsunat.Text
-                    factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
+                    //factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
                     fec_tipo_cambio = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
                     ubl_version = "2.1",
                     customizacion = "2.0",
@@ -2586,16 +2613,17 @@ namespace TransCarga
                 CComprobante4 comprobante = new CComprobante4
                 {
                     tip_doc = tipdo,
-                    serie = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3),
+                    //serie = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3),
+                    serie = "F001", // cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3),
                     correl = tx_numero.Text,
                     fec_emi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
                     cod_mon = tipoMoneda,
                     tip_oper = tipOper,
                     fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd"),
-                    hora_emi = DateTime.UtcNow.ToShortTimeString(),
+                    hora_emi = v_hor_em,
                     cod_mon_ref = "PEN",            // tx_dat_monsunat.Text
                     cod_mon_obj = tipoMoneda,       // tx_dat_monsunat.Text
-                    factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
+                    //factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
                     fec_tipo_cambio = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
                     ubl_version = "2.1",
                     customizacion = "2.0",
@@ -2627,10 +2655,10 @@ namespace TransCarga
                     cod_mon = tipoMoneda,
                     tip_oper = tipOper,
                     fec_venc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd"),
-                    hora_emi = DateTime.UtcNow.ToShortTimeString(),
+                    hora_emi = v_hor_em,
                     cod_mon_ref = "PEN",            // tx_dat_monsunat.Text
                     cod_mon_obj = tipoMoneda,       // tx_dat_monsunat.Text
-                    factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
+                    //factor = ((tx_tipcam.Text.Trim() == "") ? null : tx_tipcam.Text),
                     fec_tipo_cambio = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
                     ubl_version = "2.1",
                     customizacion = "2.0",
@@ -2653,6 +2681,40 @@ namespace TransCarga
                 });
             }        // comprobante clase 6
             return retorna;
+        }
+        private string json_baja(string _fecdoc, string indentif, string _fecemi)
+        {
+            string retorna = "";
+            Cemisor cemisor = new Cemisor()
+            {
+                tip_doc = "6",
+                num_doc = Program.ruc,
+                raz_soc = Program.cliente,
+            };
+            CdetBaja deta = new CdetBaja()
+            {
+                nro_item = 1,
+                tip_doc = "6",
+                serie = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3),
+                correl = tx_numero.Text,
+                motivo = glosaAnul
+            };
+            Ccpe baja = new Ccpe()
+            {
+                fec_ref = _fecdoc,
+                identificador = indentif,
+                fec_gen = _fecemi,
+                emisor = cemisor,
+                det = deta
+            };
+            CinvoiceA cinvoice = new CinvoiceA
+            {
+                invoice = baja
+            };
+            return retorna = JsonConvert.SerializeObject(cinvoice, Formatting.Indented, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
         }
         //
         /*private string json_venta2(string tipdo, string tipoDocClte)
@@ -3295,6 +3357,8 @@ namespace TransCarga
             }
             if (modo == "ANULAR")
             {
+                factElec(nipfe, "txt", "baja", 1);          // borrame en produccion 05/02/2024
+
                 if (tx_numero.Text.Trim() == "")
                 {
                     tx_numero.Focus();

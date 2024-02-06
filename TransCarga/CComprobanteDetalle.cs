@@ -105,4 +105,12 @@ namespace TransCarga
         public CComprobanteDetalle CComprobanteDetalle { get; set; }
         public Ctransp_carga ctransp_Carga { get; set; }
     }               // Detalle con detracción
+    public class CdetBaja
+    {
+        public int nro_item { get; set; }       // n(5) 
+        public string tip_doc { get; set; }     // an(2) 
+        public string serie { get; set; }       // an(4)
+        public string correl { get; set; }      // n(8)
+        public string motivo { get; set; }      // an(100)
+    }
 }

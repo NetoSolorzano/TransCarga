@@ -10,6 +10,7 @@ using Gma.QrCodeNet.Encoding.Windows.Render;
 using System.Drawing.Imaging;
 using com.tuscomprobantespe.webservice;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace TransCarga
 {
@@ -86,6 +87,7 @@ namespace TransCarga
         string correo_gen = "";         // correo generico del emisor cuando el cliente no tiene correo propio
         string usuaInteg = "";          // usuario de la integracion con SeenCorp
         string clavInteg = "";          // clave de la integracion con SeenCorp
+        string nipfe = "";              // proveedor electrónico
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         static NumLetra numLetra = new NumLetra();
@@ -242,7 +244,7 @@ namespace TransCarga
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
-                micon.Parameters.AddWithValue("@noco", "factelect");
+                micon.Parameters.AddWithValue("@noco", "facelect");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -303,10 +305,14 @@ namespace TransCarga
                         if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
                         if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
-                    if (row["formulario"].ToString() == "factelect")
+                    if (row["formulario"].ToString() == "facelect")
                     {
-                        if (row["param"].ToString() == "usuarioInteg") usuaInteg = row["valor"].ToString().Trim();     // usuario de la integración con Seencorp
-                        if (row["param"].ToString() == "claveInteg") clavInteg = row["valor"].ToString().Trim();        // clave del usuario de la integración con Seencorp
+                        if (row["campo"].ToString() == "factelect")
+                        {
+                            if (row["param"].ToString() == "usuarioInteg") usuaInteg = row["valor"].ToString().Trim();     // usuario de la integración con Seencorp
+                            if (row["param"].ToString() == "claveInteg") clavInteg = row["valor"].ToString().Trim();        // clave del usuario de la integración con Seencorp
+                            if (row["param"].ToString() == "ose-pse") nipfe = row["valor"].ToString().Trim();
+                        }
                     }
                 }
                 da.Dispose();
@@ -762,7 +768,7 @@ namespace TransCarga
                 string archiR = "R-" + rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".txt";
                 if (accion == "alta")
                 {
-                    string ajson = json_nota(tipdo, tipoDocEmi, ntnota, fedoco, serie, corre);
+                    string ajson = json_nota(tipdo, tipoDocEmi, ntnota, fedoco, serie, corre, tipdv);
                     System.IO.File.WriteAllText(ruta + archi, ajson);
                     if (true == true)
                     {
@@ -1116,13 +1122,12 @@ namespace TransCarga
         }
         #endregion
         #region SeenCorp
-        private string json_nota(string tipdo, string tipoDocClte, string motiv, string femicomp, string serie, string corre)
+        private string json_nota(string tipdo, string tipoDocClte, string motiv, string femicomp, string serie, string corre, string tipdv)
         {
             string retorna = "";
             int cta_ron = 1;            // contador filas de detalle
             string d_medpa, d_valde, d_ctade;
             decimal totdet = 0, valcre = decimal.Parse(tx_flete.Text);
-            string tipOper = "0101";    // operacion venta interna
             string v_hor_em = lib.Right(DateTime.UtcNow.ToLocalTime().ToString(), 8);
             //
             Cdetracc cdetracc = null;
@@ -1143,7 +1148,7 @@ namespace TransCarga
                 d_ctade = Program.ctadetra;                         // cuenta detraccion BN
                 totdet = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
                 valcre = Math.Round((decimal.Parse(tx_flete.Text) - totdet), 2);               // cuota credito = valor - detraccion
-                tipOper = "1001";       // operación venta interna sujeta a detracción
+                //tipOper = "1001";       // operación venta interna sujeta a detracción
                 glosdet = glosdet + " " + d_ctade;                  // leyenda de la detración
                 //
                 cdetracc = new Cdetracc()
@@ -1270,7 +1275,7 @@ namespace TransCarga
             };
             Cdocmodif cdocmodif = new Cdocmodif()
             {
-                tip_doc = tipoDocEmi,
+                tip_doc = tipdv,
                 serie_correl = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serGR.Text,3) + "-" + tx_numGR.Text,
                 cod_ref = "01",
                 descrip_motiv = motiv,
@@ -1299,7 +1304,7 @@ namespace TransCarga
 
             if (true)        // tx_dat_plazo.Text.Trim() == "" && cdetracc == null
             {
-                Ccreditnote notaCred = new Ccreditnote
+                Ccreditnote nota = new Ccreditnote
                 {
                     tip_doc = tipdo,
                     serie = serie,
@@ -1311,22 +1316,23 @@ namespace TransCarga
                     fec_tipo_cambio = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2),
                     ubl_version = "2.1",
                     customizacion = "2.0",
-                    Cemisor = cemisor,
-                    Cadquiriente = cadquiriente,
-                    Ctot = ctot,
-                    cforma_Pago = formap,
-                    CComprobanteDetalle = aaa,
-                    Cleyen = lll
+                    emisor = cemisor,
+                    adquiriente = cadquiriente,
+                    tot = ctot,
+                    docmodif = cdocmodif,
+                    forma_Pago = formap,
+                    det = aaa,
+                    leyen = lll
                 };
-                Cinvoice1 cinvoice = new Cinvoice1
+                NotaCred notaCred = new NotaCred
                 {
-                    invoice = notaCred
+                    creditnote = nota
                 };
-                retorna = JsonConvert.SerializeObject(cinvoice, Formatting.Indented, new JsonSerializerSettings
+                retorna = JsonConvert.SerializeObject(notaCred, Formatting.Indented, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
                 });
-            }        // comprobante clase 1
+            }
             return retorna;
         }
         #endregion
@@ -1497,7 +1503,7 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            if (factElec("Horizont", "txt", "alta", 0) == true)       // facturacion electrónica
+                            if (factElec(nipfe, "txt", "alta", 0) == true)       // factElec("Horizont", "txt", "alta", 0) == true
                             {
                                 // actualizamos la tabla seguimiento de usuarios
                                 string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -1571,7 +1577,7 @@ namespace TransCarga
                                 aa = MessageBox.Show("Re-genera la nota electrónica?", "Confirme", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                                 if (aa == DialogResult.Yes)
                                 {
-                                    if (factElec("Horizont", "txt", "alta", 0) == true)       // facturacion electrónica
+                                    if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
                                     {
                                         // tutto finito !
                                     }

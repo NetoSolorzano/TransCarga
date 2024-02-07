@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace TransCarga
 {
-    class Ccreditnote
+    public class NotaCred
+    {
+        public Ccreditnote creditnote { get; set; }
+    }
+    public class Ccreditnote
     {
         public string tip_doc { get; set; }         // an(2)    Tipo de nota 
         public string serie { get; set; }           // an(4)    Serie de la nota
@@ -18,13 +22,13 @@ namespace TransCarga
         public string fec_tipo_cambio { get; set; }     // an(10)  Fecha del cambio
         public string ubl_version { get; set; }         // an(3)   Versión UBL
         public string customizacion { get; set; }       // an(3)   Versión Sunat 
-        public Cemisor Cemisor { get; set; }
-        public Cadquiriente Cadquiriente { get; set; }
-        public Ctot Ctot { get; set; }
-        public Cdocmodif Cdocmodif { get; set; }
-        public Cforma_pago cforma_Pago { get; set; }
-        public CComprobanteDetalle CComprobanteDetalle { get; set; }
-        public List<Cleyen> Cleyen { get; set; }
+        public Cemisor emisor { get; set; }
+        public Cadquiriente adquiriente { get; set; }
+        public Ctot tot { get; set; }
+        public Cdocmodif docmodif { get; set; }
+        public Cforma_pago forma_Pago { get; set; }
+        public List<CComprobanteDetalle> det { get; set; }
+        public List<Cleyen> leyen { get; set; }
     }
     public class Cdocmodif
     {

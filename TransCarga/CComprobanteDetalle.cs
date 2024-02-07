@@ -79,7 +79,7 @@ namespace TransCarga
         public double val_ref_transporte { get; set; }
         public double val_ref_carga_efectiva { get; set; }
         public double val_ref_carga_util { get; set; }
-        public Ctramo ctramo { get; set; }
+        public Ctramo tramo { get; set; }
     }
     public class CComprobDetDetrac
     {
@@ -103,7 +103,7 @@ namespace TransCarga
         public int tasa_igv { get; set; }        // n 9
         public string ind_grat { get; set; }    // an 1
         public CComprobanteDetalle CComprobanteDetalle { get; set; }
-        public Ctransp_carga ctransp_Carga { get; set; }
+        public Ctransp_carga transp_carga { get; set; }
     }               // Detalle con detracción
     public class CdetBaja
     {

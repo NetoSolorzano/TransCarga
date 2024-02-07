@@ -32,7 +32,7 @@ namespace TransCarga
     }
     public class CinvoiceA
     { 
-        public Ccpe invoice { get; set; }
+        public Ccpe baja { get; set; }
     }
     public class CComprobante1                  // contado SOLES sin detrac varias leyendas
     {
@@ -53,7 +53,7 @@ namespace TransCarga
         public Cemisor emisor { get; set; }
         public Cadquiriente adquiriente { get; set; }
         public Ctot tot { get; set; }
-        public Cforma_pago forma_Pago { get; set; }
+        public Cforma_pago forma_pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
     }
@@ -76,7 +76,7 @@ namespace TransCarga
         public Cemisor emisor { get; set; }
         public Cadquiriente adquiriente { get; set; }
         public Ctot tot { get; set; }
-        public Cforma_pago forma_Pago { get; set; }
+        public Cforma_pago forma_pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
     }
@@ -100,8 +100,8 @@ namespace TransCarga
         public Cadquiriente adquiriente { get; set; }
         public Ctot tot { get; set; }
         public Cdetracc detracc { get; set; }
-        public Cforma_pago forma_Pago { get; set; }
-        public List<CComprobanteDetalle> det { get; set; }
+        public Cforma_pago forma_pago { get; set; }
+        public List<CComprobDetDetrac> det { get; set; }
         public List<Cleyen> leyen { get; set; }
     }
     public class CComprobante4                  // credito sin detrac varias leyendas
@@ -123,10 +123,10 @@ namespace TransCarga
         public Cemisor emisor { get; set; }
         public Cadquiriente adquiriente { get; set; }
         public Ctot tot { get; set; }
-        public Cforma_pago forma_Pago { get; set; }
+        public Cforma_pago forma_pago { get; set; }
+        public List<CCuota> cuota { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
-        public List<CCuota> cuota { get; set; }
     }
     public class CComprobante5                  // sin definir 
     {
@@ -147,7 +147,7 @@ namespace TransCarga
         public Cemisor emisor { get; set; }
         public Cadquiriente adquiriente { get; set; }
         public Ctot tot { get; set; }
-        public Cforma_pago forma_Pago { get; set; }
+        public Cforma_pago forma_pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
         public List<CCuota> cuota { get; set; }
@@ -172,10 +172,10 @@ namespace TransCarga
         public Cadquiriente adquiriente { get; set; }
         public Ctot tot { get; set; }
         public Cdetracc detracc { get; set; }
-        public Cforma_pago forma_Pago { get; set; }
-        public List<CComprobanteDetalle> det { get; set; }
-        public List<Cleyen> leyen { get; set; }
+        public Cforma_pago forma_pago { get; set; }
         public List<CCuota> cuota { get; set; }
+        public List<CComprobDetDetrac> det { get; set; }
+        public List<Cleyen> leyen { get; set; }
     }
     public class Cadquiriente
     {
@@ -348,6 +348,6 @@ namespace TransCarga
         public string identificador { get; set; }
         public string fec_gen { get; set; }
         public Cemisor emisor { get; set; }
-        public CdetBaja det { get; set;}
+        public List<CdetBaja> det { get; set;}
     }
 }

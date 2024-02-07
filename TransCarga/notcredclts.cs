@@ -1277,7 +1277,7 @@ namespace TransCarga
             {
                 tip_doc = tipdv,
                 serie_correl = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serGR.Text,3) + "-" + tx_numGR.Text,
-                cod_ref = "01",
+                cod_ref = "01",                 // Tipo de nota de credito, catalogo 9 Sunat
                 descrip_motiv = motiv,
                 fec_emi = femicomp
             };

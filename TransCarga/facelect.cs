@@ -109,6 +109,10 @@ namespace TransCarga
         string rutaQR = "";             // ruta donde se trabajan los QR -> "C:\temp\"
         string nomImgQR = "";           // nombre general de los QR -> "imgQR.png"
         string v_iniGRET = "";          // sigla, inicicla, marca de las GRE-T
+        // variables sunat
+        string s_tipOpeN = "";          // tipo de operacion venta interna sin detracción
+        string s_tipOpeDG = "";         // tipo de operacion venta interna sujeta a detracción general
+        string s_tipOpeDTC = "";        // tipo de operacion venta interna sujeta a detracción en TRANSPORTE DE CARGA
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -135,10 +139,12 @@ namespace TransCarga
         DataTable dtp = new DataTable();        // plazo de credito 
         DataTable tcfe = new DataTable();       // facturacion electronica - cabecera
         DataTable tdfe = new DataTable();       // facturacion electronica -detalle
-        string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
-        string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
-
+        //string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
+        //string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
+        //string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        string[,] datcltsR = new string[9, 9];
+        string[,] datcltsD = new string[9, 9];
+        string[,] datguias = new string[9, 22];
         public facelect()
         {
             InitializeComponent();
@@ -242,9 +248,11 @@ namespace TransCarga
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // todo desabilidado
             sololee();
+            iniMatris();
         }
         private void initIngreso()
         {
+            iniMatris();
             limpiar();
             limpia_chk();
             limpia_otros();
@@ -301,7 +309,7 @@ namespace TransCarga
                 fshoy = tx_fechope.Text;
             }
             if ("NUEVO,EDITAR".Contains(Tx_modo.Text) && usercfece.ToUpper().Contains(asd.ToUpper())) { tx_fechope.Enabled = true; tx_fechope.ReadOnly = false; }
-            cargaunica();
+            cargaunica(0);
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -410,6 +418,12 @@ namespace TransCarga
                             if (row["param"].ToString() == "tipsDocbaja") tipdocAnu = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "usuarioInteg") usuaInteg = row["valor"].ToString().Trim();     // usuario de la integración con Seencorp
                             if (row["param"].ToString() == "claveInteg") clavInteg = row["valor"].ToString().Trim();        // clave del usuario de la integración con Seencorp
+                        }
+                        if (row["campo"].ToString() == "sunat")
+                        {
+                            if (row["param"].ToString() == "vtaInterna") s_tipOpeN = row["valor"].ToString().Trim();           // tipo de operacion venta interna sin detracción
+                            if (row["param"].ToString() == "operDetGene") s_tipOpeDG = row["valor"].ToString().Trim();         // tipo de operacion venta interna sujeta a detracción general
+                            if (row["param"].ToString() == "operDetCarga") s_tipOpeDTC = row["valor"].ToString().Trim();       // tipo de operacion venta interna sujeta a detracción en TRANSPORTE DE CARGA
                         }
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
@@ -852,49 +866,11 @@ namespace TransCarga
             // aca falta agregar resto  ...........
             return retorna;
         }
-        private bool validGR(string serie, string corre)    // validamos y devolvemos datos
+        private bool validGR(string serie, string corre, int fila)    // validamos y devolvemos datos
         {
             bool retorna = false;
             if (serie != "" && corre != "")
             {
-                datcltsR[0] = "";
-                datcltsR[1] = "";
-                datcltsR[2] = "";
-                datcltsR[3] = "";
-                datcltsR[4] = "";
-                datcltsR[5] = "";
-                datcltsR[6] = "";
-                datcltsR[7] = "";
-                datcltsR[8] = "";
-                //
-                datcltsD[0] = "";
-                datcltsD[1] = "";
-                datcltsD[2] = "";
-                datcltsD[3] = "";
-                datcltsD[4] = "";
-                datcltsD[5] = "";
-                datcltsD[6] = "";
-                datcltsD[7] = "";
-                datcltsD[8] = "";
-                //
-                datguias[0] = "";   // num GR
-                datguias[1] = "";   // descrip
-                datguias[2] = "";   // cant bultos
-                datguias[3] = "";   // nombre de la moneda de la GR
-                datguias[4] = "";   // valor de la guía en su moneda
-                datguias[5] = "";   // valor en moneda local
-                datguias[6] = "";   // codigo moneda local
-                datguias[7] = "";   // codigo moneda de la guia
-                datguias[8] = "";   // tipo de cambio
-                datguias[9] = "";   // fecha de la GR
-                datguias[10] = "";  // guia del cliente, sustento del cliente
-                datguias[11] = "";
-                datguias[12] = "";
-                datguias[13] = "";
-                datguias[14] = "";
-                datguias[15] = "";  // local origen-destino
-                datguias[16] = "";  // unid medida
-                datguias[17] = "";  // saldo de la GR
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -931,11 +907,77 @@ namespace TransCarga
                     }
                     if (hay == "sin")
                     {
-                        string consulta = "SELECT a.tidoregri,a.nudoregri,b1.razonsocial as nombregri,b1.direcc1 as direregri,b1.ubigeo as ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
+                        if (jalaguia(conn, serie, corre, fila) == true) tx_dat_saldoGR.Text = datguias[fila,17]; // dr.GetString("salgri");
+                        retorna = true;
+                    }
+                }
+            }
+            return retorna;
+        }
+        private void iniMatris()
+        {
+            for (int fila = 0; fila < 9; fila ++)
+            {
+                for (int col = 0; col < 9; col ++)
+                {
+                    datcltsR[fila, col] = "";
+                    datcltsD[fila, col] = "";
+                }
+                for (int col = 0; col < 22; col++)
+                {
+                    datguias[fila, col] = "";
+                }
+            }
+        }
+        private bool jalaguia(MySqlConnection conn, string serGR, string numGR, int fila)
+        {
+            bool retorna = false;
+            /*
+            datcltsR[0] = "";
+            datcltsR[1] = "";
+            datcltsR[2] = "";
+            datcltsR[3] = "";
+            datcltsR[4] = "";
+            datcltsR[5] = "";
+            datcltsR[6] = "";
+            datcltsR[7] = "";
+            datcltsR[8] = "";
+            //
+            datcltsD[0] = "";
+            datcltsD[1] = "";
+            datcltsD[2] = "";
+            datcltsD[3] = "";
+            datcltsD[4] = "";
+            datcltsD[5] = "";
+            datcltsD[6] = "";
+            datcltsD[7] = "";
+            datcltsD[8] = "";
+            //
+            datguias[0] = "";   // num GR
+            datguias[1] = "";   // descrip
+            datguias[2] = "";   // cant bultos
+            datguias[3] = "";   // nombre de la moneda de la GR
+            datguias[4] = "";   // valor de la guía en su moneda
+            datguias[5] = "";   // valor en moneda local
+            datguias[6] = "";   // codigo moneda local
+            datguias[7] = "";   // codigo moneda de la guia
+            datguias[8] = "";   // tipo de cambio
+            datguias[9] = "";   // fecha de la GR
+            datguias[10] = "";  // guia del cliente, sustento del cliente
+            datguias[11] = "";
+            datguias[12] = "";
+            datguias[13] = "";
+            datguias[14] = "";
+            datguias[15] = "";  // local origen-destino
+            datguias[16] = "";  // unid medida
+            datguias[17] = "";  // saldo de la GR
+            */
+            string consulta = "SELECT a.tidoregri,a.nudoregri,b1.razonsocial as nombregri,b1.direcc1 as direregri,b1.ubigeo as ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,max(d.unimedpro) as umed " +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,max(d.unimedpro) as umed," +
+                            "a.ubigregri,a.direregri as direorigen,a.ubigdegri,a.diredegri as diredesti " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -944,62 +986,61 @@ namespace TransCarga
                             "left join desc_loc lo on lo.idcodice=a.locorigen " +
                             "left join desc_loc ld on ld.idcodice=a.locdestin " +
                             "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est) AND c.fecdocvta IS NULL";   // descprodi
-                        using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+            {
+                micon.Parameters.AddWithValue("@ser", serGR);
+                micon.Parameters.AddWithValue("@num", numGR);
+                micon.Parameters.AddWithValue("@est", codAnul);
+                using (MySqlDataReader dr = micon.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        if (!dr.IsDBNull(0))    //  && dr[24] == DBNull.Value
                         {
-                            micon.Parameters.AddWithValue("@ser", serie);
-                            micon.Parameters.AddWithValue("@num", corre);
-                            micon.Parameters.AddWithValue("@est", codAnul);
-                            using (MySqlDataReader dr = micon.ExecuteReader())
-                            {
-                                if (dr.Read())
-                                {
-                                    if (!dr.IsDBNull(0))    //  && dr[24] == DBNull.Value
-                                    {
-                                        datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
-                                        datcltsR[1] = dr.GetString("nudoregri");
-                                        datcltsR[2] = dr.GetString("nombregri");
-                                        datcltsR[3] = dr.GetString("direregri");
-                                        datcltsR[4] = dr.GetString("ubigregri");
-                                        datcltsR[5] = dr.GetString("emailR");
-                                        datcltsR[6] = dr.GetString("numtel1R");
-                                        datcltsR[7] = dr.GetString("numtel2R");
-                                        datcltsR[8] = dr.GetString("tipsrem");
-                                        //
-                                        datcltsD[0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
-                                        datcltsD[1] = dr.GetString("nudodegri");
-                                        datcltsD[2] = dr.GetString("nombdegri");
-                                        datcltsD[3] = dr.GetString("diredegri");
-                                        datcltsD[4] = dr.GetString("ubigdegri");
-                                        datcltsD[5] = dr.GetString("emailD");
-                                        datcltsD[6] = dr.GetString("numtel1D");
-                                        datcltsD[7] = dr.GetString("numtel2D");
-                                        datcltsD[8] = dr.GetString("tipsdes");
-                                        //  
-                                        datguias[0] = serie + "-" + corre;                 // GR
-                                        datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip = descprodi
-                                        datguias[2] = (dr.IsDBNull(19)) ? "0" : dr.GetString("bultos");          // cant bultos
-                                        datguias[3] = dr.GetString("mon");             // nombre moneda de la GR
-                                        datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
-                                        datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
-                                        datguias[6] = dr.GetString("codMN");            // codigo moneda local
-                                        datguias[7] = dr.GetString("tipmongri");        // codigo moneda de la guía
-                                        datguias[8] = dr.GetString("tipcamgri");     // tipo de cambio de la GR
-                                        var a = dr.GetString("fechopegr").Substring(0, 10);
-                                        datguias[9] = a.Substring(6,4) + "-" + a.Substring(3,2) + "-" + a.Substring(0,2);     // fecha de la GR
-                                        datguias[10] = dr.GetString("docsremit");
-                                        datguias[11] = dr.GetString("plaplagri"); 
-                                        datguias[12] = dr.GetString("carplagri");
-                                        datguias[13] = dr.GetString("autplagri");
-                                        datguias[14] = dr.GetString("confvegri");
-                                        datguias[15] = dr.GetString("orides");
-                                        datguias[16] = dr.GetString("umed");
-                                        datguias[17] = dr.GetString("salgri");
-                                        //
-                                        tx_dat_saldoGR.Text = dr.GetString("salgri");
-                                        retorna = true;
-                                    }
-                                }
-                            }
+                            datcltsR[fila,0] = dr.GetString("tidoregri");        // datos del remitente de la GR
+                            datcltsR[fila, 1] = dr.GetString("nudoregri");
+                            datcltsR[fila, 2] = dr.GetString("nombregri");
+                            datcltsR[fila, 3] = dr.GetString("direregri");
+                            datcltsR[fila, 4] = dr.GetString("ubigregri");        // ubigeo pto de partida de la GR
+                            datcltsR[fila, 5] = dr.GetString("emailR");
+                            datcltsR[fila, 6] = dr.GetString("numtel1R");
+                            datcltsR[fila, 7] = dr.GetString("numtel2R");
+                            datcltsR[fila, 8] = dr.GetString("tipsrem");
+                            //
+                            datcltsD[fila, 0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
+                            datcltsD[fila, 1] = dr.GetString("nudodegri");
+                            datcltsD[fila, 2] = dr.GetString("nombdegri");
+                            datcltsD[fila, 3] = dr.GetString("diredegri");
+                            datcltsD[fila, 4] = dr.GetString("ubigdegri");        // ubigeo del pto de llegada de la GR
+                            datcltsD[fila, 5] = dr.GetString("emailD");
+                            datcltsD[fila, 6] = dr.GetString("numtel1D");
+                            datcltsD[fila, 7] = dr.GetString("numtel2D");
+                            datcltsD[fila, 8] = dr.GetString("tipsdes");
+                            //  
+                            datguias[fila, 0] = serGR + "-" + numGR;                 // GR
+                            datguias[fila, 1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip = descprodi
+                            datguias[fila, 2] = (dr.IsDBNull(19)) ? "0" : dr.GetString("bultos");          // cant bultos
+                            datguias[fila, 3] = dr.GetString("mon");             // nombre moneda de la GR
+                            datguias[fila, 4] = dr.GetString("totgri");          // valor GR en su moneda
+                            datguias[fila, 5] = dr.GetString("totgrMN");         // valor GR en moneda local
+                            datguias[fila, 6] = dr.GetString("codMN");            // codigo moneda local
+                            datguias[fila, 7] = dr.GetString("tipmongri");        // codigo moneda de la guía
+                            datguias[fila, 8] = dr.GetString("tipcamgri");     // tipo de cambio de la GR
+                            var a = dr.GetString("fechopegr").Substring(0, 10);
+                            datguias[fila, 9] = a.Substring(6, 4) + "-" + a.Substring(3, 2) + "-" + a.Substring(0, 2);     // fecha de la GR
+                            datguias[fila, 10] = dr.GetString("docsremit");
+                            datguias[fila, 11] = dr.GetString("plaplagri");
+                            datguias[fila, 12] = dr.GetString("carplagri");
+                            datguias[fila, 13] = dr.GetString("autplagri");
+                            datguias[fila, 14] = dr.GetString("confvegri");
+                            datguias[fila, 15] = dr.GetString("orides");
+                            datguias[fila, 16] = dr.GetString("umed");
+                            datguias[fila, 17] = dr.GetString("salgri");
+                            datguias[fila, 18] = dr.GetString("ubigregri");        // ubigeo origen GR  
+                            datguias[fila, 19] = dr.GetString("direorigen");        // direc origen GR
+                            datguias[fila, 20] = dr.GetString("ubigdegri");        // ubigeo destino GR
+                            datguias[fila, 21] = dr.GetString("diredesti");        // direc destino GR
+                            retorna = true;
                         }
                     }
                 }
@@ -1056,9 +1097,9 @@ namespace TransCarga
             }
             return (int)pixel;
         }
-        private void cargaunica()               // campos de carga unica
+        private void cargaunica(int fila)               // campos de carga unica
         {
-            if (Tx_modo.Text == "NUEVO")
+            if (true)        // 08/02/2024    Tx_modo.Text == "NUEVO"
             {
                 if (chk_cunica.Checked == true) // .CheckState.ToString() == "True"
                 {
@@ -1068,18 +1109,18 @@ namespace TransCarga
                     if (dataGridView1.Rows[0].Cells[0].Value != null)
                     {
                         //MessageBox.Show("hay guia");
-                        tx_pla_placa.Text = datguias[11].ToString();
-                        tx_pla_confv.Text = datguias[14].ToString();
-                        tx_pla_autor.Text = datguias[13].ToString();
+                        tx_pla_placa.Text = datguias[fila,11].ToString();
+                        tx_pla_confv.Text = datguias[fila,14].ToString();
+                        tx_pla_autor.Text = datguias[fila,13].ToString();
                         tx_cetm.Text = "";
                         tx_cutm.Text = "";
                         tx_valref1.Text = "";
                         tx_valref2.Text = "";
                         tx_valref3.Text = "";
-                        tx_dat_dpo.Text = datcltsR[3].ToString();
-                        tx_dat_dpd.Text = datcltsD[3].ToString();
-                        tx_dat_upo.Text = datcltsR[4].ToString();
-                        tx_dat_upd.Text = datcltsD[4].ToString();
+                        tx_dat_dpo.Text = datguias[fila, 19].ToString();    // datcltsR[fila,3].ToString();
+                        tx_dat_dpd.Text = datguias[fila, 21].ToString();    // datcltsD[fila,3].ToString();
+                        tx_dat_upo.Text = datguias[fila, 18].ToString();    // datcltsR[fila,4].ToString();
+                        tx_dat_upd.Text = datguias[fila, 20].ToString();    // datcltsD[fila,4].ToString();
                     }
                 }
                 else
@@ -1463,7 +1504,7 @@ namespace TransCarga
             //string _toisc = "0.00";                                                        // total impuesto selectivo consumo
             string _totogr = tx_flete.Text;                                             // Total valor venta operaciones grabadas n(12,2)  15
             string _totven = tx_subt.Text;                                              // Importe total de la venta n(12,2)             15
-            string tipOper = "0101";                                                    // tipo de operacion - 4 car
+            string tipOper = s_tipOpeN;         // "0101";                                                    // tipo de operacion - 4 car
             string codLocE = Program.codlocsunat;                                       // codigo local emisor
             //string conPago = "01";                                                      // condicion de pago
             //string _codgui = "31";                                                      // Código de la guia de remision TRANSPORTISTA
@@ -1927,7 +1968,7 @@ namespace TransCarga
             row["_toisc"] = "";                                                         // total impuesto selectivo consumo
             row["_totogr"] = tx_subt.Text;                                              // Total valor venta operaciones grabadas n(12,2)  15
             row["_totven"] = tx_flete.Text;                                             // Importe total de la venta n(12,2)             15
-            row["tipOper"] = "0101";                                                    // tipo de operacion - 4 car
+            row["tipOper"] = s_tipOpeN;     // "0101";                                                    // tipo de operacion - 4 car
             row["codLocE"] = Program.codlocsunat;                                       // codigo local emisor
             //row["conPago"] = "01";                                                      // condicion de pago
             row["_codgui"] = "31";                                                      // Código de la guia de remision TRANSPORTISTA
@@ -2356,7 +2397,7 @@ namespace TransCarga
             int cta_ron = 1;            // contador filas de detalle
             string d_medpa, d_conpa, d_valde, d_ctade;
             decimal totdet = 0, valcre = decimal.Parse(tx_flete.Text);
-            string tipOper = "0101";    // operacion venta interna
+            string tipOper = s_tipOpeN;     // "0101";    // operacion venta interna
             string v_hor_em = lib.Right(DateTime.UtcNow.ToLocalTime().ToString(), 8);
             //
             Cdetracc cdetracc = null;
@@ -2370,7 +2411,7 @@ namespace TransCarga
             // Detracción - leyenda de detracción - transp. de carga y tramo en detalle
             Ctramo ctramo = null;
             Ctransp_carga ctransp_Carga = null;
-            if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)
+            if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact)
             {
                 d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
                 d_conpa = "CONTADO";                                // condicion de pago
@@ -2378,14 +2419,18 @@ namespace TransCarga
                 d_ctade = Program.ctadetra;                         // cuenta detraccion BN
                 totdet = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
                 valcre = Math.Round((decimal.Parse(tx_flete.Text) - totdet), 2);               // cuota credito = valor - detraccion
-                tipOper = "1001";       // operación venta interna sujeta a detracción
+                decimal totdetSol = 0;
+                if (tx_dat_mone.Text == MonDeft) totdetSol = totdet;
+                else totdetSol = Math.Round(totdet * decimal.Parse(tx_tipcam.Text),0);
+
+                tipOper = s_tipOpeDTC;              // "1001";      // operación venta interna sujeta a detracción de transporte de carga
                 glosdet = glosdet + " " + d_ctade;                  // leyenda de la detración
                 //
                 cdetracc = new Cdetracc()
                 {
                     porcent = decimal.Parse(Program.pordetra),
                     cod = Program.coddetra,
-                    monto = totdet,
+                    monto = totdetSol,
                     cod_bn = Program.ctadetra,
                     med_pago = d_medpa,
                     cod_mon = "PEN"                                    // moneda de la detraccion
@@ -2398,15 +2443,6 @@ namespace TransCarga
                     leyen_descrip = glosdet
                 };
                 lll.Add(cleyen);
-                // tramo y transp de carga
-                ctramo = new Ctramo()
-                {
-
-                };
-                ctransp_Carga = new Ctransp_carga()
-                {
-
-                };
             }
             List<CComprobanteDetalle> aaa = new List<CComprobanteDetalle>();
             List<CComprobDetDetrac> ddd = new List<CComprobDetDetrac>();
@@ -2416,17 +2452,19 @@ namespace TransCarga
                 carga_util = 0,
                 retorno_vacio = true
             };
+            List<Ctramo> ctramos = new List<Ctramo>();
+            ctramos.Add(tramito);
             Ctransp_carga ctransp = new Ctransp_carga()
             {
-                cod_ubi_ori = tx_dat_upo.Text,
-                dir_ori = tx_dat_dpo.Text,
-                cod_ubi_des = tx_dat_upd.Text,
-                dir_des = tx_dat_dpd.Text,
+                cod_ubi_ori = datguias[cta_ron - 1, 18],     // tx_dat_upo.Text,
+                dir_ori = datguias[cta_ron - 1, 19],         // tx_dat_dpo.Text,
+                cod_ubi_des = datguias[cta_ron - 1, 20],     // tx_dat_upd.Text,
+                dir_des = datguias[cta_ron - 1, 21],         // tx_dat_dpd.Text,
                 nota = "Transporte consolidado",
                 val_ref_transporte = 1,
                 val_ref_carga_efectiva = 1,
                 val_ref_carga_util = 1,
-                tramo = tramito
+                tramo = ctramos
             };
 
             foreach (DataGridViewRow ron in dataGridView1.Rows)
@@ -2536,7 +2574,7 @@ namespace TransCarga
             Cforma_pago formap = new Cforma_pago()
             {
                 cod_mon = tipoMoneda,     // tx_dat_monsunat.Text
-                monto_neto = decimal.Parse(tx_flete.Text),
+                monto_neto = valcre,   // decimal.Parse(tx_flete.Text),
                 //descrip = (rb_contado.Checked == true) ? "Contado" : (rb_credito.Checked == true)? "Credito" : "Contado"
                 descrip = (tx_dat_plazo.Text.Trim() == "") ? "Contado" : "Credito"
             };
@@ -2833,8 +2871,9 @@ namespace TransCarga
         {
             if (tx_serGR.Text.Trim() != "" && tx_numGR.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
             {
+                int fila = (dataGridView1.Rows.Count - 1);          // numero de filas de la grilla detalle
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
-                if (validGR(tx_serGR.Text, tx_numGR.Text) == false)
+                if (validGR(tx_serGR.Text, tx_numGR.Text, fila) == false)
                 {
                     MessageBox.Show("La GR no existe, esta anulada o ya esta facturada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_numGR.Text = "";
@@ -2843,7 +2882,7 @@ namespace TransCarga
                 }
                 else
                 {
-                    if (datguias[1].Trim() == "")   // datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip = descprodi
+                    if (datguias[fila,1].Trim() == "")   // datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip = descprodi
                     {
                         MessageBox.Show("La GR tiene el detalle incompleto", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         tx_numGR.Text = "";
@@ -2864,8 +2903,8 @@ namespace TransCarga
                             return;
                         }
                         // validamos si la guia que ya esta tiene saldo o no y es = a la guia que se va a insertar
-                        if (decimal.Parse(dataGridView1.Rows[i].Cells[12].Value.ToString()) > 0 && decimal.Parse(datguias[17]) == 0 ||
-                            decimal.Parse(dataGridView1.Rows[i].Cells[12].Value.ToString()) == 0 && decimal.Parse(datguias[17]) > 0)
+                        if (decimal.Parse(dataGridView1.Rows[i].Cells[12].Value.ToString()) > 0 && decimal.Parse(datguias[fila, 17]) == 0 ||
+                            decimal.Parse(dataGridView1.Rows[i].Cells[12].Value.ToString()) == 0 && decimal.Parse(datguias[fila, 17]) > 0)
                         {
                             MessageBox.Show("Todas las guías deben estar cobradas o no cobradas", "Error, las GR deben o no tener saldo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             tx_numGR.Text = "";
@@ -2875,12 +2914,12 @@ namespace TransCarga
                     }
                 }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15], datguias[16], datguias[17]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[fila, 0], datguias[fila, 1], datguias[fila, 2], datguias[fila, 3], datguias[fila, 4], datguias[fila, 5], datguias[fila, 6], datguias[fila, 9], datguias[fila, 10], datguias[fila, 7], datguias[fila, 15], datguias[fila, 16], datguias[fila, 17]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR
-                tx_dat_mone.Text = datguias[7].ToString();
-                cmb_mon.SelectedValue = datguias[7].ToString();
+                tx_dat_mone.Text = datguias[fila, 7].ToString();
+                cmb_mon.SelectedValue = datguias[fila, 7].ToString();
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     if (dataGridView1.Rows[i].Cells[0].Value != null)
@@ -2902,7 +2941,7 @@ namespace TransCarga
                 tx_tfil.Text = totfil.ToString();
                 tx_flete.Text = totflet.ToString("#0.00");
                 tx_fletMN.Text = totflet.ToString("#0.00"); // Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
-                if (tx_dat_mone.Text != MonDeft && datguias[9].ToString().Substring(0,10) != tx_fechope.Text)
+                if (tx_dat_mone.Text != MonDeft && datguias[fila, 9].ToString().Substring(0,10) != tx_fechope.Text)
                 {
                     // llamanos a tipo de cambio
                     vtipcam vtipcam = new vtipcam("", tx_dat_mone.Text, DateTime.Now.Date.ToString());
@@ -2914,7 +2953,7 @@ namespace TransCarga
                 }
                 else
                 {
-                    tx_tipcam.Text = datguias[8].ToString();
+                    tx_tipcam.Text = datguias[fila, 8].ToString();
                 }
                 if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
                 {
@@ -2948,6 +2987,7 @@ namespace TransCarga
                     tx_flete.ReadOnly = true;
                 }
                 tx_flete_Leave(null, null);
+                chk_cunica.Checked = true; // cargaunica();                   // jalamos los datos del camion
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -3396,20 +3436,20 @@ namespace TransCarga
                 // comprobamos si los datos del cliente tienen cambios
                 if (rb_remGR.Checked == true)
                 {
-                    if (datcltsR[3].ToString().Trim() != tx_dirRem.Text.Trim() ||
-                        datcltsR[6].ToString().Trim() != tx_telc1.Text.Trim() ||
-                        datcltsR[5].ToString().Trim() != tx_email.Text.Trim() ||
-                        datcltsR[4].ToString().Trim() != tx_ubigRtt.Text.Trim())
+                    if (datcltsR[0, 3].ToString().Trim() != tx_dirRem.Text.Trim() ||
+                        datcltsR[0, 6].ToString().Trim() != tx_telc1.Text.Trim() ||
+                        datcltsR[0, 5].ToString().Trim() != tx_email.Text.Trim() ||
+                        datcltsR[0, 4].ToString().Trim() != tx_ubigRtt.Text.Trim())
                     {
                         tx_dat_m1clte.Text = "E";
                     }
                 }
                 if (rb_desGR.Checked == true)
                 {
-                    if (datcltsD[3].ToString().Trim() != tx_dirRem.Text.Trim() ||
-                        datcltsD[6].ToString().Trim() != tx_telc1.Text.Trim() ||
-                        datcltsD[5].ToString().Trim() != tx_email.Text.Trim() ||
-                        datcltsD[4].ToString().Trim() != tx_ubigRtt.Text.Trim())
+                    if (datcltsD[0, 3].ToString().Trim() != tx_dirRem.Text.Trim() ||
+                        datcltsD[0, 6].ToString().Trim() != tx_telc1.Text.Trim() ||
+                        datcltsD[0, 5].ToString().Trim() != tx_email.Text.Trim() ||
+                        datcltsD[0, 4].ToString().Trim() != tx_ubigRtt.Text.Trim())
                     {
                         tx_dat_m1clte.Text = "E";
                     }
@@ -3689,6 +3729,7 @@ namespace TransCarga
                 dataGridView1.Rows.Clear();
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
+                cargaunica(0);
             }
         }
         private void tx_nomRem_Leave(object sender, EventArgs e)
@@ -3906,6 +3947,7 @@ namespace TransCarga
                 jalaoc("sernum");
                 dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
+                cargaunica(0);
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)
@@ -3988,11 +4030,11 @@ namespace TransCarga
         }
         private void rb_remGR_Click(object sender, EventArgs e)         // datos del remitente de la GR
         {
-            tx_dat_tdRem.Text = datcltsR[0];
+            tx_dat_tdRem.Text = datcltsR[0, 0];
             cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
-            tx_numDocRem.Text = datcltsR[1];
-            tx_nomRem.Text = datcltsR[2];
-            tx_dirRem.Text = datcltsR[3];
+            tx_numDocRem.Text = datcltsR[0, 1];
+            tx_nomRem.Text = datcltsR[0, 2];
+            tx_dirRem.Text = datcltsR[0, 3];
             tx_dptoRtt.Text = "";
             tx_provRtt.Text = "";
             tx_distRtt.Text = "";
@@ -4003,19 +4045,19 @@ namespace TransCarga
                 tx_mld.Text = row[2].ToString();
             }
             
-            if (datcltsR[4].ToString().Trim() != "")
+            if (datcltsR[0, 4].ToString().Trim() != "")
             {
-                DataRow[] row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin='00' and distri='00'");
+                DataRow[] row = dataUbig.Select("depart='" + datcltsR[0, 4].Substring(0, 2) + "' and provin='00' and distri='00'");
                 tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
-                row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='" + datcltsR[4].Substring(2, 2) + "' and distri='00'");
+                row = dataUbig.Select("depart='" + datcltsR[0, 4].Substring(0, 2) + "' and provin ='" + datcltsR[0, 4].Substring(2, 2) + "' and distri='00'");
                 tx_provRtt.Text = row[0].ItemArray[4].ToString();
-                row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='" + datcltsR[4].Substring(2, 2) + "' and distri='" + datcltsR[4].Substring(4, 2) + "'");
+                row = dataUbig.Select("depart='" + datcltsR[0, 4].Substring(0, 2) + "' and provin ='" + datcltsR[0, 4].Substring(2, 2) + "' and distri='" + datcltsR[0, 4].Substring(4, 2) + "'");
                 tx_distRtt.Text = row[0].ItemArray[4].ToString();
                 //
-                tx_email.Text = datcltsR[5];
-                tx_telc1.Text = datcltsR[6];
-                tx_telc2.Text = datcltsR[7];
-                tx_ubigRtt.Text = datcltsR[4];
+                tx_email.Text = datcltsR[0, 5];
+                tx_telc1.Text = datcltsR[0, 6];
+                tx_telc2.Text = datcltsR[0, 7];
+                tx_ubigRtt.Text = datcltsR[0, 4];
             }
             cmb_docRem.Enabled = false;
             tx_numDocRem.ReadOnly = true;
@@ -4023,11 +4065,11 @@ namespace TransCarga
         }
         private void rb_desGR_Click(object sender, EventArgs e)         // datos del destinatario de la GR
         {
-            tx_dat_tdRem.Text = datcltsD[0];
+            tx_dat_tdRem.Text = datcltsD[0, 0];
             cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
-            tx_numDocRem.Text = datcltsD[1];
-            tx_nomRem.Text = datcltsD[2];
-            tx_dirRem.Text = datcltsD[3];
+            tx_numDocRem.Text = datcltsD[0, 1];
+            tx_nomRem.Text = datcltsD[0, 2];
+            tx_dirRem.Text = datcltsD[0, 3];
             tx_dptoRtt.Text = "";
             tx_provRtt.Text = "";
             tx_distRtt.Text = "";
@@ -4040,19 +4082,19 @@ namespace TransCarga
 
             try
             {
-                if (datcltsD[4].ToString().Trim() != "")
+                if (datcltsD[0, 4].ToString().Trim() != "")
                 {
-                    DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");
+                    DataRow[] row = dataUbig.Select("depart='" + datcltsD[0, 4].Substring(0, 2) + "' and provin='00' and distri='00'");
                     tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
-                    row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='00'");
+                    row = dataUbig.Select("depart='" + datcltsD[0, 4].Substring(0, 2) + "' and provin ='" + datcltsD[0, 4].Substring(2, 2) + "' and distri='00'");
                     tx_provRtt.Text = row[0].ItemArray[4].ToString();
-                    row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='" + datcltsD[4].Substring(4, 2) + "'");
+                    row = dataUbig.Select("depart='" + datcltsD[0, 4].Substring(0, 2) + "' and provin ='" + datcltsD[0, 4].Substring(2, 2) + "' and distri='" + datcltsD[0, 4].Substring(4, 2) + "'");
                     tx_distRtt.Text = row[0].ItemArray[4].ToString();
                     //
-                    tx_email.Text = datcltsD[5];
-                    tx_telc1.Text = datcltsD[6];
-                    tx_telc2.Text = datcltsD[7];
-                    tx_ubigRtt.Text = datcltsD[4];
+                    tx_email.Text = datcltsD[0, 5];
+                    tx_telc1.Text = datcltsD[0, 6];
+                    tx_telc2.Text = datcltsD[0, 7];
+                    tx_ubigRtt.Text = datcltsD[0, 4];
                 }
             }
             catch(Exception ex)
@@ -4224,7 +4266,7 @@ namespace TransCarga
         }
         private void chk_cunica_CheckedChanged(object sender, EventArgs e)
         {
-            cargaunica();
+            cargaunica(0);
         }
         private void val_NoCaracteres(TextBox textBox)
         {

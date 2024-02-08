@@ -79,7 +79,7 @@ namespace TransCarga
         public double val_ref_transporte { get; set; }
         public double val_ref_carga_efectiva { get; set; }
         public double val_ref_carga_util { get; set; }
-        public Ctramo tramo { get; set; }
+        public List<Ctramo> tramo { get; set; }
     }
     public class CComprobDetDetrac
     {

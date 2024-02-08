@@ -1918,9 +1918,9 @@
             this.panel2.Controls.Add(this.label27);
             this.panel2.Controls.Add(this.tx_pla_placa);
             this.panel2.Controls.Add(this.label21);
-            this.panel2.Location = new System.Drawing.Point(61, 149);
+            this.panel2.Location = new System.Drawing.Point(5, 149);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(702, 62);
+            this.panel2.Size = new System.Drawing.Size(758, 62);
             this.panel2.TabIndex = 416;
             // 
             // groupBox35
@@ -2116,13 +2116,15 @@
             // 
             // chk_cunica
             // 
+            this.chk_cunica.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chk_cunica.ForeColor = System.Drawing.Color.Black;
-            this.chk_cunica.Location = new System.Drawing.Point(6, 161);
+            this.chk_cunica.Location = new System.Drawing.Point(5, 112);
             this.chk_cunica.Name = "chk_cunica";
-            this.chk_cunica.Size = new System.Drawing.Size(54, 38);
+            this.chk_cunica.Size = new System.Drawing.Size(115, 20);
             this.chk_cunica.TabIndex = 417;
-            this.chk_cunica.Text = "Carga Única";
+            this.chk_cunica.Text = "Transporte de Carga";
             this.chk_cunica.UseVisualStyleBackColor = true;
+            this.chk_cunica.Visible = false;
             this.chk_cunica.CheckedChanged += new System.EventHandler(this.chk_cunica_CheckedChanged);
             // 
             // groupBox41

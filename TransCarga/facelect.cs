@@ -481,12 +481,12 @@ namespace TransCarga
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                if (conn.State == ConnectionState.Open) // tippago,plazocred
+                if (conn.State == ConnectionState.Open) // tippago,plazocred  
                 {
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
                         "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred," +
-                        "a.cargaunica,a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,a.porcendscto,a.valordscto " +
+                        "a.cargaunica,a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,a.porcendscto,a.valordscto,a.totdvMN " +
                         "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda "
                         + parte;
@@ -539,7 +539,8 @@ namespace TransCarga
                             //,,,porcigv
                             tx_flete.Text = Math.Round(dr.GetDecimal("totdvta"),2).ToString();           // total inc. igv
                             tx_pagado.Text = dr.GetString("totpags");
-                            tx_salxcob.Text = dr.GetString("saldvta");
+                            tx_salxcob.Text = Math.Round(dr.GetDecimal("saldvta"), 2).ToString();    // dr.GetString("saldvta"
+                            tx_fletMN.Text = dr.GetString("totdvMN");
                             tx_dat_estad.Text = dr.GetString("estdvta");        // estado
                             tx_dat_tcr.Text = dr.GetString("tipoclt");          // tipo de cliente credito o contado
                             tx_dat_m1clte.Text = dr.GetString("m1clien");
@@ -617,9 +618,12 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
+            //string jalad = "SELECT a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
+            //    "'' as unimedpro, '' as docsremit, '' as fechopegr,'' as orides " +
+            //    "FROM detfactu a where a.idc = @idr";
             string jalad = "SELECT a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
-                "'' as unimedpro, '' as docsremit, '' as fechopegr,'' as orides " +
-                "FROM detfactu a where a.idc = @idr";
+                "'' as unimedpro, '' as docsremit, '' as fechopegr,'' as orides,m.idcodice " +
+                "FROM detfactu a left join desc_mon m on trim(m.descrizionerid)=trim(a.codmogr) where a.idc = @idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -667,7 +671,7 @@ namespace TransCarga
                                 "",
                                 row[10].ToString().Substring(6, 4) + "-" + row[10].ToString().Substring(3, 2) + "-" + row[10].ToString().Substring(0, 2),
                                 row[9].ToString(),
-                                "",
+                                row[12].ToString(),
                                 row[11].ToString(),
                                 row[8].ToString()
                             );
@@ -1368,8 +1372,25 @@ namespace TransCarga
                             MessageBox.Show("No se pudo enviar el comprobante al servicio del proveedor: " + provee + Environment.NewLine +
                                 "El motivo fue el siguiente: " + Environment.NewLine + 
                                 respuesta, " ERROR ",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                            System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
                         }
-                        System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
+                        else
+                        {
+                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                            {
+                                conn.Open();
+                                string actua = "update adifactu set nticket=@ntk,fticket=now() where tipdoc=@tdv and serie=@sdv and numero=@ndv";
+                                using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                                {
+                                    micon.Parameters.AddWithValue("@ntk", respuesta);
+                                    micon.Parameters.AddWithValue("@tdv", tx_dat_tdv.Text);
+                                    micon.Parameters.AddWithValue("@sdv", tx_serie.Text);
+                                    micon.Parameters.AddWithValue("@ndv", tx_numero.Text);
+                                    micon.ExecuteNonQuery();
+                                    System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
+                                }
+                            }
+                        }
                         // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
                         retorna = true;
                     }

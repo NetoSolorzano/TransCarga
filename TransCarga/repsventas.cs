@@ -27,6 +27,7 @@ namespace TransCarga
         public string perAn = "";
         public string perIm = "";
         string codfact = "";
+        string codBole = "";            // codigo de Boleta de venta
         string coddni = "";
         string codruc = "";
         string codmon = "";
@@ -52,6 +53,7 @@ namespace TransCarga
         //DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
+        int cuenta = -1;     // contador de repeticiones de visualizacion en columnas de estados
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -155,6 +157,7 @@ namespace TransCarga
                     if (row["formulario"].ToString() == "facelect")
                     {
                         if (row["campo"].ToString() == "documento" && row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();         // tipo de pedido por defecto en almacen
+                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "boleta") codBole = row["valor"].ToString().Trim();         // 
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") codmon = row["valor"].ToString().Trim();
                     }
                     if (row["formulario"].ToString() == "clients")
@@ -204,8 +207,12 @@ namespace TransCarga
                 cmb_sede_guias.ValueMember = "idcodice";
                 // PANEL notas de credito
                 cmb_sede_plan.DataSource = dttaller;
-                cmb_sede_plan.DisplayMember = "descrizionerid"; ;
+                cmb_sede_plan.DisplayMember = "descrizionerid"; 
                 cmb_sede_plan.ValueMember = "idcodice";
+                // pANEL DE tabSunat
+                cmb_sunat_sede.DataSource = dttaller;
+                cmb_sunat_sede.DisplayMember = "descrizionerid";
+                cmb_sunat_sede.ValueMember = "idcodice";
                 // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
@@ -220,7 +227,10 @@ namespace TransCarga
                 cmb_estad_plan.DataSource = dtestad;
                 cmb_estad_plan.DisplayMember = "descrizionerid";
                 cmb_estad_plan.ValueMember = "idcodice";
-                //
+                // pANEL DE tabSunat
+                cmb_sunat_est.DataSource = dtestad;
+                cmb_sunat_est.DisplayMember = "descrizionerid";
+                cmb_sunat_est.ValueMember = "idcodice";
             }
             conn.Close();
         }
@@ -289,6 +299,133 @@ namespace TransCarga
                     }
                     */
                     suma_grilla("dgv_notcre");
+                    break;
+                case "dgv_sunat_est":
+                    dgv_sunat_est.Font = tiplg;
+                    dgv_sunat_est.DefaultCellStyle.Font = tiplg;
+                    dgv_sunat_est.RowTemplate.Height = 15;
+                    dgv_sunat_est.AllowUserToAddRows = false;
+                    suma_grilla("dgv_sunat_est");
+
+                    Padding padding = new Padding();
+                    padding.Left = 16;
+                    padding.Right = 16;
+                    padding.Top = 0;
+                    padding.Bottom = 0;
+
+                    Font chiq = new Font("Arial", 6, FontStyle.Bold);
+
+                    DataGridViewButtonColumn btnTk = new DataGridViewButtonColumn();
+                    btnTk.HeaderText = "iTK";
+                    //btnTk.UseColumnTextForButtonValue = true;
+                    btnTk.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnTk.Name = "iTK";
+                    btnTk.Width = 60;
+                    btnTk.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnTk.DefaultCellStyle.Padding = padding;
+                    btnTk.DefaultCellStyle.Font = chiq;
+                    btnTk.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    DataGridViewButtonColumn btnCDR = new DataGridViewButtonColumn();
+                    btnCDR.HeaderText = "CDR";
+                    btnCDR.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnCDR.Name = "cdr";
+                    btnCDR.Width = 60;
+                    btnCDR.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnCDR.DefaultCellStyle.Padding = padding;
+                    btnCDR.DefaultCellStyle.Font = chiq;
+                    btnCDR.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    DataGridViewButtonColumn btnA4 = new DataGridViewButtonColumn();
+                    btnA4.HeaderText = "iA4";
+                    btnA4.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnA4.Name = "iA4";
+                    btnA4.Width = 60;
+                    btnA4.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnA4.DefaultCellStyle.Padding = padding;
+                    btnA4.DefaultCellStyle.Font = chiq;
+                    btnA4.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    /*
+                    DataGridViewButtonColumn btnPDF = new DataGridViewButtonColumn();
+                    btnPDF.HeaderText = "PDF";
+                    btnPDF.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnPDF.Name = "pdf";
+                    btnPDF.Width = 60;
+                    btnPDF.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnPDF.DefaultCellStyle.Padding = padding;
+                    btnPDF.DefaultCellStyle.Font = chiq;
+                    btnPDF.DefaultCellStyle.SelectionBackColor = Color.White;
+                    */
+                    DataGridViewButtonColumn btnAct = new DataGridViewButtonColumn();
+                    btnAct.HeaderText = "Sunat"; // ACTUALIZA
+                    btnAct.Text = "...Consulta...";
+                    btnAct.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnAct.Name = "consulta";
+                    btnAct.Width = 140;
+                    btnAct.UseColumnTextForButtonValue = true;
+                    btnAct.DefaultCellStyle.Padding = padding;
+                    // EMISION,TIPO,COMPROBANTE,ORIGEN,ESTADO,SUNAT,CDR_GEN,btnTK,btnCDR,btnACT,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id
+                    //     0  ,  1 ,      2    ,   3  ,  4   ,  5  ,   6   ,  7  ,  8   ,  9   ,  10   ,    11    ,   12     ,   13   , 14
+                    dgv_sunat_est.CellClick += DataGridView1_CellClick;
+                    dgv_sunat_est.Columns.Insert(7, btnTk);
+                    dgv_sunat_est.Columns.Insert(8, btnA4);
+                    //dgv_sunat_est.Columns.Insert(8, btnPDF);   // .Add(btnPDF);
+                    dgv_sunat_est.Columns.Insert(9, btnCDR);   // .Add(btnCDR);
+                    dgv_sunat_est.Columns.Insert(10, btnAct);   // .Add(btnAct);
+                    dgv_sunat_est.Columns[11].Visible = false;
+                    dgv_sunat_est.Columns[12].Visible = false;
+                    dgv_sunat_est.Columns[13].Visible = false;
+                    dgv_sunat_est.Columns[14].Visible = false;
+                    dgv_sunat_est.Columns[15].Visible = false;
+                    if (dgv_sunat_est.Rows.Count > 0)         // autosize filas
+                    {
+                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 11; i++)
+                        {
+                            dgv_sunat_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_sunat_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_sunat_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 11; i++)
+                        {
+                            int a = dgv_sunat_est.Columns[i].Width;
+                            b += a;
+                            dgv_sunat_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_sunat_est.Columns[i].Width = a;
+                        }
+                        if (b < dgv_sunat_est.Width) dgv_sunat_est.Width = dgv_sunat_est.Width - 11;
+                        dgv_sunat_est.ReadOnly = true;
+                    }
+                    if (dgv_sunat_est.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_sunat_est.Rows.Count; i++)
+                        {
+                            dgv_sunat_est.Rows[i].Cells["iTK"].Value = "TK";
+                            dgv_sunat_est.Rows[i].Cells["iA4"].Value = "A4";
+                            if (dgv_sunat_est.Rows[i].Cells["iTK"].Value != null)
+                            {
+                                if (dgv_sunat_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "0")
+                                {
+                                    //dgv_sunat_est.Rows[i].Cells[8].ReadOnly = false;
+                                    //dgv_sunat_est.Rows[i].Cells[8].Value = "PDF";
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = false;
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].Value = "CDR";
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "";
+                                }
+                                else
+                                {
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].Value = "";
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = false;
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "...Consulta...";
+                                    //dgv_sunat_est.Rows[i].Cells[10].ReadOnly = false;
+                                }
+                            }
+                        }
+                    }
                     break;
             }
         }
@@ -387,7 +524,7 @@ namespace TransCarga
             }
 
         }
-        private void suma_grilla(string dgv)
+        private void suma_grilla(string dgv)        // suma totales y pinta de rojo los anulados
         {
             DataRow[] row = dtestad.Select("idcodice='" + codAnul + "'");   // dtestad
             string etiq_anulado = row[0].ItemArray[0].ToString();
@@ -433,9 +570,82 @@ namespace TransCarga
                     tx_tfi_n.Text = cr.ToString();
                     tx_totval_n.Text = tvv.ToString("#0.00");
                     break;
+                case "dgv_sunat_est":
+                    for (int i = 0; i < dgv_sunat_est.Rows.Count; i++)
+                    {
+                        if (dgv_sunat_est.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            //tvv = tvv + Convert.ToDouble(dgv_sunat_est.Rows[i].Cells["TOTAL_MN"].Value);
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_sunat_est.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                            ca = ca + 1;
+                            //tva = tva + Convert.ToDouble(dgv_sunat_est.Rows[i].Cells["TOTAL_MN"].Value);
+                        }
+                    }
+                    tx_sunat_fv.Text = cr.ToString();
+                    tx_sunat_fa.Text = ca.ToString();
+                    //tx_totval_n.Text = tvv.ToString("#0.00");
+                    break;
             }
         }
+        private void bt_sunatEst_Click(object sender, EventArgs e)      // estados sunat de comprobantes
+        {
+            //dtsunatE.Rows.Clear();
+            //dtsunatE.Columns.Clear();
+            DataTable dtsunatE = new DataTable();
+            // validaciones
+            if (tx_dat_sunat_sede.Text == "")
+            {
+                MessageBox.Show("Seleccione el local Origen", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cmb_sunat_sede.Focus();
+                return;
+            }
+            string consulta = "";
+            string parte = "";
+            if (rb_dVtas.Checked == true)   // facturas y boletas
+            {
+                consulta = "SELECT f.fechope AS EMISION,f.martdve as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id " + // ,ad.ulterror as ULT_ERROR
+                    "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
+                    "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
+                    "LEFT JOIN desc_est es ON es.IDCodice = f.estdvta " +
+                    "WHERE f.fechope between @fecini and @fecfin";  // marca_gre<>'' AND 
+            }
+            if (rb_notaC.Checked == true)   // notas de crédito
+            {
 
+            }
+            if (tx_dat_sunat_sede.Text != "") parte = parte + " and f.locorig=@loca";
+            if (tx_dat_sunat_est.Text != "") parte = parte + " and ad.estadoS=@esta";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand micon = new MySqlCommand(consulta + parte, conn))
+                {
+                    micon.Parameters.AddWithValue("@loca", tx_dat_sunat_sede.Text);
+                    micon.Parameters.AddWithValue("@fecini", dtp_sunat_fini.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_sunat_fter.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@esta", (tx_dat_sunat_est.Text != "") ? tx_dat_sunat_est.Text : "");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_sunat_est.DataSource = null;
+                        dgv_sunat_est.Columns.Clear();
+                        dgv_sunat_est.Rows.Clear();
+                        dgv_sunat_est.CellClick -= null;
+                        cuenta = -1;
+                        da.Fill(dtsunatE);
+                        dgv_sunat_est.DataSource = dtsunatE;
+                        grilla("dgv_sunat_est");
+                        dtsunatE.Dispose();
+                    }
+                }
+            }
+
+        }
+        
         #region combos
         private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -487,6 +697,32 @@ namespace TransCarga
             {
                 cmb_estad_guias.SelectedIndex = -1;
                 tx_estad_guias.Text = "";
+            }
+        }
+        private void cmb_sunat_sede_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_sunat_sede.SelectedValue != null) tx_dat_sunat_sede.Text = cmb_sunat_sede.SelectedValue.ToString();
+            else tx_dat_sunat_sede.Text = "";
+        }
+        private void cmb_sunat_sede_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sunat_sede.SelectedIndex = -1;
+                tx_dat_sunat_sede.Text = "";
+            }
+        }
+        private void cmb_sunat_est_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_sunat_est.SelectedValue != null) tx_dat_sunat_est.Text = cmb_sunat_est.SelectedValue.ToString();
+            else tx_dat_sunat_est.Text = "";
+        }
+        private void cmb_sunat_est_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sunat_est.SelectedIndex = -1;
+                tx_dat_sunat_est.Text = "";
             }
         }
         #endregion
@@ -595,6 +831,12 @@ namespace TransCarga
             //
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
+            cmb_estad_plan.SelectedIndex = -1;
+            cmb_sede_plan.SelectedIndex = -1;
+            cmb_sunat_est.SelectedIndex = -1;
+            cmb_sunat_sede.SelectedIndex = -1;
+            //
+            rb_dVtas.Checked = true;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -650,6 +892,7 @@ namespace TransCarga
                     this.Close();
                 }
             }
+
         }
         #endregion
 
@@ -766,6 +1009,11 @@ namespace TransCarga
                 DataTable dtg = (DataTable)dgv_regvtas.DataSource;
                 dtg.DefaultView.Sort = dgv_regvtas.SortString;
             }
+            if (tabControl1.SelectedTab.Name == "tabSunat")
+            {
+                DataTable dtg = (DataTable)dgv_sunat_est.DataSource;
+                dtg.DefaultView.Sort = dgv_sunat_est.SortString;
+            }
         }
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
@@ -785,6 +1033,12 @@ namespace TransCarga
             {
                 DataTable dtg = (DataTable)dgv_regvtas.DataSource;
                 dtg.DefaultView.RowFilter = dgv_regvtas.FilterString;
+            }
+            if (tabControl1.SelectedTab.Name == "tabSunat")
+            {
+                DataTable dtg = (DataTable)dgv_sunat_est.DataSource;
+                dtg.DefaultView.RowFilter = dgv_sunat_est.FilterString;
+                suma_grilla("dgv_sunat_est");
             }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
@@ -846,7 +1100,60 @@ namespace TransCarga
                 }
             }*/
         }
-        #endregion
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
+        {
+            if (e.ColumnIndex > -1 && cuenta != e.RowIndex)
+            {
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+                {
+                    if (true)
+                    {
+                        if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                        {
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
+                            consultaE(dgv_sunat_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                            // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
+                        }
+                    }
+                }
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
+                {
+                    // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
+                }
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
+                {
+                    string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                    imprime(cdtip,
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "TK");
+                }
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")
+                {
+                    string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                    imprime(cdtip,
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
+                }
+                cuenta = e.RowIndex;
+            }
+        }
+        private void dgv_sunat_est_CellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            cuenta = -1;
+        }
 
+        #endregion
+        private string consultaE(string ticket, int rowIndex)       // consulta estado en Sunat
+        {
+            string retorna = "";
+            // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
+            return retorna;
+        }
+        private void imprime(string tipo, string serie, string numero, string Formato)
+        {
+
+        }
     }
 }

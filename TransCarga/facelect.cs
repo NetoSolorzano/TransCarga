@@ -617,24 +617,6 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            /*
-            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
-                "max(b.unimedpro),c.docsremit,c.fechopegr,concat(lo.descrizionerid,'-',ld.descrizionerid) as orides " +
-                "from detfactu a left join detguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
-                "left join cabguiai c on c.sergui=b.sergui and c.numgui=b.numgui " +
-                "left join desc_loc lo on lo.idcodice=c.locorigen " +
-                "left join desc_loc ld on ld.idcodice=c.locdestin " +
-                "where a.idc=@idr";
-            
-            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
-                "y.unimedpro,y.docsremit,y.fechopegr,concat(lo.descrizionerid, '-', ld.descrizionerid) as orides " +
-                "from detfactu a " +
-                "LEFT JOIN (SELECT z.id, z.docsremit, max(x.unimedpro) AS unimedpro, z.locorigen, z.locdestin, z.fechopegr FROM cabguiai z LEFT JOIN detguiai x ON z.id = x.idc WHERE z.id = @idr)y " +
-                "ON a.idc = y.id " +
-                "left join desc_loc lo on lo.idcodice = y.locorigen " +
-                "left join desc_loc ld on ld.idcodice = y.locdestin " +
-                "where a.idc = @idr";
-            */
             string jalad = "SELECT a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
                 "'' as unimedpro, '' as docsremit, '' as fechopegr,'' as orides " +
                 "FROM detfactu a where a.idc = @idr";
@@ -687,7 +669,9 @@ namespace TransCarga
                                 row[9].ToString(),
                                 "",
                                 row[11].ToString(),
-                                row[8].ToString());
+                                row[8].ToString()
+                            );
+                            jalaguia(conn, row[1].ToString().Substring(0, 4), row[1].ToString().Substring(5, 8), int.Parse(row[0].ToString())-1);
                         }
                         dt.Dispose();
                     }
@@ -932,46 +916,8 @@ namespace TransCarga
         private bool jalaguia(MySqlConnection conn, string serGR, string numGR, int fila)
         {
             bool retorna = false;
-            /*
-            datcltsR[0] = "";
-            datcltsR[1] = "";
-            datcltsR[2] = "";
-            datcltsR[3] = "";
-            datcltsR[4] = "";
-            datcltsR[5] = "";
-            datcltsR[6] = "";
-            datcltsR[7] = "";
-            datcltsR[8] = "";
-            //
-            datcltsD[0] = "";
-            datcltsD[1] = "";
-            datcltsD[2] = "";
-            datcltsD[3] = "";
-            datcltsD[4] = "";
-            datcltsD[5] = "";
-            datcltsD[6] = "";
-            datcltsD[7] = "";
-            datcltsD[8] = "";
-            //
-            datguias[0] = "";   // num GR
-            datguias[1] = "";   // descrip
-            datguias[2] = "";   // cant bultos
-            datguias[3] = "";   // nombre de la moneda de la GR
-            datguias[4] = "";   // valor de la guía en su moneda
-            datguias[5] = "";   // valor en moneda local
-            datguias[6] = "";   // codigo moneda local
-            datguias[7] = "";   // codigo moneda de la guia
-            datguias[8] = "";   // tipo de cambio
-            datguias[9] = "";   // fecha de la GR
-            datguias[10] = "";  // guia del cliente, sustento del cliente
-            datguias[11] = "";
-            datguias[12] = "";
-            datguias[13] = "";
-            datguias[14] = "";
-            datguias[15] = "";  // local origen-destino
-            datguias[16] = "";  // unid medida
-            datguias[17] = "";  // saldo de la GR
-            */
+            string parte = "";
+            if (Tx_modo.Text == "NUEVO") parte = " AND c.fecdocvta IS NULL";
             string consulta = "SELECT a.tidoregri,a.nudoregri,b1.razonsocial as nombregri,b1.direcc1 as direregri,b1.ubigeo as ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
@@ -985,7 +931,7 @@ namespace TransCarga
                             "left join desc_mon m on m.idcodice=a.tipmongri " +
                             "left join desc_loc lo on lo.idcodice=a.locorigen " +
                             "left join desc_loc ld on ld.idcodice=a.locdestin " +
-                            "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est) AND c.fecdocvta IS NULL";   // descprodi
+                            "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est)" + parte;   // descprodi
             using (MySqlCommand micon = new MySqlCommand(consulta, conn))
             {
                 micon.Parameters.AddWithValue("@ser", serGR);
@@ -2410,8 +2356,8 @@ namespace TransCarga
             lll.Add(cleyen);     // lll.Insert(1, cleyen);        // 01/02/2024
             // Detracción - leyenda de detracción - transp. de carga y tramo en detalle
             Ctramo ctramo = null;
-            Ctransp_carga ctransp_Carga = null;
-            if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact)
+            Ctransp_carga ctransp_Carga = null; // 08/02/2024 acá debe ser el calculo en base al valor en soles del flete
+            if (double.Parse(tx_fletMN.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact) // double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact
             {
                 d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
                 d_conpa = "CONTADO";                                // condicion de pago
@@ -2471,6 +2417,23 @@ namespace TransCarga
             {
                 if (ron.Cells[1].Value != null)
                 {
+                    double vval_f = 0;      // Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()));
+                    if (ron.Cells["codmondoc"].Value.ToString() == MonDeft && tx_dat_mone.Text == MonDeft)
+                    {
+                        vval_f = double.Parse(ron.Cells["valor"].Value.ToString());
+                    }
+                    if (ron.Cells["codmondoc"].Value.ToString() == MonDeft && tx_dat_mone.Text != MonDeft)
+                    {
+                        vval_f = double.Parse(ron.Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text);
+                    }
+                    if (ron.Cells["codmondoc"].Value.ToString() != MonDeft && tx_dat_mone.Text == MonDeft)
+                    {
+                        vval_f = double.Parse(ron.Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text);
+                    }
+                    if (ron.Cells["codmondoc"].Value.ToString() != MonDeft && tx_dat_mone.Text != MonDeft)
+                    {
+                        vval_f = double.Parse(ron.Cells["valor"].Value.ToString());
+                    }
                     if (cdetracc == null)           // comprobante sin detracción
                     {
                         CComprobanteDetalle det = new CComprobanteDetalle
@@ -2480,16 +2443,16 @@ namespace TransCarga
                             cod_und_med = "ZZ",         // el resto solo hasta 2 decimales.
                             descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
                             cant = 1,
-                            val_unit_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 10),
-                            sub_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),
+                            val_unit_item = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 10),
+                            sub_tot = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 2),
                             dsc_item = 0,
-                            val_vta_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),       // valor venta x item
-                            igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
+                            val_vta_item = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 2),       // valor venta x item
+                            igv_item = Math.Round(vval_f - (vval_f / (1 + (double.Parse(v_igv) / 100))), 2),
                             //isc_item = 0,           // Sistema de ISC por ítem
-                            prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
+                            prec_unit_item = Math.Round(vval_f,2),
                             tip_afec_igv = "10",    // Afectación al IGV por ítem
-                            impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
-                            base_igv = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),           // Monto Base IGV/IVAP
+                            impsto_tot = Math.Round(vval_f - (vval_f / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
+                            base_igv = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 2),           // Monto Base IGV/IVAP
                             tasa_igv = int.Parse(v_igv),          // Tasa del IGV/IVAP
                             ind_grat = "N",
                             cod_prod_sunat = null,      // no usamos codificación estandarizada
@@ -2506,15 +2469,15 @@ namespace TransCarga
                             cod_und_med = "ZZ",
                             descrip = glosser + " " + ron.Cells["Descrip"].Value.ToString() + " " + glosser2,
                             cant = 1,
-                            val_unit_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 10),
-                            sub_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),
+                            val_unit_item = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 10),
+                            sub_tot = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 2),
                             dsc_item = 0,
-                            val_vta_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),
-                            igv_item = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),
-                            prec_unit_item = double.Parse(ron.Cells["valor"].Value.ToString()),
+                            val_vta_item = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 2),
+                            igv_item = Math.Round(vval_f - (vval_f / (1 + (double.Parse(v_igv) / 100))), 2),
+                            prec_unit_item = Math.Round(vval_f,2),
                             tip_afec_igv = "10",
-                            impsto_tot = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) - (double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
-                            base_igv = Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)), 2),           // Monto Base IGV/IVAP
+                            impsto_tot = Math.Round(vval_f - (vval_f / (1 + (double.Parse(v_igv) / 100))), 2),          // Monto total de impuestos del ítem
+                            base_igv = Math.Round(vval_f / (1 + (double.Parse(v_igv) / 100)), 2),           // Monto Base IGV/IVAP
                             tasa_igv = int.Parse(v_igv),
                             ind_grat = "N",
                             transp_carga = ctransp

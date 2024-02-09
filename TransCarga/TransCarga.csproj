@@ -263,6 +263,7 @@
     <Compile Include="histograma.Designer.cs">
       <DependentUpon>histograma.cs</DependentUpon>
     </Compile>
+    <Compile Include="impDV.cs" />
     <Compile Include="impGRE_T.cs" />
     <Compile Include="ingcargalm.cs">
       <SubType>Form</SubType>

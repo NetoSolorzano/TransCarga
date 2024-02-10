@@ -19,6 +19,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "cabfactu";            // 
+
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -55,8 +56,13 @@ namespace TransCarga
         string glosser = "";            // glosa que va en el detalle del doc. de venta
         string logoclt = "";            // ruta y nombre archivo logo
         string vi_rutaQR = "";          // ruta y nombre del QR 
+        string forA4CRn = "";            // ruta y nombre del CR comprobante F/B en A5 uso general
+        string forA4CRcu = "";            // ruta y nombre del CR comprobante F/B en A5 uso para cargas unicas
+        string v_impTK = "";            // nombre de la impresora TK para F/B
+        string v_impPDF = "";           // impresora generica de pdf
         //int pageCount = 1, cuenta = 0;
         #endregion
+
         libreria lib = new libreria();
         NumLetra nlet = new NumLetra();
         //DataTable dt = new DataTable();
@@ -135,7 +141,7 @@ namespace TransCarga
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@ped", "facelect");
-                micon.Parameters.AddWithValue("@clie","clients");
+                micon.Parameters.AddWithValue("@clie", "clients");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -180,9 +186,10 @@ namespace TransCarga
                             //if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
                             //if (row["param"].ToString() == "filasDet") v_mfildet = row["valor"].ToString().Trim();       // maxima cant de filas de detalle
                             //if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
-                            //if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
-                            //if (row["param"].ToString() == "forA4CRn") forA4CRn = row["valor"].ToString().Trim();           // ruta y nombre del formato CR de factura/boletas "normales"
-                            //if (row["param"].ToString() == "forA4CRcu") forA4CRcu = row["valor"].ToString().Trim();          // ruta y nombre del formato CR de facturas de cargas únicas
+                            if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "impPDF") v_impPDF = row["valor"].ToString().Trim();             // impresora generica de pdf
+                            if (row["param"].ToString() == "forA4CRn") forA4CRn = row["valor"].ToString().Trim();           // ruta y nombre del formato CR de factura/boletas "normales"
+                            if (row["param"].ToString() == "forA4CRcu") forA4CRcu = row["valor"].ToString().Trim();          // ruta y nombre del formato CR de facturas de cargas únicas
                             if (row["param"].ToString() == "rutaQR") vi_rutaQR = row["valor"].ToString().Trim();               // Ruta del archivo imagen del QR
                         }
                     }
@@ -233,7 +240,7 @@ namespace TransCarga
                 cmb_sede_guias.ValueMember = "idcodice";
                 // PANEL notas de credito
                 cmb_sede_plan.DataSource = dttaller;
-                cmb_sede_plan.DisplayMember = "descrizionerid"; 
+                cmb_sede_plan.DisplayMember = "descrizionerid";
                 cmb_sede_plan.ValueMember = "idcodice";
                 // pANEL DE tabSunat
                 cmb_sunat_sede.DataSource = dttaller;
@@ -461,7 +468,7 @@ namespace TransCarga
             {
                 conn.Open();
                 string consulta = "rep_vtas_fact1";
-                using (MySqlCommand micon = new MySqlCommand(consulta,conn))
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
                     micon.Parameters.AddWithValue("@loca", (tx_sede_guias.Text != "") ? tx_sede_guias.Text : "");
@@ -498,7 +505,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@fecfin", dtp_fter_plan.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@loca", (tx_dat_sede_plan.Text != "") ? tx_dat_sede_plan.Text : "");
                     micon.Parameters.AddWithValue("@esta", (tx_dat_estad_plan.Text != "") ? tx_dat_estad_plan.Text : "");
-                    micon.Parameters.AddWithValue("@excl", (chk_exclu_plan.Checked == true)? "1" : "0");
+                    micon.Parameters.AddWithValue("@excl", (chk_exclu_plan.Checked == true) ? "1" : "0");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_notcre.DataSource = null;
@@ -559,7 +566,7 @@ namespace TransCarga
             switch (dgv)
             {
                 case "dgv_facts":
-                    for (int i=0; i < dgv_facts.Rows.Count; i++)
+                    for (int i = 0; i < dgv_facts.Rows.Count; i++)
                     {
                         if (dgv_facts.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
                         {
@@ -671,7 +678,7 @@ namespace TransCarga
             }
 
         }
-        
+
         #region combos
         private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -875,7 +882,7 @@ namespace TransCarga
             if (tabControl1.Enabled == false) return;
             if (tabControl1.SelectedTab == tabfacts && dgv_facts.Rows.Count > 0)
             {
-                nombre = "Reportes_facturacion_" + cmb_sede_guias.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "Reportes_facturacion_" + cmb_sede_guias.Text.Trim() + "_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
@@ -935,7 +942,7 @@ namespace TransCarga
 
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
-            if (repo== "resumen")
+            if (repo == "resumen")
             {
                 //conClie datos = generareporte();                        // conClie = dataset de impresion de contrato   
                 //frmvizcont visualizador = new frmvizcont(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
@@ -1203,10 +1210,8 @@ namespace TransCarga
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
                         "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN,ifnull(p.marca1,'') as dpc,ifnull(s.glosaser,'') as glosaser," +
-                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as inimon,t.codsunat as cdtdv," +
-                        "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
-                        "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
-                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO," +
+                        "a.cargaunica,a.porcendscto,a.valordscto,'' as conPago,a.pagauto,m.descrizionerid as inimon,t.codsunat as cdtdv," +
+                        "l.descrizionerid as nomLocO," +
                         "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval p.marca1 day),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion," +
                         "m.descrizione as nonmone " +
                         "from cabfactu a " +
@@ -1273,23 +1278,23 @@ namespace TransCarga
                                     vs[37] = "0";                           // tot operaciones inafectas
                                     vs[38] = "0";                           // tot operaciones exoneradas
                                     // carga unica
-                                    cu[0] = dr.GetString("placa");
-                                    cu[1] = dr.GetString("confv");
-                                    cu[2] = dr.GetString("autoriz");
-                                    cu[3] = dr.GetString("cargaEf");
-                                    cu[4] = dr.GetString("cargaUt");
-                                    cu[5] = dr.GetString("rucTrans");
-                                    cu[6] = dr.GetString("nomTrans");
-                                    cu[7] = dr.GetString("fecIniTras");
-                                    cu[8] = dr.GetString("dirPartida");
-                                    cu[9] = dr.GetString("ubiPartida");
-                                    cu[10] = dr.GetString("dirDestin");
-                                    cu[11] = dr.GetString("ubiDestin");
-                                    cu[12] = dr.GetString("dniChof");
-                                    cu[13] = dr.GetString("brevete");
-                                    cu[14] = dr.GetString("valRefViaje");
-                                    cu[15] = dr.GetString("valRefVehic");
-                                    cu[16] = dr.GetString("valRefTon");
+                                    cu[0] = "";     // dr.GetString("placa");
+                                    cu[1] = "";     // dr.GetString("confv");
+                                    cu[2] = "";     // dr.GetString("autoriz");
+                                    cu[3] = "";     // dr.GetString("cargaEf");
+                                    cu[4] = "";     // dr.GetString("cargaUt");
+                                    cu[5] = "";     // dr.GetString("rucTrans");
+                                    cu[6] = "";     // dr.GetString("nomTrans");
+                                    cu[7] = "";     // dr.GetString("fecIniTras");
+                                    cu[8] = "";     // dr.GetString("dirPartida");
+                                    cu[9] = "";     // dr.GetString("ubiPartida");
+                                    cu[10] = "";    // dr.GetString("dirDestin");
+                                    cu[11] = "";    // dr.GetString("ubiDestin");
+                                    cu[12] = "";    // dr.GetString("dniChof");
+                                    cu[13] = "";    // dr.GetString("brevete");
+                                    cu[14] = "";    // dr.GetString("valRefViaje");
+                                    cu[15] = "";    // dr.GetString("valRefVehic");
+                                    cu[16] = "";    // dr.GetString("valRefTon");
                                     // varios
                                     glosser = dr.GetString("glosaser");
                                     va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
@@ -1302,8 +1307,8 @@ namespace TransCarga
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
                                     va[8] = "";         // 
 
-                                    mcu = dr.GetString("cargaunica");
-                                    vce = dr.GetString("cargaEf");
+                                    mcu = dr.GetString("cargaunica");   // 1 = transporte de carga consolidada, CARGA UNICA SERA OTRA MARCA 09/02/2024
+                                    vce = "";           // dr.GetString("cargaEf");
                                     gse = glosser;
                                 }
                                 else
@@ -1350,7 +1355,7 @@ namespace TransCarga
                             }
                         }
                     }
-                    if (mcu == "1")
+                    if (mcu == "?")     // 09/02/2024 - marca de carga unica por definir 09/02/2024
                     {
                         dt[0, 0] = "";
                         dt[0, 1] = vce;                                 // cantidad
@@ -1367,15 +1372,16 @@ namespace TransCarga
                     // llamamos a la clase que imprime
                     if (Formato == "A4")
                     {
-                        if (cu[0] != "") { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRcu); }  // vistas en pantalla
+                        if (false) { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRcu); }  // vistas en pantalla
                         else { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRn); }   // vistas en pantalla
                     }
                     else
                     {
-                        impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, Formato, "");
+                        impDV imp = new impDV(1, v_impPDF, vs, dt, va, cu, Formato, "");
                     }
                 }
 
             }
         }
+    }
 }

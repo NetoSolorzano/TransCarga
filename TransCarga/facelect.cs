@@ -290,6 +290,8 @@ namespace TransCarga
                 if (cusdscto.Contains(asd)) tx_flete.ReadOnly = false;
                 else tx_flete.ReadOnly = true;
                 chk_iGRE.Checked = false;
+                tx_dat_sun_autor.Text = autoriz_OSE_PSE;        // autorizacion sunat del pse
+                tx_dat_sun_web.Text = webose;                   // web de consulta de comprobante del pse
                 if (v_estcaj == codAbie)      // caja esta abierta?
                 {
                     if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy ..... me quede aca, este dato debe limpiarse al cerrar la caja
@@ -486,8 +488,10 @@ namespace TransCarga
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
                         "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred," +
-                        "a.cargaunica,a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,a.porcendscto,a.valordscto,a.totdvMN " +
+                        "a.cargaunica,a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,a.porcendscto,a.valordscto,a.totdvMN," +
+                        "ifnull(ad.ose_pse,'') as ose_pse,ifnull(ad.autoriz,'') as autorizPSE,ifnull(ad.webose,'') as webosePSE " +
                         "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " +
+                        "left join adifactu ad on ad.idc=a.id " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda "
                         + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
@@ -574,6 +578,8 @@ namespace TransCarga
                             tx_valdscto.Text = dr.GetString("valordscto");
                             tx_dat_porcDscto.Text = dr.GetString("porcendscto");
                             tx_dat_plazo.Text = dr.GetString("plazocred");
+                            tx_dat_sun_autor.Text = dr.GetString("autorizPSE");        // autorizacion sunat del pse
+                            tx_dat_sun_web.Text = dr.GetString("webosePSE");           // web de consulta de comprobante del pse
                         }
                         else
                         {
@@ -1379,13 +1385,18 @@ namespace TransCarga
                             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                             {
                                 conn.Open();
-                                string actua = "update adifactu set nticket=@ntk,fticket=now() where tipdoc=@tdv and serie=@sdv and numero=@ndv";
+                                //string actua = "update adifactu set nticket=@ntk,fticket=now() where tipdoc=@tdv and serie=@sdv and numero=@ndv";
+                                string actua = "update adifactu set nticket=@ntk,fticket=now(),ose_pse=@pse,autoriz=@aut,webose=@web " +
+                                    "where tipdoc=@tdv and serie=@sdv and numero=@ndv";
                                 using (MySqlCommand micon = new MySqlCommand(actua, conn))
                                 {
                                     micon.Parameters.AddWithValue("@ntk", respuesta);
                                     micon.Parameters.AddWithValue("@tdv", tx_dat_tdv.Text);
                                     micon.Parameters.AddWithValue("@sdv", tx_serie.Text);
                                     micon.Parameters.AddWithValue("@ndv", tx_numero.Text);
+                                    micon.Parameters.AddWithValue("@pse", nipfe);
+                                    micon.Parameters.AddWithValue("@aut", autoriz_OSE_PSE);
+                                    micon.Parameters.AddWithValue("@web", webose);
                                     micon.ExecuteNonQuery();
                                     System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
                                 }
@@ -4659,7 +4670,113 @@ namespace TransCarga
             }
             if (vi_formato == "TK")
             {
-                imprime_TK(sender, e);
+                //imprime_TK(sender, e);
+                DataRow[] row = dttd1.Select("idcodice='" + tx_dat_tdv.Text + "'");             // tipo de documento venta
+                tipdo = row[0][3].ToString();
+                DataRow[] rowd = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");          // tipo de documento del cliente
+                tipoDocEmi = rowd[0][3].ToString().Trim();
+                DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
+                tipoMoneda = rowm[0][2].ToString().Trim();
+
+                // 
+                string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
+                           "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
+                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+                string[,] dt = new string[10, 9] {
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
+                }; // 6 columnas, 10 filas
+                string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+
+                vs[0] = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text,3);      // dr.GetString("martdve") + lib.Right(serie, 3);
+                vs[1] = tx_numero.Text;                                                 // numero;
+                vs[2] = tx_dat_tdv.Text;                                                // tipo;
+                vs[3] = Program.dirfisc;                                                // direccion emisor
+                if (tx_dat_tdv.Text != codfact) vs[4] = "Boleta de Venta Electrónica";
+                if (tx_dat_tdv.Text == codfact) vs[4] = "Factura Electrónica";
+                vs[5] = tx_fechope.Text;                                                // dr.GetString("fechope");
+                vs[6] = tx_nomRem.Text;                                                 // dr.GetString("nombclt");
+                vs[7] = tx_numDocRem.Text;                                              // dr.GetString("nudoclt");
+                vs[8] = tx_dirRem.Text;                                                 // dr.GetString("direclt");
+                vs[9] = tx_distRtt.Text;                                                // dr.GetString("distclt");
+                vs[10] = tx_provRtt.Text;                                               // dr.GetString("provclt");
+                vs[11] = tx_dptoRtt.Text;                                               // dr.GetString("dptoclt");
+                vs[12] = tx_totcant.Text;                                               // dr.GetString("canfidt");
+                vs[13] = tx_subt.Text;                                                  // dr.GetString("subtota");
+                vs[14] = tx_igv.Text;                                                   // dr.GetString("igvtota");
+                vs[15] = tx_flete.Text;                                                 // dr.GetString("totdvta");
+                vs[16] = cmb_mon.Text;                                                  // dr.GetString("inimon");
+                vs[17] = tx_fletLetras.Text.Trim();                                     // + ((dr.GetString("mondvta") == codmon) ? " SOLES" : " DOLARES AMERICANOS");
+                vs[18] = (tx_dat_plazo.Text == "") ? "CONTADO" : "CREDITO";             // (dr.GetString("tippago").Trim() != "" && dr.GetString("plazocred").Trim() == "") ? "CONTADO" : "CREDITO";
+                vs[19] = (tx_dat_plazo.Text == "") ? tx_dat_dpla.Text : "";             // (dr.GetString("plazocred") != "") ? dr.GetString("dpc") : "";
+                vs[20] = (double.Parse(tx_fletMN.Text) >= double.Parse(Program.valdetra)) ? glosdet : "";      // (dr.GetDouble("totdvMN") >= double.Parse(Program.valdetra)) ? glosdetra : "";   // Glosa para la detracción SI TIENE
+                vs[21] = tipdo;                                                         // dr.GetString("cdtdv");
+                vs[22] = tipoDocEmi;                                                    // dr.GetString("ctdcl");
+                vs[23] = nipfe;                                                         // identificador de ose/pse metodo de envío
+                vs[24] = restexto;                                                      // texto del resolucion sunat del ose/pse
+                vs[25] = tx_dat_sun_autor.Text;                                         // dr.GetString("autorizPSE");
+                vs[26] = tx_dat_sun_web.Text;                                           // dr.GetString("webosePSE");
+                vs[27] = tx_digit.Text;                                                 // dr.GetString("userc").Trim();
+                vs[28] = Program.vg_nlus;                                               // dr.GetString("nomLocO").Trim();
+                vs[29] = despedida;                                                     // glosa despedida
+                vs[30] = Program.cliente;                                               // nombre del emisor del comprobante
+                vs[31] = Program.ruc;                                                   // ruc del emisor
+                vs[32] = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).ToString("yyyy-MM-dd");   // dr.GetString("fvence");
+                vs[33] = (tx_dat_plazo.Text == "") ? "AL CONTADO" : "AL CREDITO 1 CUOTA";  // dr.GetString("condicion");
+                vs[34] = "Transporte Privado";          // modalidad de transporte
+                vs[35] = "Venta";                       // motivo de traslado
+                vs[36] = tipoMoneda;                    // dr.GetString("nonmone");
+                vs[37] = "0";                           // tot operaciones inafectas
+                vs[38] = "0";                           // tot operaciones exoneradas
+                                                        // carga unica
+                cu[0] = "";     // dr.GetString("placa");
+                cu[1] = "";     // dr.GetString("confv");
+                cu[2] = "";     // dr.GetString("autoriz");
+                cu[3] = "";     // dr.GetString("cargaEf");
+                cu[4] = "";     // dr.GetString("cargaUt");
+                cu[5] = "";     // dr.GetString("rucTrans");
+                cu[6] = "";     // dr.GetString("nomTrans");
+                cu[7] = "";     // dr.GetString("fecIniTras");
+                cu[8] = "";     // dr.GetString("dirPartida");
+                cu[9] = "";     // dr.GetString("ubiPartida");
+                cu[10] = "";    // dr.GetString("dirDestin");
+                cu[11] = "";    // dr.GetString("ubiDestin");
+                cu[12] = "";    // dr.GetString("dniChof");
+                cu[13] = "";    // dr.GetString("brevete");
+                cu[14] = "";    // dr.GetString("valRefViaje");
+                cu[15] = "";    // dr.GetString("valRefVehic");
+                cu[16] = "";    // dr.GetString("valRefTon");
+                // varios
+                va[0] = logoclt;                    // Ruta y nombre del logo del emisor electrónico
+                va[1] = glosser;                    // glosa del servicio en facturacion
+                va[2] = codfact;                    // Tipo de documento FACTURA
+                va[3] = Program.pordetra;           // porcentaje detracción
+                va[4] = (double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
+                va[5] = Program.ctadetra;           // cta. detracción
+                va[6] = "";                         // concatenado de Guias Transportista para Formato de cargas unicas
+                va[7] = rutaQR + "pngqr";           // ruta y nombre del png codigo QR
+                va[8] = "";         // 
+                // detalle
+                int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet) && int.Parse(tx_tfil.Text) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                for (int l = 0; l < tfg; l++)
+                {
+                    if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))   //  dataGridView1.Rows[l].Cells[0].Value != null
+                    {
+                        dt[l, 0] = dataGridView1.Rows[l].Cells[10].Value.ToString();
+                        dt[l, 1] = dataGridView1.Rows[l].Cells[2].Value.ToString();     // drg.GetString("cantbul");
+                        dt[l, 2] = dataGridView1.Rows[l].Cells[11].Value.ToString();     // drg.GetString("unimedp");
+                        dt[l, 3] = dataGridView1.Rows[l].Cells[0].Value.ToString();     // drg.GetString("codgror");
+                        dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();     // drg.GetString("descpro");
+                        dt[l, 5] = dataGridView1.Rows[l].Cells[8].Value.ToString();     // drg.GetString("docsremit");
+                        dt[l, 6] = dataGridView1.Rows[l].Cells[4].Value.ToString();     // drg.GetString("valUni");
+                        dt[l, 7] = dataGridView1.Rows[l].Cells[4].Value.ToString();     // drg.GetString("preUni");
+                        dt[l, 8] = dataGridView1.Rows[l].Cells[4].Value.ToString();     // drg.GetString("totalgr");
+                        va[6] = va[6] + " " + dataGridView1.Rows[l].Cells[0].Value.ToString();      // drg.GetString("codgror");
+                    }
+                }
+                // imprime la clase
+                impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, "");
+
                 if (File.Exists(@otro))
                 {
                     //File.Delete(@"C:\test.txt");
@@ -5041,7 +5158,7 @@ namespace TransCarga
                     posi = posi + alfi;
                     lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(autoriz_OSE_PSE, lt_med).Width) / 2;
                     puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString(autoriz_OSE_PSE, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(tx_dat_sun_autor.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // autoriz_OSE_PSE
                     // centrado en rectangulo   *********************
                     StringFormat sf = new StringFormat();       //  *
                     sf.Alignment = StringAlignment.Center;      //  *
@@ -5050,7 +5167,7 @@ namespace TransCarga
                     puntoF = new PointF(coli, posi);
                     leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 2);
                     RectangleF recley5 = new RectangleF(puntoF, leyen);
-                    e.Graphics.DrawString(webose, lt_med, Brushes.Black, recley5, sf);
+                    e.Graphics.DrawString(tx_dat_sun_web.Text, lt_med, Brushes.Black, recley5, sf);                                   // webose
                     posi = posi + alfi * 3;
                     string locyus = tx_locuser.Text + " - " + tx_user.Text;
                     puntoF = new PointF(coli, posi);
@@ -5066,7 +5183,7 @@ namespace TransCarga
                     //e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 }
             }
-        }
+        }       // desde el 12/02/2024 ya no usamos, ahora se usa la clase impDV
         private void updateprint(string sn)  // actualiza el campo impreso de la GR = S
         {   // S=si impreso || N=no impreso
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))

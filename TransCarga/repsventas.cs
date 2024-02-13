@@ -1203,17 +1203,21 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
+                    /* string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
-                        "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
+                        "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; */
+                    string consdeta = "select a.codgror,a.cantbul,b.unimedpro as unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
+                        "from detfactu a left JOIN " +
+                        "(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num LIMIT 1)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
+                        "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
 
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
-                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN,ifnull(p.marca1,'') as dpc,ifnull(s.glosaser,'') as glosaser," +
+                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,round(a.subtota,2) as subtota,round(a.igvtota,2) as igvtota,a.porcigv,round(a.totdvta,2) as totdvta,round(a.totpags,2) as totpags,round(a.saldvta,2) as saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,round(a.totdvMN,2) as totdvMN,ifnull(p.marca1,'') as dpc,ifnull(s.glosaser,'') as glosaser," +
                         "a.cargaunica,a.porcendscto,a.valordscto,'' as conPago,a.pagauto,m.descrizionerid as inimon,t.codsunat as cdtdv," +
                         "l.descrizionerid as nomLocO," +
                         "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval p.marca1 day),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion," +
-                        "m.descrizione as nonmone " +
+                        "m.descrizione as nonmone,ifnull(ad.ose_pse,'') as ose_pse,ifnull(ad.autoriz,'') as autorizPSE,ifnull(ad.webose,'') as webosePSE " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
@@ -1263,8 +1267,8 @@ namespace TransCarga
                                     vs[22] = dr.GetString("ctdcl");         // CODIGO SUNAT tipo de documento RUC/DNI del cliente
                                     vs[23] = nipfe;                         // identificador de ose/pse metodo de envío
                                     vs[24] = restexto;                      // texto del resolucion sunat del ose/pse
-                                    vs[25] = autoriz_OSE_PSE;               // autoriz del ose/pse
-                                    vs[26] = webose;                        // web del ose/pse
+                                    vs[25] = dr.GetString("autorizPSE");        // autoriz_OSE_PSE;               // autoriz del ose/pse
+                                    vs[26] = dr.GetString("webosePSE");         // webose;                        // web del ose/pse
                                     vs[27] = dr.GetString("userc").Trim();  // usuario creador
                                     vs[28] = dr.GetString("nomLocO").Trim();    // local de emisión
                                     vs[29] = despedida;                     // glosa despedida
@@ -1299,7 +1303,7 @@ namespace TransCarga
                                     glosser = dr.GetString("glosaser");
                                     va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
                                     va[1] = glosser;         // glosa del servicio en facturacion
-                                    va[2] = "";         // libre
+                                    va[2] = codfact;         // Tipo de documento FACTURA
                                     va[3] = Program.pordetra;         // porcentaje detracción
                                     va[4] = (dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
                                     va[5] = Program.ctadetra;         // cta. detracción
@@ -1313,7 +1317,7 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No existe el número de guía!", "Atención - Error interno",
+                                    MessageBox.Show("No existe el número de comprobante!", "Atención - Error interno",
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     return;
                                 }

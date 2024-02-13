@@ -308,12 +308,16 @@ namespace TransCarga
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
                         }
-                        //recto = new RectangleF(puntoF, siz);
-                        e.Graphics.DrawString("GRT " + dt[0, 3] + " " + dt[0, 4], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        siz = new SizeF(lib.CentimeterToPixel(anchTik) - 10, 15);
+                        if ((dt[l, 3] + " " + dt[l, 4]).Length > 25) siz = new SizeF(lib.CentimeterToPixel(anchTik) - 10, 30);
+                        recto = new RectangleF(puntoF, siz);
+                        //e.Graphics.DrawString("GRT " + dt[0, 3] + " " + dt[0, 4], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        e.Graphics.DrawString("GRT " + dt[l, 3] + " " + dt[l, 4], lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                         posi = posi + alfi;
+                        if ((dt[l, 3] + " " + dt[l, 4]).Length > 25) posi = posi + alfi;
                         puntoF = new PointF(coli, posi);
-                        e.Graphics.DrawString(textF2 +
-                            " Guía cliente: " + dt[0, 5], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        e.Graphics.DrawString(dt[l, 1] + " " + dt[l, 2] +
+                            " Guía cliente: " + dt[l, 5], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                         //posi = posi + alfi;
                         //puntoF = new PointF(coli, posi);
                         //e.Graphics.DrawString("Según doc.cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -323,13 +327,13 @@ namespace TransCarga
                 // pie del documento ;
                 if (vs[2] != va[2])         // BOLETA
                 {
-                    //SizeF siz = new SizeF(70, 15);
+                    siz = new SizeF(70, 15);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("OP. GRAVADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 190, posi);
                     RectangleF recst = new RectangleF(puntoF, siz);
-                    e.Graphics.DrawString(vs[13], lt_peq, Brushes.Black, recst, alder);
+                    e.Graphics.DrawString(string.Format("{0:.##}", vs[13]), lt_peq, Brushes.Black, recst, alder);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("OP. INAFECTA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -347,24 +351,24 @@ namespace TransCarga
                     e.Graphics.DrawString("IGV", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 190, posi);
                     RectangleF recgv = new RectangleF(puntoF, siz);
-                    e.Graphics.DrawString(vs[14], lt_peq, Brushes.Black, recgv, alder);
+                    e.Graphics.DrawString(string.Format("{0:.##}", vs[14]), lt_peq, Brushes.Black, recgv, alder);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("IMPORTE TOTAL " + vs[16], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 190, posi);
                     recto = new RectangleF(puntoF, siz);
-                    e.Graphics.DrawString(vs[15], lt_peq, Brushes.Black, recto, alder);
+                    e.Graphics.DrawString(string.Format("{0:.##}", vs[15]), lt_peq, Brushes.Black, recto, alder);
                 }
                 if (vs[2] == va[2])     // FACTURA
                 {
-                    //SizeF siz = new SizeF(70, 15);
+                    siz = new SizeF(70, 15);
                     //StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("OP. GRAVADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 190, posi);
                     RectangleF recst = new RectangleF(puntoF, siz);
-                    e.Graphics.DrawString(vs[13], lt_peq, Brushes.Black, recst, alder);
+                    e.Graphics.DrawString(string.Format("{0:.##}", vs[13]), lt_peq, Brushes.Black, recst, alder);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("OP. INAFECTA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -382,13 +386,13 @@ namespace TransCarga
                     e.Graphics.DrawString("IGV", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 190, posi);
                     RectangleF recgv = new RectangleF(puntoF, siz);
-                    e.Graphics.DrawString(vs[14], lt_peq, Brushes.Black, recgv, alder);
+                    e.Graphics.DrawString(string.Format("{0:.##}", vs[14]), lt_peq, Brushes.Black, recgv, alder);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("IMPORTE TOTAL " + vs[16], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 190, posi);
                     recto = new RectangleF(puntoF, siz);
-                    e.Graphics.DrawString(vs[15], lt_peq, Brushes.Black, recto, alder);
+                    e.Graphics.DrawString(string.Format("{0:.##}", vs[15]), lt_peq, Brushes.Black, recto, alder);
                 }
                 posi = posi + alfi * 2;
                 puntoF = new PointF(coli, posi);
@@ -427,7 +431,6 @@ namespace TransCarga
                         posi = posi + alfi * 3;
                     }
                 }
-                puntoF = new PointF(coli, posi);
                 string repre = "Representación impresa de la";
                 lt = (lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
                 puntoF = new PointF(lt, posi);

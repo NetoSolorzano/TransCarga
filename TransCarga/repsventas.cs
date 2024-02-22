@@ -1322,7 +1322,7 @@ namespace TransCarga
                                     vce = "";           // dr.GetString("cargaEf");
                                     gse = glosser;
                                     double valCuot = 0;                     // valor de la cuota SI ES CREDITO
-                                    if (vs[20] == "") valCuot = dr.GetDouble("totdvta");
+                                    if (vs[20] == "" && vs[18] == "CREDITO") valCuot = dr.GetDouble("totdvta");
                                     else 
                                     {
                                         if (dr.GetString("mondvta") == codmon)      // comprobante en soles?

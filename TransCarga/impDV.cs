@@ -18,7 +18,7 @@ namespace TransCarga
         libreria lib = new libreria();
         string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 20
                        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};    // 20
-        string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+        string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
         string[,] dt = new string[10, 9] { 
             { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
@@ -69,7 +69,7 @@ namespace TransCarga
             vs[36] = cabecera[36];    // nombre de la moneda
             vs[37] = cabecera[37];    // tot operaciones inafectas
             vs[38] = cabecera[38];    // tot operaciones exoneradas
-            vs[39] = "";
+            vs[39] = cabecera[39];    // valor cuota del credito
 
             cu[0] = cunica[0];          // "placa");
             cu[1] = cunica[1];          // "confv");
@@ -110,7 +110,8 @@ namespace TransCarga
             va[5] = varios[5];         // cta. detracción
             va[6] = varios[6];         // concatenado de Guias Transportista para Formato de cargas unicas
             va[7] = varios[7];         // ruta y nombre del png codigo QR
-            va[8] = varios[8];         // 
+            va[8] = varios[8];         // libre
+            va[9] = varios[9];         // tipo de cambio
 
             switch (formato)
             {
@@ -514,7 +515,7 @@ namespace TransCarga
             cabRow.numero = vs[1];
             cabRow.tipDoc = vs[2];
             cabRow.dirEmisor = vs[3];
-            cabRow.nomTipdoc = vs[4];
+            cabRow.nomTipdoc = vs[4].ToUpper();
             cabRow.fecEmi = vs[5];
             cabRow.nomClte = vs[6];
             cabRow.nDocClte = vs[7];
@@ -549,6 +550,7 @@ namespace TransCarga
             cabRow.nomMone = vs[36];      // nombre de la moneda
             cabRow.totOpInafec = vs[37];    // tot operaciones inafectas
             cabRow.totOpExone = vs[38];     // tot operaciones exoneradas
+            cabRow.valCuota = vs[39];       // valor de la cuota restanto detrac si lo hubiera
             DV.cVta_cab.AddcVta_cabRow(cabRow);
             
             // DETALLE
@@ -558,9 +560,9 @@ namespace TransCarga
                 detRow.id = "0";
                 detRow.OriDest = dt[o, 0];      // ["OriDest"]
                 detRow.cant = dt[o, 1];         // ["Cant"]
-                detRow.umed = dt[o, 2];         // ["umed"]
+                detRow.umed = (dt[o, 2].Trim() == "") ? "ZZ" : dt[o, 2];         // ["umed"]
                 detRow.guiaT = dt[o, 3];        // guia transportista
-                detRow.descrip = dt[o, 4];      // descripcion de la carga
+                detRow.descrip = dt[o, 4].Trim() + " " + dt[o, 5].Trim();      // descripcion de la carga
                 detRow.docRel1 = dt[o, 5];      // documento relacionado remitente de la guia transportista
                 detRow.docRel2 = "";            // 
                 detRow.valUnit = dt[o, 6];      // valor unitario
@@ -600,6 +602,7 @@ namespace TransCarga
             vaRow.porcDet = va[3];
             vaRow.guiasTrans = va[6];
             vaRow.ubicapng = va[7];
+            vaRow.tipcambio = va[9];        // tipo de cambio
             DV.cVta_va.AddcVta_vaRow(vaRow);
             return DV;
         }

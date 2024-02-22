@@ -1192,9 +1192,9 @@ namespace TransCarga
         private void imprime(string tipo, string serie, string numero, string Formato)
         {
             // 
-            string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
-                           "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
-            string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+            string[] vs = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
+                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 20
+            string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
             string[,] dt = new string[10, 9] {
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
@@ -1211,7 +1211,7 @@ namespace TransCarga
                     /* string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
                         "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; */
-                    string consdeta = "select a.codgror,a.cantbul,b.unimedpro as unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
+                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit,a.totalgr,0 as preUni,0 as valUni " +
                         "from detfactu a left JOIN " +
                         "(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num LIMIT 1)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
                         "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
@@ -1274,9 +1274,9 @@ namespace TransCarga
                                     vs[24] = restexto;                      // texto del resolucion sunat del ose/pse
                                     vs[25] = dr.GetString("autorizPSE");        // autoriz_OSE_PSE;               // autoriz del ose/pse
                                     vs[26] = dr.GetString("webosePSE");         // webose;                        // web del ose/pse
-                                    vs[27] = dr.GetString("userc").Trim();  // usuario creador
+                                    vs[27] = dr.GetString("userc").Trim();      // usuario creador
                                     vs[28] = dr.GetString("nomLocO").Trim();    // local de emisión
-                                    vs[29] = despedida;                     // glosa despedida
+                                    vs[29] = despedida;                         // glosa despedida
                                     vs[30] = Program.cliente;               // nombre del emisor del comprobante
                                     vs[31] = Program.ruc;                   // ruc del emisor
                                     vs[32] = dr.GetString("fvence");        // fecha vencimiento del comprob.
@@ -1310,15 +1310,31 @@ namespace TransCarga
                                     va[1] = glosser;         // glosa del servicio en facturacion
                                     va[2] = codfact;         // Tipo de documento FACTURA
                                     va[3] = Program.pordetra;         // porcentaje detracción
-                                    va[4] = (dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
+                                    double impDetr = dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100;               // importe calculado de la detracción
+                                    va[4] = impDetr.ToString("#0.00");         // monto detracción
                                     va[5] = Program.ctadetra;         // cta. detracción
                                     va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
                                     va[8] = "";         // 
+                                    va[9] = dr.GetString("tcadvta");
 
                                     mcu = dr.GetString("cargaunica");   // 1 = transporte de carga consolidada, CARGA UNICA SERA OTRA MARCA 09/02/2024
                                     vce = "";           // dr.GetString("cargaEf");
                                     gse = glosser;
+                                    double valCuot = 0;                     // valor de la cuota SI ES CREDITO
+                                    if (vs[20] == "") valCuot = dr.GetDouble("totdvta");
+                                    else 
+                                    {
+                                        if (dr.GetString("mondvta") == codmon)      // comprobante en soles?
+                                        {
+                                            valCuot = dr.GetDouble("totdvta") - impDetr;
+                                        }
+                                        else
+                                        {
+                                            valCuot = Math.Round(dr.GetDouble("totdvta") - (impDetr / double.Parse(va[9])), 2);
+                                        }
+                                    }
+                                    vs[39] = valCuot.ToString("#0.00");
                                 }
                                 else
                                 {

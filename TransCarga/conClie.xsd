@@ -396,6 +396,7 @@
               <xs:element name="motTrasla" msprop:Generator_ColumnVarNameInTable="columnmotTrasla" msprop:Generator_ColumnPropNameInRow="motTrasla" msprop:Generator_ColumnPropNameInTable="motTraslaColumn" msprop:Generator_UserColumnName="motTrasla" type="xs:string" minOccurs="0" />
               <xs:element name="totOpInafec" msprop:Generator_ColumnVarNameInTable="columntotOpInafec" msprop:Generator_ColumnPropNameInRow="totOpInafec" msprop:Generator_ColumnPropNameInTable="totOpInafecColumn" msprop:Generator_UserColumnName="totOpInafec" type="xs:string" minOccurs="0" />
               <xs:element name="totOpExone" msprop:Generator_ColumnVarNameInTable="columntotOpExone" msprop:Generator_ColumnPropNameInRow="totOpExone" msprop:Generator_ColumnPropNameInTable="totOpExoneColumn" msprop:Generator_UserColumnName="totOpExone" type="xs:string" minOccurs="0" />
+              <xs:element name="valCuota" msprop:Generator_ColumnVarNameInTable="columnvalCuota" msprop:Generator_ColumnPropNameInRow="valCuota" msprop:Generator_ColumnPropNameInTable="valCuotaColumn" msprop:Generator_UserColumnName="valCuota" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -451,6 +452,7 @@
               <xs:element name="montDet" msprop:Generator_ColumnVarNameInTable="columnmontDet" msprop:Generator_ColumnPropNameInRow="montDet" msprop:Generator_ColumnPropNameInTable="montDetColumn" msprop:Generator_UserColumnName="montDet" type="xs:string" minOccurs="0" />
               <xs:element name="cuenDet" msprop:Generator_ColumnVarNameInTable="columncuenDet" msprop:Generator_ColumnPropNameInRow="cuenDet" msprop:Generator_ColumnPropNameInTable="cuenDetColumn" msprop:Generator_UserColumnName="cuenDet" type="xs:string" minOccurs="0" />
               <xs:element name="ubicapng" msprop:Generator_ColumnVarNameInTable="columnubicapng" msprop:Generator_ColumnPropNameInRow="ubicapng" msprop:Generator_ColumnPropNameInTable="ubicapngColumn" msprop:Generator_UserColumnName="ubicapng" type="xs:string" minOccurs="0" />
+              <xs:element name="tipcambio" msprop:Generator_ColumnVarNameInTable="columntipcambio" msprop:Generator_ColumnPropNameInRow="tipcambio" msprop:Generator_ColumnPropNameInTable="tipcambioColumn" msprop:Generator_UserColumnName="tipcambio" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

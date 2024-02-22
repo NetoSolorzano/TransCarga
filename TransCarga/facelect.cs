@@ -2426,8 +2426,17 @@ namespace TransCarga
             List<CComprobDetDetrac> ddd = new List<CComprobDetDetrac>();
             Ctramo tramito = new Ctramo()
             {
+                cod_ubi_ori = tx_dat_upo.Text,
+                dir_ori = tx_dat_dpo.Text,
+                cod_ubi_des = tx_dat_upd.Text,
+                dir_des = tx_dat_dpd.Text,
+                descrip = dataGridView1.Rows[0].Cells[10].Value.ToString(),     // DESCRIPCION DE TRAMO
+                val_pre_ref_carga_efectiva = 1,
                 conf_vehi = "-",
-                carga_util = 0,
+                carga_util = 1,
+                carga_efectiva = 1,
+                val_ref_tne_metri = 1,
+                val_pre_ref_carga_util = 1,
                 retorno_vacio = true
             };
             List<Ctramo> ctramos = new List<Ctramo>();

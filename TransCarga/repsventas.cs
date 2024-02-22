@@ -645,11 +645,16 @@ namespace TransCarga
                     "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
                     "LEFT JOIN desc_est es ON es.IDCodice = f.estdvta " +
-                    "WHERE f.fechope between @fecini and @fecfin";  // marca_gre<>'' AND 
+                    "WHERE f.fechope between @fecini and @fecfin" + parte;  // marca_gre<>'' AND 
             }
             if (rb_notaC.Checked == true)   // notas de crédito
             {
-
+                consulta = "SELECT f.fechope AS EMISION,concat(f.martnot,'-',f.sernota,'-',f.numnota) as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
+                    "es.DescrizioneRid AS ESTADO,'Enviado' AS SUNAT,'' AS CDR_GEN,'' as Rspta,'','',f.canfidt,f.id " + 
+                    "FROM cabdebcred f " +
+                    "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
+                    "LEFT JOIN desc_est es ON es.IDCodice = f.estnota " +
+                    "WHERE f.fechope between @fecini and @fecfin" + parte;
             }
             if (tx_dat_sunat_sede.Text != "") parte = parte + " and f.locorig=@loca";
             if (tx_dat_sunat_est.Text != "") parte = parte + " and ad.estadoS=@esta";

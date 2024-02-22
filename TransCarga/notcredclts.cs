@@ -612,6 +612,8 @@ namespace TransCarga
                                     tx_igv.Text = dr.GetString("igvtota");
                                     tx_subt.Text = dr.GetString("subtota");
                                     tx_salxcob.Text = "";   // esta por verse como calculo el saldo de la factura
+                                    //
+                                    cmb_mon.SelectedValue = tx_dat_mone.Text;
                                     retorna = true;
                                 }
                             }
@@ -1250,7 +1252,7 @@ namespace TransCarga
                 email = Program.mailclte,
                 telef = Program.telclte1,
                 website = Program.webclte1,
-                cod_sucur = Program.codlocsunat
+                cod_sucur = "0000"        // Program.codlocsunat  ..... en producción debería ser el codigo real
             };
             Cadquiriente cadquiriente = new Cadquiriente()
             {

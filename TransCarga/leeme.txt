@@ -458,7 +458,7 @@ Clase emisor ...................................................................
 Varias clases para comprobantes y guias ............................................................. ok 28/01/2024
 form facelect, adecuaciones EN SOLES para armar json y envío a ambiente pruebas ..................... ok 07/01/2024
 Clase Ccreditnote, desarrollo ....................................................................... ok 06/02/2024
-form, notcredclts adecuaciones para uso de servicio seencorp ........................................ ok 06/02/2024
+form notcredclts, adecuaciones para uso de servicio seencorp ........................................ ok 06/02/2024
 form facelect, adecuaciones para detrac 1004, datos de pto.origen,destino,camion, etc ............... ok 08/02/2024
 form facelect, pruebas de regeneracion de json ...................................................... ok 09/02/2024
 form facelect, adecuar los campos del camión y direcciones origen y destino ......................... ok 09/02/2024
@@ -466,4 +466,8 @@ form repsventas, agregar reporte "estados" para generar pdf de comprobantes en T
 clase impDV, desarrollo de clase impresor ........................................................... ok 09/02/2024
 clase impDV, arreglar campos para que sea igual que el orignal de facelect .......................... ok 12/02/2024
 form facelect, adecuar la impreson para usar la clase impresor ...................................... ok 12/02/2024
+form facelect, adecuaciones para json detrac + tramo no observe sunat ............................... ok 21/02/2024
+form repsventas, adecuaciones para notas de credito ................................................. ok 21/02/2024
+form notcredclts, corrección de error en json ....................................................... ok 21/02/2024
+form repsventas, estadosSunat, adecuar las columnas de las notas de credito ......................... ok 21/02/2024
 C.R. desarrollar formato A5 para los comprobantes que incluya det carga y tramo ..................... 

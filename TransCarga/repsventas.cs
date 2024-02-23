@@ -645,7 +645,7 @@ namespace TransCarga
                     "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
                     "LEFT JOIN desc_est es ON es.IDCodice = f.estdvta " +
-                    "WHERE f.fechope between @fecini and @fecfin" + parte;  // marca_gre<>'' AND 
+                    "WHERE f.fechope between @fecini and @fecfin" + parte + " order by f.id";  // marca_gre<>'' AND 
             }
             if (rb_notaC.Checked == true)   // notas de crédito
             {
@@ -1205,13 +1205,15 @@ namespace TransCarga
                 string mcu = "";        // marca de carga unica
                 string vce = "";        // carga efectiva
                 string gse = "";        // glosa de servicio
+                double pigv = 0;        // % de igv del comprobante
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
                     /* string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
                         "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; */
-                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit,round(a.totalgr,2) as totalgr,0 as preUni,0 as valUni " +
+                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit," +
+                        "round(a.totalgr,2) as totalgr,round(a.totalgr,2) as preUni,round(a.totalgr/(1+(@pigv/100)),2) as valUni " +
                         "from detfactu a left JOIN " +
                         "(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
                         "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
@@ -1317,7 +1319,7 @@ namespace TransCarga
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
                                     va[8] = "";         // 
                                     va[9] = dr.GetString("tcadvta");
-
+                                    pigv = dr.GetDouble("porcigv");
                                     mcu = dr.GetString("cargaunica");   // 1 = transporte de carga consolidada, CARGA UNICA SERA OTRA MARCA 09/02/2024
                                     vce = "";           // dr.GetString("cargaEf");
                                     gse = glosser;
@@ -1360,6 +1362,7 @@ namespace TransCarga
                             micomd.Parameters.AddWithValue("@ser", serie);
                             micomd.Parameters.AddWithValue("@num", numero);
                             micomd.Parameters.AddWithValue("@tdv", tipo);
+                            micomd.Parameters.AddWithValue("@pigv", pigv);
                             using (MySqlDataReader drg = micomd.ExecuteReader())
                             {
                                 while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi

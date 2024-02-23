@@ -562,7 +562,7 @@ namespace TransCarga
                 detRow.cant = dt[o, 1];         // ["Cant"]
                 detRow.umed = (dt[o, 2].Trim() == "") ? "ZZ" : dt[o, 2];         // ["umed"]
                 detRow.guiaT = dt[o, 3];        // guia transportista
-                detRow.descrip = dt[o, 4].Trim() + " " + dt[o, 5].Trim();      // descripcion de la carga
+                detRow.descrip = dt[o, 4].Trim() + " Según " + dt[o, 5].Trim();      // descripcion de la carga
                 detRow.docRel1 = dt[o, 5];      // documento relacionado remitente de la guia transportista
                 detRow.docRel2 = "";            // 
                 detRow.valUnit = dt[o, 6];      // valor unitario

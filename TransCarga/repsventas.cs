@@ -638,6 +638,8 @@ namespace TransCarga
             }
             string consulta = "";
             string parte = "";
+            if (tx_dat_sunat_sede.Text != "") parte = parte + " and f.locorig=@loca";
+            if (tx_dat_sunat_est.Text != "") parte = parte + " and ad.estadoS=@esta";
             if (rb_dVtas.Checked == true)   // facturas y boletas
             {
                 consulta = "SELECT f.fechope AS EMISION,f.martdve as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
@@ -656,12 +658,10 @@ namespace TransCarga
                     "LEFT JOIN desc_est es ON es.IDCodice = f.estnota " +
                     "WHERE f.fechope between @fecini and @fecfin" + parte;
             }
-            if (tx_dat_sunat_sede.Text != "") parte = parte + " and f.locorig=@loca";
-            if (tx_dat_sunat_est.Text != "") parte = parte + " and ad.estadoS=@esta";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                using (MySqlCommand micon = new MySqlCommand(consulta + parte, conn))
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.Parameters.AddWithValue("@loca", tx_dat_sunat_sede.Text);
                     micon.Parameters.AddWithValue("@fecini", dtp_sunat_fini.Value.ToString("yyyy-MM-dd"));
@@ -1140,7 +1140,7 @@ namespace TransCarga
         }
         private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
         {
-            if (e.ColumnIndex > -1 && cuenta != e.RowIndex)
+            /* if (e.ColumnIndex > 6 && e.ColumnIndex < 9 && cuenta != e.RowIndex)
             {
                 if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
                 {
@@ -1176,6 +1176,7 @@ namespace TransCarga
                 }
                 cuenta = e.RowIndex;
             }
+            */
         }
         private void dgv_sunat_est_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
@@ -1189,6 +1190,48 @@ namespace TransCarga
             // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
             return retorna;
         }
+
+        private void dgv_sunat_est_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex > 6 && e.ColumnIndex < 9 && e.RowIndex > -1)
+            {
+                /* if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+                {
+                    if (true)
+                    {
+                        if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                        {
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
+                            consultaE(dgv_sunat_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                            // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
+                        }
+                    }
+                } */
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
+                {
+                    // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
+                }
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
+                {
+                    string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                    imprime(cdtip,
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "TK");
+                }
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")
+                {
+                    string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                    imprime(cdtip,
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
+                }
+                //cuenta = e.RowIndex;
+            }
+
+        }
+
         private void imprime(string tipo, string serie, string numero, string Formato)
         {
             // 
@@ -1224,7 +1267,7 @@ namespace TransCarga
                         "a.cargaunica,a.porcendscto,a.valordscto,'' as conPago,a.pagauto,m.descrizionerid as inimon,t.codsunat as cdtdv," +
                         "l.descrizionerid as nomLocO," +
                         "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval p.marca1 day),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion," +
-                        "m.descrizione as nonmone,ifnull(ad.ose_pse,'') as ose_pse,ifnull(ad.autoriz,'') as autorizPSE,ifnull(ad.webose,'') as webosePSE " +
+                        "m.deta1 as nonmone,ifnull(ad.ose_pse,'') as ose_pse,ifnull(ad.autoriz,'') as autorizPSE,ifnull(ad.webose,'') as webosePSE " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +

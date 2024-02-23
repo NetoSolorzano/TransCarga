@@ -292,37 +292,37 @@ namespace TransCarga
                 StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                 SizeF siz = new SizeF(70, 15);
                 RectangleF recto = new RectangleF(puntoF, siz);
-                //int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
                 int tfg = int.Parse(vs[12]);
+
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(va[1], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                double ancTkpix = lib.CentimeterToPixel(anchTik);
                 for (int l = 0; l < tfg; l++)
                 {
-                    //if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
                     string textF2 = dt[l, 0] + " - " + dt[l, 1] + " " + dt[l, 2];
                     {
-                        puntoF = new PointF(coli, posi);
-                        e.Graphics.DrawString(va[1], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                        posi = posi + alfi;
-                        puntoF = new PointF(coli, posi);
                         if (false)          // glosser2.Trim() != ""
                         {
                             e.Graphics.DrawString("glosser2", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
                         }
-                        siz = new SizeF(lib.CentimeterToPixel(anchTik) - 10, 15);
-                        if ((dt[l, 3] + " " + dt[l, 4]).Length > 25) siz = new SizeF(lib.CentimeterToPixel(anchTik) - 10, 30);
+                        if (e.Graphics.MeasureString(dt[l, 3] + " " + dt[l, 4], lt_peq).Width > ancTkpix) siz = new SizeF(lib.CentimeterToPixel(anchTik) - 10, 30);
+                        else siz = new SizeF(lib.CentimeterToPixel(anchTik) - 10, 15);
                         recto = new RectangleF(puntoF, siz);
-                        //e.Graphics.DrawString("GRT " + dt[0, 3] + " " + dt[0, 4], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                         e.Graphics.DrawString("GRT " + dt[l, 3] + " " + dt[l, 4], lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
-                        posi = posi + alfi;
-                        if ((dt[l, 3] + " " + dt[l, 4]).Length > 25) posi = posi + alfi;
+                        if (e.Graphics.MeasureString(dt[l, 3] + " " + dt[l, 4], lt_peq).Width > ancTkpix) posi = posi + alfi * 2;
+                        else posi = posi + alfi;
                         puntoF = new PointF(coli, posi);
                         e.Graphics.DrawString(dt[l, 1] + " " + dt[l, 2] +
                             " Guía cliente: " + dt[l, 5], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                        //posi = posi + alfi;
-                        //puntoF = new PointF(coli, posi);
-                        //e.Graphics.DrawString("Según doc.cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                         posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("--", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        posi = posi + alfi + 5;
+                        puntoF = new PointF(coli, posi);
                     }
                 }
                 // pie del documento ;

@@ -470,4 +470,4 @@ form facelect, adecuaciones para json detrac + tramo no observe sunat ..........
 form repsventas, adecuaciones para notas de credito ................................................. ok 21/02/2024
 form notcredclts, corrección de error en json ....................................................... ok 21/02/2024
 form repsventas, estadosSunat, adecuar las columnas de las notas de credito ......................... ok 21/02/2024
-C.R. desarrollar formato A5 para los comprobantes que incluya det carga y tramo ..................... me quede aca
+C.R. desarrollar formato A4 para los comprobantes que incluya det carga y tramo ..................... ok 22/02/2024

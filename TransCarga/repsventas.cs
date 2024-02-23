@@ -1211,9 +1211,9 @@ namespace TransCarga
                     /* string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
                         "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; */
-                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit,a.totalgr,0 as preUni,0 as valUni " +
+                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit,round(a.totalgr,2) as totalgr,0 as preUni,0 as valUni " +
                         "from detfactu a left JOIN " +
-                        "(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num LIMIT 1)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
+                        "(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
                         "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
 
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +

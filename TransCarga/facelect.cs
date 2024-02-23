@@ -4690,7 +4690,7 @@ namespace TransCarga
                 // 
                 string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
-                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+                string[] va = { "", "", "", "", "", "", "", "", "", "" };      // 10
                 string[,] dt = new string[10, 9] {
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
@@ -4710,7 +4710,7 @@ namespace TransCarga
                 vs[9] = tx_distRtt.Text;                                                // dr.GetString("distclt");
                 vs[10] = tx_provRtt.Text;                                               // dr.GetString("provclt");
                 vs[11] = tx_dptoRtt.Text;                                               // dr.GetString("dptoclt");
-                vs[12] = tx_totcant.Text;                                               // dr.GetString("canfidt");
+                vs[12] = tx_tfil.Text;      // tx_totcant.Text;                                               // dr.GetString("canfidt");
                 vs[13] = tx_subt.Text;                                                  // dr.GetString("subtota");
                 vs[14] = tx_igv.Text;                                                   // dr.GetString("igvtota");
                 vs[15] = tx_flete.Text;                                                 // dr.GetString("totdvta");

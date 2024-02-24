@@ -392,7 +392,7 @@ namespace TransCarga
                     */
                     DataGridViewButtonColumn btnAct = new DataGridViewButtonColumn();
                     btnAct.HeaderText = "Sunat"; // ACTUALIZA
-                    btnAct.Text = "...Consulta...";
+                    btnAct.Text = "";
                     btnAct.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     btnAct.Name = "consulta";
                     btnAct.Width = 140;
@@ -443,7 +443,7 @@ namespace TransCarga
                                     //dgv_sunat_est.Rows[i].Cells[8].ReadOnly = false;
                                     //dgv_sunat_est.Rows[i].Cells[8].Value = "PDF";
                                     dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = false;
-                                    dgv_sunat_est.Rows[i].Cells["cdr"].Value = "CDR";
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].Value = "";
                                     dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
                                     dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = true;
                                     dgv_sunat_est.Rows[i].Cells["consulta"].Value = "";
@@ -452,8 +452,8 @@ namespace TransCarga
                                 {
                                     dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
                                     dgv_sunat_est.Rows[i].Cells["cdr"].Value = "";
-                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = false;
-                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "...Consulta...";
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "";
                                     //dgv_sunat_est.Rows[i].Cells[10].ReadOnly = false;
                                 }
                             }

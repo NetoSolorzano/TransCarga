@@ -396,6 +396,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "usercfece") usercfece = row["valor"].ToString();                 // usuarios que pueden cambiar fecha de emision
                             if (row["param"].ToString() == "cltesBol") tdocsBol = row["valor"].ToString();                  // tipos de documento de clientes para boletas
                             if (row["param"].ToString() == "cltesFac") tdocsFac = row["valor"].ToString();                  // tipos de documento de clientes para facturas
+
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -2543,7 +2544,7 @@ namespace TransCarga
                 email = Program.mailclte,
                 telef = Program.telclte1,
                 website = Program.webclte1,
-                cod_sucur = "0000"      // Program.codlocsunat      .. en producción regresarlo a su estado normal 07/02/2024
+                cod_sucur = Program.codlocsunat,                // "0000" en pruebas, en producción regresarlo a su estado normal 07/02/2024
             };
             Cadquiriente cadquiriente = new Cadquiriente()
             {

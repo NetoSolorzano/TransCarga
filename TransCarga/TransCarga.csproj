@@ -310,6 +310,12 @@
     <Compile Include="movimas.designer.cs">
       <DependentUpon>movimas.cs</DependentUpon>
     </Compile>
+    <Compile Include="NotCred11.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NotCred1.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="notcredclts.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -560,6 +566,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="movimas.resx">
       <DependentUpon>movimas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NotCred1.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>NotCred11.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="notcredclts.resx">
       <DependentUpon>notcredclts.cs</DependentUpon>

@@ -480,3 +480,4 @@ form facelect, regreso de variable localAnexoEmisor para trabajar en producción
 C.R. NotCred1, desarrollo del formato A4 ............................................................ ok 01/03/2024
 form notcredclts, adecuaciones para la impresion del formato A4 ..................................... ok 01/03/2024
 form repsventas, adecuaciones para la impresión de las notas formato A4 ............................. me quede acá
+Clase impNota, creacion de clase .................................................................... me quede acá

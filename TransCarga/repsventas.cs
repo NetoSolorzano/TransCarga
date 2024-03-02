@@ -651,7 +651,7 @@ namespace TransCarga
             }
             if (rb_notaC.Checked == true)   // notas de crédito
             {
-                consulta = "SELECT f.fechope AS EMISION,concat(f.martnot,'-',f.sernota,'-',f.numnota) as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
+                consulta = "SELECT f.fechope AS EMISION,concat(f.martnot,right(f.sernota,2),'-',f.numnota) as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
                     "es.DescrizioneRid AS ESTADO,'Enviado' AS SUNAT,'' AS CDR_GEN,'' as Rspta,'','',f.canfidt,f.id " + 
                     "FROM cabdebcred f " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
@@ -1231,7 +1231,10 @@ namespace TransCarga
                     }
                     if (rb_notaC.Checked == true)
                     {
-
+                        string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 2));  // concat(f.martnot,right(f.sernota,2),'-',f.numnota) as TIPO
+                        impNota(cdtip,
+                            "00" + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(2, 2),
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
                     }
                 }
                 //cuenta = e.RowIndex;
@@ -1248,11 +1251,14 @@ namespace TransCarga
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
                 }; // 6 columnas, 10 filas
             string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
-            //
+            double pigv = 0;
+            int idcnot = 0;
+            //  " +
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
-                string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr,ifnull(b.fechopegr,''),ifnull(b.docsremit,'') " +
-                "from detdebcred a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror where a.idc=@idr";
+                string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,round(a.totalgr,2) as totalgr," +
+                    "ifnull(b.fechopegr,''),ifnull(b.docsremit,''),round(a.totalgr,2) as preUni,round(a.totalgr/(1+(@pigv/100)),2) as valUni " +
+                    "from detdebcred a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror where a.idc=@idr";
 
                 string consulta = "select a.id,a.fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota,a.tipncred," +
                     "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
@@ -1264,7 +1270,7 @@ namespace TransCarga
                     "left join desc_est b on b.idcodice=a.estnota " +
                     "left join desc_doc c on c.idcodice=a.tidoclt " +
                     "left join desc_mon m on m.idcodice=a.mondvta " +
-                    "where a.tipnota=@tnot and a.sernota=@snot and a.numnota=@nnot";
+                    "where a.martnot=@tnot and a.sernota=@snot and a.numnota=@nnot";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.Parameters.AddWithValue("@tnot", tipo);
@@ -1339,13 +1345,43 @@ namespace TransCarga
                             va[4] = ""; // (double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
                             va[5] = ""; // Program.ctadetra;           // cta. detracción
                             va[6] = "";                         // concatenado de Guias Transportista para Formato de cargas unicas
-                            va[7] = rutaQR + "pngqr";           // ruta y nombre del png codigo QR va[7]
+                            va[7] = vi_rutaQR + "pngqr";           // ruta y nombre del png codigo QR va[7] ... usamos el mismo que para facturacion
                             va[8] = "";         // 
-
+                            idcnot = dr.GetInt32("id");
+                            pigv = dr.GetDouble("porcigv");
                         }
-
                     }
                 }
+                // detalle del comprobante
+                {
+                    int y = 0;
+                    using (MySqlCommand micomd = new MySqlCommand(jalad, conn))
+                    {
+                        micomd.Parameters.AddWithValue("@idr", idcnot);
+                        micomd.Parameters.AddWithValue("@pigv", pigv);
+                        using (MySqlDataReader drg = micomd.ExecuteReader())
+                        {
+                            while (drg.Read())
+                            {
+                                dt[y, 0] = (y + 1).ToString();
+                                dt[y, 1] = drg.GetString("cantbul");
+                                dt[y, 2] = "";  // drg.GetString("unimedp");
+                                dt[y, 3] = "";  // drg.GetString("codgror");             // guia transportista
+                                dt[y, 4] = drg.GetString("descpro");             // descripcion de la carga
+                                dt[y, 5] = "";   drg.GetString("docsremit");           // documento relacionado remitente de la guia transportista
+                                dt[y, 6] = drg.GetString("valUni");             // valor unitario
+                                dt[y, 7] = drg.GetString("preUni");             // precio unitario
+                                dt[y, 8] = drg.GetString("totalgr");            // total
+                                y += 1;
+                            }
+                        }
+                    }
+                }
+            }
+            // llamamos a la clase que imprime
+            if (Formato == "A4")
+            {
+                impNota imp = new impNota(1, "", vs, dt, va, cu, Formato, forA4CRn);    // vistas en pantalla
             }
         }
         private void imprime(string tipo, string serie, string numero, string Formato)

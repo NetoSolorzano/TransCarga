@@ -277,6 +277,7 @@
     </Compile>
     <Compile Include="impDV.cs" />
     <Compile Include="impGRE_T.cs" />
+    <Compile Include="impNota.cs" />
     <Compile Include="ingcargalm.cs">
       <SubType>Form</SubType>
     </Compile>

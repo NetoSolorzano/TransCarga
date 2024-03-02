@@ -2090,15 +2090,15 @@ namespace TransCarga
                 {
                     if (vi_formato == "A4")            // Seleccion de formato ... A4
                     {
-                        if (imprimeA4() == true) updateprint("S");
+                        imprimeA4();
                     }
                     if (vi_formato == "A5")            // Seleccion de formato ... A5
                     {
-                        if (imprimeA5() == true) updateprint("S");
+                        //if (imprimeA5() == true) updateprint("S");
                     }
                     if (vi_formato == "TK")            // Seleccion de formato ... Ticket
                     {
-                        if (imprimeTK() == true) updateprint("S");
+                        //if (imprimeTK() == true) updateprint("S");
                     }
                 }
             }
@@ -2106,15 +2106,15 @@ namespace TransCarga
             {
                 if (vi_formato == "A4")            // Seleccion de formato ... A4
                 {
-                    if (imprimeA4() == true) updateprint("S");
+                    imprimeA4();
                 }
                 if (vi_formato == "A5")
                 {
-                    if (imprimeA5() == true) updateprint("S");
+                    //if (imprimeA5() == true) updateprint("S");
                 }
                 if (vi_formato == "TK")
                 {
-                    if (imprimeTK() == true) updateprint("S");
+                    //if (imprimeTK() == true) updateprint("S");
                 }
             }
             // Cantidad de copias
@@ -2255,6 +2255,7 @@ namespace TransCarga
         {
             bool retorna = false;
             printDocument1.PrinterSettings.PrinterName = nomImp;
+            printDocument1.PrinterSettings.Copies = 1;
             printDocument1.Print();
             retorna = true;
 
@@ -2269,42 +2270,16 @@ namespace TransCarga
         private bool imprimeTK()
         {
             bool retorna = false;
-            try
-            {
-                printDocument1.PrinterSettings.PrinterName = v_impTK;
-                printDocument1.Print();
-                retorna = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error en imprimir TK");
-                retorna = false;
-            }
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
-        {
-            if (vi_formato == "A4")
-            {
-                imprime_A4(sender, e);
-            }
-            if (vi_formato == "A5")
-            {
-                //imprime_A5(sender, e);
-            }
-            if (vi_formato == "TK")
-            {
-                //imprime_TK(sender, e);
-            }
-        }
-        private void imprime_A4(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             DataRow[] row = dttd1.Select("idcodice='" + tx_dat_tdv.Text + "'");             // tipo de documento venta
             tipdo = row[0][3].ToString();
             //DataRow[] rowd = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");          // tipo de documento del cliente
             //tipoDocEmi = rowd[0][3].ToString().Trim();
             DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
-            tipoMoneda = rowm[0][3].ToString().Trim(); 
+            tipoMoneda = rowm[0][3].ToString().Trim();
             // 
             vs[0] = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3);      // dr.GetString("martdve") + lib.Right(serie, 3);
             vs[1] = tx_numero.Text;                                                 // numero;
@@ -2344,8 +2319,8 @@ namespace TransCarga
             vs[35] = "Venta";                       // motivo de traslado
             vs[36] = tipoMoneda;                    // dr.GetString("nonmone");
             vs[37] = tx_fecemi.Text;                // fecha emision del comprobante que se anula
-            vs[38] = cmb_tdv.Text.Substring(0,1) + lib.Right(tx_serGR.Text,3) + "-" + tx_numGR.Text;                           // comprobante que se anula
-                                                    // carga unica
+            vs[38] = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serGR.Text, 3) + "-" + tx_numGR.Text;                           // comprobante que se anula
+                                                                                                                                 // carga unica
             cu[0] = "";     // dr.GetString("placa");
             cu[1] = "";     // dr.GetString("confv");
             cu[2] = "";     // dr.GetString("autoriz");
@@ -2393,15 +2368,19 @@ namespace TransCarga
             {
                 if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))   //  dataGridView1.Rows[l].Cells[0].Value != null
                 {
-                    dt[l, 0] = (l+1).ToString();
+                    decimal pu = Math.Round(decimal.Parse(dataGridView1.Rows[l].Cells[4].Value.ToString()), 2);
+                    decimal vu = decimal.Parse(dataGridView1.Rows[l].Cells[4].Value.ToString());
+                    vu = Math.Round(vu / (1 + decimal.Parse(v_igv)/100), 2);
+
+                    dt[l, 0] = (l + 1).ToString();
                     dt[l, 1] = dataGridView1.Rows[l].Cells[2].Value.ToString();     // drg.GetString("cantbul"); 
                     dt[l, 2] = "";     // drg.GetString("unimedp");
                     dt[l, 3] = "";     // drg.GetString("codgror");
                     dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();     // drg.GetString("descpro");
                     dt[l, 5] = "";     // drg.GetString("docsremit");
-                    dt[l, 6] = dataGridView1.Rows[l].Cells[4].Value.ToString();     // drg.GetString("valUni");
-                    dt[l, 7] = dataGridView1.Rows[l].Cells[4].Value.ToString();     // drg.GetString("preUni");
-                    dt[l, 8] = dataGridView1.Rows[l].Cells[4].Value.ToString();     // drg.GetString("totalgr");
+                    dt[l, 6] = vu.ToString();     // drg.GetString("valUni");
+                    dt[l, 7] = pu.ToString();     // drg.GetString("preUni");
+                    dt[l, 8] = pu.ToString();     // drg.GetString("totalgr");
                 }
             }
             // genera el reporte
@@ -2430,7 +2409,7 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "update cabfactu set impreso=@sn where id=@idr";
+                string consulta = "update ?? set impreso=@sn where id=@idr";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.Parameters.AddWithValue("@sn", sn);
@@ -2491,7 +2470,7 @@ namespace TransCarga
                 detRow.cant = dt[o, 1];         // ["Cant"]
                 detRow.umed = (dt[o, 2].Trim() == "") ? "ZZ" : dt[o, 2];         // ["umed"]
                 detRow.guiaT = dt[o, 3];        // guia transportista
-                detRow.descrip = dt[o, 4].Trim() + " Según " + dt[o, 5].Trim();      // descripcion de la carga
+                detRow.descrip = dt[o, 4].Trim();      //  + " Según " + dt[o, 5].Trim()   descripcion de la carga
                 detRow.docRel1 = dt[o, 5];      // documento relacionado remitente de la guia transportista
                 detRow.docRel2 = "";            // 
                 detRow.valUnit = dt[o, 6];      // valor unitario

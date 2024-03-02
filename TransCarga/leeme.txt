@@ -477,4 +477,6 @@ form repsventas, estadosSunat, corregir a veces acciona el click en A4 otras vec
 C.R. CompVta0, agregar "según" en la descrip antes del numero guia remitente ........................ ok 23/02/2024
 Clase impDV, impresion en TK arreglar espacios entre lineas innecesario, ejem: F1-30389 ............. ok 23/02/2024
 form facelect, regreso de variable localAnexoEmisor para trabajar en producción ..................... ok 26/02/2024
-C.R. NotCred1, desarrollo del formato A4 ............................................................ 
+C.R. NotCred1, desarrollo del formato A4 ............................................................ ok 01/03/2024
+form notcredclts, adecuaciones para la impresion del formato A4 ..................................... ok 01/03/2024
+form repsventas, adecuaciones para la impresión de las notas formato A4 ............................. me quede acá

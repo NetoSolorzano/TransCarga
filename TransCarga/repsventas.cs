@@ -1222,16 +1222,132 @@ namespace TransCarga
                 }
                 if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")
                 {
-                    string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
-                    imprime(cdtip,
-                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
-                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
+                    if (rb_dVtas.Checked == true)
+                    {
+                        string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                        imprime(cdtip,
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
+                    }
+                    if (rb_notaC.Checked == true)
+                    {
+
+                    }
                 }
                 //cuenta = e.RowIndex;
             }
 
         }
+        private void impNota(string tipo, string serie, string numero, string Formato)
+        {
+            string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
+                           "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
+            string[] va = { "", "", "", "", "", "", "", "", "", "" };      // 10
+            string[,] dt = new string[10, 9] {
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
+                }; // 6 columnas, 10 filas
+            string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+            //
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr,ifnull(b.fechopegr,''),ifnull(b.docsremit,'') " +
+                "from detdebcred a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror where a.idc=@idr";
 
+                string consulta = "select a.id,a.fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota,a.tipncred," +
+                    "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
+                    "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totnota,a.totdvta,a.saldvta," +
+                    "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt,c.descrizionerid as docC,f.fechope as femiFT," +
+                    "a.verApp,a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha,c.codsunat,m.deta1,f.martdve " +
+                    "from cabdebcred a " +
+                    "left join cabfactu f on f.tipdvta=a.tipdvta and f.serdvta=a.serdvta and f.numdvta=a.numdvta " +
+                    "left join desc_est b on b.idcodice=a.estnota " +
+                    "left join desc_doc c on c.idcodice=a.tidoclt " +
+                    "left join desc_mon m on m.idcodice=a.mondvta " +
+                    "where a.tipnota=@tnot and a.sernota=@snot and a.numnota=@nnot";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.Parameters.AddWithValue("@tnot", tipo);
+                    micon.Parameters.AddWithValue("@snot", serie);
+                    micon.Parameters.AddWithValue("@nnot", numero);
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            vs[0] = dr.GetString("martnot") + lib.Right(serie, 2);
+                            vs[1] = numero;                                                 // numero;
+                            vs[2] = tipo;                                                // tipo;
+                            vs[3] = Program.dirfisc;                                                // direccion emisor
+                            vs[4] = "Nota de crédito electrónica";
+                            vs[5] = dr.GetString("fechope");
+                            vs[6] = dr.GetString("nombclt");
+                            vs[7] = dr.GetString("nudoclt");
+                            vs[8] = dr.GetString("direclt");
+                            vs[9] = dr.GetString("distclt");
+                            vs[10] = dr.GetString("provclt");
+                            vs[11] = dr.GetString("dptoclt");
+                            vs[12] = dr.GetString("canfidt");
+                            vs[13] = dr.GetString("subtota");
+                            vs[14] = dr.GetString("igvtota");
+                            vs[15] = dr.GetString("totdvta");
+                            vs[16] = dr.GetString("deta1");   // cmb_mon.Text;                    // dr.GetString("inimon");
+                            vs[17] = nlet.Convertir(dr.GetString("totdvta"), true);             // tx_fletLetras.Text.Trim();          // + ((dr.GetString("mondvta") == codmon) ? " SOLES" : " DOLARES AMERICANOS");
+                            vs[18] = "";
+                            vs[19] = "";
+                            vs[20] = "";
+                            vs[21] = tipo;                                                         // dr.GetString("cdtdv");
+                            vs[22] = "";                                                            // dr.GetString("ctdcl");
+                            vs[23] = nipfe;                                                         // identificador de ose/pse metodo de envío
+                            vs[24] = restexto;                                                      // texto del resolucion sunat del ose/pse
+                            vs[25] = autoriz_OSE_PSE;                                               // dr.GetString("autorizPSE");
+                            vs[26] = webose;                                                        // dr.GetString("webosePSE");
+                            vs[27] = dr.GetString("userc");                                         // dr.GetString("userc").Trim();
+                            vs[28] = Program.vg_nlus;                                               // dr.GetString("nomLocO").Trim();
+                            vs[29] = despedida;                                                     // glosa despedida
+                            vs[30] = Program.cliente;                                               // nombre del emisor del comprobante
+                            vs[31] = Program.ruc;                                                   // ruc del emisor
+                            vs[32] = "Anulación de la Operación";                                   // tipo de nota
+                            vs[33] = "Anulación de la Operación";                                   // motivo para hacer la nota
+                            vs[34] = "Transporte Privado";                  // modalidad de transporte
+                            vs[35] = "Venta";                               // motivo de traslado
+                            vs[36] = dr.GetString("deta1");                 // dr.GetString("nonmone");
+                            vs[37] = dr.GetString("femiFT");                // fecha emision del comprobante que se anula
+                            vs[38] = dr.GetString("martdve") + lib.Right(dr.GetString("serdvta"),3) + "-" + dr.GetString("numdvta");  // comprobante que se anula
+                            // carga unica
+                            cu[0] = "";     // dr.GetString("placa");
+                            cu[1] = "";     // dr.GetString("confv");
+                            cu[2] = "";     // dr.GetString("autoriz");
+                            cu[3] = "";     // dr.GetString("cargaEf");
+                            cu[4] = "";     // dr.GetString("cargaUt");
+                            cu[5] = "";     // dr.GetString("rucTrans");
+                            cu[6] = "";     // dr.GetString("nomTrans");
+                            cu[7] = "";     // dr.GetString("fecIniTras");
+                            cu[8] = "";     // dr.GetString("dirPartida");
+                            cu[9] = "";     // dr.GetString("ubiPartida");
+                            cu[10] = "";    // dr.GetString("dirDestin");
+                            cu[11] = "";    // dr.GetString("ubiDestin");
+                            cu[12] = "";    // dr.GetString("dniChof");
+                            cu[13] = "";    // dr.GetString("brevete");
+                            cu[14] = "";    // dr.GetString("valRefViaje");
+                            cu[15] = "";    // dr.GetString("valRefVehic");
+                            cu[16] = "";    // dr.GetString("valRefTon");
+                                            // varios
+                            va[0] = logoclt;                    // Ruta y nombre del logo del emisor electrónico
+                            va[1] = ""; // glosser;                    // glosa del servicio en facturacion
+                            va[2] = ""; // codfact;                    // Tipo de documento FACTURA
+                            va[3] = ""; // Program.pordetra;           // porcentaje detracción
+                            va[4] = ""; // (double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
+                            va[5] = ""; // Program.ctadetra;           // cta. detracción
+                            va[6] = "";                         // concatenado de Guias Transportista para Formato de cargas unicas
+                            va[7] = rutaQR + "pngqr";           // ruta y nombre del png codigo QR va[7]
+                            va[8] = "";         // 
+
+                        }
+
+                    }
+                }
+            }
+        }
         private void imprime(string tipo, string serie, string numero, string Formato)
         {
             // 
@@ -1252,9 +1368,6 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    /* string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
-                        "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
-                        "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; */
                     string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit," +
                         "round(a.totalgr,2) as totalgr,round(a.totalgr,2) as preUni,round(a.totalgr/(1+(@pigv/100)),2) as valUni " +
                         "from detfactu a left JOIN " +

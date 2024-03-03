@@ -60,6 +60,7 @@ namespace TransCarga
         string forA4CRcu = "";            // ruta y nombre del CR comprobante F/B en A5 uso para cargas unicas
         string v_impTK = "";            // nombre de la impresora TK para F/B
         string v_impPDF = "";           // impresora generica de pdf
+        string v_CR_NC1 = "";           // formato CR de notas de credito
         //int pageCount = 1, cuenta = 0;
         #endregion
 
@@ -137,11 +138,12 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped,@clie)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped,@clie,@ncre)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@ped", "facelect");
                 micon.Parameters.AddWithValue("@clie", "clients");
+                micon.Parameters.AddWithValue("@ncre", "notcredclts");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -197,6 +199,10 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "documento" && row["param"].ToString() == "dni") coddni = row["valor"].ToString().Trim();
                         if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") codruc = row["valor"].ToString().Trim();
+                    }
+                    if (row["formulario"].ToString() == "notcredclts") 
+                    { 
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomfor_cr") v_CR_NC1 = row["valor"].ToString().Trim(); 
                     }
                 }
                 da.Dispose();
@@ -1233,8 +1239,8 @@ namespace TransCarga
                     {
                         string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 2));  // concat(f.martnot,right(f.sernota,2),'-',f.numnota) as TIPO
                         impNota(cdtip,
-                            "00" + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(2, 2),
-                            dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
+                            "00" + dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(2, 2),
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8), "A4");
                     }
                 }
                 //cuenta = e.RowIndex;
@@ -1256,6 +1262,8 @@ namespace TransCarga
             //  " +
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
+                conn.Open();
+
                 string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,round(a.totalgr,2) as totalgr," +
                     "ifnull(b.fechopegr,''),ifnull(b.docsremit,''),round(a.totalgr,2) as preUni,round(a.totalgr/(1+(@pigv/100)),2) as valUni " +
                     "from detdebcred a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror where a.idc=@idr";
@@ -1347,6 +1355,7 @@ namespace TransCarga
                             va[6] = "";                         // concatenado de Guias Transportista para Formato de cargas unicas
                             va[7] = vi_rutaQR + "pngqr";           // ruta y nombre del png codigo QR va[7] ... usamos el mismo que para facturacion
                             va[8] = "";         // 
+                            va[9] = dr.GetString("tcadvta");
                             idcnot = dr.GetInt32("id");
                             pigv = dr.GetDouble("porcigv");
                         }
@@ -1368,7 +1377,7 @@ namespace TransCarga
                                 dt[y, 2] = "";  // drg.GetString("unimedp");
                                 dt[y, 3] = "";  // drg.GetString("codgror");             // guia transportista
                                 dt[y, 4] = drg.GetString("descpro");             // descripcion de la carga
-                                dt[y, 5] = "";   drg.GetString("docsremit");           // documento relacionado remitente de la guia transportista
+                                dt[y, 5] = "";  // drg.GetString("docsremit");           // documento relacionado remitente de la guia transportista
                                 dt[y, 6] = drg.GetString("valUni");             // valor unitario
                                 dt[y, 7] = drg.GetString("preUni");             // precio unitario
                                 dt[y, 8] = drg.GetString("totalgr");            // total
@@ -1381,7 +1390,7 @@ namespace TransCarga
             // llamamos a la clase que imprime
             if (Formato == "A4")
             {
-                impNota imp = new impNota(1, "", vs, dt, va, cu, Formato, forA4CRn);    // vistas en pantalla
+                impNota imp = new impNota(1, "", vs, dt, va, cu, Formato, v_CR_NC1);    // vistas en pantalla
             }
         }
         private void imprime(string tipo, string serie, string numero, string Formato)

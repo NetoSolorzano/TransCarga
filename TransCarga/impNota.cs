@@ -507,7 +507,7 @@ namespace TransCarga
         private conClie generaReporte(string cristalito)            // cambiar a facturas/boletas
         {
             conClie DV = new conClie();
-            conClie.cVta_cabRow cabRow = DV.cVta_cab.NewcVta_cabRow();
+            conClie.cNot_credRow cabRow = DV.cNot_cred.NewcNot_credRow();
             // CABECERA
             cabRow.formatoRPT = cristalito;
             cabRow.id = "0";         // 
@@ -529,11 +529,6 @@ namespace TransCarga
             cabRow.total = vs[15];
             cabRow.moneda = vs[16];
             cabRow.fleteLetras = vs[17];
-            cabRow.codicion = vs[18];
-            cabRow.dplazo = vs[19];
-            cabRow.glosaDet = vs[20];
-            cabRow.tipcomSunat = vs[21];
-            cabRow.tdClteSunat = vs[22];
             cabRow.provee = vs[23];
             cabRow.resolTex = vs[24];
             cabRow.autorizSunat = vs[25];
@@ -543,67 +538,35 @@ namespace TransCarga
             cabRow.glosDesped = vs[29];
             cabRow.nomEmisor = vs[30];    // nombre del emisor del comprobante
             cabRow.rucEmisor = vs[31];    // ruc del emisor
-            cabRow.fecVence = vs[32];    // fecha vencimiento del comprob.
-            cabRow.formaPago = vs[33];    // forma de pago incluyendo # de cuotas (siempre es 1 cuota en Transcarga)
-            cabRow.modTransp = vs[34];    // modalidad de transporte
-            cabRow.motTrasla = vs[35];    // motivo de traslado
             cabRow.nomMone = vs[36];      // nombre de la moneda
-            cabRow.totOpInafec = vs[37];    // tot operaciones inafectas
-            cabRow.totOpExone = vs[38];     // tot operaciones exoneradas
-            cabRow.valCuota = vs[39];       // valor de la cuota restanto detrac si lo hubiera
-            DV.cVta_cab.AddcVta_cabRow(cabRow);
+            cabRow.ubicapng = va[7];
+            cabRow.glosaTipoNot = vs[32];   // glosa tipo de nota
+            cabRow.motivoNota = vs[33];     // motivo de la anulacion
+            cabRow.fechcVtaorigen = vs[37];       // fecha emision comprobante que se anula
+            cabRow.cVtaorigen = vs[38];           // comprobante que se anula
+            DV.cNot_cred.AddcNot_credRow(cabRow);
 
             // DETALLE
             for (int o = 0; o < int.Parse(vs[12]); o++)
             {
-                conClie.cVta_detRow detRow = DV.cVta_det.NewcVta_detRow();
+                conClie.cNot_detRow detRow = DV.cNot_det.NewcNot_detRow();      //     .cVta_det.NewcVta_detRow();
                 detRow.id = "0";
                 detRow.OriDest = dt[o, 0];      // ["OriDest"]
                 detRow.cant = dt[o, 1];         // ["Cant"]
                 detRow.umed = (dt[o, 2].Trim() == "") ? "ZZ" : dt[o, 2];         // ["umed"]
                 detRow.guiaT = dt[o, 3];        // guia transportista
-                detRow.descrip = dt[o, 4].Trim() + " Según " + dt[o, 5].Trim();      // descripcion de la carga
+                detRow.descrip = dt[o, 4].Trim();      // descripcion de la carga
                 detRow.docRel1 = dt[o, 5];      // documento relacionado remitente de la guia transportista
                 detRow.docRel2 = "";            // 
                 detRow.valUnit = dt[o, 6];      // valor unitario
                 detRow.preUnit = dt[o, 7];      // precio unitario
                 detRow.Total = dt[o, 8];        // total fila
-                DV.cVta_det.AddcVta_detRow(detRow);
+                DV.cNot_det.AddcNot_detRow(detRow);       //.cVta_det.AddcVta_detRow(detRow);
             }
-
             // CARGA UNICA
-            conClie.cVta_cuRow cuRow = DV.cVta_cu.NewcVta_cuRow();
-            cuRow.placa = cu[0];          // "placa");
-            cuRow.confv = cu[1];          // "confv");
-            cuRow.autoriz = cu[2];          // "autoriz");
-            cuRow.cargaEf = cu[3];          // "cargaEf");
-            cuRow.cargaUt = cu[4];          // "cargaUt");
-            cuRow.rucTrans = cu[5];          // "rucTrans");
-            cuRow.nomTrans = cu[6];          // "nomTrans");
-            cuRow.fecIniTras = cu[7];          // "fecIniTras");
-            cuRow.dirPartida = cu[8];          // "dirPartida");
-            cuRow.ubiPartida = cu[9];          // "ubiPartida");
-            cuRow.dirDestin = cu[10];        // "dirDestin");
-            cuRow.ubiDestin = cu[11];        // "ubiDestin");
-            cuRow.dniChof = cu[12];        // "dniChof");
-            cuRow.brevete = cu[13];        // "brevete");
-            cuRow.valRefViaje = cu[14];        // "valRefViaje");
-            cuRow.valRefVehic = cu[15];        // "valRefVehic");
-            cuRow.valRefTon = cu[16];        // "valRefTon");
-            DV.cVta_cu.AddcVta_cuRow(cuRow);
 
             // DATOS VARIOS
-            conClie.cVta_vaRow vaRow = DV.cVta_va.NewcVta_vaRow();
-            vaRow.id = "0";
-            vaRow.cuenDet = va[5];
-            vaRow.glosSerFact = va[1];
-            vaRow.logoRutNom = va[0];
-            vaRow.montDet = va[4];
-            vaRow.porcDet = va[3];
-            vaRow.guiasTrans = va[6];
-            vaRow.ubicapng = va[7];
-            vaRow.tipcambio = va[9];        // tipo de cambio
-            DV.cVta_va.AddcVta_vaRow(vaRow);
+
             return DV;
         }
     }

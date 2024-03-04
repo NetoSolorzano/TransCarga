@@ -479,5 +479,8 @@ Clase impDV, impresion en TK arreglar espacios entre lineas innecesario, ejem: F
 form facelect, regreso de variable localAnexoEmisor para trabajar en producción ..................... ok 26/02/2024
 C.R. NotCred1, desarrollo del formato A4 ............................................................ ok 01/03/2024
 form notcredclts, adecuaciones para la impresion del formato A4 ..................................... ok 01/03/2024
-form repsventas, adecuaciones para la impresión de las notas formato A4 ............................. me quede acá
-Clase impNota, creacion de clase .................................................................... me quede acá
+form repsventas, adecuaciones para la impresión de las notas formato A4 ............................. ok 04/03/2024
+Clase impNota, creacion de clase .................................................................... ok 04/03/2024
+form facelect, correccion en impresion de comprob al credito en días de plazo ....................... ok 04/03/2024
+form facelect, agregar guia electrónica a los json, clase CDocref ................................... 
+form facelect, generar automaticamente el pdf y subirlo junto con el json ........................... 

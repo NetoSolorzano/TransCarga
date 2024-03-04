@@ -56,6 +56,7 @@ namespace TransCarga
         public Cforma_pago forma_pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
+        public List<CDocref> docref { get; set; }
     }
     public class CComprobante2                  // sin definir 
     {
@@ -79,6 +80,7 @@ namespace TransCarga
         public Cforma_pago forma_pago { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
+        public List<CDocref> docref { get; set; }
     }
     public class CComprobante3                  // contado c/detrac varias leyendas
     {
@@ -103,6 +105,7 @@ namespace TransCarga
         public Cforma_pago forma_pago { get; set; }
         public List<CComprobDetDetrac> det { get; set; }
         public List<Cleyen> leyen { get; set; }
+        public List<CDocref> docref { get; set; }
     }
     public class CComprobante4                  // credito sin detrac varias leyendas
     {
@@ -127,6 +130,7 @@ namespace TransCarga
         public List<CCuota> cuota { get; set; }
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
+        public List<CDocref> docref { get; set; }
     }
     public class CComprobante5                  // sin definir 
     {
@@ -151,6 +155,7 @@ namespace TransCarga
         public List<CComprobanteDetalle> det { get; set; }
         public List<Cleyen> leyen { get; set; }
         public List<CCuota> cuota { get; set; }
+        public List<CDocref> docref { get; set; }
     }
     public class CComprobante6                  // credito c/detrac varias leyendas
     {
@@ -176,6 +181,7 @@ namespace TransCarga
         public List<CCuota> cuota { get; set; }
         public List<CComprobDetDetrac> det { get; set; }
         public List<Cleyen> leyen { get; set; }
+        public List<CDocref> docref { get; set; }
     }
     public class Cadquiriente
     {
@@ -349,5 +355,10 @@ namespace TransCarga
         public string fec_gen { get; set; }
         public Cemisor emisor { get; set; }
         public List<CdetBaja> det { get; set;}
+    }
+    public class CDocref 
+    { 
+        public string tip_doc { get; set; }
+        public string serie_correl { get; set; }
     }
 }

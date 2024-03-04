@@ -69,6 +69,14 @@ namespace TransCarga
                     rpt.SetDataSource(_datosReporte);
                     crystalReportViewer1.ReportSource = rpt;
                 }
+                if (_datosReporte.cNot_cred.Rows.Count > 0)
+                {
+                    string nf = _datosReporte.cNot_cred.Rows[0].ItemArray[0].ToString();
+                    ReportDocument rpt = new ReportDocument();
+                    rpt.Load(nf);
+                    rpt.SetDataSource(_datosReporte);
+                    crystalReportViewer1.ReportSource = rpt;
+                }
             }
             catch (Exception ex)
             {

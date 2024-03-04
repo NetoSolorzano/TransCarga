@@ -1402,6 +1402,8 @@ namespace TransCarga
                                     System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
                                 }
                             }
+                            // generar el pdf para subirlo al servidor de seencorp 04/03/2024
+
                         }
                         // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
                         retorna = true;
@@ -2454,11 +2456,18 @@ namespace TransCarga
                 val_ref_carga_util = 1,
                 tramo = ctramos
             };
-
+            List<CDocref> cdocref = new List<CDocref>();
             foreach (DataGridViewRow ron in dataGridView1.Rows)
             {
                 if (ron.Cells[1].Value != null)
                 {
+                    CDocref docref = new CDocref()
+                    {
+                        tip_doc = "31",
+                        serie_correl = ron.Cells["guias"].Value.ToString()
+                    };
+                    cdocref.Add(docref);
+                    //
                     double vval_f = 0;      // Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()));
                     if (ron.Cells["codmondoc"].Value.ToString() == MonDeft && tx_dat_mone.Text == MonDeft)
                     {
@@ -2621,7 +2630,8 @@ namespace TransCarga
                     tot = ctot,
                     forma_pago = formap,
                     det = aaa,
-                    leyen = lll
+                    leyen = lll,
+                    docref = cdocref
                 };
                 Cinvoice1 cinvoice = new Cinvoice1
                 {
@@ -2656,7 +2666,8 @@ namespace TransCarga
                     forma_pago = formap,
                     detracc = cdetracc,
                     det = ddd,
-                    leyen = lll
+                    leyen = lll,
+                    docref = cdocref
                 };
                 Cinvoice3 cinvoice = new Cinvoice3
                 {
@@ -2691,7 +2702,8 @@ namespace TransCarga
                     forma_pago = formap,
                     cuota = ccc,
                     det = aaa,
-                    leyen = lll
+                    leyen = lll,
+                    docref = cdocref
                 };
                 Cinvoice4 cinvoice = new Cinvoice4
                 {
@@ -2727,7 +2739,8 @@ namespace TransCarga
                     cuota = ccc,
                     detracc = cdetracc,
                     det = ddd,
-                    leyen = lll
+                    leyen = lll,
+                    docref = cdocref
                 };
                 Cinvoice6 cinvoice = new Cinvoice6
                 {
@@ -4629,7 +4642,7 @@ namespace TransCarga
         #endregion comboboxes
 
         #region impresion
-        private void imprimeGRE()       // imprime GRE-T del comprobante
+        private void imprimeGRE()       // imprime GRET del comprobante
         {
             for (int i = 0; i <= dataGridView1.Rows.Count -1; i++)
             {
@@ -4718,7 +4731,7 @@ namespace TransCarga
                 vs[16] = cmb_mon.Text;                                                  // dr.GetString("inimon");
                 vs[17] = tx_fletLetras.Text.Trim();                                     // + ((dr.GetString("mondvta") == codmon) ? " SOLES" : " DOLARES AMERICANOS");
                 vs[18] = (tx_dat_plazo.Text == "") ? "CONTADO" : "CREDITO";             // (dr.GetString("tippago").Trim() != "" && dr.GetString("plazocred").Trim() == "") ? "CONTADO" : "CREDITO";
-                vs[19] = (tx_dat_plazo.Text == "") ? tx_dat_dpla.Text : "";             // (dr.GetString("plazocred") != "") ? dr.GetString("dpc") : "";
+                vs[19] = (tx_dat_plazo.Text == "") ? "" : tx_dat_dpla.Text;             // (dr.GetString("plazocred") != "") ? dr.GetString("dpc") : "";
                 vs[20] = (double.Parse(tx_fletMN.Text) >= double.Parse(Program.valdetra)) ? glosdet : "";      // (dr.GetDouble("totdvMN") >= double.Parse(Program.valdetra)) ? glosdetra : "";   // Glosa para la detracción SI TIENE
                 vs[21] = tipdo;                                                         // dr.GetString("cdtdv");
                 vs[22] = tipoDocEmi;                                                    // dr.GetString("ctdcl");

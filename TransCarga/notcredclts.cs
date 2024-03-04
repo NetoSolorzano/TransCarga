@@ -2349,6 +2349,31 @@ namespace TransCarga
             va[7] = rutaQR + "pngqr";           // ruta y nombre del png codigo QR va[7]
             va[8] = "";         // 
 
+            // detalle
+            // a.codgror,a.descpro,a.cantbul,'',a.totalgr,'','',ifnull(b.fechopegr,''),a.codmogr,   a.unimedp,a.pesogro,ifnull(b.docsremit,'')
+            for (int l = 0; l < dataGridView1.Rows.Count - 1; l++)
+            {
+                if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))   //  dataGridView1.Rows[l].Cells[0].Value != null
+                {
+                    decimal pu = Math.Round(decimal.Parse(dataGridView1.Rows[l].Cells[4].Value.ToString()), 2);
+                    decimal vu = decimal.Parse(dataGridView1.Rows[l].Cells[4].Value.ToString());
+                    vu = Math.Round(vu / (1 + decimal.Parse(v_igv) / 100), 2);
+
+                    dt[l, 0] = (l + 1).ToString();
+                    dt[l, 1] = dataGridView1.Rows[l].Cells[2].Value.ToString();     // drg.GetString("cantbul"); 
+                    dt[l, 2] = "";     // drg.GetString("unimedp");
+                    dt[l, 3] = "";     // drg.GetString("codgror");
+                    dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();     // drg.GetString("descpro");
+                    dt[l, 5] = "";     // drg.GetString("docsremit");
+                    dt[l, 6] = vu.ToString();     // drg.GetString("valUni");
+                    dt[l, 7] = pu.ToString();     // drg.GetString("preUni");
+                    dt[l, 8] = pu.ToString();     // drg.GetString("totalgr");
+                }
+            }
+
+            impNota imp = new impNota(1, "", vs, dt, va, cu, "A4", v_CR_NC1);    // vistas en pantalla
+
+            /* genera el reporte
             string separ = "|";
             string codigo = vs[31] + separ + vs[21] + separ +
                 vs[0] + separ + vs[1] + separ +
@@ -2362,28 +2387,7 @@ namespace TransCarga
             using (var stream = new FileStream(@va[7], FileMode.Create))
                 renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
 
-            // detalle
-            // a.codgror,a.descpro,a.cantbul,'',a.totalgr,'','',ifnull(b.fechopegr,''),a.codmogr,   a.unimedp,a.pesogro,ifnull(b.docsremit,'')
-            for (int l = 0; l < dataGridView1.Rows.Count - 1; l++)
-            {
-                if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))   //  dataGridView1.Rows[l].Cells[0].Value != null
-                {
-                    decimal pu = Math.Round(decimal.Parse(dataGridView1.Rows[l].Cells[4].Value.ToString()), 2);
-                    decimal vu = decimal.Parse(dataGridView1.Rows[l].Cells[4].Value.ToString());
-                    vu = Math.Round(vu / (1 + decimal.Parse(v_igv)/100), 2);
 
-                    dt[l, 0] = (l + 1).ToString();
-                    dt[l, 1] = dataGridView1.Rows[l].Cells[2].Value.ToString();     // drg.GetString("cantbul"); 
-                    dt[l, 2] = "";     // drg.GetString("unimedp");
-                    dt[l, 3] = "";     // drg.GetString("codgror");
-                    dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();     // drg.GetString("descpro");
-                    dt[l, 5] = "";     // drg.GetString("docsremit");
-                    dt[l, 6] = vu.ToString();     // drg.GetString("valUni");
-                    dt[l, 7] = pu.ToString();     // drg.GetString("preUni");
-                    dt[l, 8] = pu.ToString();     // drg.GetString("totalgr");
-                }
-            }
-            // genera el reporte
             conClie data = generaReporte(v_CR_NC1);
             ReportDocument repo = new ReportDocument();
             repo.Load(v_CR_NC1);
@@ -2395,6 +2399,7 @@ namespace TransCarga
             {
                 File.Delete(@va[7]);
             }
+            */
         }
         private void imprime_A5(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {

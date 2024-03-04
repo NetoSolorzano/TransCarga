@@ -1201,32 +1201,18 @@ namespace TransCarga
         {
             if (e.ColumnIndex > 6 && e.ColumnIndex < 9 && e.RowIndex > -1)
             {
-                /* if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
-                {
-                    if (true)
-                    {
-                        if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
-                            dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
-                        {
-                            dgv_sunat_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
-                            dgv_sunat_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
-                            consultaE(dgv_sunat_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
-                            // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
-                        }
-                    }
-                } */
                 if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
                 {
                     // Carrión trabaja con SeenCorp para la fact. electrónica, en el portal de ellos se ven estos temas 09/02/2024
                 }
-                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")          // jala datos del comprobante e imprime
                 {
                     string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
                     imprime(cdtip,
                         dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
                         dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "TK");
                 }
-                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")          // jala datos del comprobante e imprime
                 {
                     if (rb_dVtas.Checked == true)
                     {
@@ -1268,10 +1254,10 @@ namespace TransCarga
                     "ifnull(b.fechopegr,''),ifnull(b.docsremit,''),round(a.totalgr,2) as preUni,round(a.totalgr/(1+(@pigv/100)),2) as valUni " +
                     "from detdebcred a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror where a.idc=@idr";
 
-                string consulta = "select a.id,a.fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota,a.tipncred," +
-                    "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
-                    "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totnota,a.totdvta,a.saldvta," +
-                    "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt,c.descrizionerid as docC,f.fechope as femiFT," +
+                string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota,a.tipncred," +
+                    "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt,a.locorig,a.dirorig,a.ubiorig,a.obsdvta," +
+                    "a.mondvta,a.tcadvta,ROUND(a.subtota,2) as subtota,ROUND(a.igvtota,2) as igvtota,a.porcigv,ROUND(a.totnota,2) as totnota,ROUND(a.totdvta,2) as totdvta,a.saldvta," +
+                    "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt,c.descrizionerid as docC,DATE_FORMAT(f.fechope,'%d/%m/%Y') as femiFT," +
                     "a.verApp,a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha,c.codsunat,m.deta1,f.martdve " +
                     "from cabdebcred a " +
                     "left join cabfactu f on f.tipdvta=a.tipdvta and f.serdvta=a.serdvta and f.numdvta=a.numdvta " +

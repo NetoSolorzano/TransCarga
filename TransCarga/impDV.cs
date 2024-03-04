@@ -27,7 +27,7 @@ namespace TransCarga
         short copias;
         string otro = "";               // ruta y nombre del png código QR
 
-        public impDV(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] cunica, string formato, string nomforCR)
+        public impDV(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] cunica, string formato, string nomforCR, bool gPdf)
         {
             copias = (short)nCopias;
             vs[0] = cabecera[0];   // serie (F001)
@@ -113,6 +113,22 @@ namespace TransCarga
             va[8] = varios[8];         // libre
             va[9] = varios[9];         // tipo de cambio
 
+            string separ = "|";
+            string codigo = vs[31] + separ + vs[21] + separ +
+                vs[0] + separ + vs[1] + separ +
+                vs[14] + separ + vs[15] + separ +
+                vs[5].Substring(6, 4) + "-" + vs[5].Substring(3, 2) + "-" + vs[5].Substring(0, 2) + separ + vs[22] + separ +
+                vs[7] + separ;
+
+            if (File.Exists(@va[7])) File.Delete(@va[7]);
+            var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
+            var qrCode = qrEncoder.Encode(codigo);
+            var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
+            using (var stream = new FileStream(@va[7], FileMode.Create))
+                renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
+
+            conClie data = generaReporte(nomforCR);
+
             switch (formato)
             {
                 case "TK":
@@ -121,30 +137,25 @@ namespace TransCarga
                     print.PrinterSettings.PrinterName = nomImp;
                     print.PrinterSettings.Copies = (short)nCopias;
                     print.Print();
+                    //
+                    if (gPdf == true)       // Si es NUEVO comprobante genera pdf para subirlo 
+                    {
+                        //conClie data = generaReporte(nomforCR);
+                        ReportDocument repo = new ReportDocument();
+                        repo.Load(nomforCR);
+                        repo.SetDataSource(data);
+                        //repo.PrintOptions.PrinterName = nomImp;
+                        //repo.PrintToPrinter(copias, false, 1, 1);
+                        repo.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, "C:/Temp/pdfCR.pdf");
+                    }
                     break;
                 case "A5":
                     // no hay comprobantes en A5 16/11/2023
                     break;
                 case "A4":
-                    if (true)
-                    {
-                        string separ = "|";
-                        string codigo = vs[31] + separ + vs[21] + separ +
-                            vs[0] + separ + vs[1] + separ +
-                            vs[14] + separ + vs[15] + separ +
-                            vs[5].Substring(6, 4) + "-" + vs[5].Substring(3, 2) + "-" + vs[5].Substring(0, 2) + separ + vs[22] + separ +
-                            vs[7] + separ;
-
-                        if (File.Exists(@va[7])) File.Delete(@va[7]);
-                        var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
-                        var qrCode = qrEncoder.Encode(codigo);
-                        var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
-                        using (var stream = new FileStream(@va[7], FileMode.Create))
-                            renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
-                    }
                     if (nomImp != "" && nomforCR != "")                     // impresion directa en impresora
                     {
-                        conClie data = generaReporte(nomforCR);
+                        //conClie data = generaReporte(nomforCR);
                         ReportDocument repo = new ReportDocument();
                         repo.Load(nomforCR);
                         repo.SetDataSource(data);
@@ -157,8 +168,8 @@ namespace TransCarga
                     }
                     if (nomImp == "" && nomforCR != "")                     // visualización en pantalla
                     {
-                        conClie datos = generaReporte(nomforCR);
-                        frmvizoper visualizador = new frmvizoper(datos);
+                        //conClie data = generaReporte(nomforCR);
+                        frmvizoper visualizador = new frmvizoper(data);
                         visualizador.Show();
                     }
                     break;

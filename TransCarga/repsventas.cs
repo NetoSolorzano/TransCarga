@@ -1587,12 +1587,12 @@ namespace TransCarga
                     // llamamos a la clase que imprime
                     if (Formato == "A4")
                     {
-                        if (false) { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRcu); }  // vistas en pantalla
-                        else { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRn); }   // vistas en pantalla
+                        if (false) { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRcu, false); }  // vistas en pantalla
+                        else { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRn, false); }   // vistas en pantalla
                     }
                     else
                     {
-                        impDV imp = new impDV(1, v_impPDF, vs, dt, va, cu, Formato, "");
+                        impDV imp = new impDV(1, v_impPDF, vs, dt, va, cu, Formato, "", false);
                     }
                 }
 

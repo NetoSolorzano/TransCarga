@@ -784,24 +784,42 @@ namespace TransCarga
             {
                 string ruta = rutatxt + "TXT/";
                 string rutaRpta = rutatxt + "RPTA/";
-                string archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".json";
+                string archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
                 string archiR = "R-" + rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".txt";
                 if (accion == "alta")
                 {
                     string ajson = json_nota(tipdo, tipoDocEmi, ntnota, fedoco, serie, corre, tipdv);
-                    System.IO.File.WriteAllText(ruta + archi, ajson);
+                    System.IO.File.WriteAllText(ruta + archi + ".json", ajson);
                     if (true == true)
                     {
                         IConectarWS cws = new ConectarWS();
-                        String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
-                        if (respuesta.Substring(0, 7) == "Client.")
+                        String respuesta = cws.leerArchivo(archi + ".json", ruta, rutaRpta, usuaInteg, clavInteg);
+                        if (respuesta.Substring(0, 7) == "Client.")     // hubo error 
                         {
                             MessageBox.Show("No se pudo enviar la nota al servicio del proveedor: " + provee + Environment.NewLine +
                                 "El motivo fue el siguiente: " + Environment.NewLine +
                                 respuesta, " ERROR ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
+                        }
+                        else
+                        {
+                            // si no hubo error generamos el pdf y lo "subimos"
+                            try
+                            {
+                                // GENERAMOS EL PDF
+
+                                // SUBIMOS EL PDF
+                                cws.leerArchivoPdf(archi + ".pdf", va[8], "", usuaInteg, clavInteg);
+
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message,"Error en generación de pdf o envío",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                                // OJO 05/03/2024 -> no retornamos un false porque SI se genero la nota, lo que no se pudo hacer es el pdf o subirlo ... pero la nota si se genero en transcarga y seencorp
+                            }
                         }
                         System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
-                        // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
+                        // grabamos la respuesta 
                     }
                     retorna = true;
                 }

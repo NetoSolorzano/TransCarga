@@ -1415,7 +1415,7 @@ namespace TransCarga
             va[5] = Program.ctadetra;           // cta. detracción
             va[6] = "";                         // concatenado de Guias Transportista para Formato de cargas unicas
             va[7] = rutaQR + "pngqr";           // ruta y nombre del png codigo QR
-            va[8] = rutaQR + "";                // ruta y nombre del pdf a subir a seencorp
+            va[8] = rutaQR + Program.ruc + "-" + tipdo + "-" + vs[0] + "-" + vs[1] + ".pdf";                // ruta y nombre del pdf a subir a seencorp
             va[9] = (tx_tipcam.Text == "") ? "0" : tx_tipcam.Text;             // tipo de cambio
 
             double pigv = double.Parse(v_igv);
@@ -1455,8 +1455,13 @@ namespace TransCarga
         }
 
         #region facturacion electronica
-        private bool factElec(string provee, string tipo, string accion, int ctab)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
+        private bool factElec(string provee, bool envia, string accion, int ctab, bool EnvPdf)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
         {
+            // provee -> identificador del proveedor pse/ose
+            // envia --> true = genera y sube el json al proveedor, false = no genera tampoco sube
+            // accion -> identificador de alta (nuevo) o baja (anulacion)
+            // ctab ---> contador para las bajas
+            // EnvPdf -> true = genera y sube pdf al proveedor, false = no genera tampoco sube
             bool retorna = false;
             
             DataRow[] row = dttd1.Select("idcodice='"+tx_dat_tdv.Text+"'");             // tipo de documento venta
@@ -1469,7 +1474,7 @@ namespace TransCarga
             tipoMoneda = rowm[0][2].ToString().Trim();
             //
             //provee = "seencorp";        // para pruebas 31/01/2024
-            //rutatxt = "c:/seencorp/";   // para pruebas 31/01/2024
+            //rutatxt = "c:/seencorp/";   // para pruebas 31/01/2024    // ME QUEDE ACÁ 05/03/2024 11:59 .. adecuando envia y EnvPdf
             string archi = "";
             if (provee == "Horizont")
             {
@@ -1498,25 +1503,26 @@ namespace TransCarga
                 string rutaRpta = rutatxt + "RPTA/";
                 archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
                 string archiR = "R-" + rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".txt";
+                IConectarWS cws = new ConectarWS();
                 if (accion == "alta")
                 {
-                    archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".json";
-                    string ajson = json_venta(tipdo, tipoDocEmi);
-                    System.IO.File.WriteAllText(ruta + archi, ajson);
-                    if (true == true)
+                    if (envia == true)
                     {
-                        IConectarWS cws = new ConectarWS();
-                        String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
+                        //archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre + ".json";
+                        string ajson = json_venta(tipdo, tipoDocEmi);
+                        System.IO.File.WriteAllText(ruta + archi + ".json", ajson);
+                        String respuesta = cws.leerArchivo(archi + ".json", ruta, rutaRpta, usuaInteg, clavInteg);
                         if (respuesta.Substring(0, 7) == "Client.")
                         {
                             MessageBox.Show("No se pudo enviar el comprobante al servicio del proveedor: " + provee + Environment.NewLine +
-                                "El motivo fue el siguiente: " + Environment.NewLine + 
-                                respuesta, " ERROR ",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                                "El motivo fue el siguiente: " + Environment.NewLine +
+                                respuesta, " ERROR ", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
-                            retorna = false;
+                            //retorna = false;
                         }
                         else
                         {
+                            retorna = true;
                             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                             {
                                 conn.Open();
@@ -1536,25 +1542,29 @@ namespace TransCarga
                                     System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
                                 }
                             }
-                            // generar el pdf para subirlo al servidor de seencorp 04/03/2024
-                            llena_matris_FE();
-                            try
-                            {
-                                //va[8] = va[8] + archi + ".PDF";
-                                impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, true);   // generamos el pdf en el directorio temporal
-                                cws.leerArchivoPdf(archi + ".PDF", va[8], "", usuaInteg, clavInteg);
-                                // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
-                                retorna = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("No se pudo grabar el documento destino" + Environment.NewLine + 
-                                    ex.Message,"Error en generar el PDF",MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                                retorna = false;
-                            }
-
                         }
                     }
+                    if (EnvPdf == true)                        // generar el pdf para subirlo al servidor de seencorp 04/03/2024
+                    {
+                        llena_matris_FE();
+                        try
+                        {
+                            //va[8] = va[8] + archi + ".PDF";
+                            impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, true);   // generamos el pdf en el directorio temporal
+                            cws.leerArchivoPdf(archi + ".PDF", rutaQR, "", usuaInteg, clavInteg);
+                            // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
+                            if (File.Exists(@va[8])) File.Delete(@va[8]);
+                            retorna = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("No se pudo grabar el documento destino" + Environment.NewLine +
+                                ex.Message, "Error en generar el PDF", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            //retorna = false;
+                        }
+
+                    }
+
                 }
                 if (accion == "baja")
                 {
@@ -1576,7 +1586,7 @@ namespace TransCarga
                         System.IO.File.WriteAllText(ruta + archi, ajson);
                         if (true == true)
                         {
-                            IConectarWS cws = new ConectarWS();
+                            //IConectarWS cws = new ConectarWS();
                             String respuesta = cws.leerArchivo(archi, ruta, rutaRpta, usuaInteg, clavInteg);
                             if (respuesta.Substring(0, 7) == "Client.")
                             {
@@ -3111,10 +3121,13 @@ namespace TransCarga
                     // llamanos a tipo de cambio
                     vtipcam vtipcam = new vtipcam("", tx_dat_mone.Text, DateTime.Now.Date.ToString());
                     var result = vtipcam.ShowDialog();
-                    //tx_flete.Text = vtipcam.ReturnValue1;
-                    //tx_fletMN.Text = vtipcam.ReturnValue2;
-                    tx_tipcam.Text = vtipcam.ReturnValue3;
-                    tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                    if (vtipcam.ReturnValue1 != null && vtipcam.ReturnValue1 != "")
+                    {
+                        tx_flete.Text = vtipcam.ReturnValue1;
+                        tx_fletMN.Text = vtipcam.ReturnValue2;
+                        tx_tipcam.Text = vtipcam.ReturnValue3;
+                        tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                    }
                 }
                 else
                 {
@@ -3287,12 +3300,13 @@ namespace TransCarga
                 }
                 if (tx_dat_mone.Text != MonDeft && decimal.Parse(tx_tipcam.Text) > 1)
                 {
+                    /*
                     if (Math.Round(decimal.Parse(tx_tfmn.Text), 1) != Math.Round(decimal.Parse(tx_fletMN.Text), 1))
                     {
                         MessageBox.Show("El valor a facturar no puede ser diferente al valor de la(s) GR");
                         tx_flete.Focus();
                         return;
-                    }
+                    } */
                 }
                 if (fshoy != lib.fechCajaLoc(TransCarga.Program.almuser, codGene) && rb_si.Checked == true) // si la caja esta abierta permite cobrar sino NO!
                 {
@@ -3323,7 +3337,7 @@ namespace TransCarga
                         {
                             if (graba() == true)
                             {
-                                if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
+                                if (factElec(nipfe, true, "alta", 0, true) == true)       // facturacion electrónica
                                 {
                                     // actualizamos la tabla seguimiento de usuarios
                                     string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -3403,10 +3417,10 @@ namespace TransCarga
                             }
                             if (Program.vg_tius == "TPU001" && Program.vg_nius == "NIV000") // solo para todo poderoso
                             {
-                                var xxx = MessageBox.Show("Desea regenerar el TXT del comprobante?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                var xxx = MessageBox.Show("Regenera json y pdf del comprobante?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                                 if (xxx == DialogResult.Yes)
                                 {
-                                    if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
+                                    if (factElec(nipfe, false, "alta", 0, true) == true)       // facturacion electrónica ...  cambiar a true 
                                     {
                                         // tutto finito
                                     }
@@ -3467,7 +3481,7 @@ namespace TransCarga
                                 if (lib.DirectoryVisible(rutatxt) == true)
                                 {
                                     int cta = anula("FIS");      // cantidad de doc.vtas anuladas en la fecha
-                                    if (factElec(nipfe, "txt", "baja", cta) == true)
+                                    if (factElec(nipfe, true, "baja", cta, false) == true)
                                     {
                                         string resulta = lib.ult_mov(nomform, nomtab, asd);
                                         if (resulta != "OK")
@@ -3510,7 +3524,7 @@ namespace TransCarga
                             if (lib.DirectoryVisible(rutatxt) == true)
                             {
                                 int cta = anula("FIS");      // cantidad de doc.vtas anuladas en la fecha
-                                if (factElec(nipfe, "txt", "baja", cta) == true)
+                                if (factElec(nipfe, true, "baja", cta, false) == true)
                                 {
                                     string resulta = lib.ult_mov(nomform, nomtab, asd);
                                     if (resulta != "OK")
@@ -4139,12 +4153,16 @@ namespace TransCarga
                     else
                     {
                         tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
-                        if (Math.Round(decimal.Parse(tx_tfmn.Text),1) != Math.Round(decimal.Parse(tx_fletMN.Text),1))   // OJO, no hacemos dscto en moneda diferente al nacional
+                        if (Math.Round(decimal.Parse(tx_tfmn.Text),1) != Math.Round(decimal.Parse(tx_fletMN.Text),1))   // OJO, no hacemos dscto en moneda diferente al nacional 
                         {
-                            MessageBox.Show("No coinciden los valores!","Error en calculo",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                            tx_flete.Text = "";
-                            tx_flete.Focus();
-                            return;
+                            var aa = MessageBox.Show("No coinciden los valores por tipo de cambio" + Environment.NewLine +
+                                "Desea continuar?","Error en valores",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+                            if (aa == DialogResult.No)
+                            {
+                                tx_flete.Text = "";
+                                tx_flete.Focus();
+                                return;
+                            }
                         }
                     }
                 }

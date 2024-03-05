@@ -110,7 +110,7 @@ namespace TransCarga
             va[5] = varios[5];         // cta. detracción
             va[6] = varios[6];         // concatenado de Guias Transportista para Formato de cargas unicas
             va[7] = varios[7];         // ruta y nombre del png codigo QR
-            va[8] = varios[8];         // libre
+            va[8] = varios[8];         // ruta y nombre del PDF que se subira a seencorp
             va[9] = varios[9];         // tipo de cambio
 
             string separ = "|";
@@ -146,7 +146,7 @@ namespace TransCarga
                         repo.SetDataSource(data);
                         //repo.PrintOptions.PrinterName = nomImp;
                         //repo.PrintToPrinter(copias, false, 1, 1);
-                        repo.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, "C:/Temp/pdfCR.pdf");
+                        repo.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, va[8]);
                     }
                     break;
                 case "A5":

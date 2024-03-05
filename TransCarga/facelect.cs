@@ -1415,7 +1415,7 @@ namespace TransCarga
             va[5] = Program.ctadetra;           // cta. detracción
             va[6] = "";                         // concatenado de Guias Transportista para Formato de cargas unicas
             va[7] = rutaQR + "pngqr";           // ruta y nombre del png codigo QR
-            va[8] = "";         // 
+            va[8] = rutaQR + "";                // ruta y nombre del pdf a subir a seencorp
             va[9] = (tx_tipcam.Text == "") ? "0" : tx_tipcam.Text;             // tipo de cambio
 
             double pigv = double.Parse(v_igv);
@@ -1513,6 +1513,7 @@ namespace TransCarga
                                 "El motivo fue el siguiente: " + Environment.NewLine + 
                                 respuesta, " ERROR ",MessageBoxButtons.OK,MessageBoxIcon.Error);
                             System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
+                            retorna = false;
                         }
                         else
                         {
@@ -1539,18 +1540,20 @@ namespace TransCarga
                             llena_matris_FE();
                             try
                             {
+                                //va[8] = va[8] + archi + ".PDF";
                                 impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, true);   // generamos el pdf en el directorio temporal
-
+                                cws.leerArchivoPdf(archi + ".PDF", va[8], "", usuaInteg, clavInteg);
+                                // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
+                                retorna = true;
                             }
                             catch (Exception ex)
                             {
                                 MessageBox.Show("No se pudo grabar el documento destino" + Environment.NewLine + 
                                     ex.Message,"Error en generar el PDF",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                                retorna = false;
                             }
 
                         }
-                        // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
-                        retorna = true;
                     }
                 }
                 if (accion == "baja")

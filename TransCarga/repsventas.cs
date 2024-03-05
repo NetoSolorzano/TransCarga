@@ -1504,7 +1504,7 @@ namespace TransCarga
                                     va[5] = Program.ctadetra;         // cta. detracción
                                     va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
-                                    va[8] = "";         // 
+                                    va[8] = "";         // ruta y nombre del archivo temportal DBF antes de subir a seencorp
                                     va[9] = dr.GetString("tcadvta");
                                     pigv = dr.GetDouble("porcigv");
                                     mcu = dr.GetString("cargaunica");   // 1 = transporte de carga consolidada, CARGA UNICA SERA OTRA MARCA 09/02/2024

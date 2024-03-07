@@ -4857,6 +4857,7 @@ namespace TransCarga
             if (vi_formato == "TK")
             {
                 // imprime la clase
+                if (vs[12] == "") llena_matris_FE();
                 impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, false);
 
                 if (File.Exists(@otro))

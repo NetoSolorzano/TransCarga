@@ -60,6 +60,7 @@ namespace TransCarga
         string v_fra2 = "";             // frase que va en obs de cobranza cuando se cancela desde el doc.vta.
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_codidv = "";           // variable codifo interno de documento de venta en vista TDV
+        string v_codinc = "";           // codigo interno de notas de credito en vista TDV
         string codfact = "";            // idcodice de factura
         string v_igv = "";              // valor igv %
         string logoclt = "";            // ruta y nombre archivo logo
@@ -318,6 +319,7 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
                         if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
+                        if (row["campo"].ToString() == "codinNC" && row["param"].ToString() == "NC") v_codinc = row["valor"].ToString().Trim();           // codigo de nota de credito en tabla TDV
                         if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
                     if (row["formulario"].ToString() == "facelect")
@@ -526,10 +528,13 @@ namespace TransCarga
                 }
                 // datos para el combobox documento de venta
                 cmb_tdv.Items.Clear();
-                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,a.deta1 from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq", conn)) //  and codigo=@codv
+                string tcon = "select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,a.deta1 " +
+                    "from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codv or codigo=@conc";
+                using (MySqlCommand cdv = new MySqlCommand(tcon, conn))
                 {
                     cdv.Parameters.AddWithValue("@bloq", 1);
-                    //cdv.Parameters.AddWithValue("@codv", v_codidv);
+                    cdv.Parameters.AddWithValue("@codv", v_codidv);
+                    cdv.Parameters.AddWithValue("@conc", v_codinc);
                     using (MySqlDataAdapter datv = new MySqlDataAdapter(cdv))
                     {
                         dttd1.Clear();

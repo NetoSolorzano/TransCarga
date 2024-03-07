@@ -239,6 +239,12 @@
       <DependentUpon>gre_t1.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gre_t11.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>gre_t1.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GrT_simple.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -531,7 +537,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="gre_t1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>gre_t1.cs</LastGenOutput>
+      <LastGenOutput>gre_t11.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="GrT_simple.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

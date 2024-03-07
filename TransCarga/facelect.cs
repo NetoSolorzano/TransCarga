@@ -1473,8 +1473,6 @@ namespace TransCarga
             DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
             tipoMoneda = rowm[0][2].ToString().Trim();
             //
-            //provee = "seencorp";        // para pruebas 31/01/2024
-            //rutatxt = "c:/seencorp/";   // para pruebas 31/01/2024    // ME QUEDE ACÁ 05/03/2024 11:59 .. adecuando envia y EnvPdf
             string archi = "";
             if (provee == "Horizont")
             {

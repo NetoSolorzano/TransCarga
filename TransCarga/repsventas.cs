@@ -1376,7 +1376,7 @@ namespace TransCarga
             // llamamos a la clase que imprime
             if (Formato == "A4")
             {
-                impNota imp = new impNota(1, "", vs, dt, va, cu, Formato, v_CR_NC1);    // vistas en pantalla
+                impNota imp = new impNota(1, "", vs, dt, va, cu, Formato, v_CR_NC1, false);    // vistas en pantalla
             }
         }
         private void imprime(string tipo, string serie, string numero, string Formato)

@@ -132,12 +132,6 @@ namespace TransCarga
             switch (formato)
             {
                 case "TK":
-                    PrintDocument print = new PrintDocument();
-                    print.PrintPage += new PrintPageEventHandler(imprime_TK);
-                    print.PrinterSettings.PrinterName = nomImp;
-                    print.PrinterSettings.Copies = (short)nCopias;
-                    print.Print();
-                    //
                     if (gPdf == true)       // Si es NUEVO comprobante genera pdf para subirlo 
                     {
                         //conClie data = generaReporte(nomforCR);
@@ -147,6 +141,14 @@ namespace TransCarga
                         //repo.PrintOptions.PrinterName = nomImp;
                         //repo.PrintToPrinter(copias, false, 1, 1);
                         repo.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, va[8]);
+                    }
+                    else
+                    {
+                        PrintDocument print = new PrintDocument();
+                        print.PrintPage += new PrintPageEventHandler(imprime_TK);
+                        print.PrinterSettings.PrinterName = nomImp;
+                        print.PrinterSettings.Copies = (short)nCopias;
+                        print.Print();
                     }
                     break;
                 case "A5":

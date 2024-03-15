@@ -3418,7 +3418,7 @@ namespace TransCarga
                                 var xxx = MessageBox.Show("Regenera json y pdf del comprobante?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                                 if (xxx == DialogResult.Yes)
                                 {
-                                    if (factElec(nipfe, false, "alta", 0, true) == true)       // facturacion electrónica ...  cambiar a true 
+                                    if (factElec(nipfe, true, "alta", 0, true) == true)       // facturacion electrónica ...  cambiar a true 
                                     {
                                         // tutto finito
                                     }

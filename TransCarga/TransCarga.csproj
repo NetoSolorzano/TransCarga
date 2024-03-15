@@ -239,12 +239,6 @@
       <DependentUpon>gre_t1.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="gre_t11.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>gre_t1.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="GrT_simple.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -488,3 +488,4 @@ form facelect, probar la generacion y subida automat de pdf y el tema de las GRE
 form notcredclts, generar automaticamente el pdf y subirlo junto con el json ........................ ok 06/03/2024
 form notcredclts, probar y confirmar el pdf de notas de credito y su subida a seencorp .............. OK 06/03/2024
 C.R. gre_t1, agregar numero de ruc debajo del logo .................................................. OK 07/03/2024
+form facelect, cambio a true en envio de fact elect modo EDICION .................................... ok 15/03/2024

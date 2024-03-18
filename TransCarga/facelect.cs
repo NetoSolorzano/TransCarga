@@ -2535,6 +2535,7 @@ namespace TransCarga
             decimal totdet = 0, valcre = decimal.Parse(tx_flete.Text);
             string tipOper = s_tipOpeN;     // "0101";    // operacion venta interna
             string v_hor_em = lib.Right(DateTime.UtcNow.ToLocalTime().ToString(), 8);
+            string notaGuias = "";      // observación de las guias de remision transportista
             //
             Cdetracc cdetracc = null;
             List<Cleyen> lll = new List<Cleyen>();    // 01/02/2024  List<Cleyen> lll = null;
@@ -2616,13 +2617,14 @@ namespace TransCarga
             {
                 if (ron.Cells[1].Value != null)
                 {
-                    CDocref docref = new CDocref()
+                    /* CDocref docref = new CDocref()           comentado el 18/03/2023 porque la validacion de sunat arroja una observacion con las guias electrónicas
                     {
                         tip_doc = "31",
                         serie_correl = ron.Cells["guias"].Value.ToString()
                     };
                     cdocref.Add(docref);
-                    //
+                    */
+                    notaGuias = ron.Cells["guias"].Value.ToString() + " ";      // 18/03/2024 las guias pasan a notas en lugar de documento referente
                     double vval_f = 0;      // Math.Round(double.Parse(ron.Cells["valor"].Value.ToString()));
                     if (ron.Cells["codmondoc"].Value.ToString() == MonDeft && tx_dat_mone.Text == MonDeft)
                     {
@@ -2693,6 +2695,11 @@ namespace TransCarga
                     cta_ron += 1;
                 }
             }
+            cleyen = new Cleyen
+            {
+                leyen_descrip = "Guía de Remisión Transportista: " + notaGuias
+            };
+            lll.Add(cleyen);
             Cemisor cemisor = new Cemisor()
             {
                 tip_doc = "6",
@@ -2945,6 +2952,7 @@ namespace TransCarga
             });
         }
         #endregion
+
         #endregion
 
         #region autocompletados
@@ -3331,6 +3339,9 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
+                        // deshabilitamos el boton hasta volver a dar click en el boton nuevo
+                        button1.Enabled = false;
+
                         if (lib.DirectoryVisible(rutatxt) == true)
                         {
                             if (graba() == true)
@@ -4535,6 +4546,7 @@ namespace TransCarga
             button1.Image = Image.FromFile(img_grab);
             escribe();
             // 
+            button1.Enabled = true;
             Bt_ini.Enabled = false;
             Bt_sig.Enabled = false;
             Bt_ret.Enabled = false;
@@ -4565,6 +4577,7 @@ namespace TransCarga
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
             //
+            button1.Enabled = true;
             chk_iGRE.Visible = false;
             chk_iGRE.Checked = false;
             Bt_ini.Enabled = true;
@@ -4636,6 +4649,7 @@ namespace TransCarga
             tx_obser1.ReadOnly = false;
             tx_serie.Focus();
             //
+            button1.Enabled = true;
             chk_iGRE.Visible = false;
             chk_iGRE.Checked = false;
             Bt_ini.Enabled = true;

@@ -491,3 +491,4 @@ C.R. gre_t1, agregar numero de ruc debajo del logo .............................
 form facelect, cambio a true en envio de fact elect modo EDICION .................................... ok 15/03/2024
 form facelect, evitar doble click en grabar, poner enable=false despues del primer click ............ ok 18/03/2024
 form facelect, pasar en el json las guias a notas, no documento relacionado ......................... ok 18/03/2024
+form notcredclts, en la regeneración del xml no esta generando el detalle,Ej.FC02-15 ................ ok 01/04/2024

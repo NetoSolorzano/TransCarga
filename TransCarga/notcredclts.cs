@@ -1352,7 +1352,7 @@ namespace TransCarga
             {
                 if (ron.Cells[1].Value != null)
                 {
-                    if (cdetracc == null)           // comprobante sin detracción
+                    if (true == true)           // cdetracc == null <--- cambiado 01/04/2024
                     {
                         CComprobanteDetalle det = new CComprobanteDetalle
                         {

@@ -3346,7 +3346,7 @@ namespace TransCarga
                         {
                             if (graba() == true)
                             {
-                                if (factElec(nipfe, true, "alta", 0, true) == true)       // facturacion electrónica
+                                if (factElec(nipfe, true, "alta", 0, true) == true)
                                 {
                                     // actualizamos la tabla seguimiento de usuarios
                                     string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -3580,6 +3580,33 @@ namespace TransCarga
             conn.Open();
             if(conn.State == ConnectionState.Open)
             {
+                // ANTES QUE NADA REVISAMOS QUE LA GUÍA NO HAYA SIDO FACTURADA EN EL ULTIMO MINUTO SEGUNDO ... 04/04/2024
+                bool guiafac = false;
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    if (row.Cells[0].Value != null)
+                    {
+                        string consu = "select tipdocvta,serdocvta,numdocvta from controlg where serguitra=@serg and numguitra=@numg";
+                        using (MySqlCommand mi = new MySqlCommand(consu, conn))
+                        {
+                            mi.Parameters.AddWithValue("@serg", row.Cells[0].Value.ToString().Substring(0, 4));
+                            mi.Parameters.AddWithValue("@numg", row.Cells[0].Value.ToString().Substring(5, 8));
+                            using (MySqlDataReader dr = mi.ExecuteReader())
+                            {
+                                if (dr.Read())
+                                {
+                                    if (dr.GetString(0).Trim() != "") guiafac = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (guiafac == true)
+                {
+                    MessageBox.Show("Problema con guía","Error");
+                    return retorna;
+                }
+                //
                 string todo = "corre_serie";
                 using (MySqlCommand micon = new MySqlCommand(todo, conn))
                 {

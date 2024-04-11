@@ -20,6 +20,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Drawing.Imaging;
+using com.tuscomprobantespe.webservice;
+using System.Collections.Generic;
 
 namespace TransCarga
 {
@@ -118,6 +120,8 @@ namespace TransCarga
         TimeSpan horaT;                 // Sunat Webservice - Hora de emisión del token
         int plazoT = 0;                 // Sunat Webservice - Cantidad en segundos
         string[] c_t = new string[6] { "", "", "", "", "", ""}; // parametros para generar el token
+        string usuaInteg = "";          // usuario de la integración con SeenCorp
+        string clavInteg = "";          // clave de la integración con SeenCorp
         //
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string claveSeg = "";                       // clave de seguridad del envío
@@ -401,7 +405,12 @@ namespace TransCarga
                     }
                     if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
                     if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
-                    if (row["campo"].ToString() == "electronico" && row["param"].ToString() == "proveedor") ipeeg = row["valor"].ToString().Trim();      // identificador del emisor electrónico
+                    if (row["campo"].ToString() == "electronico")
+                    {
+                        if (row["param"].ToString() == "proveedor") ipeeg = row["valor"].ToString().Trim();      // identificador del emisor electrónico
+                        if (row["param"].ToString() == "usuarioInteg") usuaInteg = row["valor"].ToString().Trim();     // usuario de la integración con Seencorp
+                        if (row["param"].ToString() == "claveInteg") clavInteg = row["valor"].ToString().Trim();        // clave del usuario de la integración con Seencorp
+                    }
                     if (row["campo"].ToString() == "glosas")
                     {
                         if (row["param"].ToString() == "glosa1") glosa1 = row["valor"].ToString().Trim();          // glosa final del ticket 1
@@ -1248,7 +1257,7 @@ namespace TransCarga
         }
         #endregion limpiadores_modos;
 
-        #region guia electronica Sunat metodo directo
+        #region guia electronica Sunat, directo y seencorp
         static private void CreaTablaLiteGRE()                  // llamado en el load del form, crea las tablas al iniciar
         {
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -1536,10 +1545,258 @@ namespace TransCarga
 
             return retorna;
         }
+        internal bool jsonguia(string tipo, string accion, bool envia, bool EnvPdf, string serie, string corre) // tipo=T => guía transportista
+        {
+            bool retorna = false;
+            string ruta = rutatxt + "TXT/";
+            string rutaRpta = rutatxt + "RPTA/";
+            string archi = Program.ruc + "-" + tipo + "-" + serie + "-" + corre;
+            string archiR = "R-" + Program.ruc + "-" + tipo + "-" + serie + "-" + corre + ".txt";
+            IConectarWS cws = new ConectarWS();
+            if (accion == "alta")
+            {
+                if (envia == true)
+                {
+                    string ajson = json_Aguia(tipo);       // Arma el json, tipo GR transportista=31
+                    System.IO.File.WriteAllText(ruta + archi + ".json", ajson);
+                    return retorna;
+                    String respuesta = cws.leerArchivo(archi + ".json", ruta, rutaRpta, usuaInteg, clavInteg);
+                    if (respuesta.Substring(0, 7) == "Client.")
+                    {
+                        MessageBox.Show("No se pudo enviar la guía en json al servicio del proveedor: " + ipeeg + Environment.NewLine +
+                            "El motivo fue el siguiente: " + Environment.NewLine +
+                            respuesta, " ERROR ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
+                    }
+                    else
+                    {
+                        retorna = true;
+                        // hacemos algo en adifactu ? actualizamos algún valor?
+                    }
+                }
+                if (EnvPdf == true)                        // generar el pdf para subirlo al servidor de seencorp 04/03/2024
+                {
+                    /* 
+                    llena_matris_FE();
+                    try
+                    {
+                        //va[8] = va[8] + archi + ".PDF";
+                        impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, true);   // generamos el pdf en el directorio temporal
+                        cws.leerArchivoPdf(archi + ".PDF", rutaQR, "", usuaInteg, clavInteg);
+                        // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
+                        if (File.Exists(@va[8])) File.Delete(@va[8]);
+                        retorna = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("No se pudo grabar el documento destino" + Environment.NewLine +
+                            ex.Message, "Error en generar el PDF", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        //retorna = false;
+                    }
+                    */
+                }
+            }
+            return retorna;
+        }
+        internal string json_Aguia(string tipdo)        // arma el json de la GRE-T
+        {
+            string retorna = "";
+            string vemis = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+            string vhmis = DateTime.Now.ToLocalTime().TimeOfDay.ToString().Substring(0, 8);
+            Cemisor emisp1 = new Cemisor
+            {
+                num_doc = Program.ruc,     // "10427946580"
+                tip_doc = "6",
+                raz_soc = Program.cliente
+            };
+            CemisorGR emisguia = new CemisorGR
+            {
+                cemisor = emisp1,
+                num_mtc = Program.regmtc,
+                cod_autorizacion = "",        // "00012333"
+                num_autorizacion = ""         // "00012333"
+            };
+            List<Cdocrel> listDocRel = new List<Cdocrel>();
+            #region doc relacionado
+            Cdocrel docrela = new Cdocrel
+            {
+                tip_doc_descrip = cmb_docorig.Text.ToUpper(),
+                emi_num_doc = tx_rucEorig.Text,
+                emi_tip_doc = "6",
+                tip_doc = tx_dat_dorigS.Text,
+                serie_correl = tx_docsOr.Text
+            };
+            listDocRel.Add(docrela);
+            if (cmb_docorig2.Text.Trim() != "")
+            {
+                docrela = new Cdocrel
+                {
+                    tip_doc_descrip = cmb_docorig2.Text.ToUpper(),
+                    emi_num_doc = tx_rucEorig2.Text,
+                    emi_tip_doc = "6",
+                    tip_doc = tx_dat_dorigS2.Text,
+                    serie_correl = tx_docsOr2.Text
+                };
+                listDocRel.Add(docrela);
+            }
+            #endregion
+            Cremitente cltRemit = new Cremitente
+            {
+                tip_doc = tx_dat_csrem.Text,      // "6"
+                num_doc = tx_numDocRem.Text,    // "20603704020"
+                raz_soc = tx_nomRem.Text     // "SEEN CORPORATION S.A.C."
+            };
+            Cadquiriente cltAdq = new Cadquiriente
+            {
+                tip_doc = tx_dat_codsu.Text,        // "6"
+                num_doc = tx_numDocDes.Text,     // "20605562753"
+                raz_soc = tx_nomDrio.Text      // "SEEN CORPORATION SELVA SAC"
+            };
+            Csubcontratado subc = null;
+            if (tx_pla_ruc.Text != Program.ruc)
+            {
+                subc = new Csubcontratado
+                {
+                    tip_doc = "6",
+                    num_doc = tx_pla_ruc.Text,
+                    raz_soc = tx_pla_propiet.Text
+                };
+            }
+            Cenvio envCar = new Cenvio
+            {
+                peso_bruto_total = decimal.Parse(tx_totpes.Text),
+                cod_und_med = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text,         // "KGM"
+                fec_ini_traslado = tx_pla_fech.Text,    // "2023-07-16"
+                anotacion = "",
+                ind_traslado_tot = "true",
+                ind_retorno_enva_vacio = "true",
+                ind_retorno_vehi_vacio = "true",
+                ind_transp_subcontra = (tx_pla_ruc.Text != Program.ruc) ? "true" : "false",
+                ind_paga_flete = (rb_pOri.Checked == true) ? "Remitente" : "Tercero"
+            };
+            #region camion
+            List<Cvehiculo> cvhe = new List<Cvehiculo>();
+            Cvehiculo Vcamion = new Cvehiculo
+            {
+                tip_vehiculo = "Principal",
+                vehi_placa = tx_pla_placa.Text
+            };
+            cvhe.Add(Vcamion);
+            if (tx_pla_carret.Text != "")
+            {
+                Vcamion = new Cvehiculo
+                {
+                    tip_vehiculo = "Secundario",
+                    vehi_placa = tx_pla_carret.Text
+                };
+                cvhe.Add(Vcamion);
+            }
+            #endregion
+            #region choferes
+            List<Cconductor> chofe = new List<Cconductor>();
+            Cconductor con1 = new Cconductor
+            {
+                tip_conductor = "Principal",
+                tip_doc = tx_pla_chofS.Text,
+                num_doc = tx_pla_dniChof.Text,
+                nombres = partidor(tx_pla_nomcho.Text, " ")[0],     // "PEDRO AUGUSTO"
+                apellidos = partidor(tx_pla_nomcho.Text, " ")[1],   //"LAINEZ GAMBOA"
+                num_licencia = tx_pla_brevet.Text
+            };
+            chofe.Add(con1);
+            if (tx_dat_dniC2.Text != "")
+            {
+                con1 = new Cconductor
+                {
+                    tip_conductor = "Secundario",
+                    tip_doc = tx_dat_dniC2s.Text,
+                    num_doc = tx_dat_dniC2.Text,
+                    nombres = partidor(tx_pla_chofer2.Text, " ")[0],     // "PEDRO AUGUSTO"
+                    apellidos = partidor(tx_pla_chofer2.Text, " ")[1],   //"LAINEZ GAMBOA"
+                    num_licencia = tx_pla_brev2.Text
+                };
+                chofe.Add(con1);
+            }
+            #endregion
+            Cpartida ptida = new Cpartida
+            {
+                cod_ubi = tx_ubigRtt.Text,     //  "150101"
+                dir = tx_dirRem.Text + " " + tx_distRtt.Text.Trim() + " " + tx_provRtt.Text.Trim() + " " + tx_dptoRtt.Text.Trim()
+            };
+            Cllegada pllega = new Cllegada
+            {
+                cod_ubi = tx_dirDrio.Text,     //  "150101"
+                dir = tx_ubigDtt.Text + " " + tx_disDrio.Text.Trim() + " " + tx_proDrio.Text.Trim() + " " + tx_dptoDrio.Text.Trim()
+            };
+            #region detalle
+            List<CComprobanteDetalle> Vaaa = new List<CComprobanteDetalle>();
+            CComprobanteDetalle ccd = new CComprobanteDetalle
+            {
+                nro_item = 1,
+                cod_prod = "",
+                cod_und_med = "ZZ",
+                descrip = tx_det_cant.Text + " " + tx_det_umed.Text + " " + lb_glodeta.Text + " " + tx_det_desc.Text,
+                cant = 1
+            };
+            Vaaa.Add(ccd);
+            #endregion
+            #region leyendas
+            List<Cleyen> leyd = new List<Cleyen>();
+            if (tx_obser1.Text.Trim() != "")
+            {
+                Cleyen ley0 = new Cleyen
+                {
+                    leyen_descrip = tx_obser1.Text
+                };
+                leyd.Add(ley0);
+            };
+            if (tx_consig.Text.Trim() != "")
+            {
+                Cleyen ley1 = new Cleyen
+                {
+                    leyen_descrip = "Consignado: " + tx_consig.Text
+                };
+                leyd.Add(ley1);
+            }
+            #endregion
+            guiaTransp gre_t = new guiaTransp
+            {
+                tip_doc = tipdo,        // tipo doc SUNAT para guia de remision transportista
+                serie = tx_serie.Text,
+                correl = tx_numero.Text,
+                fec_emi = vemis,
+                hora_emi = vhmis,
+                ubl_version = "2.1",
+                customizacion = "2.0",
+                emisor = emisguia,
+                docrel = listDocRel,
+                remitente = cltRemit,
+                adquiriente = cltAdq,
+                subcontratado = subc,
+                envio = envCar,
+                vehiculo = cvhe,
+                conductor = chofe,
+                partida = ptida,
+                llegada = pllega,
+                det = Vaaa,
+                leyen = leyd
+            };
+
+            Cgret cgret = new Cgret
+            {
+                despatchAdvice = gre_t
+            };
+            retorna = JsonConvert.SerializeObject(cgret, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
+
+            return retorna;
+        }
         private string apis()                                   // genera el xml
         {
             string retorna = "NO";
-            if (ipeeg == "API_SUNAT")                   // Emisión directa consumiendo los servicios web de sunat api-rest
+            if (ipeeg == "API_SUNAT")
             {
                 if (llenaTablaLiteGRE() != true)
                 {
@@ -1569,7 +1826,18 @@ namespace TransCarga
                         retorna = "SI";
                     }
                 }
-            }
+            }                       // Emisión directa consumiendo los servicios web de sunat api-rest
+            if (ipeeg == "seencorp")
+            {
+                if (jsonguia("31","alta",true,false,tx_serie.Text,tx_numero.Text) == false)
+                {
+                    MessageBox.Show("Ocurrió un problema");
+                }
+                else
+                {
+                    retorna = "SI";
+                }
+            }                        // emision desde SeenCorp
             return retorna;
         }
         #endregion Sunat metodo directo

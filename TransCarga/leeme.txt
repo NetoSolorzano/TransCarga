@@ -492,4 +492,10 @@ form facelect, cambio a true en envio de fact elect modo EDICION ...............
 form facelect, evitar doble click en grabar, poner enable=false despues del primer click ............ ok 18/03/2024
 form facelect, pasar en el json las guias a notas, no documento relacionado ......................... ok 18/03/2024
 form notcredclts, en la regeneración del xml no esta generando el detalle,Ej.FC02-15 ................ ok 01/04/2024
-form facelect, codigo para validar que guia no tenga factura antes de grabar comprobante ............ ok 04/04/2024, ojo que esta valid se hace al "jalar" la guia 
+form facelect, codigo para validar que guia no tenga factura antes de grabar comprobante, en este
+	caso tenemos 2, una al "jalar" la guia y la otra antes de grabar el comprobante ................. ok 04/04/2024
+form guiati_e, guía de remisión electrónica de transportista con SEENCORP ........................... ok 10/04/2024
+form guiati_e, revision de casos dificiles, adecuaciones finales, pruebas ........................... 
+**** arreglar la impresion "doble" en fact y guias y donde sea, la razón es que estoy llamando a la clase que imprime con el mismo nombre
+***** el nombre de la clase y su metodo tiene en mismo nombre, ademas no debe llamarse a la clase imprime desde el printdocument.print()
+***** tomar como modelo a notcredclts y repsvtas estados notas de credito DE ALTIPLANO.

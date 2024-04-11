@@ -3009,15 +3009,21 @@ namespace TransCarga
                     {
                         string result = reader.ReadToEnd();
                         string[] datos = result.Split('|');
-
-                        retorna[0] = datos[1].Replace("?","Ñ");         // razon social
-                        retorna[1] = datos[4];                          // ubigeo
-                        retorna[2] = datos[5];                          // direccion
-                        retorna[3] = datos[8];                          // departamento
-                        retorna[4] = datos[7];                          // provincia
-                        retorna[5] = datos[6];                          // distrito
-                        retorna[6] = datos[2];                          // estado del contrib.
-                        retorna[7] = datos[3];                          // condicion domicilio
+                        if (datos[0] == "00000000000")
+                        {
+                            retorna[0] = datos[1].Replace("?", "Ñ");         // razon social
+                        }
+                        else
+                        {
+                            retorna[0] = datos[1].Replace("?", "Ñ");         // razon social
+                            retorna[1] = datos[4];                          // ubigeo
+                            retorna[2] = datos[5];                          // direccion
+                            retorna[3] = datos[8];                          // departamento
+                            retorna[4] = datos[7];                          // provincia
+                            retorna[5] = datos[6];                          // distrito
+                            retorna[6] = datos[2];                          // estado del contrib.
+                            retorna[7] = datos[3];                          // condicion domicilio
+                        }
                     }
                 }
             }

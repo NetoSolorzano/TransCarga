@@ -147,6 +147,7 @@
     <Compile Include="CComprobante.cs" />
     <Compile Include="CComprobanteDetalle.cs" />
     <Compile Include="Ccreditnote.cs" />
+    <Compile Include="Cgret.cs" />
     <Compile Include="clients.cs">
       <SubType>Form</SubType>
     </Compile>

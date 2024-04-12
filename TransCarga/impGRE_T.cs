@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace TransCarga
 {
-    class impGRE_T
+    class impGREs
     {
         libreria lib = new libreria();
         string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
@@ -23,8 +23,9 @@ namespace TransCarga
         string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 17
         short copias = 0;
         string otro = "";               // ruta y nombre del png código QR
-        public impGRE_T(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof, string formato, string nomforCR)
+        public bool impGRE_T(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof, string formato, string nomforCR)
         {
+            bool retorna = false;
             copias = (short)nCopias;
             cab[0] = cabecera[0];   // serie de la GRE
             cab[1] = cabecera[1];   // corre de la GRE
@@ -115,6 +116,7 @@ namespace TransCarga
                     print.PrinterSettings.PrinterName = nomImp;
                     print.PrinterSettings.Copies = (short)nCopias;
                     print.Print();
+                    retorna = true;
                     break;
                 case "A5":
 
@@ -148,22 +150,25 @@ namespace TransCarga
                         repo.SetDataSource(data);
                         repo.PrintOptions.PrinterName = nomImp;
                         repo.PrintToPrinter((short)nCopias, false, 1, 1);
+                        retorna = true;
                     }
                     if (nomImp != "" && nomforCR == "")
                     {
-
+                        retorna = true;
                     }
                     if (nomImp == "" && nomforCR != "")
                     {
                         conClie datos = generaReporte(nomforCR);
                         frmvizoper visualizador = new frmvizoper(datos);
                         visualizador.Show();
+                        retorna = true;
                     }
                     break;
                 case "A4":
 
                     break;
             }
+            return retorna;
         }
 
         public void imprime_TK(object sender, PrintPageEventArgs e)     // TK

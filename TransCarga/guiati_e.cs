@@ -150,7 +150,13 @@ namespace TransCarga
         string[] datosD = { "" };                   // datos del destinatario si existe en la B.D.
         string[] rl = { "" };                       // datos del NUEVO remitente
         string[] dl = { "" };                       // datos del NUEVO destinatario
-        
+
+        string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", "", "", ""};    // 11
+        string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
+        string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+        string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+
         public guiati_e()
         {
             InitializeComponent();
@@ -1559,7 +1565,6 @@ namespace TransCarga
                 {
                     string ajson = json_Aguia(tipo);       // Arma el json, tipo GR transportista=31
                     System.IO.File.WriteAllText(ruta + archi + ".json", ajson);
-                    return retorna;
                     String respuesta = cws.leerArchivo(archi + ".json", ruta, rutaRpta, usuaInteg, clavInteg);
                     if (respuesta.Substring(0, 7) == "Client.")
                     {
@@ -1574,14 +1579,14 @@ namespace TransCarga
                         // hacemos algo en adifactu ? actualizamos algún valor?
                     }
                 }
-                if (EnvPdf == true)                        // generar el pdf para subirlo al servidor de seencorp 04/03/2024
+                if (EnvPdf == true)                        // generar el pdf para subirlo al servidor de seencorp ... 11/04/2024
                 {
-                    /* 
-                    llena_matris_FE();
+                    // tenemos que llenar los arreglos para los datos de la guía antes de llamar a la imp. pdf
+                    datosImpresion();
                     try
                     {
-                        //va[8] = va[8] + archi + ".PDF";
-                        impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, true);   // generamos el pdf en el directorio temporal
+                        impGREs impgr = new impGREs();
+                        impgr.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
                         cws.leerArchivoPdf(archi + ".PDF", rutaQR, "", usuaInteg, clavInteg);
                         // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
                         if (File.Exists(@va[8])) File.Delete(@va[8]);
@@ -1593,7 +1598,7 @@ namespace TransCarga
                             ex.Message, "Error en generar el PDF", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         //retorna = false;
                     }
-                    */
+
                 }
             }
             return retorna;
@@ -1603,37 +1608,36 @@ namespace TransCarga
             string retorna = "";
             string vemis = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
             string vhmis = DateTime.Now.ToLocalTime().TimeOfDay.ToString().Substring(0, 8);
-            Cemisor emisp1 = new Cemisor
+            Cemisgre emisguia = new Cemisgre
             {
                 num_doc = Program.ruc,     // "10427946580"
                 tip_doc = "6",
-                raz_soc = Program.cliente
+                raz_soc = Program.cliente,
+                num_mtc = Program.regmtc
+                //cod_autorizacion = "06",        // codigo sunat del MTC = 06
+                //num_autorizacion = ""         // "00012333"
             };
-            CemisorGR emisguia = new CemisorGR
-            {
-                cemisor = emisp1,
-                num_mtc = Program.regmtc,
-                cod_autorizacion = "",        // "00012333"
-                num_autorizacion = ""         // "00012333"
-            };
-            List<Cdocrel> listDocRel = new List<Cdocrel>();
             #region doc relacionado
-            Cdocrel docrela = new Cdocrel
+            List<Cdocrel> listDocRel = new List<Cdocrel>();
+            if (cmb_docorig.Text.Trim() != "")
             {
-                tip_doc_descrip = cmb_docorig.Text.ToUpper(),
-                emi_num_doc = tx_rucEorig.Text,
-                emi_tip_doc = "6",
-                tip_doc = tx_dat_dorigS.Text,
-                serie_correl = tx_docsOr.Text
-            };
-            listDocRel.Add(docrela);
+                Cdocrel docrela = new Cdocrel
+                {
+                    tip_doc_descrip = cmb_docorig.Text.ToUpper(),
+                    emi_num_doc = tx_rucEorig.Text,
+                    emi_tip_doc = "6",  // todos son ruc = 6
+                    tip_doc = tx_dat_dorigS.Text,
+                    serie_correl = tx_docsOr.Text
+                };
+                listDocRel.Add(docrela);
+            }
             if (cmb_docorig2.Text.Trim() != "")
             {
-                docrela = new Cdocrel
+                Cdocrel docrela = new Cdocrel
                 {
                     tip_doc_descrip = cmb_docorig2.Text.ToUpper(),
                     emi_num_doc = tx_rucEorig2.Text,
-                    emi_tip_doc = "6",
+                    emi_tip_doc = "6",  // todos son ruc = 6
                     tip_doc = tx_dat_dorigS2.Text,
                     serie_correl = tx_docsOr2.Text
                 };
@@ -1652,6 +1656,7 @@ namespace TransCarga
                 num_doc = tx_numDocDes.Text,     // "20605562753"
                 raz_soc = tx_nomDrio.Text      // "SEEN CORPORATION SELVA SAC"
             };
+            #region subcontratado
             Csubcontratado subc = null;
             if (tx_pla_ruc.Text != Program.ruc)
             {
@@ -1662,11 +1667,26 @@ namespace TransCarga
                     raz_soc = tx_pla_propiet.Text
                 };
             }
+            #endregion
+            #region tercero
+            Ctercero c3 = null;
+            if (rb_pDes.Checked == true)
+            {
+                c3 = new Ctercero
+                {
+                    tip_doc = tx_dat_tcd.Text,
+                    num_doc = tx_numDocDes.Text,
+                    raz_soc = tx_nomDrio.Text
+                };
+            }
+            #endregion
             Cenvio envCar = new Cenvio
             {
                 peso_bruto_total = decimal.Parse(tx_totpes.Text),
                 cod_und_med = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text,         // "KGM"
+                num_bultos = int.Parse(tx_totcant.Text),
                 fec_ini_traslado = tx_pla_fech.Text,    // "2023-07-16"
+                peso_bruto_total_item = decimal.Parse(tx_totpes.Text),
                 anotacion = "",
                 ind_traslado_tot = "true",
                 ind_retorno_enva_vacio = "true",
@@ -1701,7 +1721,7 @@ namespace TransCarga
                 num_doc = tx_pla_dniChof.Text,
                 nombres = partidor(tx_pla_nomcho.Text, " ")[0],     // "PEDRO AUGUSTO"
                 apellidos = partidor(tx_pla_nomcho.Text, " ")[1],   //"LAINEZ GAMBOA"
-                num_licencia = tx_pla_brevet.Text
+                num_licencia = tx_pla_brevet.Text.Replace("-", "")
             };
             chofe.Add(con1);
             if (tx_dat_dniC2.Text != "")
@@ -1713,7 +1733,7 @@ namespace TransCarga
                     num_doc = tx_dat_dniC2.Text,
                     nombres = partidor(tx_pla_chofer2.Text, " ")[0],     // "PEDRO AUGUSTO"
                     apellidos = partidor(tx_pla_chofer2.Text, " ")[1],   //"LAINEZ GAMBOA"
-                    num_licencia = tx_pla_brev2.Text
+                    num_licencia = tx_pla_brev2.Text.Replace("-", "")
                 };
                 chofe.Add(con1);
             }
@@ -1721,16 +1741,16 @@ namespace TransCarga
             Cpartida ptida = new Cpartida
             {
                 cod_ubi = tx_ubigRtt.Text,     //  "150101"
-                dir = tx_dirRem.Text + " " + tx_distRtt.Text.Trim() + " " + tx_provRtt.Text.Trim() + " " + tx_dptoRtt.Text.Trim()
+                dir = tx_dirRem.Text + " " + tx_distRtt.Text.Trim() + ", " + tx_provRtt.Text.Trim() + ", " + tx_dptoRtt.Text.Trim()
             };
             Cllegada pllega = new Cllegada
             {
                 cod_ubi = tx_dirDrio.Text,     //  "150101"
-                dir = tx_ubigDtt.Text + " " + tx_disDrio.Text.Trim() + " " + tx_proDrio.Text.Trim() + " " + tx_dptoDrio.Text.Trim()
+                dir = tx_ubigDtt.Text + " " + tx_disDrio.Text.Trim() + ", " + tx_proDrio.Text.Trim() + ", " + tx_dptoDrio.Text.Trim()
             };
             #region detalle
-            List<CComprobanteDetalle> Vaaa = new List<CComprobanteDetalle>();
-            CComprobanteDetalle ccd = new CComprobanteDetalle
+            List<CDetalleGR> Vaaa = new List<CDetalleGR>();
+            CDetalleGR ccd = new CDetalleGR
             {
                 nro_item = 1,
                 cod_prod = "",
@@ -1769,17 +1789,18 @@ namespace TransCarga
                 ubl_version = "2.1",
                 customizacion = "2.0",
                 emisor = emisguia,
-                docrel = listDocRel,
+                docrel = (cmb_docorig.Text.Trim() != "") ?  listDocRel : null,
                 remitente = cltRemit,
                 adquiriente = cltAdq,
                 subcontratado = subc,
+                tercero = c3,
                 envio = envCar,
                 vehiculo = cvhe,
                 conductor = chofe,
                 partida = ptida,
                 llegada = pllega,
                 det = Vaaa,
-                leyen = leyd
+                leyen = (leyd.Count > 0) ? leyd : null
             };
 
             Cgret cgret = new Cgret
@@ -1829,7 +1850,7 @@ namespace TransCarga
             }                       // Emisión directa consumiendo los servicios web de sunat api-rest
             if (ipeeg == "seencorp")
             {
-                if (jsonguia("31","alta",true,false,tx_serie.Text,tx_numero.Text) == false)
+                if (jsonguia("31", "alta", true, true, tx_serie.Text, tx_numero.Text) == false)
                 {
                     MessageBox.Show("Ocurrió un problema");
                 }
@@ -4531,7 +4552,7 @@ namespace TransCarga
                 }
             }
         }
-        private bool datosImpresion()
+        internal bool datosImpresion()
         {
             bool retorna = false;
 
@@ -4612,13 +4633,29 @@ namespace TransCarga
 
             if (Tx_modo.Text == "NUEVO")
             {   // si es nuevo, se imprimen 2 copias
-                if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
-                if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                if (vi_formato == "A5") 
+                { 
+                    impGREs impGRE = new impGREs();
+                    impGRE.impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                }
+                if (vi_formato == "TK") 
+                { 
+                    impGREs impGRE = new impGREs();
+                    impGRE.impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                }
             }
             else
             {   // si NO es nuevo, se imprime 1 copia
-                if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
-                if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                if (vi_formato == "TK") 
+                { 
+                    impGREs impGRE = new impGREs();
+                    impGRE.impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                }
+                if (vi_formato == "A5") 
+                { 
+                    impGREs impGRE = new impGREs();
+                    impGRE.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                }
             }
             return retorna;
         }

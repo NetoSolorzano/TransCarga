@@ -19,11 +19,11 @@ namespace TransCarga
         string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
                          "", "", "", "", "", "", "", "", "", "", "" };      // 11
         string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
-        string[] var = { "", "", "", "", "", "", "", "", ""};       // 9
+        string[] var = { "", "", "", "", "", "", "", "", "", ""};       // 10
         string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 17
         short copias = 0;
         string otro = "";               // ruta y nombre del png código QR
-        public bool impGRE_T(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof, string formato, string nomforCR)
+        public bool impGRE_T(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof, string formato, string nomforCR, bool genPdf)
         {
             bool retorna = false;
             copias = (short)nCopias;
@@ -90,6 +90,7 @@ namespace TransCarga
             var[6] = varios[6];         // consignatario
             var[7] = varios[7];         // telefono remitente
             var[8] = varios[8];         // telefono destinatario
+            var[9] = varios[9];         // ruta donde se generará el pdf
 
             vch[0] = vehChof[0];        // Vehiculos - Placa veh principal -> tx_pla_placa.Text
             vch[1] = vehChof[1];        // Vehiculos - Autoriz. vehicular -> tx_pla_autor.Text
@@ -142,23 +143,28 @@ namespace TransCarga
                         if (File.Exists(@var[1])) File.Delete(@var[1]);
                         var[1] = "";
                     }
+                    conClie datos = generaReporte(nomforCR);
+                    ReportDocument repo = new ReportDocument();
+                    repo.Load(nomforCR);
+                    repo.SetDataSource(datos);
                     if (nomImp != "" && nomforCR != "")
                     {
-                        conClie data = generaReporte("nomforCR");
-                        ReportDocument repo = new ReportDocument();
-                        repo.Load(nomforCR);
-                        repo.SetDataSource(data);
+                        //conClie data = generaReporte("nomforCR");
+                        //ReportDocument repo = new ReportDocument();
+                        //repo.Load(nomforCR);
+                        //repo.SetDataSource(datos);
                         repo.PrintOptions.PrinterName = nomImp;
                         repo.PrintToPrinter((short)nCopias, false, 1, 1);
                         retorna = true;
                     }
-                    if (nomImp != "" && nomforCR == "")
+                    if (genPdf == true)   //  nomImp != "" && nomforCR == ""
                     {
+                        repo.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, var[9]);
                         retorna = true;
                     }
                     if (nomImp == "" && nomforCR != "")
                     {
-                        conClie datos = generaReporte(nomforCR);
+                        //conClie datos = generaReporte(nomforCR);
                         frmvizoper visualizador = new frmvizoper(datos);
                         visualizador.Show();
                         retorna = true;

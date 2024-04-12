@@ -361,7 +361,8 @@ namespace TransCarga
                     dt[y, 3] = gloDeta + " " + dtgrtdet.Rows[y]["descprodi"].ToString();    // detalle: Descripción
                     dt[y, 4] = dtgrtdet.Rows[y][7].ToString();               // detalle: peso
 
-                    impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                    impGREs impGRE = new impGREs();
+                    impGRE.impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
                 }       // formato guía electrónica
             }
         }

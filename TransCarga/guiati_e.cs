@@ -154,7 +154,7 @@ namespace TransCarga
         string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", "", ""};    // 11
         string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-        string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+        string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
         string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
         public guiati_e()
@@ -1586,7 +1586,7 @@ namespace TransCarga
                     try
                     {
                         impGREs impgr = new impGREs();
-                        impgr.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                        impgr.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, true);
                         cws.leerArchivoPdf(archi + ".PDF", rutaQR, "", usuaInteg, clavInteg);
                         // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
                         if (File.Exists(@va[8])) File.Delete(@va[8]);
@@ -1607,6 +1607,7 @@ namespace TransCarga
         {
             string retorna = "";
             string vemis = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+            string vtras = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);
             string vhmis = DateTime.Now.ToLocalTime().TimeOfDay.ToString().Substring(0, 8);
             Cemisgre emisguia = new Cemisgre
             {
@@ -1685,7 +1686,7 @@ namespace TransCarga
                 peso_bruto_total = decimal.Parse(tx_totpes.Text),
                 cod_und_med = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text,         // "KGM"
                 num_bultos = int.Parse(tx_totcant.Text),
-                fec_ini_traslado = tx_pla_fech.Text,    // "2023-07-16"
+                fec_ini_traslado = ,    // confirmar en en nuevo o edicion del form la fecha de la planilla siempre tenda en el form el formato dd/mm/aaaa
                 peso_bruto_total_item = decimal.Parse(tx_totpes.Text),
                 anotacion = "",
                 ind_traslado_tot = "true",
@@ -1745,8 +1746,8 @@ namespace TransCarga
             };
             Cllegada pllega = new Cllegada
             {
-                cod_ubi = tx_dirDrio.Text,     //  "150101"
-                dir = tx_ubigDtt.Text + " " + tx_disDrio.Text.Trim() + ", " + tx_proDrio.Text.Trim() + ", " + tx_dptoDrio.Text.Trim()
+                cod_ubi = tx_ubigDtt.Text,     //  "150101"
+                dir = tx_dirDrio.Text + " " + tx_disDrio.Text.Trim() + ", " + tx_proDrio.Text.Trim() + ", " + tx_dptoDrio.Text.Trim()
             };
             #region detalle
             List<CDetalleGR> Vaaa = new List<CDetalleGR>();
@@ -4559,7 +4560,7 @@ namespace TransCarga
                 string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", "", ""};    // 11
                 string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+                string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
                 string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
                 vs[0] = tx_serie.Text;                          // dr.GetString("sergui");
@@ -4622,6 +4623,7 @@ namespace TransCarga
                 va[6] = tx_consig.Text.Trim();
                 va[7] = tx_telR.Text.Trim();
                 va[8] = tx_telD.Text.Trim();
+                va[9] = rutaQR;
 
                 int y = 0;
                 dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila
@@ -4636,12 +4638,12 @@ namespace TransCarga
                 if (vi_formato == "A5") 
                 { 
                     impGREs impGRE = new impGREs();
-                    impGRE.impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                    impGRE.impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
                 }
                 if (vi_formato == "TK") 
                 { 
                     impGREs impGRE = new impGREs();
-                    impGRE.impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                    impGRE.impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
                 }
             }
             else
@@ -4649,12 +4651,12 @@ namespace TransCarga
                 if (vi_formato == "TK") 
                 { 
                     impGREs impGRE = new impGREs();
-                    impGRE.impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                    impGRE.impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
                 }
                 if (vi_formato == "A5") 
                 { 
                     impGREs impGRE = new impGREs();
-                    impGRE.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                    impGRE.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
                 }
             }
             return retorna;

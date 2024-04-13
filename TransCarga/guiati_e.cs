@@ -1561,7 +1561,7 @@ namespace TransCarga
             IConectarWS cws = new ConectarWS();
             if (accion == "alta")
             {
-                if (envia == true)
+                if (envia == true)  // false == true
                 {
                     string ajson = json_Aguia(tipo);       // Arma el json, tipo GR transportista=31
                     System.IO.File.WriteAllText(ruta + archi + ".json", ajson);
@@ -1582,14 +1582,14 @@ namespace TransCarga
                 if (EnvPdf == true)                        // generar el pdf para subirlo al servidor de seencorp ... 11/04/2024
                 {
                     // tenemos que llenar los arreglos para los datos de la guía antes de llamar a la imp. pdf
-                    datosImpresion();
+                    datosImpresion(archi + ".PDF");
                     try
                     {
-                        impGREs impgr = new impGREs();
-                        impgr.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, true);
+                        //impGREs impgr = new impGREs();
+                        //impgr.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, true);
                         cws.leerArchivoPdf(archi + ".PDF", rutaQR, "", usuaInteg, clavInteg);
                         // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
-                        if (File.Exists(@va[8])) File.Delete(@va[8]);
+                        if (File.Exists(@va[9])) File.Delete(@va[9]);
                         retorna = true;
                     }
                     catch (Exception ex)
@@ -1607,7 +1607,9 @@ namespace TransCarga
         {
             string retorna = "";
             string vemis = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
-            string vtras = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);
+            string vtras = "";
+            if (Tx_modo.Text == "NUEVO") vtras = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);
+            else vtras = tx_pla_fech.Text;
             string vhmis = DateTime.Now.ToLocalTime().TimeOfDay.ToString().Substring(0, 8);
             Cemisgre emisguia = new Cemisgre
             {
@@ -1686,7 +1688,7 @@ namespace TransCarga
                 peso_bruto_total = decimal.Parse(tx_totpes.Text),
                 cod_und_med = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text,         // "KGM"
                 num_bultos = int.Parse(tx_totcant.Text),
-                fec_ini_traslado = ,    // confirmar en en nuevo o edicion del form la fecha de la planilla siempre tenda en el form el formato dd/mm/aaaa
+                fec_ini_traslado = vtras,    // confirmar en en nuevo o edicion del form la fecha de la planilla siempre tenda en el form el formato dd/mm/aaaa
                 peso_bruto_total_item = decimal.Parse(tx_totpes.Text),
                 anotacion = "",
                 ind_traslado_tot = "true",
@@ -4489,13 +4491,13 @@ namespace TransCarga
         private bool imprimeA5()
         {
             bool retorna = false;
-            datosImpresion();
+            datosImpresion("");
             return retorna;
         }
         private bool imprimeTK()
         {
             bool retorna = false;
-            datosImpresion();
+            datosImpresion("");
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -4553,15 +4555,16 @@ namespace TransCarga
                 }
             }
         }
-        internal bool datosImpresion()
+        internal bool datosImpresion(string nomarc) // nomarc = nombre de archivo pdf
         {
             bool retorna = false;
 
-                string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", "", ""};    // 11
-                string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-                string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
-                string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+                //vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                //              "", "", "", "", "", "", "", "", "", "", ""};    // 11
+                //string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
+                //string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
+                //string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+                
 
                 vs[0] = tx_serie.Text;                          // dr.GetString("sergui");
                 vs[1] = tx_numero.Text;                         // dr.GetString("numgui")
@@ -4623,7 +4626,7 @@ namespace TransCarga
                 va[6] = tx_consig.Text.Trim();
                 va[7] = tx_telR.Text.Trim();
                 va[8] = tx_telD.Text.Trim();
-                va[9] = rutaQR;
+                va[9] = rutaQR + nomarc;     // ruta y nombre del archivo pdf
 
                 int y = 0;
                 dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila
@@ -4636,9 +4639,10 @@ namespace TransCarga
             if (Tx_modo.Text == "NUEVO")
             {   // si es nuevo, se imprimen 2 copias
                 if (vi_formato == "A5") 
-                { 
+                {
                     impGREs impGRE = new impGREs();
-                    impGRE.impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
+                    if (nomarc != "") impGRE.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, true);
+                    else impGRE.impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
                 }
                 if (vi_formato == "TK") 
                 { 
@@ -4656,7 +4660,8 @@ namespace TransCarga
                 if (vi_formato == "A5") 
                 { 
                     impGREs impGRE = new impGREs();
-                    impGRE.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
+                    if (nomarc != "") impGRE.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, true);
+                    else impGRE.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, false);
                 }
             }
             return retorna;

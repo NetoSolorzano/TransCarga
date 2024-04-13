@@ -147,7 +147,7 @@ namespace TransCarga
                     ReportDocument repo = new ReportDocument();
                     repo.Load(nomforCR);
                     repo.SetDataSource(datos);
-                    if (nomImp != "" && nomforCR != "")
+                    if (genPdf == false)   // nomImp != "" && nomforCR != ""
                     {
                         //conClie data = generaReporte("nomforCR");
                         //ReportDocument repo = new ReportDocument();
@@ -159,7 +159,7 @@ namespace TransCarga
                     }
                     if (genPdf == true)   //  nomImp != "" && nomforCR == ""
                     {
-                        repo.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, var[9]);
+                        repo.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, @var[9]);
                         retorna = true;
                     }
                     if (nomImp == "" && nomforCR != "")

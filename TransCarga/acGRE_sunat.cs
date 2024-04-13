@@ -182,6 +182,17 @@ namespace TransCarga
             retorna = cws.consultaEstado(nomarch, rutaXml, Lusua, Lclav);
             if (retorna == "0" || retorna == "98")
             {
+                string archiS = "R-" + nomarch;
+                XmlDocument archiXml = new XmlDocument();
+                archiXml.Load(archiS);
+                XmlNode fqr = archiXml.GetElementsByTagName("DocumentDescription", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                string n1;
+                if (fqr == null)
+                {
+                    XmlNode fer = archiXml.GetElementsByTagName("Description", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                    n1 = fer.InnerText;
+                }
+                else n1 = fqr.InnerText;
                 // me quede acá, debemos leer el xml, obtener resultado y grabarlo en la tabla
                 // 13/04/2024
             }

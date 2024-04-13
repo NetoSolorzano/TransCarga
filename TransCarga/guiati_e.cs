@@ -657,7 +657,19 @@ namespace TransCarga
                     if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text == "Enviado" || tx_estaSunat.Text == "En proceso"))    // (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado")
                     {
                         // llamada al metodo que consultará el estado del comprobante y actualizara 
-                        if (tx_dat_tickSunat.Text != "") _Sunat.consultaC("adiguias", tx_idr.Text, tx_dat_tickSunat.Text, _Sunat.conex_token_(c_t), tx_serie.Text, tx_numero.Text, rutaxml);
+                        if (ipeeg == "API_SUNAT")
+                        {
+                            if (tx_dat_tickSunat.Text != "") _Sunat.consultaC("adiguias", tx_idr.Text, tx_dat_tickSunat.Text, _Sunat.conex_token_(c_t), tx_serie.Text, tx_numero.Text, rutaxml);
+                        }
+                        if (ipeeg == "seencorp")
+                        {
+                            string archi = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
+                            if (tx_dat_tickSunat.Text != "")
+                            {
+                                string respuesta = _Sunat.consultaC("adiguias", archi, rutaQR, usuaInteg, clavInteg);
+                                MessageBox.Show(respuesta,"Estado Sunat",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                            }
+                        }
                     }
                     else
                     {
@@ -1576,7 +1588,21 @@ namespace TransCarga
                     else
                     {
                         retorna = true;
-                        // hacemos algo en adifactu ? actualizamos algún valor?
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            conn.Open();
+                            if (lib.procConn(conn) == true)
+                            {
+                                using (MySqlCommand micon = new MySqlCommand("update adiguias set estadoS=@est,nticket=@ntk,fticket=@ftk where idg=@idr", conn))
+                                {
+                                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                    micon.Parameters.AddWithValue("@est", "Enviado");
+                                    micon.Parameters.AddWithValue("@ntk", respuesta);
+                                    micon.Parameters.AddWithValue("@ftk", DateTime.Now);
+                                    micon.ExecuteNonQuery();
+                                }
+                            }
+                        }
                     }
                 }
                 if (EnvPdf == true)                        // generar el pdf para subirlo al servidor de seencorp ... 11/04/2024
@@ -1588,8 +1614,7 @@ namespace TransCarga
                         //impGREs impgr = new impGREs();
                         //impgr.impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind, true);
                         cws.leerArchivoPdf(archi + ".PDF", rutaQR, "", usuaInteg, clavInteg);
-                        // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
-                        if (File.Exists(@va[9])) File.Delete(@va[9]);
+                        if (File.Exists(@va[9])) File.Delete(@va[9]);       // borramos el pdf, ya no es necesario
                         retorna = true;
                     }
                     catch (Exception ex)
@@ -1856,6 +1881,18 @@ namespace TransCarga
                 if (jsonguia("31", "alta", true, true, tx_serie.Text, tx_numero.Text) == false)
                 {
                     MessageBox.Show("Ocurrió un problema");
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        conn.Open();
+                        if (lib.procConn(conn) == true)
+                        {
+                            using (MySqlCommand micon = new MySqlCommand("update adiguias set estadoS='Invalido' where id=@idr"))
+                            {
+                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                micon.ExecuteNonQuery();
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -2883,15 +2920,18 @@ namespace TransCarga
                         }
                     }
                 }
-                if (ipeeg == "API_SUNAT")       // en otro metodo no usamos la tabla adiguias
+                if (true)       // ipeeg == "API_SUNAT"
                 {
                     // adicionales
-                    string actag = "insert into adiguias (idg,serie,numero) values (@idg,@seg,@nug)";
+                    string actag = "insert into adiguias (idg,serie,numero,ose_pse,autoSun,webose) values (@idg,@seg,@nug,@ipe,@aus,@wos)";
                     using (MySqlCommand micon = new MySqlCommand(actag, conn))
                     {
                         micon.Parameters.AddWithValue("@idg", tx_idr.Text);
                         micon.Parameters.AddWithValue("@seg", tx_serie.Text);
                         micon.Parameters.AddWithValue("@nug", tx_numero.Text);
+                        micon.Parameters.AddWithValue("@ipe", ipeeg);
+                        micon.Parameters.AddWithValue("@aus", "");
+                        micon.Parameters.AddWithValue("@wos", "");
                         micon.ExecuteNonQuery();
                     }
                 }

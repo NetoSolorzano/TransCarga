@@ -13,6 +13,7 @@ using MySql.Data.MySqlClient;
 using Microsoft.Data.Sqlite;
 using System.Xml;
 using System.Windows.Forms;
+using com.tuscomprobantespe.webservice;
 
 namespace TransCarga
 {
@@ -166,6 +167,23 @@ namespace TransCarga
             {
                 //MessageBox.Show("Estamos dentro del plazo " + tiempoT.ToString());
                 retorna = sunat_TokenAct;     // retorna el token actual
+            }
+            return retorna;
+        }
+        public string consultaC(string nomTabla, string nomarch, string rutaXml, string Lusua, string Lclav)
+        {
+            // nomTabla -> nombre de la tabla en B.D donde esta guardada los datos
+            // nomarch --> nombre del archivo xml que se consultará su estado
+            // rutaXml --> ruta donde se grabará el cdr xml de respuesta
+            // Lusua ----> usuario permitido en hacer la consulta
+            // Lclav ----> clave del usuario que hace la consulta
+            string retorna = "";
+            IConectarWS cws = new ConectarWS();
+            retorna = cws.consultaEstado(nomarch, rutaXml, Lusua, Lclav);
+            if (retorna == "0" || retorna == "98")
+            {
+                // me quede acá, debemos leer el xml, obtener resultado y grabarlo en la tabla
+                // 13/04/2024
             }
             return retorna;
         }

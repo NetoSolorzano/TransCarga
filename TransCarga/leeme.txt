@@ -496,7 +496,7 @@ form facelect, codigo para validar que guia no tenga factura antes de grabar com
 	caso tenemos 2, una al "jalar" la guia y la otra antes de grabar el comprobante ................. ok 04/04/2024
 form guiati_e, guía de remisión electrónica de transportista con SEENCORP ........................... ok 10/04/2024
 form guiati_e, arreglo de impresion doble en guias .................................................. ok 12/04/2024
-form guiati_e, enviar pdf de guias electronicas transportista a seencorp junto con el json .......... 
+form guiati_e, enviar pdf de guias electronicas transportista a seencorp junto con el json .......... ok 13/04/2024
 form guiati_e, revision de casos dificiles, adecuaciones finales, pruebas ........................... 
 **** arreglar la impresion "doble" en fact y guias y donde sea, la razón es que estoy llamando a la clase que imprime con el mismo nombre
 ***** el nombre de la clase y su metodo tiene en mismo nombre, ademas no debe llamarse a la clase imprime desde el printdocument.print()

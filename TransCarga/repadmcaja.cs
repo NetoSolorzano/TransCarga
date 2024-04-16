@@ -1046,7 +1046,7 @@ namespace TransCarga
                 pendrow.fechRep = DateTime.Now.ToString();
                 pendrow.origen = row.Cells["ORIGEN"].Value.ToString();
                 pendrow.destino = row.Cells["DESTINO"].Value.ToString();
-                pendrow.fecha = row.Cells["FECHA"].Value.ToString();
+                pendrow.fecha = row.Cells["FECHA"].Value.ToString().Substring(0, 10);
                 pendrow.serie = row.Cells["SER"].Value.ToString();
                 pendrow.numero = row.Cells["NUMERO"].Value.ToString();
                 pendrow.docr = row.Cells["DOCR"].Value.ToString();

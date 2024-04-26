@@ -17,7 +17,7 @@ namespace TransCarga
     {
         libreria lib = new libreria();
         string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
-                         "", "", "", "", "", "", "", "", "", "", "" };      // 11
+                         "", "", "", "", "", "", "", "", "", "", "", "" };      // 12
         string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
         string[] var = { "", "", "", "", "", "", "", "", "", ""};       // 10
         string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 17
@@ -58,6 +58,7 @@ namespace TransCarga
             cab[28] = cabecera[28];     // local de emisión
             cab[29] = cabecera[29];     // numero de pre guía (orden de servicio)
             cab[30] = cabecera[30];     // flete de la guía
+            cab[31] = cabecera[31];     // simbolo de la moneda del flete
 
             det[0, 0] = detalle[0, 0];  // detalle fila 1
             det[0, 1] = detalle[0, 1];
@@ -562,7 +563,7 @@ namespace TransCarga
             // importes
             rowcabeza.pesTotCar = cab[17];
             rowcabeza.uniMedPes = cab[18];
-            rowcabeza.nomMoneda = "";           // no tenemos este dato en la clase - EN GRE no imprimimos valores 
+            rowcabeza.nomMoneda = cab[31];      // simbolo de la moneda del flete
             rowcabeza.igv = "";                 // no tenemos este dato en la clase - EN GRE no imprimimos valores 
             rowcabeza.subtotal = "";            // no tenemos este dato en la clase - EN GRE no imprimimos valores 
             rowcabeza.total = cab[30];          // Flete del servicio (solo para impresión, no va a sunat)

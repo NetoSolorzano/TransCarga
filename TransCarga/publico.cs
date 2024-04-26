@@ -288,9 +288,9 @@ namespace TransCarga
                 else
                 {
                     string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", "", ""};    // 11
+                               "", "", "", "", "", "", "", "", "", "", "", ""};    // 12
                     string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-                    string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+                    string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
                     string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
                     vs[0] = ser;
@@ -325,6 +325,7 @@ namespace TransCarga
                     vs[28] = dtgrtcab.Rows[0]["locorigen"].ToString();
                     vs[29] = dtgrtcab.Rows[0]["numpregui"].ToString();                 // número de pre-guia (orden de servicio)
                     vs[30] = dtgrtcab.Rows[0]["totgri"].ToString();
+                    vs[31] = dtgrtcab.Rows[0]["MON"].ToString();                         // simbolo de la moneda del flete
 
                     vc[0] = dtgrtcab.Rows[0]["plaplagri"].ToString();
                     vc[1] = dtgrtcab.Rows[0]["autplagri"].ToString();

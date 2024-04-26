@@ -152,7 +152,7 @@ namespace TransCarga
         string[] dl = { "" };                       // datos del NUEVO destinatario
 
         string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", "", ""};    // 11
+                               "", "", "", "", "", "", "", "", "", "", "", ""};    // 12
         string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
         string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
         string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
@@ -3359,6 +3359,10 @@ namespace TransCarga
         }
         private void textBox3_Leave(object sender, EventArgs e)         // número de documento remitente
         {
+            // lo pasamos a validating
+        }
+        private void tx_numDocRem_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() != "" && ("NUEVO,EDITAR").Contains(Tx_modo.Text))
             {
                 tx_nomRem.Text = "";
@@ -3420,6 +3424,7 @@ namespace TransCarga
                                     tx_dptoRtt.Text = rl[3];      // departamento
                                     tx_provRtt.Text = rl[4];      // provincia
                                     tx_distRtt.Text = rl[5];      // distrito
+                                    encuentra = "si";
                                 }
                                 else
                                 {
@@ -3443,6 +3448,7 @@ namespace TransCarga
                                     System.Diagnostics.Process.Start(webdni);
                                     tx_nomRem.Enabled = true;
                                     tx_nomRem.ReadOnly = false;
+                                    tx_nomRem.Focus();
                                 }
                                 else
                                 {
@@ -3464,7 +3470,7 @@ namespace TransCarga
                         tx_nomRem.ReadOnly = false;
                     }
                     // si la direccion esta en blanco, debe permitir escribir
-                    if (tx_dirRem.Text.Trim() == "" || tx_dirRem.Text.Trim().Substring(0,3) == "- -")
+                    if (tx_dirRem.Text.Trim() == "" || tx_dirRem.Text.Trim().Substring(0, 1) == "-")
                     {
                         tx_dirRem.ReadOnly = false;
                         tx_dptoRtt.ReadOnly = false;
@@ -3474,7 +3480,7 @@ namespace TransCarga
                         //v_clte_rem = "E";
                     }
                 }
-                cmb_docDes.Focus();
+                if (encuentra == "si") cmb_docDes.Focus();
             }
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() == "")
             {
@@ -3482,6 +3488,10 @@ namespace TransCarga
             }
         }
         private void tx_numDocDes_Leave(object sender, EventArgs e)     // numero documento destinatario
+        {
+            // pasamos esta parte la pasamos a Validating
+        }
+        private void tx_numDocDes_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() != "" && ("NUEVO,EDITAR").Contains(Tx_modo.Text))
             {
@@ -3526,7 +3536,7 @@ namespace TransCarga
                             tx_proDrio.Text = datosD[3];
                             tx_disDrio.Text = datosD[4];
                             tx_ubigDtt.Text = datosD[5];
-                            
+
                         }
                         encuentra = "si";
                         tx_nomDrio.ReadOnly = true;
@@ -3548,6 +3558,7 @@ namespace TransCarga
                                     tx_proDrio.Text = dl[4];      // provincia
                                     tx_disDrio.Text = dl[5];      // distrito
                                     v_clte_des = "N";
+                                    encuentra = "si";
                                 }
                                 else
                                 {
@@ -3575,11 +3586,12 @@ namespace TransCarga
                                     System.Diagnostics.Process.Start(webdni);
                                     tx_nomDrio.Enabled = true;
                                     tx_nomDrio.ReadOnly = false;
+                                    tx_nomDrio.Focus();
                                 }
                                 else
                                 {
                                     tx_nomDrio.Text = dl[0];    // nombre
-                                }   
+                                }
                                 v_clte_des = "N";
                             }
                         }
@@ -3596,7 +3608,7 @@ namespace TransCarga
                         tx_nomDrio.ReadOnly = false;
                     }
                     // si la direccion esta en blanco debe permitir actualizar
-                    if (tx_dirDrio.Text.Trim() == "" || tx_dirDrio.Text.Trim().Substring(0,3) == "- -")   // tx_dirDrio.Text.Trim() == ""
+                    if (tx_dirDrio.Text.Trim() == "" || tx_dirDrio.Text.Trim().Substring(0, 1) == "-")   // tx_dirDrio.Text.Trim() == ""
                     {
                         tx_dirDrio.ReadOnly = false;
                         tx_dptoDrio.ReadOnly = false;
@@ -3606,7 +3618,7 @@ namespace TransCarga
                         //v_clte_des = "E";
                     }
                 }
-                cmb_docorig.Focus();
+                if(encuentra == "si") cmb_docorig.Focus();
             }
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() == "")
             {
@@ -4638,6 +4650,7 @@ namespace TransCarga
                 vs[28] = cmb_origen.Text;                     // dr.GetString("locorigen")
                 vs[29] = tx_pregr_num.Text;                 // número de pre-guia (orden de servicio)
                 vs[30] = tx_flete.Text;                     // flete del servicio, solo para impresion, no debe ir a sunat
+                vs[31] = cmb_mon.Text;                      // simbolo de la moneda del flete
 
                 vc[0] = tx_pla_placa.Text;                   // dr.GetString("plaplagri")
                 vc[1] = tx_pla_autor.Text;                   // dr.GetString("autplagri")
@@ -4712,5 +4725,6 @@ namespace TransCarga
         {
             //jalainfo();
         }
+
     }
 }

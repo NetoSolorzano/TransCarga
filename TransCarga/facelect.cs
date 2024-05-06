@@ -1547,8 +1547,8 @@ namespace TransCarga
                         llena_matris_FE();
                         try
                         {
-                            //va[8] = va[8] + archi + ".PDF";
-                            impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, true);   // generamos el pdf en el directorio temporal
+                            impDVs imp = new impDVs();
+                            imp.impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, true);   // generamos el pdf en el directorio temporal
                             cws.leerArchivoPdf(archi + ".PDF", rutaQR, "", usuaInteg, clavInteg);
                             // Una vez resuelto el problema se debe proceder a regenerar el json ... 05/02/2024
                             if (File.Exists(@va[8])) File.Delete(@va[8]);
@@ -4872,17 +4872,29 @@ namespace TransCarga
         private bool imprimeTK()
         {
             bool retorna = false;
-            //try
+            // imprime la clase
+            if (vs[12] == "") llena_matris_FE();
+            impDVs imp = new impDVs();
+            imp.impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, false);
+
+            if (File.Exists(@otro))
+            {
+                //File.Delete(@"C:\test.txt");
+                File.Delete(@otro);
+            }
+            /*
+            try
             {
                 printDocument1.PrinterSettings.PrinterName = v_impTK;
                 printDocument1.Print();
                 retorna = true;
             }
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message,"Error en imprimir TK");
-            //    retorna = false;
-            //}
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,"Error en imprimir TK");
+                retorna = false;
+            }
+            */
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -4899,7 +4911,8 @@ namespace TransCarga
             {
                 // imprime la clase
                 if (vs[12] == "") llena_matris_FE();
-                impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, false);
+                impDVs imp = new impDVs();
+                imp.impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, false);
 
                 if (File.Exists(@otro))
                 {

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace TransCarga
 {
-    class impDV
+    class impDVs
     {
         libreria lib = new libreria();
         string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 20
@@ -27,8 +27,10 @@ namespace TransCarga
         short copias;
         string otro = "";               // ruta y nombre del png código QR
 
-        public impDV(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] cunica, string formato, string nomforCR, bool gPdf)
+        public bool impDV(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] cunica, string formato, string nomforCR, bool gPdf)
         {
+            bool retorna = false;
+
             copias = (short)nCopias;
             vs[0] = cabecera[0];   // serie (F001)
             vs[1] = cabecera[1];   // numero
@@ -150,6 +152,7 @@ namespace TransCarga
                         print.PrinterSettings.Copies = (short)nCopias;
                         print.Print();
                     }
+                    retorna = true;
                     break;
                 case "A5":
                     // no hay comprobantes en A5 16/11/2023
@@ -174,8 +177,11 @@ namespace TransCarga
                         frmvizoper visualizador = new frmvizoper(data);
                         visualizador.Show();
                     }
+                    retorna = true;
                     break;
             }
+
+            return retorna;
         }
         private void imprime_TK(object sender, PrintPageEventArgs e)
         {

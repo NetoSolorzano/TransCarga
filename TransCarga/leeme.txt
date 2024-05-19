@@ -508,3 +508,4 @@ form guiati_e, revision de casos dificiles, adecuaciones finales, pruebas ......
 ***** el nombre de la clase y su metodo tiene en mismo nombre, ademas no debe llamarse a la clase imprime desde el printdocument.print()
 ***** tomar como modelo a notcredclts y repsvtas estados notas de credito DE ALTIPLANO.
 form repadmcaja, corregir columna "Fecha Emisión en pendientes de cobranza .......................... ok 16/04/2024, en CR salia con hora
+form facelect, en visualización de varios comprobantes al imprimir no borra los datos anteriores .... ok 18/05/2024

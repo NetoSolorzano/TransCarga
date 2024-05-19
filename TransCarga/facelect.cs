@@ -1340,6 +1340,16 @@ namespace TransCarga
         }
         private void llena_matris_FE()          // funcion que llena las matrices con datos para el comprobante electrónico
         {
+            /*
+            string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
+                           "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
+            string[] va = { "", "", "", "", "", "", "", "", "", "" };      // 10
+            string[,] dt = new string[10, 9] {
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
+                }; // 6 columnas, 10 filas
+            string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+            */
             DataRow[] row = dttd1.Select("idcodice='" + tx_dat_tdv.Text + "'");             // tipo de documento venta
             tipdo = row[0][3].ToString();
             DataRow[] rowd = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");          // tipo de documento del cliente
@@ -4873,7 +4883,8 @@ namespace TransCarga
         {
             bool retorna = false;
             // imprime la clase
-            if (vs[12] == "") llena_matris_FE();
+            //if (vs[12] == "") llena_matris_FE();      18/05/2024
+            llena_matris_FE();
             impDVs imp = new impDVs();
             imp.impDV(1, v_impTK, vs, dt, va, cu, vi_formato, v_CR_gr_ind, false);
 

@@ -947,7 +947,7 @@ namespace TransCarga
             bool retorna = false;
             string parte = "";
             if (Tx_modo.Text == "NUEVO") parte = " AND c.fecdocvta IS NULL";
-            string consulta = "SELECT a.tidoregri,a.nudoregri,b1.razonsocial as nombregri,b1.direcc1 as direregri,b1.ubigeo as ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
+            string consulta = "SELECT a.tidoregri,a.nudoregri,b1.razonsocial as nombregri,b1.direcc1 as direregri,a.ubigregri as ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +

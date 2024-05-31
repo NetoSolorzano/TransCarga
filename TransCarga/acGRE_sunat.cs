@@ -82,15 +82,23 @@ namespace TransCarga
                     if (response.ResponseStatus.ToString() != "Completed") retorna = false;
                     else retorna = true;
                     // actualizamos los campos de la tabla 
-                    string actua = "update " + nomTabla + " set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdr where idg=@idg";
+                    string actua = "";
+                    if (result == null)
+                    {
+                        actua = "update " + nomTabla + " set nticket=@nti,estadoS=@est,cdr=@cdr where idg=@idg";
+                    }
+                    else
+                    {
+                        actua = "update " + nomTabla + " set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdr where idg=@idg";
+                    }
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
                         conn.Open();
                         using (MySqlCommand micon = new MySqlCommand(actua, conn))
                         {
                             micon.Parameters.AddWithValue("@idg", tx_idr);
-                            micon.Parameters.AddWithValue("@nti", result.numTicket);
-                            micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
+                            micon.Parameters.AddWithValue("@nti", (result == null)? Program.vg_user + "_" + DateTime.Now.Date.ToString() + "_" + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() : result.numTicket);
+                            if (result != null) micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
                             micon.Parameters.AddWithValue("@est", "Enviado");
                             micon.Parameters.AddWithValue("@cdr", "0");
                             micon.ExecuteNonQuery();

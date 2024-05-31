@@ -148,7 +148,7 @@ namespace TransCarga
                     ReportDocument repo = new ReportDocument();
                     repo.Load(nomforCR);
                     repo.SetDataSource(datos);
-                    if (genPdf == false)   // nomImp != "" && nomforCR != ""
+                    if (genPdf == false && nomImp != "")   // nomImp != "" && nomforCR != ""
                     {
                         //conClie data = generaReporte("nomforCR");
                         //ReportDocument repo = new ReportDocument();

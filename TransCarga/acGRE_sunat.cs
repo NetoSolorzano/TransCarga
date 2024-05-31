@@ -71,7 +71,7 @@ namespace TransCarga
                     //var Body = new StringContent(json, Encoding.UTF8, "application/json");
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     var poste = new RestClient(url);
-                    poste.Timeout = -1;
+                    poste.Timeout = 10000; // poste.Timeout = -1 ....... 31/05/2024
                     var request = new RestRequest(Method.POST);
                     request.AddHeader("Authorization", "Bearer " + tokenSql);
                     request.AddHeader("Content-Type", "application/json");

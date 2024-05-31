@@ -2532,7 +2532,7 @@ namespace TransCarga
                                     "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                                 if (bb == DialogResult.Yes)
                                 {
-                                    try
+                                    //try
                                     {
                                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                                         {
@@ -2548,10 +2548,10 @@ namespace TransCarga
                                         }
                                         Bt_print.PerformClick();
                                     }
-                                    catch (Exception ex)
+                                    /*catch (Exception ex)
                                     {
                                         MessageBox.Show(ex.Message, "Error en proceso de impresión", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    }
+                                    } */
                                 }
                             }
                         }

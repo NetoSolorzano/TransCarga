@@ -1862,7 +1862,7 @@ namespace TransCarga
                             conn.Open();
                             if (lib.procConn(conn) == true)
                             {
-                                using (MySqlCommand micon = new MySqlCommand("update adiguias set estadoS='Invalido' where id=@idr"))
+                                using (MySqlCommand micon = new MySqlCommand("update adiguias set estadoS='Invalido' where id=@idr", conn))
                                 {
                                     micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                                     micon.ExecuteNonQuery();

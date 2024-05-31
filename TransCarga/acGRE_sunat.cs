@@ -76,34 +76,46 @@ namespace TransCarga
                     request.AddHeader("Authorization", "Bearer " + tokenSql);
                     request.AddHeader("Content-Type", "application/json");
                     request.AddParameter("application/json", json, ParameterType.RequestBody);
-                    //
-                    IRestResponse response = poste.Execute(request);
-                    var result = JsonConvert.DeserializeObject<Ticket_RptaR>(response.Content);
-                    if (response.ResponseStatus.ToString() != "Completed") retorna = false;
-                    else retorna = true;
                     // actualizamos los campos de la tabla 
+                    IRestResponse response = poste.Execute(request);
                     string actua = "";
-                    if (result == null)
+                    if (response.ResponseStatus.ToString() != "Completed")
                     {
                         actua = "update " + nomTabla + " set nticket=@nti,estadoS=@est,cdr=@cdr where idg=@idg";
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            conn.Open();
+                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            {
+                                micon.Parameters.AddWithValue("@idg", tx_idr);
+                                micon.Parameters.AddWithValue("@nti", Program.vg_user + "_" + DateTime.Now.Date.ToString() + "_" + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString());
+                                //micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
+                                micon.Parameters.AddWithValue("@est", "Enviado");
+                                micon.Parameters.AddWithValue("@cdr", "0");
+                                micon.ExecuteNonQuery();
+                            }
+                        }
                     }
                     else
                     {
+                        var result = JsonConvert.DeserializeObject<Ticket_RptaR>(response.Content);
                         actua = "update " + nomTabla + " set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdr where idg=@idg";
-                    }
-                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                    {
-                        conn.Open();
-                        using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                         {
-                            micon.Parameters.AddWithValue("@idg", tx_idr);
-                            micon.Parameters.AddWithValue("@nti", (result == null)? Program.vg_user + "_" + DateTime.Now.Date.ToString() + "_" + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() : result.numTicket);
-                            if (result != null) micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
-                            micon.Parameters.AddWithValue("@est", "Enviado");
-                            micon.Parameters.AddWithValue("@cdr", "0");
-                            micon.ExecuteNonQuery();
+                            conn.Open();
+                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            {
+                                micon.Parameters.AddWithValue("@idg", tx_idr);
+                                micon.Parameters.AddWithValue("@nti", (result == null) ? Program.vg_user + "_" + DateTime.Now.Date.ToString() + "_" + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() : result.numTicket);
+                                micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
+                                micon.Parameters.AddWithValue("@est", "Enviado");
+                                micon.Parameters.AddWithValue("@cdr", "0");
+                                micon.ExecuteNonQuery();
+                            }
                         }
                     }
+                    retorna = true;
+
                 }
             }
             return retorna;

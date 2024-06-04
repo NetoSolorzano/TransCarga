@@ -1569,7 +1569,7 @@ namespace TransCarga
             string ruta = rutatxt + "TXT/";
             string rutaRpta = rutatxt + "RPTA/";
             string archi = Program.ruc + "-" + tipo + "-" + serie + "-" + corre;
-            string archiR = "R-" + Program.ruc + "-" + tipo + "-" + serie + "-" + corre + ".txt";
+            string archiR = "R-" + Program.ruc + "-" + tipo + "-" + serie + "-" + corre;    //  + ".txt"
             IConectarWS cws = new ConectarWS();
             if (accion == "alta")
             {
@@ -1583,6 +1583,7 @@ namespace TransCarga
                         MessageBox.Show("No se pudo enviar la guía en json al servicio del proveedor: " + ipeeg + Environment.NewLine +
                             "El motivo fue el siguiente: " + Environment.NewLine +
                             respuesta, " ERROR ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        archiR = archiR + ".txt";
                         System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
                     }
                     else
@@ -1603,6 +1604,8 @@ namespace TransCarga
                                 }
                             }
                         }
+                        archiR = archiR + ".xml";
+                        System.IO.File.WriteAllText(rutaRpta + archiR, respuesta);
                     }
                 }
                 if (EnvPdf == true)                        // generar el pdf para subirlo al servidor de seencorp ... 11/04/2024

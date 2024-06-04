@@ -190,7 +190,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string consultaC(string nomTabla, string nomarch, string rutaXml, string Lusua, string Lclav)
+        public string consultaC(string nomTabla, string nomarch, string rutaXml, string Lusua, string Lclav, string tx_idr)            // consulta para seencorp
         {
             // nomTabla -> nombre de la tabla en B.D donde esta guardada los datos
             // nomarch --> nombre del archivo xml que se consultará su estado
@@ -199,22 +199,40 @@ namespace TransCarga
             // Lclav ----> clave del usuario que hace la consulta
             string retorna = "";
             IConectarWS cws = new ConectarWS();
-            retorna = cws.consultaEstado(nomarch, rutaXml, Lusua, Lclav);
-            if (retorna == "0" || retorna == "98")
+            retorna = cws.consultaEstado("10427946580-09-T001-00000116.xml", rutaXml, Lusua, Lclav);   // cws.consultaEstado(nomarch, rutaXml, Lusua, Lclav);
+            string n1 = "";
+            if (retorna.Substring(0,4) == "0000")  // 0000El Comprobante  numero T001-00000116, ha sido aceptado
             {
                 string archiS = "R-" + nomarch;
                 XmlDocument archiXml = new XmlDocument();
                 archiXml.Load(archiS);
                 XmlNode fqr = archiXml.GetElementsByTagName("DocumentDescription", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
-                string n1;
                 if (fqr == null)
                 {
                     XmlNode fer = archiXml.GetElementsByTagName("Description", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
                     n1 = fer.InnerText;
                 }
                 else n1 = fqr.InnerText;
-                // me quede acá, debemos leer el xml, obtener resultado y grabarlo en la tabla
-                // 13/04/2024
+            }
+            else
+            {
+                // aca falta si no es aceptado ... me quede acá 03/06/2024
+
+            }
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr,ulterror=@uer where idg=@idg";
+                using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                {
+                    micon.Parameters.AddWithValue("@est", (retorna.Substring(0, 4) == "0000") ? "Aceptado" : "Rechazado");
+                    micon.Parameters.AddWithValue("@cdr", "");
+                    micon.Parameters.AddWithValue("@gen", (retorna.Substring(0, 4) == "0000") ? "1" : "0");
+                    micon.Parameters.AddWithValue("@tqr", (retorna.Substring(0, 4) == "0000") ? n1 : "");
+                    micon.Parameters.AddWithValue("@uer", (retorna.Substring(0, 4) == "0000") ? "" : cuidado);
+                    micon.Parameters.AddWithValue("@idg", tx_idr);
+                    micon.ExecuteNonQuery();
+                }
             }
             return retorna;
         }

@@ -503,7 +503,6 @@ form repsventas, adecuaciones para moneda en formatos CR, ahora va simbolo de mo
 clase impGRE_t, adecuaciones para moneda en formatos CR, ahora va simbolo de moneda+flete ........... ok 25/04/2024
 form guiati_e, arreglo de doble llamadas en leave de numdoc remit y destin, se cambio de evento ..... ok 25/04/2024 (validating)
 form facelect, arreglo de impresion doble ........................................................... ok 06/05/2024 
-form guiati_e, revision de casos dificiles, adecuaciones finales, pruebas ........................... (no recuerdo que falta)
 **** arreglar la impresion "doble" en fact y guias y donde sea, la razón es que estoy llamando a la clase que imprime con el mismo nombre
 ***** el nombre de la clase y su metodo tiene en mismo nombre, ademas no debe llamarse a la clase imprime desde el printdocument.print()
 ***** tomar como modelo a notcredclts y repsvtas estados notas de credito DE ALTIPLANO.
@@ -511,4 +510,5 @@ form repadmcaja, corregir columna "Fecha Emisión en pendientes de cobranza ....
 form facelect, en visualización de varios comprobantes al imprimir no borra los datos anteriores .... ok 18/05/2024
 form facelect, arreglo de "hilo suelto" en ubigeo pto.origen ........................................ ok 28/05/2024
 C.R. gre_t2, cambiar la etiqueta CONSIGNATARIO por ATENCION y ubicarlo cerca al detalle ............. ok 31/05/2024
-clase acGRE_sunat, ampliacion de timeout de -1 a 10000 milisegundos ................................. 
+clase acGRE_sunat, ampliacion de timeout de -1 a 10000 milisegundos ................................. ok 31/05/2024
+form guiati_e, envío a seencorp y lectura de resultado de envío ..................................... 

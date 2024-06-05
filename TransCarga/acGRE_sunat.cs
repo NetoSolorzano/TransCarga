@@ -199,8 +199,9 @@ namespace TransCarga
             // Lclav ----> clave del usuario que hace la consulta
             string retorna = "";
             IConectarWS cws = new ConectarWS();
-            retorna = cws.consultaEstado("10427946580-09-T001-00000116.xml", rutaXml, Lusua, Lclav);   // cws.consultaEstado(nomarch, rutaXml, Lusua, Lclav);
+            retorna = cws.consultaEstado("10427946580-09-T001-00000132.xml", rutaXml, Lusua, Lclav);   // cws.consultaEstado(nomarch, rutaXml, Lusua, Lclav);
             string n1 = "";
+            string cuidado = "";    // mensaje de error
             if (retorna.Substring(0,4) == "0000")  // 0000El Comprobante  numero T001-00000116, ha sido aceptado
             {
                 string archiS = "R-" + nomarch;
@@ -216,8 +217,8 @@ namespace TransCarga
             }
             else
             {
-                // aca falta si no es aceptado ... me quede acá 03/06/2024
-
+                // 3444El Número del DNI del destinatario no existe - 3444
+                cuidado = retorna.Substring(4, (retorna.Trim().Length - 4));
             }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {

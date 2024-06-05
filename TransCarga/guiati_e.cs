@@ -666,7 +666,7 @@ namespace TransCarga
                             string archi = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
                             if (tx_dat_tickSunat.Text != "")
                             {
-                                string respuesta = _Sunat.consultaC("adiguias", archi, rutaQR, usuaInteg, clavInteg);
+                                string respuesta = _Sunat.consultaC("adiguias", archi, rutaQR, usuaInteg, clavInteg, tx_idr.Text);
                                 MessageBox.Show(respuesta,"Estado Sunat",MessageBoxButtons.OK,MessageBoxIcon.Information);
                             }
                         }

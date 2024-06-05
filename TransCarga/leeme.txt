@@ -511,4 +511,5 @@ form facelect, en visualización de varios comprobantes al imprimir no borra los
 form facelect, arreglo de "hilo suelto" en ubigeo pto.origen ........................................ ok 28/05/2024
 C.R. gre_t2, cambiar la etiqueta CONSIGNATARIO por ATENCION y ubicarlo cerca al detalle ............. ok 31/05/2024
 clase acGRE_sunat, ampliacion de timeout de -1 a 10000 milisegundos ................................. ok 31/05/2024
-form guiati_e, envío a seencorp y lectura de resultado de envío ..................................... 
+clase acGRE_sunat, envío a seencorp y lectura de resultado de envío ................................. ok 04/06/2024
+form repsoper, adecuar la "consulta" de guía en pendiente o enviada ................................. 

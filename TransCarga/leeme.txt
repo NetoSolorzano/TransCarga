@@ -512,4 +512,7 @@ form facelect, arreglo de "hilo suelto" en ubigeo pto.origen ...................
 C.R. gre_t2, cambiar la etiqueta CONSIGNATARIO por ATENCION y ubicarlo cerca al detalle ............. ok 31/05/2024
 clase acGRE_sunat, ampliacion de timeout de -1 a 10000 milisegundos ................................. ok 31/05/2024
 clase acGRE_sunat, envío a seencorp y lectura de resultado de envío ................................. ok 04/06/2024
-form repsoper, adecuar la "consulta" de guía en pendiente o enviada ................................. 
+form repsoper, adecuar la "consulta" de guía en pendiente o enviada ........ yo no va seencorp en guias ... se decidió con magali que no 05/06/2024
+form notcredclts, arreglar EDICION permite ingresar a serie,numero y tipo de nota ................... ok 06/06/2024
+form notcredclts, adecuar que en botón <> de NUEVO validar BC o FC y no tipo de nota ................ ok 06/06/2024
+

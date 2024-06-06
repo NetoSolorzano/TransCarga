@@ -12,6 +12,7 @@ using com.tuscomprobantespe.webservice;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using CrystalDecisions.CrystalReports.Engine;
+using System.Linq;
 
 namespace TransCarga
 {
@@ -244,8 +245,19 @@ namespace TransCarga
                 cmb_tnota.Enabled = false;
                 tx_serie.ReadOnly = true;
                 cmb_tnota_SelectedIndexChanged(null, null);
+                data_tnota();   // jalamos data tipo de nota
+            }
+            else
+            {
+                var tipos = new[] { "BC", "FC" };
+                gbox_serie.Enabled = true;
+                cmb_tnota.Enabled = true;
+                cmb_tnota.DataSource = null;
+                cmb_tnota.Items.Clear();
+                cmb_tnota.DataSource = tipos;
             }
             tx_dat_tnota.Text = v_codnot;
+            rb_anula.Checked = false;
             cmb_tnota.SelectedValue = v_codnot;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
@@ -372,7 +384,7 @@ namespace TransCarga
                 }
                 if (campo == "sernum")
                 {
-                    parte = "where a.tipnota=@tnot and a.sernota=@snot and a.numnota=@nnot";
+                    parte = "where a.martnot=@tnot and a.sernota=@snot and a.numnota=@nnot";
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
@@ -408,7 +420,7 @@ namespace TransCarga
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
                             if (dr.GetString("tipncred") == "ANU") rb_anula.Checked = true;
                             else rb_anula.Checked = false;
-                            tx_dat_tnota.Text = dr.GetString("tipnota");
+                            tx_dat_tnota.Text = dr.GetString("martnot");
                             tx_serie.Text = dr.GetString("sernota");
                             tx_numero.Text = dr.GetString("numnota");
                             tx_dat_tdRem.Text = dr.GetString("tidoclt");
@@ -449,6 +461,8 @@ namespace TransCarga
                             tx_fletLetras.Text = numLetra.Convertir(tx_flete.Text, true) + " " + tx_dat_nomon.Text;
                             tx_dat_tdsunat.Text = dr.GetString("codsunat");
                             tx_dat_inot.Text = "C";
+                            cmb_tnota.SelectedIndex = (tx_dat_tnota.Text == "BC") ? 0 : 1;
+                            //cmb_tnota.SelectedText = tx_dat_tnota.Text;
                         }
                         else
                         {
@@ -544,21 +558,6 @@ namespace TransCarga
                         cmb_tdv.ValueMember = "idcodice";
                     }
                 }
-                // datos para combo notas cred/deb
-                cmb_tnota.Items.Clear();
-                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,a.deta1 from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codn", conn))
-                {
-                    cdv.Parameters.AddWithValue("@bloq", 1);
-                    cdv.Parameters.AddWithValue("@codn", "nota");
-                    using (MySqlDataAdapter datv = new MySqlDataAdapter(cdv))
-                    {
-                        dttdn.Clear();
-                        datv.Fill(dttdn);
-                        cmb_tnota.DataSource = dttdn;
-                        cmb_tnota.DisplayMember = "descrizionerid";
-                        cmb_tnota.ValueMember = "idcodice";
-                    }
-                }
                 // datos para el combo de moneda
                 cmb_mon.Items.Clear();
                 using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid,codsunat,deta1 from desc_mon where numero=@bloq", conn))
@@ -571,6 +570,29 @@ namespace TransCarga
                         cmb_mon.DataSource = dtm;
                         cmb_mon.DisplayMember = "descrizionerid";
                         cmb_mon.ValueMember = "idcodice";
+                    }
+                }
+            }
+            data_tnota();   // jalamos tipo de nota
+        }
+        private void data_tnota()
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                // datos para combo notas cred/deb
+                cmb_tnota.DataSource = null;
+                cmb_tnota.Items.Clear();
+                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,a.deta1 from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codn", conn))
+                {
+                    cdv.Parameters.AddWithValue("@bloq", 1);
+                    cdv.Parameters.AddWithValue("@codn", "nota");
+                    using (MySqlDataAdapter datv = new MySqlDataAdapter(cdv))
+                    {
+                        dttdn.Clear();
+                        datv.Fill(dttdn);
+                        cmb_tnota.DataSource = dttdn;
+                        cmb_tnota.DisplayMember = "descrizionerid";
+                        cmb_tnota.ValueMember = "idcodice";
                     }
                 }
             }
@@ -2212,7 +2234,9 @@ namespace TransCarga
             initIngreso();
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
-            tx_numero.Text = "";
+            gbox_serie.Enabled = true;
+            cmb_tnota.Enabled = true;
+            tx_serie.ReadOnly = false;
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
             //
@@ -2384,15 +2408,24 @@ namespace TransCarga
         {
             if (cmb_tnota.SelectedIndex > -1)
             {
-                DataRow[] row = dttdn.Select("idcodice='" + cmb_tnota.SelectedValue.ToString() + "'");
-                if (row.Length > 0)
+                DataRow[] row = dttdn.Select("idcodice='" + v_codnot + "'");
+                if (Tx_modo.Text == "NUEVO")
                 {
-                    tx_dat_tnota.Text = row[0].ItemArray[0].ToString();
+                    if (row.Length > 0)
+                    {
+                        tx_dat_tnota.Text = row[0].ItemArray[0].ToString();
+                        tx_dat_tdec.Text = row[0].ItemArray[2].ToString();
+                        glosser = row[0].ItemArray[4].ToString();
+                        tx_dat_inot.Text = row[0].ItemArray[5].ToString();
+                    }
+                }
+                
+                if (new[] { "EDITAR", "EDITAR", "ANULAR", "VISUALIZAR" }.Any(c => Tx_modo.Text.Contains(c)))
+                {
+                    tx_dat_tnota.Text = cmb_tnota.Text;
                     tx_dat_tdec.Text = row[0].ItemArray[2].ToString();
                     glosser = row[0].ItemArray[4].ToString();
                     tx_dat_inot.Text = row[0].ItemArray[5].ToString();
-                    //tx_serie.Text = "";
-                    //tx_numero.Text = "";
                 }
             }
         }

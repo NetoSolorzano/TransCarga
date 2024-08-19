@@ -1372,7 +1372,9 @@ namespace TransCarga
                     "DirParUbi varchar(6), " +
                     "DirParDir varchar(200), " +
                     "DirLLeUbi varchar(6), " +
-                    "DirLLeDir varchar(200) " +
+                    "DirLLeDir varchar(200), " +
+                    // observaciones de la guia
+                    "ObserGuia varchar(250)" +
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -1411,7 +1413,7 @@ namespace TransCarga
                     "SConTipdo,SConNomTi,SConNumdo,SconNombr," +
                     "EnvPlaca1,EnvAutor1,EnvRegis1,EnvCodEn1,EnvNomEn1,EnvPlaca2,EnvAutor2,EnvRegis2,EnvCodEn2,EnvNomEn2," +
                     "ChoTipDi1,ChoNumDi1,ChoNomTi1,ChoNombr1,ChoApell1,ChoLicen1,ChoTipDi2,ChoNumDi2,ChoNomTi2,ChoNombr2,ChoApell2,ChoLicen2," +
-                    "DirParUbi,DirParDir,DirLLeUbi,DirLLeDir) " +
+                    "DirParUbi,DirParDir,DirLLeUbi,DirLLeDir,ObserGuia) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumGuia,@FecEmis,@HorEmis,@CodGuia,@NomGuia,@CantBul,@PesoTot,@CodUnid,@FecIniT,@CargaUn," +
                     "@DocRelnu1,@DocRelti1,@DocRelnr1,@DocRelcs1,@DocRelnm1,@DocRelnu2,@DocRelti2,@DocRelnr2,@DocRelcs2,@DocRelnm2," +
@@ -1421,7 +1423,7 @@ namespace TransCarga
                     "@SConTipdo,@SConNomTi,@SConNumdo,@SconNombr," +
                     "@EnvPlaca1,@EnvAutor1,@EnvRegis1,@EnvCodEn1,@EnvNomEn1,@EnvPlaca2,@EnvAutor2,@EnvRegis2,@EnvCodEn2,@EnvNomEn2," +
                     "@ChoTipDi1,@ChoNumDi1,@ChoNomTi1,@ChoNombr1,@ChoApell1,@ChoLicen1,@ChoTipDi2,@ChoNumDi2,@ChoNomTi2,@ChoNombr2,@ChoApell2,@ChoLicen2," +
-                    "@DirParUbi,@DirParDir,@DirLLeUbi,@DirLLeDir)";
+                    "@DirParUbi,@DirParDir,@DirLLeUbi,@DirLLeDir,@ObserG)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
                     // cabecera
@@ -1529,6 +1531,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@DirParDir", tx_dirRem.Text);
                     cmd.Parameters.AddWithValue("@DirLLeUbi", tx_ubigDtt.Text);
                     cmd.Parameters.AddWithValue("@DirLLeDir", tx_dirDrio.Text);
+                    cmd.Parameters.AddWithValue("@ObserG", tx_obser1.Text.Trim());      // observaciones
                     cmd.ExecuteNonQuery();
                 }
                 // DETALLE
@@ -4676,7 +4679,7 @@ namespace TransCarga
                 va[0] = tx_dat_textoqr.Text;                 // Varios: texto del código QR ->tx_dat_textoqr.Text
                 va[1] = rutaQR + nomImgQR;                   // "C:\temp\"+"imgQR.png"
                 va[2] = despedida;
-                va[3] = "";                                  // Varios: segunda linea de despedida
+                va[3] = tx_obser1.Text;                      // Varios: segunda linea de despedida
                 va[4] = glosa1;
                 va[5] = glosa2;
                 va[6] = tx_consig.Text.Trim();

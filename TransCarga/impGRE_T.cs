@@ -85,7 +85,7 @@ namespace TransCarga
             var[0] = varios[0];         // Varios: texto del código QR ->tx_dat_textoqr.Text
             var[1] = varios[1];         // Ruta y nombre de la imagen QR
             var[2] = varios[2];         // despedid1
-            var[3] = varios[3];         // despedid2
+            var[3] = varios[3];         // observaciones de la guía .. 19/08/2024
             var[4] = varios[4];         // Glosa final comprobante 1 -> "Representación impresa sin valor legal de la"
             var[5] = varios[5];         // Glosa final comprobante 2 -> "Guía de Remisión Electrónica de Transportista"
             var[6] = varios[6];         // consignatario
@@ -601,7 +601,7 @@ namespace TransCarga
             rowcabeza.varTexoQR = var[0];
             rowcabeza.varTexLibr = @var[1];      // texto del QR en formato byte[]
             rowcabeza.varTexDes1 = var[2];
-            rowcabeza.varTexDes2 = var[3];
+            rowcabeza.varTexDes2 = var[3];      // 19/08/2024 observaciones de la guía, se vuelve imprimible
             rowcabeza.varGloFin1 = var[4];
             rowcabeza.varGloFin2 = var[5];
             rowcabeza.consignat = var[6];

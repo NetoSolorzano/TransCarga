@@ -348,7 +348,7 @@ namespace TransCarga
                     va[0] = dtgrtcab.Rows[0]["textoQR"].ToString();                 // Varios: texto del código QR ->tx_dat_textoqr.Text
                     va[1] = RimgQR;                                         // "C:\temp\"+"imgQR.png"
                     va[2] = "";                                 // despedida;
-                    va[3] = "";                                  // Varios: segunda linea de despedida
+                    va[3] = dtgrtcab.Rows[0]["obspregri"].ToString();               // Observaciones de la guia 19/08/2024 se vuelve imprimible
                     va[4] = "";                                 // glosa1;
                     va[5] = "";                                 // glosa2;
                     va[6] = dtgrtcab.Rows[0]["clifingri"].ToString();    // Consignatario

@@ -516,6 +516,7 @@ form repsoper, adecuar la "consulta" de guía en pendiente o enviada ........ yo
 form notcredclts, arreglar EDICION permite ingresar a serie,numero y tipo de nota ................... ok 06/06/2024
 form notcredclts, adecuar que en botón <> de NUEVO validar BC o FC y no tipo de nota ................ ok 06/06/2024
 Trigger cabguiai.afterinsert, le agregué al update el campo "saldofina" el valor de la guía ......... ok 11/07/2024 esto lo hice porque la preguía inserta con controlg, pero el valor q vales es de la guia
-form guiati_e, addecuaciones para enviar a sunat e imprimir el campo observación .................... 
-clase impGRE_T, addecuaciones para enviar a sunat e imprimir el campo observación ................... 
-C.R. gre_t2,addecuaciones para enviar a sunat e imprimir el campo observación .......................  
+form guiati_e, adecuaciones para enviar a sunat e imprimir el campo observación ..................... ok 19/08/2024
+clase impGRE_T, adecuaciones para enviar a sunat e imprimir el campo observación .................... ok 19/08/2024
+C.R. gre_t2,adecuaciones para enviar a sunat e imprimir el campo observación ........................ ok 19/08/2024
+form guiati_e, adecuaciones para xml con descripción + cant y tipo de bulto ......................... ok 19/08/2024

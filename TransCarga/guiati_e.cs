@@ -1374,7 +1374,7 @@ namespace TransCarga
                     "DirLLeUbi varchar(6), " +
                     "DirLLeDir varchar(200), " +
                     // observaciones de la guia
-                    "ObserGuia varchar(250)" +
+                    "ObserGuia varchar(245)" +
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -1389,8 +1389,8 @@ namespace TransCarga
                     "codigo varchar(3), " +       // código bien o servicio
                     "peso real, " +               // peso de la carga, va unido a la unidad de medida 
                     "umed varchar(3), " +         // codigo unidad de medida de sunat
-                    "deta1 varchar(100), " +
-                    "deta2 varchar(100))";
+                    "deta1 varchar(250), " +
+                    "deta2 varchar(250))";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
                     cmd.ExecuteNonQuery();
@@ -1547,7 +1547,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@peso", tx_det_peso.Text);                             // 150
                     cmd.Parameters.AddWithValue("@umed", (rb_kg.Checked == true) ? "KGM" : "TNE");       // "KGM"
                     cmd.Parameters.AddWithValue("@deta1", lb_glodeta.Text);    // "Servicio de Transporte de carga terrestre "
-                    cmd.Parameters.AddWithValue("@deta2", tx_det_desc.Text);    //"Dice contener Enseres domésticos"
+                    cmd.Parameters.AddWithValue("@deta2", tx_det_desc.Text.Trim() + " - " + tx_det_cant.Text.Trim() + " " + tx_det_umed.Text.Trim());    // tx_det_desc.Text 19/08/2024
 
                     cmd.ExecuteNonQuery();
                 }
@@ -4679,7 +4679,7 @@ namespace TransCarga
                 va[0] = tx_dat_textoqr.Text;                 // Varios: texto del código QR ->tx_dat_textoqr.Text
                 va[1] = rutaQR + nomImgQR;                   // "C:\temp\"+"imgQR.png"
                 va[2] = despedida;
-                va[3] = tx_obser1.Text;                      // Varios: segunda linea de despedida
+                va[3] = tx_obser1.Text;                      // Varios: observaciones de la guia
                 va[4] = glosa1;
                 va[5] = glosa2;
                 va[6] = tx_consig.Text.Trim();
